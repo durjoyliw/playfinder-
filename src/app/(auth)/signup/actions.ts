@@ -1,6 +1,7 @@
 "use server";
 
 import { lucia } from "@/auth";
+import { getPostAuthRedirect } from "@/lib/onboarding";
 import prisma from "@/lib/prisma";
 import streamServerClient from "@/lib/stream";
 import { signUpSchema, SignUpValues } from "@/lib/validation";
@@ -80,7 +81,7 @@ export async function signUp(
       sessionCookie.attributes,
     );
 
-    return redirect("/");
+    return redirect(await getPostAuthRedirect(userId));
   } catch (error) {
     if (isRedirectError(error)) throw error;
     console.error(error);

@@ -1,18 +1,11 @@
+import { PLAYFINDER_SPORTS, getSportById } from "@/lib/sports";
 import { PostData } from "@/lib/types";
 import { formatRelativeDate } from "@/lib/utils";
 import { PostIntent, Sport } from "@prisma/client";
 import { differenceInMilliseconds } from "date-fns";
 import type { FeedCardProps } from "@/components/playfinder/feed-card";
 
-export const PLAYFINDER_SPORTS = [
-  { id: "football", label: "Football", emoji: "⚽", enum: Sport.FOOTBALL },
-  { id: "tennis", label: "Tennis", emoji: "🎾", enum: Sport.TENNIS },
-  { id: "basketball", label: "Basketball", emoji: "🏀", enum: Sport.BASKETBALL },
-  { id: "gym", label: "Gym", emoji: "🏋️", enum: Sport.GYM },
-  { id: "running", label: "Running", emoji: "🏃", enum: Sport.RUNNING },
-  { id: "swimming", label: "Swimming", emoji: "🏊", enum: Sport.SWIMMING },
-  { id: "squash", label: "Squash", emoji: "🏸", enum: Sport.SQUASH },
-] as const;
+export { PLAYFINDER_SPORTS } from "@/lib/sports";
 
 export const SPORT_TABS = [
   { id: "all", label: "All", icon: "⚡" },
@@ -45,7 +38,7 @@ export const POST_INTENTS = [
 ];
 
 export function sportTabToEnum(tabId: string): Sport | undefined {
-  return PLAYFINDER_SPORTS.find((s) => s.id === tabId)?.enum;
+  return getSportById(tabId)?.enum;
 }
 
 export function formatSportLabel(sport: Sport | null | undefined): string | undefined {

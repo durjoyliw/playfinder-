@@ -1,5 +1,6 @@
 import { validateRequest } from "@/auth";
 import { PlayFinderShell } from "@/components/playfinder/playfinder-shell";
+import { userNeedsOnboarding } from "@/lib/onboarding";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import SessionProvider from "./SessionProvider";
@@ -11,7 +12,11 @@ export default async function Layout({
 }) {
   const session = await validateRequest();
 
-  if (!session.user) redirect("/login");
+  if (!session.user) redirect("/");
+
+  if (await userNeedsOnboarding(session.user.id)) {
+    redirect("/onboarding");
+  }
 
   const unreadNotificationCount = await prisma.notification.count({
     where: {

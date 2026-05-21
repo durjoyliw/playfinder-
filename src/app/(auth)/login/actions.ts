@@ -1,6 +1,7 @@
 "use server";
 
 import { lucia } from "@/auth";
+import { getPostAuthRedirect } from "@/lib/onboarding";
 import prisma from "@/lib/prisma";
 import { loginSchema, LoginValues } from "@/lib/validation";
 import { verify } from "@node-rs/argon2";
@@ -50,7 +51,7 @@ export async function login(
       sessionCookie.attributes,
     );
 
-    return redirect("/");
+    return redirect(await getPostAuthRedirect(existingUser.id));
   } catch (error) {
     if (isRedirectError(error)) throw error;
     console.error(error);

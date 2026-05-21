@@ -1,24 +1,27 @@
 "use client";
 
 import ProfileActions from "@/app/(main)/users/[username]/ProfileActions";
-import ProfilePostsGrid from "@/app/(main)/users/[username]/ProfilePostsGrid";
+import ProfileBioEditor from "@/app/(main)/users/[username]/ProfileBioEditor";
+import ProfileIntentPill from "@/app/(main)/users/[username]/ProfileIntentPill";
+import ProfilePostsList from "@/app/(main)/users/[username]/ProfilePostsList";
 import EditProfileButton from "@/app/(main)/users/[username]/EditProfileButton";
 import UserAvatar from "@/components/UserAvatar";
-import { FollowerInfo, UserData } from "@/lib/types";
+import { FollowerInfo, UserProfileData } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Calendar, ChevronDown, MapPin, Plus } from "lucide-react";
-import { useState } from "react";
+import { Calendar, MapPin, Plus } from "lucide-react";
+import Link from "next/link";
 import { AthleteProfileData, SkillTier } from "./types";
 
 interface AthleteProfileProps {
   profile: AthleteProfileData;
-  user: UserData;
+  user: UserProfileData;
   followerInfo: FollowerInfo;
 }
 
 function getTierColor(tier: SkillTier): string {
   switch (tier) {
     case "Advanced":
+    case "Pro":
       return "text-[#C9F31D]";
     case "Intermediate":
       return "text-blue-500";
@@ -34,16 +37,6 @@ export default function AthleteProfile({
   user,
   followerInfo,
 }: AthleteProfileProps) {
-  const [activeTab, setActiveTab] = useState<"posts" | "games" | "highlights">(
-    "posts",
-  );
-
-  const tabs = [
-    { id: "posts" as const, label: "Posts" },
-    { id: "games" as const, label: "Games played" },
-    { id: "highlights" as const, label: "Highlights" },
-  ];
-
   return (
     <div className="w-full pb-36 text-white">
       <div className="relative">
@@ -108,40 +101,18 @@ export default function AthleteProfile({
           <span>{profile.joinedDate}</span>
         </div>
 
-        <button
-          type="button"
-          className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#C9F31D]/30 bg-[#C9F31D]/10 px-4 py-2 text-sm font-medium text-[#C9F31D] transition-colors hover:bg-[#C9F31D]/20"
-        >
-          <span className="h-2 w-2 animate-pulse rounded-full bg-[#C9F31D]" />
-          {profile.intent}
-          <ChevronDown className="h-4 w-4" />
-        </button>
+        <ProfileIntentPill
+          profileIntent={profile.profileIntent}
+          isOwnProfile={profile.isOwnProfile}
+        />
       </div>
 
       <div className="mx-4 mt-6 rounded-xl border border-[#262626] bg-[#1a1a1a] p-4">
-        <div className="grid grid-cols-4 gap-2 text-center">
+        <div className="grid grid-cols-2 gap-4 text-center">
           <div>
-            <p className="text-xl font-bold text-white">
-              {profile.stats.gamesPlayed}
-            </p>
+            <p className="text-xl font-bold text-white">{profile.stats.games}</p>
             <p className="text-[10px] uppercase tracking-wider text-gray-500">
               Games
-            </p>
-          </div>
-          <div>
-            <p className="text-xl font-bold text-white">
-              {profile.stats.reliability}
-            </p>
-            <p className="text-[10px] uppercase tracking-wider text-gray-500">
-              Reliability
-            </p>
-          </div>
-          <div>
-            <p className="text-xl font-bold text-white">
-              {profile.stats.connections}
-            </p>
-            <p className="text-[10px] uppercase tracking-wider text-gray-500">
-              Connections
             </p>
           </div>
           <div>
@@ -159,80 +130,54 @@ export default function AthleteProfile({
         <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
           Sports Resume
         </h2>
-        <div className="grid grid-cols-2 gap-3">
-          {profile.sports.map((sport) => (
-            <div
-              key={sport.name}
-              className="flex items-start gap-3 rounded-xl border border-[#262626] bg-[#1a1a1a] p-3"
-            >
-              <span className="text-xl">{sport.emoji}</span>
-              <div>
-                <p className="text-sm font-medium text-white">{sport.name}</p>
-                <p className={cn("text-xs", getTierColor(sport.tier))}>
-                  {sport.tier}
-                  {sport.detail && (
-                    <span className="text-gray-500"> · {sport.detail}</span>
-                  )}
-                </p>
+        {profile.sports.length > 0 ? (
+          <div className="grid grid-cols-2 gap-3">
+            {profile.sports.map((sport) => (
+              <div
+                key={sport.name}
+                className="flex items-start gap-3 rounded-xl border border-[#262626] bg-[#1a1a1a] p-3"
+              >
+                <span className="text-xl">{sport.emoji}</span>
+                <div>
+                  <p className="text-sm font-medium text-white">{sport.name}</p>
+                  <p className={cn("text-xs", getTierColor(sport.tier))}>
+                    {sport.tier}
+                    {sport.detail && (
+                      <span className="text-gray-500"> · {sport.detail}</span>
+                    )}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
-          {profile.isOwnProfile && (
-            <button
-              type="button"
-              className="flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#333] p-3 text-gray-500 transition-colors hover:border-[#C9F31D] hover:text-[#C9F31D]"
-            >
-              <Plus className="h-4 w-4" />
-              <span className="text-sm">Add sport</span>
-            </button>
-          )}
-        </div>
-      </div>
-
-      <div className="mx-4 mt-6">
-        <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
-          Athlete Story
-        </h2>
-        <div className="rounded-xl border border-[#262626] bg-[#1a1a1a] p-4">
-          <p className="text-sm leading-relaxed text-gray-300">
-            {profile.bio ||
-              "No athlete story yet. Add a bio to tell others about your sports background."}
-          </p>
-        </div>
-      </div>
-
-      <div className="mx-4 mt-6">
-        <div className="flex gap-2">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-              className={cn(
-                "rounded-full px-4 py-2 text-sm font-medium transition-all",
-                activeTab === tab.id
-                  ? "bg-[#C9F31D] text-[#0d0d0d]"
-                  : "bg-[#1a1a1a] text-gray-400 hover:text-white",
-              )}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="mx-4 mt-4">
-        {activeTab === "posts" && <ProfilePostsGrid userId={profile.userId} />}
-        {activeTab === "games" && (
-          <p className="py-8 text-center text-sm text-gray-500">
-            Games played history coming soon.
+            ))}
+            {profile.isOwnProfile && (
+              <Link
+                href="/settings/sports"
+                className="flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#333] p-3 text-gray-500 transition-colors hover:border-[#C9F31D] hover:text-[#C9F31D]"
+              >
+                <Plus className="h-4 w-4" />
+                <span className="text-sm">Add sport</span>
+              </Link>
+            )}
+          </div>
+        ) : profile.isOwnProfile ? (
+          <Link
+            href="/settings/sports"
+            className="flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#333] p-4 text-gray-500 transition-colors hover:border-[#C9F31D] hover:text-[#C9F31D]"
+          >
+            <Plus className="h-4 w-4" />
+            <span className="text-sm">Add sports to your resume</span>
+          </Link>
+        ) : (
+          <p className="rounded-xl border border-[#262626] bg-[#1a1a1a] p-4 text-center text-sm text-gray-500">
+            No sports added yet.
           </p>
         )}
-        {activeTab === "highlights" && (
-          <p className="py-8 text-center text-sm text-gray-500">
-            Highlights coming soon.
-          </p>
-        )}
+      </div>
+
+      <ProfileBioEditor bio={profile.bio} isOwnProfile={profile.isOwnProfile} />
+
+      <div className="mx-4 mt-6">
+        <ProfilePostsList userId={profile.userId} />
       </div>
 
       {!profile.isOwnProfile && (

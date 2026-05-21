@@ -1,4 +1,4 @@
-import TrendsSidebar from "@/components/TrendsSidebar";
+import { PageBackHeader } from "@/components/playfinder/page-back-header";
 import { Metadata } from "next";
 import Notifications from "./Notifications";
 
@@ -8,14 +8,11 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <main className="flex w-full min-w-0 gap-5">
-      <div className="w-full min-w-0 space-y-5">
-        <div className="rounded-2xl bg-card p-5 shadow-sm">
-          <h1 className="text-center text-2xl font-bold">Notifications</h1>
-        </div>
+    <div className="min-h-full bg-[#0d0d0d]">
+      <PageBackHeader title="Notifications" />
+      <div className="space-y-4 px-4 py-4">
         <Notifications />
       </div>
-      <TrendsSidebar />
-    </main>
+    </div>
   );
 }

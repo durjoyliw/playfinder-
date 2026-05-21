@@ -13,7 +13,7 @@ export default function Chat() {
   return (
     <Suspense fallback={null}>
       <PendingDmProvider>
-        <div className="flex h-full w-full flex-col overflow-hidden rounded-2xl bg-card shadow-sm">
+        <div className="flex h-[min(520px,calc(100dvh-14rem))] w-full flex-col overflow-hidden rounded-2xl bg-[#161616] shadow-sm">
           <div className="flex min-h-0 flex-1">
             <ChatSidebar
               open={sidebarOpen}

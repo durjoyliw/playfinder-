@@ -43,6 +43,8 @@ export interface FeedCardProps {
   isLikedByUser?: boolean;
   tags?: string[];
   replies?: number;
+  /** Hide actions and comments — used on profile post list */
+  compact?: boolean;
 }
 
 const cardAccentColors: Record<CardType, string> = {
@@ -81,6 +83,7 @@ export function FeedCard({
   isLikedByUser = false,
   tags = [],
   replies = 0,
+  compact = false,
 }: FeedCardProps) {
   const likeState = { likes, isLikedByUser };
   const profileHref = `/users/${username}`;
@@ -210,40 +213,44 @@ export function FeedCard({
           </div>
         )}
 
-        <div className="flex items-center gap-4 border-t border-border pt-2">
-          {type === "looking" && (
-            <>
-              <FeedCardImInButton
-                authorId={authorId}
-                sport={sport}
-                location={locationChip ?? location}
-                timeLabel={timeChip}
-              />
-              <FeedCardLikeButton postId={postId} initialState={likeState} />
-              <FeedCardShareButton postId={postId} />
-            </>
-          )}
+        {!compact && (
+          <>
+            <div className="flex items-center gap-4 border-t border-border pt-2">
+              {type === "looking" && (
+                <>
+                  <FeedCardImInButton
+                    authorId={authorId}
+                    sport={sport}
+                    location={locationChip ?? location}
+                    timeLabel={timeChip}
+                  />
+                  <FeedCardLikeButton postId={postId} initialState={likeState} />
+                  <FeedCardShareButton postId={postId} />
+                </>
+              )}
 
-          {type === "recruiting" && (
-            <>
-              <FeedCardMessageClubButton
-                authorId={authorId}
-                clubName={name}
-              />
-              <FeedCardLikeButton postId={postId} initialState={likeState} />
-              <FeedCardShareButton postId={postId} />
-            </>
-          )}
+              {type === "recruiting" && (
+                <>
+                  <FeedCardMessageClubButton
+                    authorId={authorId}
+                    clubName={name}
+                  />
+                  <FeedCardLikeButton postId={postId} initialState={likeState} />
+                  <FeedCardShareButton postId={postId} />
+                </>
+              )}
 
-          {type === "banter" && (
-            <>
-              <FeedCardLikeButton postId={postId} initialState={likeState} />
-              <FeedCardShareButton postId={postId} />
-            </>
-          )}
-        </div>
+              {type === "banter" && (
+                <>
+                  <FeedCardLikeButton postId={postId} initialState={likeState} />
+                  <FeedCardShareButton postId={postId} />
+                </>
+              )}
+            </div>
 
-        <FeedCardComments postId={postId} initialReplyCount={replies} />
+            <FeedCardComments postId={postId} initialReplyCount={replies} />
+          </>
+        )}
       </div>
     </div>
   );

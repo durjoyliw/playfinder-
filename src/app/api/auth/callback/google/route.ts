@@ -1,5 +1,6 @@
 import { google, lucia } from "@/auth";
 import kyInstance from "@/lib/ky";
+import { getPostAuthRedirect } from "@/lib/onboarding";
 import prisma from "@/lib/prisma";
 import streamServerClient from "@/lib/stream";
 import { slugify } from "@/lib/utils";
@@ -53,10 +54,11 @@ export async function GET(req: NextRequest) {
         sessionCookie.value,
         sessionCookie.attributes,
       );
+      const redirectTo = await getPostAuthRedirect(existingUser.id);
       return new Response(null, {
         status: 302,
         headers: {
-          Location: "/",
+          Location: redirectTo,
         },
       });
     }
@@ -89,10 +91,12 @@ export async function GET(req: NextRequest) {
       sessionCookie.attributes,
     );
 
+    const redirectTo = await getPostAuthRedirect(userId);
+
     return new Response(null, {
       status: 302,
       headers: {
-        Location: "/",
+        Location: redirectTo,
       },
     });
   } catch (error) {

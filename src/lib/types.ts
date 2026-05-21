@@ -7,7 +7,18 @@ export function getUserDataSelect(loggedInUserId: string) {
     displayName: true,
     avatarUrl: true,
     bio: true,
+    location: true,
+    profileIntent: true,
     createdAt: true,
+    sports: {
+      select: {
+        sport: true,
+        skillLevel: true,
+      },
+      orderBy: {
+        sport: "asc" as const,
+      },
+    },
     followers: {
       where: {
         followerId: loggedInUserId,
@@ -27,6 +38,32 @@ export function getUserDataSelect(loggedInUserId: string) {
 
 export type UserData = Prisma.UserGetPayload<{
   select: ReturnType<typeof getUserDataSelect>;
+}>;
+
+export function getUserProfileInclude(loggedInUserId: string) {
+  return {
+    sports: {
+      orderBy: { sport: "asc" as const },
+    },
+    followers: {
+      where: {
+        followerId: loggedInUserId,
+      },
+      select: {
+        followerId: true,
+      },
+    },
+    _count: {
+      select: {
+        posts: true,
+        followers: true,
+      },
+    },
+  } satisfies Prisma.UserInclude;
+}
+
+export type UserProfileData = Prisma.UserGetPayload<{
+  include: ReturnType<typeof getUserProfileInclude>;
 }>;
 
 export function getPostDataInclude(loggedInUserId: string) {

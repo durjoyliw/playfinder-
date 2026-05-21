@@ -24,8 +24,12 @@ model User {
   googleId              String?        @unique
   avatarUrl             String?
   bio                   String?
+  location              String?
+  profileIntent         ProfileIntent?
+  completedOnboarding   Boolean                @default(false)
   sessions              Session[]
   posts                 Post[]
+  sports                UserSport[]
   following             Follow[]       @relation("Following")
   followers             Follow[]       @relation("Followers")
   likes                 Like[]
@@ -37,6 +41,30 @@ model User {
   createdAt DateTime @default(now())
 
   @@map("users")
+}
+
+model UserSport {
+  id         String     @id @default(cuid())
+  userId     String
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sport      Sport
+  skillLevel SkillLevel
+
+  @@unique([userId, sport])
+  @@map("user_sports")
+}
+
+enum ProfileIntent {
+  LOOKING_TO_PLAY
+  JOIN_A_TEAM
+  JUST_VIBES
+}
+
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  PRO
 }
 
 model Session {
@@ -87,6 +115,9 @@ enum Sport {
   RUNNING
   SWIMMING
   SQUASH
+  BADMINTON
+  CRICKET
+  CYCLING
 }
 
 enum PostIntent {

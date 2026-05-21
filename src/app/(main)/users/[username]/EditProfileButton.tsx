@@ -1,12 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { UserData } from "@/lib/types";
+import { UserProfileData } from "@/lib/types";
 import { useState } from "react";
 import EditProfileDialog from "./EditProfileDialog";
 
 interface EditProfileButtonProps {
-  user: UserData;
+  user: UserProfileData;
 }
 
 export default function EditProfileButton({ user }: EditProfileButtonProps) {

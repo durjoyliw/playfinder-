@@ -1,15 +1,13 @@
 import {
   AthleteProfileData,
   AthleteSport,
+  SkillTier,
 } from "@/components/playfinder-profile/types";
-import { UserData } from "@/lib/types";
+import { getSportEmoji, getSportLabel } from "@/lib/sports";
+import { SKILL_LEVEL_OPTIONS } from "@/lib/settings";
+import { UserProfileData } from "@/lib/types";
+import { ProfileIntent, SkillLevel } from "@prisma/client";
 import { formatDate } from "date-fns";
-
-const PLACEHOLDER_SPORTS: AthleteSport[] = [
-  { emoji: "⚽", name: "Football", tier: "Intermediate", detail: null },
-  { emoji: "🎾", name: "Tennis", tier: "Beginner", detail: null },
-  { emoji: "🏋️", name: "Gym", tier: "Intermediate", detail: null },
-];
 
 function getInitials(displayName: string): string {
   return displayName
@@ -21,29 +19,51 @@ function getInitials(displayName: string): string {
     .toUpperCase();
 }
 
+function skillLevelToTier(skillLevel: SkillLevel): SkillTier {
+  const label = SKILL_LEVEL_OPTIONS.find((l) => l.value === skillLevel)?.label;
+  return (label as SkillTier) ?? "Intermediate";
+}
+
+function mapUserSports(
+  sports: UserProfileData["sports"],
+): AthleteSport[] {
+  return sports.map((entry) => ({
+    emoji: getSportEmoji(entry.sport),
+    name: getSportLabel(entry.sport),
+    tier: skillLevelToTier(entry.skillLevel),
+    detail: null,
+  }));
+}
+
+export interface ProfileStats {
+  games: number;
+  broadcasts: number;
+}
+
 export function buildAthleteProfileData(
-  user: UserData,
+  user: UserProfileData,
   loggedInUserId: string,
+  stats: ProfileStats,
 ): AthleteProfileData {
+  const location = user.location?.trim() || null;
+
   return {
     userId: user.id,
     username: user.username,
     initials: getInitials(user.displayName),
     displayName: user.displayName,
     avatarUrl: user.avatarUrl,
-    region: "Greater Glasgow",
-    location: "Glasgow",
+    region: location ?? "Greater Glasgow",
+    location: location ?? "Location not set",
     joinedDate: `joined ${formatDate(user.createdAt, "MMM yyyy")}`,
     isOnline: true,
-    intent: "Looking for players and games nearby",
     bio: user.bio,
     isOwnProfile: user.id === loggedInUserId,
+    profileIntent: user.profileIntent ?? ProfileIntent.LOOKING_TO_PLAY,
     stats: {
-      gamesPlayed: 0,
-      reliability: 4.8,
-      connections: user._count.followers,
-      broadcasts: user._count.posts,
+      games: stats.games,
+      broadcasts: stats.broadcasts,
     },
-    sports: PLACEHOLDER_SPORTS,
+    sports: mapUserSports(user.sports),
   };
 }

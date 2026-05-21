@@ -15,11 +15,12 @@ export async function logout() {
 
   const sessionCookie = lucia.createBlankSessionCookie();
 
-  cookies().set(
+  const cookieStore = await cookies();
+  cookieStore.set(
     sessionCookie.name,
     sessionCookie.value,
     sessionCookie.attributes,
   );
 
-  return redirect("/login");
+  return redirect("/");
 }

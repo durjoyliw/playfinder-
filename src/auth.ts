@@ -19,6 +19,7 @@ export const lucia = new Lucia(adapter, {
       id: databaseUserAttributes.id,
       username: databaseUserAttributes.username,
       displayName: databaseUserAttributes.displayName,
+      email: databaseUserAttributes.email,
       avatarUrl: databaseUserAttributes.avatarUrl,
       googleId: databaseUserAttributes.googleId,
     };
@@ -36,6 +37,7 @@ interface DatabaseUserAttributes {
   id: string;
   username: string;
   displayName: string;
+  email: string | null;
   avatarUrl: string | null;
   googleId: string | null;
 }
@@ -50,7 +52,9 @@ export const validateRequest = cache(
   async (): Promise<
     { user: User; session: Session } | { user: null; session: null }
   > => {
-    const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
+    const cookieStore = await cookies();
+    const sessionId =
+      cookieStore.get(lucia.sessionCookieName)?.value ?? null;
 
     if (!sessionId) {
       return {
@@ -64,7 +68,7 @@ export const validateRequest = cache(
     try {
       if (result.session && result.session.fresh) {
         const sessionCookie = lucia.createSessionCookie(result.session.id);
-        cookies().set(
+        cookieStore.set(
           sessionCookie.name,
           sessionCookie.value,
           sessionCookie.attributes,
@@ -72,7 +76,7 @@ export const validateRequest = cache(
       }
       if (!result.session) {
         const sessionCookie = lucia.createBlankSessionCookie();
-        cookies().set(
+        cookieStore.set(
           sessionCookie.name,
           sessionCookie.value,
           sessionCookie.attributes,
@@ -83,3 +87,8 @@ export const validateRequest = cache(
     return result;
   },
 );
+
+/** Session helper (Lucia). Use in API routes and server code. */
+export async function auth() {
+  return validateRequest();
+}

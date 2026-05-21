@@ -1,17 +1,22 @@
 import { validateRequest } from "@/auth";
 import AthleteProfile from "@/components/playfinder-profile/athlete-profile";
 import prisma from "@/lib/prisma";
-import { FollowerInfo, getUserDataSelect } from "@/lib/types";
+import { FollowerInfo, getUserProfileInclude } from "@/lib/types";
+import { PostIntent } from "@prisma/client";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { cache } from "react";
+import { unstable_noStore as noStore } from "next/cache";
 import { buildAthleteProfileData } from "./build-athlete-profile";
+
+export const dynamic = "force-dynamic";
 
 interface PageProps {
   params: { username: string };
 }
 
-const getUser = cache(async (username: string, loggedInUserId: string) => {
+async function getUser(username: string, loggedInUserId: string) {
+  noStore();
+
   const user = await prisma.user.findFirst({
     where: {
       username: {
@@ -19,13 +24,13 @@ const getUser = cache(async (username: string, loggedInUserId: string) => {
         mode: "insensitive",
       },
     },
-    select: getUserDataSelect(loggedInUserId),
+    include: getUserProfileInclude(loggedInUserId),
   });
 
   if (!user) notFound();
 
   return user;
-});
+}
 
 export async function generateMetadata({
   params: { username },
@@ -61,7 +66,22 @@ export default async function Page({ params: { username } }: PageProps) {
     ),
   };
 
-  const profile = buildAthleteProfileData(user, loggedInUser.id);
+  const [gamesCount, broadcastsCount] = await Promise.all([
+    prisma.post.count({
+      where: {
+        userId: user.id,
+        intent: PostIntent.LOOKING_TO_PLAY,
+      },
+    }),
+    prisma.post.count({
+      where: { userId: user.id },
+    }),
+  ]);
+
+  const profile = buildAthleteProfileData(user, loggedInUser.id, {
+    games: gamesCount,
+    broadcasts: broadcastsCount,
+  });
 
   return (
     <AthleteProfile

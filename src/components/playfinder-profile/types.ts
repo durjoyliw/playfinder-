@@ -1,4 +1,6 @@
-export type SkillTier = "Advanced" | "Intermediate" | "Beginner";
+import { ProfileIntent, SkillLevel, Sport } from "@prisma/client";
+
+export type SkillTier = "Advanced" | "Intermediate" | "Beginner" | "Pro";
 
 export interface AthleteSport {
   emoji: string;
@@ -17,13 +19,11 @@ export interface AthleteProfileData {
   location: string;
   joinedDate: string;
   isOnline: boolean;
-  intent: string;
   bio: string | null;
   isOwnProfile: boolean;
+  profileIntent: ProfileIntent | null;
   stats: {
-    gamesPlayed: number;
-    reliability: number;
-    connections: number;
+    games: number;
     broadcasts: number;
   };
   sports: AthleteSport[];
