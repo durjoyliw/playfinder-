@@ -1,3 +1,4 @@
+import { PostIntent, Sport } from "@prisma/client";
 import { z } from "zod";
 
 const requiredString = z.string().trim().min(1, "Required");
@@ -24,6 +25,16 @@ export const createPostSchema = z.object({
   content: requiredString,
   mediaIds: z.array(z.string()).max(5, "Cannot have more than 5 attachments"),
 });
+
+export const createBroadcastSchema = z.object({
+  sport: z.nativeEnum(Sport),
+  intent: z.nativeEnum(PostIntent),
+  location: requiredString.max(200),
+  timeLabel: requiredString.max(100),
+  content: requiredString.max(2000),
+});
+
+export type CreateBroadcastValues = z.infer<typeof createBroadcastSchema>;
 
 export const updateUserProfileSchema = z.object({
   displayName: requiredString,

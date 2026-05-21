@@ -68,10 +68,31 @@ model Post {
   bookmarks           Bookmark[]
   comments            Comment[]
   linkedNotifications Notification[]
+  sport               Sport?
+  intent              PostIntent     @default(BANTER)
+  location            String?
+  timeLabel           String?
+  expiresAt           DateTime?
 
   createdAt DateTime @default(now())
 
   @@map("posts")
+}
+
+enum Sport {
+  FOOTBALL
+  TENNIS
+  BASKETBALL
+  GYM
+  RUNNING
+  SWIMMING
+  SQUASH
+}
+
+enum PostIntent {
+  LOOKING_TO_PLAY
+  RECRUITING
+  BANTER
 }
 
 model Media {

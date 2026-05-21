@@ -17,7 +17,12 @@ interface ChatChannelProps {
 
 export default function ChatChannel({ open, openSidebar }: ChatChannelProps) {
   return (
-    <div className={cn("w-full md:block", !open && "hidden")}>
+    <div
+      className={cn(
+        "flex h-full min-h-0 min-w-0 flex-1 flex-col",
+        !open && "hidden md:flex",
+      )}
+    >
       <Channel>
         <Window>
           <CustomChannelHeader openSidebar={openSidebar} />
