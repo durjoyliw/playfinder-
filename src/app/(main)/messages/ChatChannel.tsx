@@ -5,10 +5,10 @@ import {
   Channel,
   ChannelHeader,
   ChannelHeaderProps,
-  MessageInput,
   MessageList,
   Window,
 } from "stream-chat-react";
+import DraftMessageInput from "./DraftMessageInput";
 
 interface ChatChannelProps {
   open: boolean;
@@ -27,7 +27,7 @@ export default function ChatChannel({ open, openSidebar }: ChatChannelProps) {
         <Window>
           <CustomChannelHeader openSidebar={openSidebar} />
           <MessageList />
-          <MessageInput />
+          <DraftMessageInput />
         </Window>
       </Channel>
     </div>

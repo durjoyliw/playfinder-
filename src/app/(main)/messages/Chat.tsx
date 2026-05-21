@@ -1,24 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import ChatChannel from "./ChatChannel";
 import ChatSidebar from "./ChatSidebar";
+import { PendingDmProvider } from "./pending-dm-context";
+import { useStreamUserSync } from "./useStreamUserSync";
 
 export default function Chat() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  useStreamUserSync();
 
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden rounded-2xl bg-card shadow-sm">
-      <div className="flex min-h-0 flex-1">
-        <ChatSidebar
-          open={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-        />
-        <ChatChannel
-          open={!sidebarOpen}
-          openSidebar={() => setSidebarOpen(true)}
-        />
-      </div>
-    </div>
+    <Suspense fallback={null}>
+      <PendingDmProvider>
+        <div className="flex h-full w-full flex-col overflow-hidden rounded-2xl bg-card shadow-sm">
+          <div className="flex min-h-0 flex-1">
+            <ChatSidebar
+              open={sidebarOpen}
+              onClose={() => setSidebarOpen(false)}
+            />
+            <ChatChannel
+              open={!sidebarOpen}
+              openSidebar={() => setSidebarOpen(true)}
+            />
+          </div>
+        </div>
+      </PendingDmProvider>
+    </Suspense>
   );
 }

@@ -1,10 +1,7 @@
 "use client";
 
 import { useSession } from "@/app/(main)/SessionProvider";
-import { useToast } from "@/components/ui/use-toast";
-import kyInstance from "@/lib/ky";
-import { Check } from "lucide-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface FeedCardImInButtonProps {
   authorId: string;
@@ -20,67 +17,35 @@ export function FeedCardImInButton({
   timeLabel,
 }: FeedCardImInButtonProps) {
   const { user } = useSession();
-  const { toast } = useToast();
-  const [joined, setJoined] = useState(false);
-  const [isSending, setIsSending] = useState(false);
+  const router = useRouter();
 
   const isOwnPost = user.id === authorId;
 
-  const handleClick = async () => {
-    if (joined || isSending || isOwnPost) return;
+  const handleClick = () => {
+    if (isOwnPost) return;
 
-    setIsSending(true);
+    const sportLabel = sport ?? "game";
+    const locationLabel = location ?? "your location";
+    const time = timeLabel ?? "soon";
 
-    try {
-      await kyInstance.post("/api/messages/im-in", {
-        json: {
-          authorId,
-          sport,
-          location,
-          timeLabel,
-        },
-      });
+    const draft = `Hey! I'm in for your ${sportLabel} game at ${locationLabel} - ${time}. Looking forward to it!`;
 
-      setJoined(true);
-      toast({
-        description: "Message sent! Check your DMs.",
-      });
-    } catch (error) {
-      console.error(error);
-      toast({
-        variant: "destructive",
-        description: "Failed to send message. Please try again.",
-      });
-    } finally {
-      setIsSending(false);
-    }
+    router.push(
+      `/messages?to=${encodeURIComponent(authorId)}&draft=${encodeURIComponent(draft)}`,
+    );
   };
 
   if (isOwnPost) {
     return null;
   }
 
-  if (joined) {
-    return (
-      <button
-        type="button"
-        disabled
-        className="flex items-center gap-2 rounded-full bg-[#1f1f1f] px-4 py-2 text-sm font-semibold text-[#C9F31D]"
-      >
-        <Check className="h-4 w-4" />
-        Joined
-      </button>
-    );
-  }
-
   return (
     <button
       type="button"
       onClick={handleClick}
-      disabled={isSending}
-      className="flex items-center gap-2 rounded-full bg-[#C9F31D] px-4 py-2 text-sm font-semibold text-black transition-colors hover:bg-[#d4f73a] disabled:opacity-60"
+      className="flex items-center gap-2 rounded-full bg-[#C9F31D] px-4 py-2 text-sm font-semibold text-black transition-colors hover:bg-[#d4f73a]"
     >
-      👋 {isSending ? "Sending..." : "I'm in"}
+      👋 I&apos;m in
     </button>
   );
 }

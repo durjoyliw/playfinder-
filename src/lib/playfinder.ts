@@ -1,7 +1,7 @@
 import { PostData } from "@/lib/types";
 import { formatRelativeDate } from "@/lib/utils";
 import { PostIntent, Sport } from "@prisma/client";
-import { differenceInMilliseconds, formatDistanceStrict } from "date-fns";
+import { differenceInMilliseconds } from "date-fns";
 import type { FeedCardProps } from "@/components/playfinder/feed-card";
 
 export const PLAYFINDER_SPORTS = [
@@ -76,36 +76,60 @@ function getInitials(displayName: string): string {
     .toUpperCase();
 }
 
+const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
+
+export function formatExpiresInLabel(remainingMs: number): string {
+  const totalMinutes = Math.max(1, Math.ceil(remainingMs / (60 * 1000)));
+
+  if (totalMinutes < 60) {
+    return `${totalMinutes}m`;
+  }
+
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  if (minutes === 0) {
+    return `${hours}h`;
+  }
+
+  return `${hours}h ${minutes}m`;
+}
+
 function getExpiryInfo(expiresAt: Date | null, createdAt: Date) {
-  if (!expiresAt) return { expiresIn: undefined, expiryPercent: undefined };
+  if (!expiresAt) {
+    return { expiresIn: undefined, expiryPercent: undefined };
+  }
 
   const now = new Date();
-  if (expiresAt <= now) {
-    return { expiresIn: "Expired", expiryPercent: 0 };
+  const remainingMs = differenceInMilliseconds(expiresAt, now);
+
+  if (remainingMs <= 0) {
+    return { expiresIn: undefined, expiryPercent: undefined };
   }
 
   const totalMs = differenceInMilliseconds(expiresAt, createdAt);
-  const remainingMs = differenceInMilliseconds(expiresAt, now);
   const expiryPercent =
     totalMs > 0 ? Math.max(0, Math.min(100, (remainingMs / totalMs) * 100)) : 0;
 
   return {
-    expiresIn: formatDistanceStrict(expiresAt, now),
+    expiresIn: formatExpiresInLabel(remainingMs),
     expiryPercent: Math.round(expiryPercent),
   };
 }
 
 export function mapPostToFeedCard(post: PostData): FeedCardProps {
-  const { expiresIn, expiryPercent } = getExpiryInfo(
-    post.expiresAt,
-    post.createdAt,
-  );
+  const isLookingToPlay = post.intent === PostIntent.LOOKING_TO_PLAY;
 
+  const { expiresIn, expiryPercent } = isLookingToPlay
+    ? getExpiryInfo(post.expiresAt, post.createdAt)
+    : { expiresIn: undefined, expiryPercent: undefined };
+
+  const now = new Date();
   const isUrgent =
-    post.intent === PostIntent.LOOKING_TO_PLAY &&
+    isLookingToPlay &&
     !!post.expiresAt &&
-    post.expiresAt > new Date() &&
-    differenceInMilliseconds(post.expiresAt, new Date()) < 60 * 60 * 1000;
+    post.expiresAt > now &&
+    differenceInMilliseconds(post.expiresAt, now) < TWO_HOURS_MS;
 
   return {
     postId: post.id,

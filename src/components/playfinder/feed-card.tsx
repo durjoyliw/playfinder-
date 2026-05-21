@@ -1,13 +1,13 @@
 "use client";
 
+import { FeedCardComments } from "@/components/playfinder/feed-card-comments";
 import { FeedCardImInButton } from "@/components/playfinder/feed-card-im-in-button";
 import { FeedCardLikeButton } from "@/components/playfinder/feed-card-like-button";
+import { FeedCardMessageClubButton } from "@/components/playfinder/feed-card-message-club-button";
 import { FeedCardShareButton } from "@/components/playfinder/feed-card-share-button";
 import {
-  Share2,
   Clock,
   MapPin,
-  MessageCircle,
   BadgeCheck,
 } from "lucide-react";
 import Link from "next/link";
@@ -119,8 +119,8 @@ export function FeedCard({
 
           <div className="flex flex-shrink-0 items-center gap-2">
             {isUrgent && (
-              <span className="rounded-full bg-[#C9F31D] px-2 py-0.5 text-xs font-medium text-black">
-                ⚡ Urgent
+              <span className="rounded-full bg-orange-500 px-2 py-0.5 text-xs font-medium text-white">
+                Urgent
               </span>
             )}
             <span
@@ -226,12 +226,10 @@ export function FeedCard({
 
           {type === "recruiting" && (
             <>
-              <button
-                type="button"
-                className="flex items-center gap-2 rounded-full bg-[#3B82F6] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#4a90f7]"
-              >
-                💬 Message club
-              </button>
+              <FeedCardMessageClubButton
+                authorId={authorId}
+                clubName={name}
+              />
               <FeedCardLikeButton postId={postId} initialState={likeState} />
               <FeedCardShareButton postId={postId} />
             </>
@@ -239,18 +237,13 @@ export function FeedCard({
 
           {type === "banter" && (
             <>
-              <button
-                type="button"
-                className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-white"
-              >
-                <MessageCircle className="h-4 w-4" />
-                <span className="text-sm">Reply</span>
-              </button>
               <FeedCardLikeButton postId={postId} initialState={likeState} />
               <FeedCardShareButton postId={postId} />
             </>
           )}
         </div>
+
+        <FeedCardComments postId={postId} initialReplyCount={replies} />
       </div>
     </div>
   );
