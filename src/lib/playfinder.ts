@@ -129,7 +129,7 @@ export function mapPostToFeedCard(post: PostData): FeedCardProps {
     authorId: post.user.id,
     username: post.user.username,
     type: intentToCardType(post.intent),
-    avatar: getInitials(post.user.displayName),
+    avatar: post.user.avatarUrl ?? getInitials(post.user.displayName),
     name: post.user.displayName,
     timestamp: formatRelativeDate(post.createdAt),
     location: post.location ?? "Glasgow",
@@ -143,6 +143,12 @@ export function mapPostToFeedCard(post: PostData): FeedCardProps {
     likes: post._count.likes,
     isLikedByUser: post.likes.length > 0,
     replies: post._count.comments,
+    slotsRemaining:
+      isLookingToPlay && post.slotsNeeded != null ? post.slotsNeeded : undefined,
+    playerSlots:
+      isLookingToPlay && post.slotsNeeded != null
+        ? Array.from({ length: post.slotsNeeded }, () => ({ filled: false }))
+        : [],
   };
 }
 

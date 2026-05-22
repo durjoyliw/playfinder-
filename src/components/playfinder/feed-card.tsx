@@ -101,9 +101,17 @@ export function FeedCard({
             href={profileHref}
             className="flex min-w-0 items-center gap-3 transition-opacity hover:opacity-80"
           >
-            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#2a2a2a] text-sm font-bold text-white">
-              {avatar}
-            </div>
+            {avatar.startsWith("http") ? (
+              <img
+                src={avatar}
+                alt=""
+                className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
+              />
+            ) : (
+              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#2a2a2a] text-sm font-bold text-white">
+                {avatar}
+              </div>
+            )}
 
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">

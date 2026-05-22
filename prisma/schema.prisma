@@ -101,6 +101,7 @@ model Post {
   location            String?
   timeLabel           String?
   expiresAt           DateTime?
+  slotsNeeded         Int?
 
   createdAt DateTime @default(now())
 

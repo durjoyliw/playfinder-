@@ -21,7 +21,10 @@ export async function GET(req: NextRequest) {
     const sportFilter = sportTabToEnum(sportTab);
 
     const posts = await prisma.post.findMany({
-      where: sportFilter ? { sport: sportFilter } : undefined,
+      where: {
+        ...(sportFilter ? { sport: sportFilter } : {}),
+        OR: [{ expiresAt: { gt: new Date() } }, { expiresAt: null }],
+      },
       include: getPostDataInclude(user.id),
       orderBy: { createdAt: "desc" },
       take: 100,

@@ -14,9 +14,11 @@ export async function submitBroadcast(input: unknown) {
   const data = createBroadcastSchema.parse(input);
 
   const expiresAt =
-    data.intent === PostIntent.LOOKING_TO_PLAY
-      ? new Date(Date.now() + 6 * 60 * 60 * 1000)
-      : null;
+    data.intent === PostIntent.BANTER
+      ? null
+      : data.expiresAt
+        ? new Date(data.expiresAt)
+        : null;
 
   const newPost = await prisma.post.create({
     data: {
@@ -25,8 +27,10 @@ export async function submitBroadcast(input: unknown) {
       sport: data.sport,
       intent: data.intent,
       location: data.location,
-      timeLabel: data.timeLabel,
+      timeLabel: data.intent === PostIntent.BANTER ? null : data.timeLabel ?? null,
       expiresAt,
+      slotsNeeded:
+        data.intent === PostIntent.LOOKING_TO_PLAY ? data.slotsNeeded ?? null : null,
     },
     include: getPostDataInclude(user.id),
   });

@@ -11,7 +11,7 @@ export function FeedCardShareButton({ postId }: FeedCardShareButtonProps) {
   const { toast } = useToast();
 
   const handleShare = async () => {
-    const url = `${window.location.origin}/post/${postId}`;
+    const url = `${window.location.origin}/posts/${postId}`;
 
     try {
       await navigator.clipboard.writeText(url);

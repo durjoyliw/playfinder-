@@ -26,13 +26,28 @@ export const createPostSchema = z.object({
   mediaIds: z.array(z.string()).max(5, "Cannot have more than 5 attachments"),
 });
 
-export const createBroadcastSchema = z.object({
-  sport: z.nativeEnum(Sport),
-  intent: z.nativeEnum(PostIntent),
-  location: requiredString.max(200),
-  timeLabel: requiredString.max(100),
-  content: requiredString.max(2000),
-});
+export const createBroadcastSchema = z
+  .object({
+    sport: z.nativeEnum(Sport),
+    intent: z.nativeEnum(PostIntent),
+    location: requiredString.max(200),
+    timeLabel: z.string().max(100).optional(),
+    expiresAt: z.string().datetime().nullable().optional(),
+    content: requiredString.max(280),
+    slotsNeeded: z.number().int().min(1).max(10).nullable().optional(),
+  })
+  .refine(
+    (data) =>
+      data.intent === PostIntent.BANTER ||
+      (!!data.expiresAt && !!data.timeLabel?.trim()),
+    { message: "Game date and time are required" },
+  )
+  .refine(
+    (data) =>
+      data.intent !== PostIntent.LOOKING_TO_PLAY ||
+      (data.slotsNeeded != null && data.slotsNeeded >= 1),
+    { message: "Players needed is required for looking to play posts" },
+  );
 
 export type CreateBroadcastValues = z.infer<typeof createBroadcastSchema>;
 
