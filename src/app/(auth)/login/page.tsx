@@ -1,6 +1,5 @@
-import loginImage from "@/assets/login-image.jpg";
+import { SignupAnimationPanel } from "@/components/auth/signup-animation-panel";
 import { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import GoogleSignInButton from "./google/GoogleSignInButton";
 import LoginForm from "./LoginForm";
@@ -28,11 +27,7 @@ export default function Page() {
             </Link>
           </div>
         </div>
-        <Image
-          src={loginImage}
-          alt=""
-          className="hidden w-1/2 object-cover md:block"
-        />
+        <SignupAnimationPanel />
       </div>
     </main>
   );

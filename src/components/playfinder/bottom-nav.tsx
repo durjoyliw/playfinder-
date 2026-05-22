@@ -36,8 +36,8 @@ export function BottomNav({ onBroadcast }: BottomNavProps) {
       id: "discover",
       label: "DISCOVER",
       icon: Compass,
-      href: "/",
-      isActive: () => false,
+      href: "/discover",
+      isActive: (path) => path.startsWith("/discover"),
     },
     {
       id: "messages",

@@ -1,9 +1,14 @@
 "use client";
 
+import { useUserSettings } from "@/hooks/use-user-settings";
 import kyInstance from "@/lib/ky";
+import { getDisplayArea } from "@/lib/location";
 import { useQuery } from "@tanstack/react-query";
 
 export function LiveActivityBar() {
+  const { data: userSettings } = useUserSettings();
+  const area = getDisplayArea(userSettings?.location);
+
   const { data } = useQuery({
     queryKey: ["playfinder", "active-count"],
     queryFn: () =>
@@ -27,7 +32,7 @@ export function LiveActivityBar() {
         </span>
 
         <span>
-          Active right now in Glasgow ·{" "}
+          Active right now in {area} ·{" "}
           <span className="font-medium text-white">
             {count} {playerLabel}
           </span>

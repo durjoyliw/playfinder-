@@ -2,6 +2,7 @@
 
 import { useUserSettings } from "@/hooks/use-user-settings";
 import kyInstance from "@/lib/ky";
+import { getDisplayArea } from "@/lib/location";
 import { NotificationCountInfo } from "@/lib/types";
 import type { UserSettingsData } from "@/lib/settings";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -13,8 +14,6 @@ import { useEffect, useRef, useState } from "react";
 interface HeaderProps {
   initialUnreadNotificationCount: number;
 }
-
-const DEFAULT_LOCATION_LABEL = "Glasgow";
 
 export function Header({ initialUnreadNotificationCount }: HeaderProps) {
   const queryClient = useQueryClient();
@@ -47,8 +46,7 @@ export function Header({ initialUnreadNotificationCount }: HeaderProps) {
     },
   });
 
-  const displayLocation =
-    userSettings?.location?.trim() || DEFAULT_LOCATION_LABEL;
+  const displayLocation = getDisplayArea(userSettings?.location);
 
   useEffect(() => {
     if (locationOpen) {

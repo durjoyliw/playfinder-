@@ -3,6 +3,106 @@
 @tailwind utilities;
 
 @import "~stream-chat-react/dist/css/v2/index.css";
+@import "mapbox-gl/dist/mapbox-gl.css";
+
+/* Mapbox canvas must fill its container or the map renders black */
+.mapboxgl-map,
+.mapboxgl-canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* PlayFinder venue popups on Discover map */
+.pf-map-popup.mapboxgl-popup {
+  z-index: 20;
+}
+
+.pf-map-popup .mapboxgl-popup-content {
+  background: #161616;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.pf-map-popup.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+  border-top-color: #161616;
+}
+
+.pf-map-popup.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
+  border-bottom-color: #161616;
+}
+
+.pf-map-popup.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+  border-right-color: #161616;
+}
+
+.pf-map-popup.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+  border-left-color: #161616;
+}
+
+.pf-map-popup .mapboxgl-popup-close-button {
+  color: #f0f0f0;
+  font-size: 18px;
+  padding: 4px 8px;
+  right: 2px;
+  top: 2px;
+}
+
+.pf-map-popup .mapboxgl-popup-close-button:hover {
+  background: transparent;
+  color: #c9f31d;
+}
+
+.pf-venue-popup {
+  padding: 12px 14px 14px;
+  min-width: 200px;
+  max-width: 240px;
+}
+
+.pf-venue-popup__title {
+  margin: 0 24px 8px 0;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #f0f0f0;
+}
+
+.pf-venue-popup__badge {
+  display: inline-block;
+  margin-bottom: 8px;
+  border: 1px solid #c9f31d;
+  border-radius: 9999px;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #c9f31d;
+}
+
+.pf-venue-popup__address {
+  margin: 0 0 10px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #666666;
+}
+
+.pf-venue-popup__cta {
+  display: block;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  background: #c9f31d;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #000000;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.pf-venue-popup__cta:hover {
+  background: #d4f73a;
+}
 
 @layer base {
   :root {

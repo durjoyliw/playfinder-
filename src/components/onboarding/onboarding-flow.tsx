@@ -10,6 +10,7 @@ import { ProfileIntent, SkillLevel, Sport } from "@prisma/client";
 import { MessageCircle, Users, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const VOLT = "#C9F31D";
 const TOTAL_STEPS = 6;
@@ -90,6 +91,7 @@ function PrimaryButton({
 
 export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [step, setStep] = useState(0);
   const [selectedSports, setSelectedSports] = useState<Sport[]>([]);
   const [skillLevels, setSkillLevels] = useState<Partial<Record<Sport, SkillLevel>>>(
@@ -166,6 +168,7 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
           profileIntent,
         },
       });
+      await queryClient.invalidateQueries({ queryKey: ["user-settings"] });
       router.push("/");
       router.refresh();
     } catch {

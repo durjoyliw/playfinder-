@@ -1,6 +1,5 @@
-import signupImage from "@/assets/signup-image.jpg";
+import { SignupAnimationPanel } from "@/components/auth/signup-animation-panel";
 import { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import SignUpForm from "./SignUpForm";
 
@@ -27,11 +26,7 @@ export default function Page() {
             </Link>
           </div>
         </div>
-        <Image
-          src={signupImage}
-          alt=""
-          className="hidden w-1/2 object-cover md:block"
-        />
+        <SignupAnimationPanel />
       </div>
     </main>
   );
