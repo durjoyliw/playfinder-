@@ -108,7 +108,7 @@ export default function ChannelHeader() {
         <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#C9F31D] text-sm font-bold text-black">
           {other?.image ? (
             <img
-              src={other.image}
+              src={other.image as string}
               alt=""
               className="h-full w-full object-cover"
             />
