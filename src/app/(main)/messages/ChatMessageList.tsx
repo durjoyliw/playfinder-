@@ -56,8 +56,8 @@ export default function ChatMessageList() {
   }, [registerScrollToBottom, scrollToBottom]);
 
   useEffect(() => {
-    scrollToBottom(messages.length <= 1 ? "auto" : "smooth");
-  }, [messages.length, messages.at(-1)?.id, scrollToBottom]);
+    scrollToBottom((messages?.length ?? 0) <= 1 ? "auto" : "smooth");
+  }, [messages?.length, messages?.at(-1)?.id, scrollToBottom]);
 
   const toggleReaction = useCallback(
     async (message: FormatMessageResponse, emoji: string) => {
