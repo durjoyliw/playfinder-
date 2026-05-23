@@ -91,6 +91,24 @@ function getInitials(displayName: string): string {
 
 const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
 
+const LISTING_EXPIRY_MS = 24 * 60 * 60 * 1000;
+
+/** Feed listing TTL — not the scheduled game time (that lives in timeLabel). */
+export function getListingExpiresAt(intent: PostIntent): Date | null {
+  if (intent === PostIntent.LOOKING_TO_PLAY) {
+    return new Date(Date.now() + LISTING_EXPIRY_MS);
+  }
+  return null;
+}
+
+export function toPostDate(
+  value: Date | string | null | undefined,
+): Date | null {
+  if (value == null) return null;
+  const date = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
 export function formatExpiresInLabel(remainingMs: number): string {
   const totalMinutes = Math.max(1, Math.ceil(remainingMs / (60 * 1000)));
 
@@ -108,19 +126,25 @@ export function formatExpiresInLabel(remainingMs: number): string {
   return `${hours}h ${minutes}m`;
 }
 
-function getExpiryInfo(expiresAt: Date | null, createdAt: Date) {
-  if (!expiresAt) {
+function getExpiryInfo(
+  expiresAt: Date | string | null | undefined,
+  createdAt: Date | string,
+) {
+  const expiresAtDate = toPostDate(expiresAt);
+  const createdAtDate = toPostDate(createdAt) ?? new Date();
+
+  if (!expiresAtDate) {
     return { expiresIn: undefined, expiryPercent: undefined };
   }
 
   const now = new Date();
-  const remainingMs = differenceInMilliseconds(expiresAt, now);
+  const remainingMs = differenceInMilliseconds(expiresAtDate, now);
 
   if (remainingMs <= 0) {
     return { expiresIn: undefined, expiryPercent: undefined };
   }
 
-  const totalMs = differenceInMilliseconds(expiresAt, createdAt);
+  const totalMs = differenceInMilliseconds(expiresAtDate, createdAtDate);
   const expiryPercent =
     totalMs > 0 ? Math.max(0, Math.min(100, (remainingMs / totalMs) * 100)) : 0;
 
@@ -138,11 +162,12 @@ export function mapPostToFeedCard(post: PostData): FeedCardProps {
     : { expiresIn: undefined, expiryPercent: undefined };
 
   const now = new Date();
+  const expiresAtDate = toPostDate(post.expiresAt);
   const isUrgent =
     isLookingToPlay &&
-    !!post.expiresAt &&
-    post.expiresAt > now &&
-    differenceInMilliseconds(post.expiresAt, now) < TWO_HOURS_MS;
+    !!expiresAtDate &&
+    expiresAtDate > now &&
+    differenceInMilliseconds(expiresAtDate, now) < TWO_HOURS_MS;
 
   return {
     postId: post.id,
@@ -177,12 +202,14 @@ export function sortPlayfinderPosts(posts: PostData[]): PostData[] {
   const now = new Date();
 
   return [...posts].sort((a, b) => {
+    const aExpiresAt = toPostDate(a.expiresAt);
+    const bExpiresAt = toPostDate(b.expiresAt);
     const aPinned =
-      a.intent === PostIntent.LOOKING_TO_PLAY &&
-      (!a.expiresAt || a.expiresAt > now);
+      isLookingToPlayIntent(a.intent) &&
+      (!aExpiresAt || aExpiresAt > now);
     const bPinned =
-      b.intent === PostIntent.LOOKING_TO_PLAY &&
-      (!b.expiresAt || b.expiresAt > now);
+      isLookingToPlayIntent(b.intent) &&
+      (!bExpiresAt || bExpiresAt > now);
 
     if (aPinned && !bPinned) return -1;
     if (!aPinned && bPinned) return 1;
@@ -193,10 +220,9 @@ export function sortPlayfinderPosts(posts: PostData[]): PostData[] {
 
 export function filterActivePlayfinderPosts(posts: PostData[]): PostData[] {
   const now = new Date();
-  return posts.filter(
-    (post) =>
-      post.intent !== PostIntent.LOOKING_TO_PLAY ||
-      !post.expiresAt ||
-      post.expiresAt > now,
-  );
+  return posts.filter((post) => {
+    if (!isLookingToPlayIntent(post.intent)) return true;
+    const expiresAt = toPostDate(post.expiresAt);
+    return !expiresAt || expiresAt > now;
+  });
 }

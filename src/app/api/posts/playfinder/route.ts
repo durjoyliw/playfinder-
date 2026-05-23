@@ -26,8 +26,10 @@ export async function GET(req: NextRequest) {
     // Post.sport uses the Sport enum; UserSport.sport is a separate string field
     const postSport = sportTabToPostSport(sportTab);
 
+    const now = new Date();
+
     const where: Prisma.PostWhereInput = {
-      OR: [{ expiresAt: { gt: new Date() } }, { expiresAt: null }],
+      OR: [{ expiresAt: { gt: now } }, { expiresAt: null }],
     };
 
     if (sportTab !== "all") {
@@ -46,9 +48,25 @@ export async function GET(req: NextRequest) {
       take: 100,
     });
 
-    const sortedPosts = sortPlayfinderPosts(
-      filterActivePlayfinderPosts(posts as PostData[]),
-    );
+    const activePosts = filterActivePlayfinderPosts(posts as PostData[]);
+    const sortedPosts = sortPlayfinderPosts(activePosts);
+
+    console.log("[playfinder feed]", {
+      sportTab,
+      postSport: postSport ?? null,
+      filters: {
+        expiry: "expiresAt > now OR expiresAt is null",
+        sport:
+          sportTab === "all"
+            ? "none"
+            : postSport
+              ? postSport
+              : "unmapped (empty)",
+      },
+      dbRowCount: posts.length,
+      afterExpiryFilterCount: activePosts.length,
+      returnedCount: sortedPosts.length,
+    });
 
     const data: PostsPage = {
       posts: sortedPosts,

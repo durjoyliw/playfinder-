@@ -39,8 +39,7 @@ export const createBroadcastSchema = z
   })
   .refine(
     (data) =>
-      data.intent === PostIntent.BANTER ||
-      (!!data.expiresAt && !!data.timeLabel?.trim()),
+      data.intent === PostIntent.BANTER || !!data.timeLabel?.trim(),
     { message: "Game date and time are required" },
   )
   .refine(

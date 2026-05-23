@@ -137,14 +137,11 @@ export function BroadcastSheet({ open, onOpenChange }: BroadcastSheetProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const expiresAtIso = gameAt ? new Date(gameAt).toISOString() : null;
-
     mutation.mutate({
       sport,
       intent,
       location,
       timeLabel: isBanter ? undefined : timeLabel,
-      expiresAt: isBanter ? null : expiresAtIso,
       content,
       slotsNeeded: isLookingToPlay ? slotsNeeded : null,
     });

@@ -3,6 +3,7 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { getPostDataInclude } from "@/lib/types";
+import { getListingExpiresAt } from "@/lib/playfinder";
 import { createBroadcastSchema } from "@/lib/validation";
 import { PostIntent } from "@prisma/client";
 
@@ -13,12 +14,7 @@ export async function submitBroadcast(input: unknown) {
 
   const data = createBroadcastSchema.parse(input);
 
-  const expiresAt =
-    data.intent === PostIntent.BANTER
-      ? null
-      : data.expiresAt
-        ? new Date(data.expiresAt)
-        : null;
+  const expiresAt = getListingExpiresAt(data.intent);
 
   const newPost = await prisma.post.create({
     data: {

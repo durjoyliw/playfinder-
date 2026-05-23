@@ -51,14 +51,11 @@ const fieldClassName =
 
 function initFromPost(post: PostData) {
   const sport = post.sport ?? Sport.FOOTBALL;
-  const gameAt = post.expiresAt
-    ? toDatetimeLocalValue(new Date(post.expiresAt))
-    : "";
   return {
     sport,
     intent: post.intent,
     location: post.location ?? "",
-    gameAt,
+    gameAt: "",
     timeLabel: post.timeLabel ?? "",
     slotsNeeded: post.slotsNeeded ?? 2,
     content: post.content,
@@ -140,13 +137,11 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const expiresAtIso = gameAt ? new Date(gameAt).toISOString() : null;
     mutation.mutate({
       sport,
       intent,
       location,
       timeLabel: isBanter ? undefined : timeLabel,
-      expiresAt: isBanter ? null : expiresAtIso,
       content,
       slotsNeeded: isLookingToPlay ? slotsNeeded : null,
     });
