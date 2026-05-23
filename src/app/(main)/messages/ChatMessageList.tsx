@@ -103,7 +103,7 @@ export default function ChatMessageList() {
     },
   });
 
-  if (messages.length === 0) {
+  if (!messages || messages.length === 0) {
     return (
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         <EmptyChatState />
