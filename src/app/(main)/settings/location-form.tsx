@@ -5,11 +5,11 @@ import kyInstance from "@/lib/ky";
 import type { UserSettingsData } from "@/lib/settings";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { MapboxLocationAutocomplete } from "@/components/mapbox-location-autocomplete";
 import {
   SettingsError,
   SettingsLoading,
   SettingsSubpageLayout,
-  settingsInputClassName,
   settingsSaveButtonClassName,
   useUserSettings,
 } from "./settings-shared";
@@ -58,13 +58,12 @@ export function LocationForm() {
           >
             Your location
           </label>
-          <input
+          <MapboxLocationAutocomplete
             id="location"
-            type="text"
             value={location}
-            onChange={(e) => setLocation(e.target.value)}
+            onChange={setLocation}
             placeholder="e.g. Glasgow"
-            className={settingsInputClassName}
+            inputClassName="w-full rounded-xl border border-[#333] bg-[#1a1a1a] px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-[#C9F31D] focus:outline-none"
           />
         </div>
 

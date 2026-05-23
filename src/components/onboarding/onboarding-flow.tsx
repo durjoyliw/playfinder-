@@ -1,16 +1,23 @@
 "use client";
 
+import { MapboxLocationAutocomplete } from "@/components/mapbox-location-autocomplete";
+import { SportsSearchPicker } from "@/components/onboarding/sports-search-picker";
 import kyInstance from "@/lib/ky";
 import {
+  getOnboardingSport,
+  getOnboardingSportEmoji,
+  getOnboardingSportLabel,
+} from "@/lib/onboarding-sports";
+import {
   getProfileIntentLabel,
+  PROFILE_INTENT_PROFILE_OPTIONS,
   SKILL_LEVEL_OPTIONS,
 } from "@/lib/settings";
-import { PLAYFINDER_SPORTS } from "@/lib/sports";
-import { ProfileIntent, SkillLevel, Sport } from "@prisma/client";
-import { MessageCircle, Users, Zap } from "lucide-react";
+import { ProfileIntent, SkillLevel } from "@prisma/client";
+import { useQueryClient } from "@tanstack/react-query";
+import { MapPin, MessageCircle, Trophy, Users, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 
 const VOLT = "#C9F31D";
 const TOTAL_STEPS = 6;
@@ -49,7 +56,7 @@ interface OnboardingFlowProps {
   firstName: string;
 }
 
-function ProgressDots({ step }: { step: number }) {
+function ProgressDots({ step, complete }: { step: number; complete?: boolean }) {
   return (
     <div className="flex items-center justify-center gap-2 px-6 pt-6">
       {Array.from({ length: TOTAL_STEPS }, (_, i) => (
@@ -57,8 +64,8 @@ function ProgressDots({ step }: { step: number }) {
           key={i}
           className="h-2 rounded-full transition-all duration-300"
           style={{
-            width: i === step ? 24 : 8,
-            backgroundColor: i === step ? VOLT : i < step ? "#3d4a1a" : "#2a2a2a",
+            width: i === step && !complete ? 24 : 8,
+            backgroundColor: complete || i <= step ? VOLT : "#2a2a2a",
           }}
         />
       ))}
@@ -89,12 +96,17 @@ function PrimaryButton({
   );
 }
 
+function getIntentPillClass(intent: ProfileIntent): string {
+  const option = PROFILE_INTENT_PROFILE_OPTIONS.find((o) => o.value === intent);
+  return option?.pillClassName ?? "bg-[#C9F31D]/15 text-[#C9F31D]";
+}
+
 export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [step, setStep] = useState(0);
-  const [selectedSports, setSelectedSports] = useState<Sport[]>([]);
-  const [skillLevels, setSkillLevels] = useState<Partial<Record<Sport, SkillLevel>>>(
+  const [selectedSports, setSelectedSports] = useState<string[]>([]);
+  const [skillLevels, setSkillLevels] = useState<Partial<Record<string, SkillLevel>>>(
     {},
   );
   const [location, setLocation] = useState("");
@@ -104,27 +116,8 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const toggleSport = (sport: Sport) => {
-    setSelectedSports((prev) => {
-      if (prev.includes(sport)) {
-        const next = prev.filter((s) => s !== sport);
-        setSkillLevels((skills) => {
-          const updated = { ...skills };
-          delete updated[sport];
-          return updated;
-        });
-        return next;
-      }
-      setSkillLevels((skills) => ({
-        ...skills,
-        [sport]: skills[sport] ?? SkillLevel.INTERMEDIATE,
-      }));
-      return [...prev, sport];
-    });
-  };
-
-  const setSportSkill = (sport: Sport, level: SkillLevel) => {
-    setSkillLevels((prev) => ({ ...prev, [sport]: level }));
+  const setSportSkill = (sportKey: string, level: SkillLevel) => {
+    setSkillLevels((prev) => ({ ...prev, [sportKey]: level }));
   };
 
   const allSkillsSelected = useMemo(
@@ -145,7 +138,7 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
 
   const goNext = () => {
     setError(null);
-    if (step === 2 && selectedSports.length > 0) {
+    if (step === 1 && selectedSports.length > 0) {
       setSkillLevels((prev) => {
         const next = { ...prev };
         for (const sport of selectedSports) {
@@ -202,31 +195,18 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
 
       case 1:
         return (
-          <div className="flex flex-1 flex-col px-6 pb-8 pt-4">
+          <div className="flex min-h-0 flex-1 flex-col px-6 pb-8 pt-4">
             <h1 className="text-2xl font-bold text-white">Choose your sports</h1>
             <p className="mt-2 text-sm text-[#a3a3a3]">
-              Pick every sport you play — you can change these later.
+              Search or pick popular sports — you can change these later.
             </p>
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              {PLAYFINDER_SPORTS.map((sport) => {
-                const isSelected = selectedSports.includes(sport.enum);
-                return (
-                  <button
-                    key={sport.enum}
-                    type="button"
-                    onClick={() => toggleSport(sport.enum)}
-                    className={`rounded-full border px-3 py-2.5 text-sm font-medium transition-colors ${
-                      isSelected
-                        ? "border-[#C9F31D] bg-[#C9F31D] text-black"
-                        : "border-[#2a2a2a] bg-[#161616] text-white hover:border-[#3a3a3a]"
-                    }`}
-                  >
-                    {sport.label}
-                  </button>
-                );
-              })}
+            <div className="mt-6 min-h-0 flex-1">
+              <SportsSearchPicker
+                selected={selectedSports}
+                onChange={setSelectedSports}
+              />
             </div>
-            <div className="mt-auto pt-8">
+            <div className="mt-6 pt-4">
               <PrimaryButton
                 onClick={goNext}
                 disabled={selectedSports.length === 0}
@@ -245,22 +225,24 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
               Select one level for each sport.
             </p>
             <div className="mt-6 space-y-5">
-              {selectedSports.map((sport) => {
-                const label =
-                  PLAYFINDER_SPORTS.find((s) => s.enum === sport)?.label ?? sport;
-                const level = skillLevels[sport];
+              {selectedSports.map((sportKey) => {
+                const sport = getOnboardingSport(sportKey);
+                const label = sport?.name ?? sportKey;
+                const level = skillLevels[sportKey];
                 return (
                   <div
-                    key={sport}
+                    key={sportKey}
                     className="rounded-xl border border-[#2a2a2a] bg-[#161616] p-4"
                   >
-                    <p className="mb-3 text-sm font-semibold text-white">{label}</p>
+                    <p className="mb-3 text-sm font-semibold text-white">
+                      {sport?.emoji} {label}
+                    </p>
                     <div className="flex flex-wrap gap-2">
                       {SKILL_LEVEL_OPTIONS.map((option) => (
                         <button
                           key={option.value}
                           type="button"
-                          onClick={() => setSportSkill(sport, option.value)}
+                          onClick={() => setSportSkill(sportKey, option.value)}
                           className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                             level === option.value
                               ? "border-[#C9F31D] bg-[#C9F31D] text-black"
@@ -290,13 +272,13 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
             <p className="mt-2 text-sm text-[#a3a3a3]">
               We use this to show you local games and players.
             </p>
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="e.g. Glasgow West End, Paisley"
-              className="mt-8 w-full rounded-xl border border-[#2a2a2a] bg-[#161616] px-4 py-3.5 text-base text-white placeholder:text-[#6b6b6b] focus:border-[#C9F31D] focus:outline-none"
-            />
+            <div className="mt-8">
+              <MapboxLocationAutocomplete
+                value={location}
+                onChange={setLocation}
+                placeholder="e.g. Glasgow West End, Paisley"
+              />
+            </div>
             <div className="mt-auto pt-8">
               <PrimaryButton onClick={goNext} disabled={!location.trim()}>
                 Next
@@ -352,39 +334,66 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
       case 5:
         return (
           <div className="flex flex-1 flex-col px-6 pb-8 pt-4">
-            <h1 className="text-2xl font-bold text-white">You&apos;re all set!</h1>
-            <p className="mt-2 text-sm text-[#a3a3a3]">
-              Welcome to PlayFinder Glasgow.
-            </p>
-            <div className="mt-8 rounded-xl border border-[#2a2a2a] bg-[#161616] p-5">
-              <p className="mb-3 text-xs font-medium uppercase tracking-wide text-[#a3a3a3]">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[#C9F31D]">
+                <Trophy className="h-8 w-8 text-black" />
+              </div>
+              <h1 className="text-2xl font-bold text-white">You&apos;re all set!</h1>
+              <p className="mt-2 text-sm text-[#a3a3a3]">
+                Welcome to PlayFinder Glasgow. Your athlete profile is live.
+              </p>
+            </div>
+
+            <div className="mt-8 grid grid-cols-2 gap-3">
+              <div className="rounded-xl bg-[#161616] p-4 text-center">
+                <p className="text-2xl font-bold text-[#C9F31D]">247</p>
+                <p className="mt-1 text-xs text-gray-500">Players near you</p>
+              </div>
+              <div className="rounded-xl bg-[#161616] p-4 text-center">
+                <p className="text-2xl font-bold text-[#C9F31D]">12</p>
+                <p className="mt-1 text-xs text-gray-500">Active games today</p>
+              </div>
+            </div>
+
+            <div className="mt-6 rounded-xl bg-[#161616] p-5">
+              <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
                 Your profile
               </p>
               <div className="mb-4 flex flex-wrap gap-2">
-                {selectedSports.map((sport) => {
-                  const label =
-                    PLAYFINDER_SPORTS.find((s) => s.enum === sport)?.label ??
-                    sport;
+                {selectedSports.map((sportKey) => {
+                  const level = skillLevels[sportKey];
+                  const levelLabel =
+                    SKILL_LEVEL_OPTIONS.find((l) => l.value === level)?.label ??
+                    "";
                   return (
                     <span
-                      key={sport}
-                      className="rounded-full border border-[#C9F31D]/40 bg-[#C9F31D]/15 px-3 py-1 text-xs font-medium text-[#C9F31D]"
+                      key={sportKey}
+                      className="rounded-full bg-[#C9F31D] px-3 py-1.5 text-xs font-medium text-black"
                     >
-                      {label}
+                      {getOnboardingSportEmoji(sportKey)}{" "}
+                      {getOnboardingSportLabel(sportKey)} {levelLabel}
                     </span>
                   );
                 })}
               </div>
-              <div className="space-y-2 text-sm">
-                <p className="text-[#a3a3a3]">
-                  <span className="text-white">Location:</span> {location.trim()}
-                </p>
-                <p className="text-[#a3a3a3]">
-                  <span className="text-white">Intent:</span>{" "}
-                  {getProfileIntentLabel(profileIntent)}
-                </p>
+              <div className="space-y-3 text-sm">
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 flex-shrink-0 text-gray-500" />
+                  <span className="text-gray-500">Based in</span>
+                  <span className="font-bold text-white">{location.trim()}</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Zap className="h-4 w-4 flex-shrink-0 text-gray-500" />
+                  <span className="text-gray-500">Looking for</span>
+                  <span
+                    className={`rounded-full px-2.5 py-1 text-xs font-medium ${getIntentPillClass(profileIntent)}`}
+                  >
+                    {getProfileIntentLabel(profileIntent)}
+                  </span>
+                </div>
               </div>
             </div>
+
             {error && (
               <p className="mt-4 text-center text-sm text-red-400">{error}</p>
             )}
@@ -405,8 +414,8 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
   })();
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-[480px] flex-col">
-      <ProgressDots step={step} />
+    <div className="mx-auto flex min-h-screen w-full max-w-[480px] flex-col bg-[#0d0d0d]">
+      <ProgressDots step={step} complete={step === TOTAL_STEPS - 1} />
       <div className="flex min-h-0 flex-1 flex-col">{content}</div>
       {step > 0 && step < TOTAL_STEPS - 1 && (
         <div className="px-6 pb-4">

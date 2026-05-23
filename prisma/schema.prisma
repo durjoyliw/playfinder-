@@ -47,7 +47,7 @@ model UserSport {
   id         String     @id @default(cuid())
   userId     String
   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  sport      Sport
+  sport      String
   skillLevel SkillLevel
 
   @@unique([userId, sport])
@@ -102,6 +102,7 @@ model Post {
   timeLabel           String?
   expiresAt           DateTime?
   slotsNeeded         Int?
+  isHighlight         Boolean        @default(false)
 
   createdAt DateTime @default(now())
 

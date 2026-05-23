@@ -11,13 +11,13 @@ export async function GET() {
 
     const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-    const activeUsers = await prisma.post.findMany({
+    const activePosters = await prisma.post.findMany({
       where: { createdAt: { gte: since } },
       select: { userId: true },
       distinct: ["userId"],
     });
 
-    return Response.json({ count: activeUsers.length });
+    return Response.json({ count: activePosters.length });
   } catch (error) {
     console.error("Failed to fetch active count", error);
     return Response.json({ error: "Internal server error" }, { status: 500 });

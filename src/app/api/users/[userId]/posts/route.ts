@@ -9,6 +9,8 @@ export async function GET(
 ) {
   try {
     const cursor = req.nextUrl.searchParams.get("cursor") || undefined;
+    const highlightsOnly =
+      req.nextUrl.searchParams.get("highlights") === "true";
 
     const pageSize = 10;
 
@@ -19,7 +21,10 @@ export async function GET(
     }
 
     const posts = await prisma.post.findMany({
-      where: { userId },
+      where: {
+        userId,
+        ...(highlightsOnly ? { isHighlight: true } : {}),
+      },
       include: getPostDataInclude(user.id),
       orderBy: { createdAt: "desc" },
       take: pageSize + 1,

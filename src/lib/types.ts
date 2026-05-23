@@ -66,6 +66,65 @@ export type UserProfileData = Prisma.UserGetPayload<{
   include: ReturnType<typeof getUserProfileInclude>;
 }>;
 
+/** User fields for playfinder feed cards — omits sports to avoid UserSport string/enum client mismatch */
+function getPlayfinderFeedUserSelect(loggedInUserId: string) {
+  return {
+    id: true,
+    username: true,
+    displayName: true,
+    avatarUrl: true,
+    bio: true,
+    location: true,
+    profileIntent: true,
+    createdAt: true,
+    followers: {
+      where: {
+        followerId: loggedInUserId,
+      },
+      select: {
+        followerId: true,
+      },
+    },
+    _count: {
+      select: {
+        posts: true,
+        followers: true,
+      },
+    },
+  } satisfies Prisma.UserSelect;
+}
+
+export function getPlayfinderFeedPostInclude(loggedInUserId: string) {
+  return {
+    user: {
+      select: getPlayfinderFeedUserSelect(loggedInUserId),
+    },
+    attachments: true,
+    likes: {
+      where: {
+        userId: loggedInUserId,
+      },
+      select: {
+        userId: true,
+      },
+    },
+    bookmarks: {
+      where: {
+        userId: loggedInUserId,
+      },
+      select: {
+        userId: true,
+      },
+    },
+    _count: {
+      select: {
+        likes: true,
+        comments: true,
+      },
+    },
+  } satisfies Prisma.PostInclude;
+}
+
 export function getPostDataInclude(loggedInUserId: string) {
   return {
     user: {

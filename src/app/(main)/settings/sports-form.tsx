@@ -8,7 +8,8 @@ import {
   type UserSettingsData,
   type UserSportEntry,
 } from "@/lib/settings";
-import { SkillLevel, Sport } from "@prisma/client";
+import { ONBOARDING_SPORTS } from "@/lib/onboarding-sports";
+import { SkillLevel } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -23,7 +24,7 @@ import {
 function buildSportsMap(sports: UserSportEntry[]) {
   return Object.fromEntries(
     sports.map((entry) => [entry.sport, entry.skillLevel]),
-  ) as Partial<Record<Sport, SkillLevel>>;
+  ) as Partial<Record<string, SkillLevel>>;
 }
 
 export function SportsForm() {
@@ -33,7 +34,7 @@ export function SportsForm() {
   const { data, status } = useUserSettings();
 
   const [selectedSports, setSelectedSports] = useState<
-    Partial<Record<Sport, SkillLevel>>
+    Partial<Record<string, SkillLevel>>
   >({});
 
   useEffect(() => {
@@ -45,7 +46,7 @@ export function SportsForm() {
     mutationFn: () => {
       const sports = Object.entries(selectedSports).map(
         ([sport, skillLevel]) => ({
-          sport: sport as Sport,
+          sport,
           skillLevel: skillLevel as SkillLevel,
         }),
       );
@@ -68,7 +69,7 @@ export function SportsForm() {
     },
   });
 
-  const toggleSport = (sport: Sport) => {
+  const toggleSport = (sport: string) => {
     setSelectedSports((prev) => {
       const next = { ...prev };
       if (next[sport]) {
@@ -80,7 +81,7 @@ export function SportsForm() {
     });
   };
 
-  const setSportSkill = (sport: Sport, skillLevel: SkillLevel) => {
+  const setSportSkill = (sport: string, skillLevel: SkillLevel) => {
     setSelectedSports((prev) => ({ ...prev, [sport]: skillLevel }));
   };
 

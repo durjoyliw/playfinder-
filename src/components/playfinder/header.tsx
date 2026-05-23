@@ -1,5 +1,6 @@
 "use client";
 
+import { MapboxLocationAutocomplete } from "@/components/mapbox-location-autocomplete";
 import { useUserSettings } from "@/hooks/use-user-settings";
 import kyInstance from "@/lib/ky";
 import { getDisplayArea } from "@/lib/location";
@@ -70,8 +71,9 @@ export function Header({ initialUnreadNotificationCount }: HeaderProps) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [locationOpen]);
 
-  const handleSaveLocation = () => {
-    locationMutation.mutate(locationDraft);
+  const handlePlaceSelect = (placeName: string) => {
+    setLocationDraft(placeName);
+    locationMutation.mutate(placeName);
   };
 
   return (
@@ -98,32 +100,21 @@ export function Header({ initialUnreadNotificationCount }: HeaderProps) {
             </button>
 
             {locationOpen && (
-              <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-xl border border-[#2a2a2a] bg-[#161616] p-3 shadow-lg">
-                <label
-                  htmlFor="header-location"
-                  className="mb-1.5 block text-xs text-muted-foreground"
-                >
-                  Your city or area
-                </label>
-                <input
+              <div className="absolute right-0 top-full z-50 mt-2 w-72 rounded-xl border border-[#333] bg-[#161616] p-3 shadow-lg">
+                <p className="mb-2 text-xs font-medium text-gray-500">
+                  Update your area
+                </p>
+                <MapboxLocationAutocomplete
                   id="header-location"
-                  type="text"
                   value={locationDraft}
-                  onChange={(e) => setLocationDraft(e.target.value)}
-                  placeholder="e.g. Glasgow, Paisley, Edinburgh"
-                  className="mb-2 w-full rounded-lg border border-[#2a2a2a] bg-[#0d0d0d] px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:border-[#C9F31D] focus:outline-none"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") handleSaveLocation();
-                  }}
+                  onChange={setLocationDraft}
+                  onPlaceSelect={handlePlaceSelect}
+                  placeholder="Search city or area..."
+                  inputClassName="w-full rounded-xl border border-[#333] bg-[#1a1a1a] px-3 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-[#C9F31D] focus:outline-none"
                 />
-                <button
-                  type="button"
-                  onClick={handleSaveLocation}
-                  disabled={locationMutation.isPending}
-                  className="w-full rounded-lg bg-[#C9F31D] py-2 text-sm font-semibold text-black transition-colors hover:bg-[#d4f73a] disabled:opacity-60"
-                >
-                  {locationMutation.isPending ? "Saving..." : "Save"}
-                </button>
+                {locationMutation.isPending && (
+                  <p className="mt-2 text-xs text-gray-500">Saving…</p>
+                )}
               </div>
             )}
           </div>

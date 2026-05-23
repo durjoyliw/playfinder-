@@ -1,6 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
+    optimizePackageImports: [
+      "stream-chat-react",
+      "stream-chat",
+      "lucide-react",
+    ],
     staleTimes: {
       dynamic: 30,
     },

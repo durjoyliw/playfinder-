@@ -8,13 +8,13 @@ interface FeedCardImInButtonProps {
   sport?: string;
   location?: string;
   timeLabel?: string;
+  fullWidth?: boolean;
 }
 
 export function FeedCardImInButton({
   authorId,
   sport,
-  location,
-  timeLabel,
+  fullWidth = false,
 }: FeedCardImInButtonProps) {
   const { user } = useSession();
   const router = useRouter();
@@ -24,11 +24,9 @@ export function FeedCardImInButton({
   const handleClick = () => {
     if (isOwnPost) return;
 
-    const sportLabel = sport ?? "game";
-    const locationLabel = location ?? "your location";
-    const time = timeLabel ?? "soon";
+    const sportLabel = sport ?? "your game";
 
-    const draft = `Hey! I'm in for your ${sportLabel} game at ${locationLabel} - ${time}. Looking forward to it!`;
+    const draft = `I'm in! 👋 Saw your post about ${sportLabel} — still need players?`;
 
     router.push(
       `/messages?to=${encodeURIComponent(authorId)}&draft=${encodeURIComponent(draft)}`,
@@ -43,9 +41,13 @@ export function FeedCardImInButton({
     <button
       type="button"
       onClick={handleClick}
-      className="flex items-center gap-2 rounded-full bg-[#C9F31D] px-4 py-2 text-sm font-semibold text-black transition-colors hover:bg-[#d4f73a]"
+      className={
+        fullWidth
+          ? "flex w-full items-center justify-center gap-2 rounded-xl bg-[#C9F31D] px-4 py-2.5 text-sm font-bold text-black transition-colors hover:bg-[#d4f73a]"
+          : "flex w-full items-center justify-center gap-2 rounded-xl bg-[#C9F31D] py-2.5 text-sm font-bold text-black transition-colors hover:bg-[#d4f73a]"
+      }
     >
-      👋 I&apos;m in
+      I&apos;m in 👋
     </button>
   );
 }

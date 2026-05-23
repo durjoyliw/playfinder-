@@ -1,0 +1,74 @@
+/* PlayFinder messages — Stream Chat shell overrides */
+
+.playfinder-messages.str-chat {
+  --str-chat__background-color: #0d0d0d;
+  --str-chat__secondary-background-color: #0d0d0d;
+  --str-chat__primary-color: #c9f31d;
+  --str-chat__active-primary-color: #b8e019;
+  font-family:
+    system-ui,
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  flex: 1;
+  background: #0d0d0d;
+  color: #fff;
+}
+
+.playfinder-messages .str-chat__container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  flex: 1;
+}
+
+.playfinder-messages .str-chat__channel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.playfinder-messages .str-chat__main-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  flex: 1;
+}
+
+.playfinder-messages .str-chat__channel-list {
+  background: #0d0d0d;
+  border: none;
+  height: 100%;
+}
+
+.playfinder-messages .str-chat__channel-list-messenger {
+  height: 100%;
+}
+
+.playfinder-messages .str-chat__channel-list-messenger__main {
+  overflow-x: hidden;
+}
+
+.playfinder-messages .str-chat__channel-preview-messenger--active {
+  background: transparent;
+}
+
+.playfinder-messages .str-chat__channel-preview-messenger {
+  background: transparent;
+  border: none;
+}
+
+.playfinder-messages .str-chat__channel-preview-messenger:hover {
+  background: transparent;
+}

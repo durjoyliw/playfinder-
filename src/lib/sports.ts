@@ -1,3 +1,4 @@
+import { getSportDisplay } from "@/lib/onboarding-sports";
 import { Sport } from "@prisma/client";
 
 export const PLAYFINDER_SPORTS = [
@@ -19,12 +20,18 @@ export function getSportByEnum(sport: Sport) {
   return PLAYFINDER_SPORTS.find((s) => s.enum === sport);
 }
 
-export function getSportLabel(sport: Sport): string {
-  return getSportByEnum(sport)?.label ?? sport;
+export function getSportLabel(sport: Sport | string): string {
+  if (typeof sport === "string" && !Object.values(Sport).includes(sport as Sport)) {
+    return getSportDisplay(sport).name;
+  }
+  return getSportByEnum(sport as Sport)?.label ?? String(sport);
 }
 
-export function getSportEmoji(sport: Sport): string {
-  return getSportByEnum(sport)?.emoji ?? "🏅";
+export function getSportEmoji(sport: Sport | string): string {
+  if (typeof sport === "string" && !Object.values(Sport).includes(sport as Sport)) {
+    return getSportDisplay(sport).emoji;
+  }
+  return getSportByEnum(sport as Sport)?.emoji ?? "🏅";
 }
 
 export function getSportById(id: string) {

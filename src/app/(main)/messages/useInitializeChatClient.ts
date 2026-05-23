@@ -1,7 +1,8 @@
 import { useSession } from "@/app/(main)/SessionProvider";
 import kyInstance from "@/lib/ky";
+import { getStreamBrowserClient } from "@/lib/stream-browser-client";
 import { useEffect, useState } from "react";
-import { StreamChat } from "stream-chat";
+import type { StreamChat } from "stream-chat";
 
 type InitState =
   | { status: "loading" }
@@ -13,9 +14,8 @@ export default function useInitializeChatClient() {
   const [state, setState] = useState<InitState>({ status: "loading" });
 
   useEffect(() => {
-    const streamKey = process.env.NEXT_PUBLIC_STREAM_KEY;
-
-    if (!streamKey) {
+    const client = getStreamBrowserClient();
+    if (!client) {
       setState({
         status: "error",
         message:
@@ -25,7 +25,6 @@ export default function useInitializeChatClient() {
     }
 
     let cancelled = false;
-    const client = StreamChat.getInstance(streamKey);
 
     async function connect() {
       try {

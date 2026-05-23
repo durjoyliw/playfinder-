@@ -1,5 +1,5 @@
-import { PLAYFINDER_SPORTS } from "@/lib/sports";
-import { ProfileIntent, SkillLevel, Sport } from "@prisma/client";
+import { ONBOARDING_SPORTS } from "@/lib/onboarding-sports";
+import { ProfileIntent, SkillLevel } from "@prisma/client";
 
 export const PROFILE_INTENT_OPTIONS = [
   {
@@ -64,9 +64,9 @@ export function getProfileIntentDisplay(intent: ProfileIntent | null) {
   };
 }
 
-export const SETTINGS_SPORTS = PLAYFINDER_SPORTS.map((sport) => ({
-  value: sport.enum,
-  label: sport.label,
+export const SETTINGS_SPORTS = ONBOARDING_SPORTS.map((sport) => ({
+  value: sport.id,
+  label: sport.name,
 }));
 
 export const SKILL_LEVEL_OPTIONS = [
@@ -77,7 +77,7 @@ export const SKILL_LEVEL_OPTIONS = [
 ] as const;
 
 export interface UserSportEntry {
-  sport: Sport;
+  sport: string;
   skillLevel: SkillLevel;
 }
 

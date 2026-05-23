@@ -1,19 +1,10 @@
 "use client";
 
+import type { FeedSportTab } from "@/lib/feed-sport-tabs";
 import type { CSSProperties } from "react";
 
-const SPORTS = [
-  { id: "all", label: "All" },
-  { id: "football", label: "Football" },
-  { id: "tennis", label: "Tennis" },
-  { id: "basketball", label: "Basketball" },
-  { id: "gym", label: "Gym" },
-  { id: "running", label: "Running" },
-  { id: "swimming", label: "Swimming" },
-  { id: "squash", label: "Squash" },
-] as const;
-
 interface SportTabsProps {
+  tabs: FeedSportTab[];
   activeTab: string;
   onTabChange: (tabId: string) => void;
 }
@@ -27,13 +18,13 @@ const containerStyle: CSSProperties = {
   display: "flex",
   overflowX: "auto",
   gap: 8,
-  padding: "8px 16px",
+  padding: "0 12px 8px",
   scrollbarWidth: "none",
   msOverflowStyle: "none",
   WebkitOverflowScrolling: "touch",
 };
 
-export function SportTabs({ activeTab, onTabChange }: SportTabsProps) {
+export function SportTabs({ tabs, activeTab, onTabChange }: SportTabsProps) {
   return (
     <div style={wrapperStyle}>
       <style>{`#sport-tabs-scroll::-webkit-scrollbar { display: none; }`}</style>
@@ -43,19 +34,19 @@ export function SportTabs({ activeTab, onTabChange }: SportTabsProps) {
         aria-label="Filter by sport"
         style={containerStyle}
       >
-        {SPORTS.map((sport) => {
+        {tabs.map((sport) => {
           const isActive = activeTab === sport.id;
 
           const tabStyle: CSSProperties = {
-            borderRadius: 20,
-            padding: "6px 14px",
-            fontSize: 12,
-            fontWeight: 600,
+            borderRadius: 9999,
+            padding: "7px 16px",
+            fontSize: 13,
+            fontWeight: isActive ? 700 : 500,
             whiteSpace: "nowrap",
             cursor: "pointer",
-            border: isActive ? "none" : "1px solid #2a2a2a",
+            border: "none",
             backgroundColor: isActive ? "#C9F31D" : "#1a1a1a",
-            color: isActive ? "#0d0d0d" : "#666",
+            color: isActive ? "#000000" : "#888888",
             flexShrink: 0,
           };
 

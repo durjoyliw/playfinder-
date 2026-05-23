@@ -1,7 +1,9 @@
 import { validateRequest } from "@/auth";
 import type { DiscoverPlayer } from "@/lib/discover";
 import { DISCOVER_SPORT_FILTERS } from "@/lib/discover";
+import { LEGACY_SPORT_ENUM_TO_KEY, normalizeSportKey } from "@/lib/onboarding-sports";
 import prisma from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 
 export async function GET(req: Request) {
   try {
@@ -15,19 +17,37 @@ export async function GET(req: Request) {
     const sportFilter = searchParams.get("sport") ?? "all";
 
     const filterEntry = DISCOVER_SPORT_FILTERS.find((f) => f.id === sportFilter);
-    const sportEnum = filterEntry?.sport ?? null;
+    const sportKey = filterEntry?.sportKey ?? null;
+
+    let sportsWhere: Prisma.UserSportWhereInput | undefined;
+
+    if (sportKey) {
+      const normalized = normalizeSportKey(sportKey);
+      const legacyEnum = Object.entries(LEGACY_SPORT_ENUM_TO_KEY).find(
+        ([, key]) => key === normalized,
+      )?.[0];
+
+      const matchValues = [
+        sportKey,
+        normalized,
+        sportKey.toLowerCase(),
+        ...(legacyEnum ? [legacyEnum] : []),
+      ];
+
+      sportsWhere = {
+        some: {
+          OR: matchValues.map((value) => ({
+            sport: { equals: value, mode: "insensitive" },
+          })),
+        },
+      };
+    }
 
     const users = await prisma.user.findMany({
       where: {
         id: { not: user.id },
         completedOnboarding: true,
-        ...(sportEnum
-          ? {
-              sports: {
-                some: { sport: sportEnum },
-              },
-            }
-          : {}),
+        ...(sportsWhere ? { sports: sportsWhere } : {}),
       },
       select: {
         id: true,

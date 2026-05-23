@@ -3,7 +3,7 @@ import {
   AthleteSport,
   SkillTier,
 } from "@/components/playfinder-profile/types";
-import { getSportEmoji, getSportLabel } from "@/lib/sports";
+import { getSportDisplay } from "@/lib/onboarding-sports";
 import { SKILL_LEVEL_OPTIONS } from "@/lib/settings";
 import { UserProfileData } from "@/lib/types";
 import { ProfileIntent, SkillLevel } from "@prisma/client";
@@ -27,12 +27,15 @@ function skillLevelToTier(skillLevel: SkillLevel): SkillTier {
 function mapUserSports(
   sports: UserProfileData["sports"],
 ): AthleteSport[] {
-  return sports.map((entry) => ({
-    emoji: getSportEmoji(entry.sport),
-    name: getSportLabel(entry.sport),
-    tier: skillLevelToTier(entry.skillLevel),
-    detail: null,
-  }));
+  return sports.map((entry) => {
+    const display = getSportDisplay(entry.sport);
+    return {
+      emoji: display.emoji,
+      name: display.name,
+      tier: skillLevelToTier(entry.skillLevel),
+      detail: null,
+    };
+  });
 }
 
 export interface ProfileStats {

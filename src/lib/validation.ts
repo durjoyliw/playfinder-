@@ -1,3 +1,4 @@
+import { isValidSportKey } from "@/lib/onboarding-sports";
 import { PostIntent, ProfileIntent, SkillLevel, Sport } from "@prisma/client";
 import { z } from "zod";
 
@@ -84,26 +85,19 @@ export const patchUserProfileSchema = z
 
 export type PatchUserProfileValues = z.infer<typeof patchUserProfileSchema>;
 
+const userSportEntrySchema = z.object({
+  sport: z.string().refine(isValidSportKey, "Invalid sport"),
+  skillLevel: z.nativeEnum(SkillLevel),
+});
+
 export const updateUserSportsSchema = z.object({
-  sports: z.array(
-    z.object({
-      sport: z.nativeEnum(Sport),
-      skillLevel: z.nativeEnum(SkillLevel),
-    }),
-  ),
+  sports: z.array(userSportEntrySchema),
 });
 
 export type UpdateUserSportsValues = z.infer<typeof updateUserSportsSchema>;
 
 export const completeOnboardingSchema = z.object({
-  sports: z
-    .array(
-      z.object({
-        sport: z.nativeEnum(Sport),
-        skillLevel: z.nativeEnum(SkillLevel),
-      }),
-    )
-    .min(1, "Select at least one sport"),
+  sports: z.array(userSportEntrySchema).min(1, "Select at least one sport"),
   location: requiredString.max(200, "Must be at most 200 characters"),
   profileIntent: z.nativeEnum(ProfileIntent),
 });

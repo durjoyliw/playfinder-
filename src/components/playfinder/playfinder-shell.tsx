@@ -17,7 +17,7 @@ function PlayFinderShellInner({
 
   return (
     <div className="min-h-screen bg-[#0d0d0d]">
-      <div className="relative mx-auto flex min-h-screen w-full max-w-lg flex-col">
+      <div className="relative mx-auto flex min-h-screen w-full max-w-[480px] flex-col">
         <Header
           initialUnreadNotificationCount={initialUnreadNotificationCount}
         />

@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import "~stream-chat-react/dist/css/v2/index.css";
 @import "mapbox-gl/dist/mapbox-gl.css";
 
 /* Mapbox canvas must fill its container or the map renders black */

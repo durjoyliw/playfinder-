@@ -1,29 +1,36 @@
-import TrendsSidebar from "@/components/TrendsSidebar";
 import { Metadata } from "next";
-import SearchResults from "./SearchResults";
+import { Suspense } from "react";
+import { SearchPageClient } from "./search-page-client";
 
 interface PageProps {
-  searchParams: { q: string };
+  searchParams: Promise<{ q?: string }>;
 }
 
-export function generateMetadata({ searchParams: { q } }: PageProps): Metadata {
+export async function generateMetadata({
+  searchParams,
+}: PageProps): Promise<Metadata> {
+  const params = await searchParams;
+  const q = params.q ?? "";
   return {
-    title: `Search results for "${q}"`,
+    title: q ? `Search: ${q}` : "Search",
   };
 }
 
-export default function Page({ searchParams: { q } }: PageProps) {
+export default async function Page({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const q = params.q?.trim() ?? "";
+
   return (
-    <main className="flex w-full min-w-0 gap-5">
-      <div className="w-full min-w-0 space-y-5">
-        <div className="rounded-2xl bg-card p-5 shadow-sm">
-          <h1 className="line-clamp-2 break-all text-center text-2xl font-bold">
-            Search results for &quot;{q}&quot;
-          </h1>
-        </div>
-        <SearchResults query={q} />
-      </div>
-      <TrendsSidebar />
-    </main>
+    <div className="mx-auto min-h-[calc(100dvh-3.5rem-5rem)] w-full max-w-[480px] bg-[#0d0d0d]">
+      <Suspense
+        fallback={
+          <div className="flex justify-center py-16">
+            <p className="text-sm text-[#666666]">Loading…</p>
+          </div>
+        }
+      >
+        <SearchPageClient initialQuery={q} />
+      </Suspense>
+    </div>
   );
 }

@@ -10,6 +10,7 @@ import {
   MapPin,
   BadgeCheck,
 } from "lucide-react";
+import { isLookingToPlayIntent } from "@/lib/playfinder";
 import Link from "next/link";
 
 type CardType = "looking" | "recruiting" | "banter";
@@ -24,6 +25,8 @@ export interface FeedCardProps {
   authorId: string;
   username: string;
   type: CardType;
+  /** Raw post intent from API (for robust LOOKING_TO_PLAY detection) */
+  intent?: string;
   avatar: string;
   name: string;
   timestamp: string;
@@ -64,6 +67,7 @@ export function FeedCard({
   authorId,
   username,
   type,
+  intent,
   avatar,
   name,
   timestamp,
@@ -87,6 +91,8 @@ export function FeedCard({
 }: FeedCardProps) {
   const likeState = { likes, isLikedByUser };
   const profileHref = `/users/${username}`;
+  const isLooking =
+    isLookingToPlayIntent(intent) || type === "looking";
 
   return (
     <div className="overflow-hidden rounded-xl bg-[#1a1a1a]">
@@ -148,7 +154,7 @@ export function FeedCard({
           </span>
         )}
 
-        {type === "looking" && playerSlots.length > 0 && (
+        {isLooking && playerSlots.length > 0 && (
           <div className="mb-3 flex items-center gap-3">
             <div className="flex -space-x-1 items-center">
               {playerSlots.map((slot, i) => (
@@ -172,7 +178,19 @@ export function FeedCard({
 
         <p className="mb-3 text-sm leading-relaxed text-white">{content}</p>
 
-        {type === "looking" && (timeChip || locationChip || skillLevel) && (
+        {!compact && isLooking && (
+          <div className="mb-3">
+            <FeedCardImInButton
+              fullWidth
+              authorId={authorId}
+              sport={sport}
+              location={locationChip ?? location}
+              timeLabel={timeChip}
+            />
+          </div>
+        )}
+
+        {isLooking && (timeChip || locationChip || skillLevel) && (
           <div className="mb-3 flex flex-wrap gap-2">
             {timeChip && (
               <span className="flex items-center gap-1 rounded-full border border-border bg-[#1f1f1f] px-2.5 py-1 text-xs text-muted-foreground">
@@ -207,7 +225,7 @@ export function FeedCard({
           </div>
         )}
 
-        {type === "looking" && expiresIn && (
+        {isLooking && expiresIn && (
           <div className="mb-4">
             <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">
               <span>Expires in {expiresIn}</span>
@@ -223,37 +241,19 @@ export function FeedCard({
 
         {!compact && (
           <>
-            <div className="flex items-center gap-4 border-t border-border pt-2">
-              {type === "looking" && (
-                <>
-                  <FeedCardImInButton
-                    authorId={authorId}
-                    sport={sport}
-                    location={locationChip ?? location}
-                    timeLabel={timeChip}
-                  />
-                  <FeedCardLikeButton postId={postId} initialState={likeState} />
-                  <FeedCardShareButton postId={postId} />
-                </>
-              )}
-
+            <div className="space-y-3 border-t border-border pt-3">
               {type === "recruiting" && (
-                <>
-                  <FeedCardMessageClubButton
-                    authorId={authorId}
-                    clubName={name}
-                  />
-                  <FeedCardLikeButton postId={postId} initialState={likeState} />
-                  <FeedCardShareButton postId={postId} />
-                </>
+                <FeedCardMessageClubButton
+                  fullWidth
+                  authorId={authorId}
+                  clubName={name}
+                />
               )}
 
-              {type === "banter" && (
-                <>
-                  <FeedCardLikeButton postId={postId} initialState={likeState} />
-                  <FeedCardShareButton postId={postId} />
-                </>
-              )}
+              <div className="flex items-center gap-4">
+                <FeedCardLikeButton postId={postId} initialState={likeState} />
+                <FeedCardShareButton postId={postId} />
+              </div>
             </div>
 
             <FeedCardComments postId={postId} initialReplyCount={replies} />

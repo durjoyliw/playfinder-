@@ -117,6 +117,58 @@ const DEMO_POSTS = [
   },
 ];
 
+/** Test posts for I'm in button — 2 week expiry, slotsNeeded set */
+const LOOKING_TO_PLAY_TEST_POSTS = [
+  {
+    username: "marcus-reid",
+    sport: Sport.FOOTBALL,
+    intent: PostIntent.LOOKING_TO_PLAY,
+    location: "Glasgow West End",
+    timeLabel: "Tonight 7 PM",
+    content:
+      "Need 2 more for 5-a-side at Kelvingrove tonight. All levels welcome 🔥",
+    expiresTwoWeeks: true,
+    slotsNeeded: 2,
+  },
+  {
+    username: "jordan-vance",
+    sport: Sport.BASKETBALL,
+    intent: PostIntent.LOOKING_TO_PLAY,
+    location: "Glasgow",
+    timeLabel: "Sunday afternoon",
+    content:
+      "3v3 at the outdoor courts Sunday afternoon, need 2 players. Intermediate level",
+    expiresTwoWeeks: true,
+    slotsNeeded: 2,
+  },
+  {
+    username: "ross-davidson",
+    sport: Sport.TENNIS,
+    intent: PostIntent.LOOKING_TO_PLAY,
+    location: "Scotstoun, Glasgow",
+    timeLabel: "This weekend",
+    content:
+      "Looking for a hitting partner this weekend, intermediate level, got a court booked at Scotstoun",
+    expiresTwoWeeks: true,
+    slotsNeeded: 1,
+  },
+  {
+    username: "sarah-kennedy",
+    sport: Sport.GYM,
+    intent: PostIntent.LOOKING_TO_PLAY,
+    location: "Paisley",
+    timeLabel: "Morning sessions",
+    content:
+      "Anyone want a gym partner at Paisley Leisure Centre? Morning sessions, going 3x a week",
+    expiresTwoWeeks: true,
+    slotsNeeded: 1,
+  },
+] as const;
+
+type DemoPost = (typeof DEMO_POSTS)[number] | (typeof LOOKING_TO_PLAY_TEST_POSTS)[number];
+
+const ALL_DEMO_POSTS: DemoPost[] = [...DEMO_POSTS, ...LOOKING_TO_PLAY_TEST_POSTS];
+
 async function main() {
   console.log("Upserting seed users...");
 
@@ -138,7 +190,7 @@ async function main() {
   }
 
   const seedUsernames = SEED_USERS.map((u) => u.username);
-  const demoContents = DEMO_POSTS.map((p) => p.content);
+  const demoContents = ALL_DEMO_POSTS.map((p) => p.content);
 
   const deleted = await prisma.post.deleteMany({
     where: {
@@ -160,16 +212,23 @@ async function main() {
     users.map((u) => [u.username, u.id]),
   );
 
-  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  const expiresAt24h = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  const expiresAt2Weeks = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
 
-  console.log(`Creating ${DEMO_POSTS.length} posts...`);
+  console.log(`Creating ${ALL_DEMO_POSTS.length} posts...`);
 
-  for (const post of DEMO_POSTS) {
+  for (const post of ALL_DEMO_POSTS) {
     const userId = userIdByUsername[post.username];
 
     if (!userId) {
       throw new Error(`User not found for username: ${post.username}`);
     }
+
+    const expiresTwoWeeks =
+      "expiresTwoWeeks" in post && post.expiresTwoWeeks === true;
+    const expires24h = "expires" in post && post.expires === true;
+    const slotsNeeded =
+      "slotsNeeded" in post ? post.slotsNeeded : undefined;
 
     await prisma.post.create({
       data: {
@@ -179,7 +238,12 @@ async function main() {
         location: post.location,
         timeLabel: post.timeLabel,
         content: post.content,
-        expiresAt: post.expires ? expiresAt : null,
+        expiresAt: expiresTwoWeeks
+          ? expiresAt2Weeks
+          : expires24h
+            ? expiresAt24h
+            : null,
+        slotsNeeded: slotsNeeded ?? null,
       },
     });
 

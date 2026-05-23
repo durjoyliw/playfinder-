@@ -28,7 +28,7 @@ export function usePendingDmDraft() {
 export function PendingDmProvider({ children }: { children: React.ReactNode }) {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { client, setActiveChannel } = useChatContext();
+  const { client } = useChatContext();
   const [draft, setDraft] = useState<string | null>(null);
 
   const clearDraft = useCallback(() => setDraft(null), []);
@@ -53,10 +53,11 @@ export function PendingDmProvider({ children }: { children: React.ReactNode }) {
 
         await channel.watch();
 
-        if (!cancelled) {
-          setActiveChannel(channel);
+        if (!cancelled && channel.id) {
           setDraft(decodeURIComponent(draftParam));
-          router.replace("/messages");
+          router.replace(
+            `/messages/${encodeURIComponent(channel.id)}`,
+          );
         }
       } catch (error) {
         console.error("Failed to open DM", error);
@@ -68,7 +69,7 @@ export function PendingDmProvider({ children }: { children: React.ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [searchParams, client, setActiveChannel, router]);
+  }, [searchParams, client, router]);
 
   return (
     <PendingDmContext.Provider value={{ draft, clearDraft }}>

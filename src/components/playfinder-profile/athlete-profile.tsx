@@ -3,7 +3,7 @@
 import ProfileActions from "@/app/(main)/users/[username]/ProfileActions";
 import ProfileBioEditor from "@/app/(main)/users/[username]/ProfileBioEditor";
 import ProfileIntentPill from "@/app/(main)/users/[username]/ProfileIntentPill";
-import ProfilePostsList from "@/app/(main)/users/[username]/ProfilePostsList";
+import ProfilePostsSection from "@/app/(main)/users/[username]/profile-posts-section";
 import EditProfileButton from "@/app/(main)/users/[username]/EditProfileButton";
 import UserAvatar from "@/components/UserAvatar";
 import { FollowerInfo, UserProfileData } from "@/lib/types";
@@ -177,7 +177,10 @@ export default function AthleteProfile({
       <ProfileBioEditor bio={profile.bio} isOwnProfile={profile.isOwnProfile} />
 
       <div className="mx-4 mt-6">
-        <ProfilePostsList userId={profile.userId} />
+        <ProfilePostsSection
+          userId={profile.userId}
+          isOwnProfile={profile.isOwnProfile}
+        />
       </div>
 
       {!profile.isOwnProfile && (

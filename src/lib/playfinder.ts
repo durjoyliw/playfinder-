@@ -1,3 +1,4 @@
+import { normalizeSportKey } from "@/lib/onboarding-sports";
 import { PLAYFINDER_SPORTS, getSportById } from "@/lib/sports";
 import { PostData } from "@/lib/types";
 import { formatRelativeDate } from "@/lib/utils";
@@ -37,8 +38,18 @@ export const POST_INTENTS = [
   },
 ];
 
-export function sportTabToEnum(tabId: string): Sport | undefined {
-  return getSportById(tabId)?.enum;
+/** Maps feed tab id → Post.sport enum (normalises UserSport keys and enum casing). */
+export function sportTabToPostSport(tabId: string): Sport | undefined {
+  if (!tabId || tabId === "all") return undefined;
+
+  const key = normalizeSportKey(tabId);
+  const fromCatalog = getSportById(key)?.enum;
+  if (fromCatalog) return fromCatalog;
+
+  const enumEntry = Object.entries(Sport).find(
+    ([, value]) => normalizeSportKey(value) === key,
+  );
+  return enumEntry ? (enumEntry[1] as Sport) : undefined;
 }
 
 export function formatSportLabel(sport: Sport | null | undefined): string | undefined {
@@ -46,17 +57,26 @@ export function formatSportLabel(sport: Sport | null | undefined): string | unde
   return PLAYFINDER_SPORTS.find((s) => s.enum === sport)?.label ?? sport;
 }
 
+/** True for LOOKING_TO_PLAY regardless of enum/string casing */
+export function isLookingToPlayIntent(intent: unknown): boolean {
+  if (intent == null) return false;
+  const normalized = String(intent).toLowerCase().replace(/-/g, "_");
+  return (
+    normalized === "looking_to_play" ||
+    normalized === "lookingtoplay" ||
+    intent === PostIntent.LOOKING_TO_PLAY
+  );
+}
+
 export function intentToCardType(
-  intent: PostIntent,
+  intent: PostIntent | string,
 ): FeedCardProps["type"] {
-  switch (intent) {
-    case PostIntent.LOOKING_TO_PLAY:
-      return "looking";
-    case PostIntent.RECRUITING:
-      return "recruiting";
-    default:
-      return "banter";
+  if (isLookingToPlayIntent(intent)) return "looking";
+  const normalized = String(intent).toLowerCase().replace(/-/g, "_");
+  if (normalized === "recruiting" || intent === PostIntent.RECRUITING) {
+    return "recruiting";
   }
+  return "banter";
 }
 
 function getInitials(displayName: string): string {
@@ -111,7 +131,7 @@ function getExpiryInfo(expiresAt: Date | null, createdAt: Date) {
 }
 
 export function mapPostToFeedCard(post: PostData): FeedCardProps {
-  const isLookingToPlay = post.intent === PostIntent.LOOKING_TO_PLAY;
+  const isLookingToPlay = isLookingToPlayIntent(post.intent);
 
   const { expiresIn, expiryPercent } = isLookingToPlay
     ? getExpiryInfo(post.expiresAt, post.createdAt)
@@ -129,6 +149,7 @@ export function mapPostToFeedCard(post: PostData): FeedCardProps {
     authorId: post.user.id,
     username: post.user.username,
     type: intentToCardType(post.intent),
+    intent: String(post.intent),
     avatar: post.user.avatarUrl ?? getInitials(post.user.displayName),
     name: post.user.displayName,
     timestamp: formatRelativeDate(post.createdAt),

@@ -59,13 +59,19 @@ function FeedCardCommentItem({ comment }: FeedCardCommentItemProps) {
 interface FeedCardCommentsProps {
   postId: string;
   initialReplyCount?: number;
+  /** Start with replies visible (single post page) */
+  defaultOpen?: boolean;
+  /** Always show reply input without toggling */
+  showInputAlways?: boolean;
 }
 
 export function FeedCardComments({
   postId,
   initialReplyCount = 0,
+  defaultOpen = false,
+  showInputAlways = false,
 }: FeedCardCommentsProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(defaultOpen || showInputAlways);
   const [input, setInput] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -86,7 +92,7 @@ export function FeedCardComments({
         pages: [...queryData.pages].reverse(),
         pageParams: [...queryData.pageParams].reverse(),
       }),
-      enabled: isOpen,
+      enabled: isOpen || showInputAlways,
     });
 
   const submitMutation = useMutation({
@@ -152,20 +158,24 @@ export function FeedCardComments({
     }
   };
 
-  return (
-    <div className="border-t border-border">
-      <button
-        type="button"
-        onClick={() => setIsOpen((open) => !open)}
-        className="flex w-full items-center gap-1.5 px-0 py-3 text-muted-foreground transition-colors hover:text-white"
-      >
-        <MessageCircle className="h-4 w-4" />
-        <span className="text-sm">
-          {isOpen ? "Hide replies" : replyLabel}
-        </span>
-      </button>
+  const panelOpen = isOpen || showInputAlways;
 
-      {isOpen && (
+  return (
+    <div className={showInputAlways ? "" : "border-t border-border"}>
+      {!showInputAlways && (
+        <button
+          type="button"
+          onClick={() => setIsOpen((open) => !open)}
+          className="flex w-full items-center gap-1.5 px-0 py-3 text-muted-foreground transition-colors hover:text-white"
+        >
+          <MessageCircle className="h-4 w-4" />
+          <span className="text-sm">
+            {isOpen ? "Hide replies" : replyLabel}
+          </span>
+        </button>
+      )}
+
+      {panelOpen && (
         <div className="space-y-3 pb-4">
           <form onSubmit={handleSubmit} className="flex items-center gap-2">
             <input

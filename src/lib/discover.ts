@@ -1,14 +1,15 @@
-import { ProfileIntent, Sport } from "@prisma/client";
+import { ProfileIntent } from "@prisma/client";
 
+/** Tab id matches UserSport.sport string keys (e.g. football, tennis) */
 export const DISCOVER_SPORT_FILTERS = [
-  { id: "all", label: "All", sport: null },
-  { id: "football", label: "Football", sport: Sport.FOOTBALL },
-  { id: "tennis", label: "Tennis", sport: Sport.TENNIS },
-  { id: "basketball", label: "Basketball", sport: Sport.BASKETBALL },
-  { id: "gym", label: "Gym", sport: Sport.GYM },
-  { id: "running", label: "Running", sport: Sport.RUNNING },
-  { id: "swimming", label: "Swimming", sport: Sport.SWIMMING },
-  { id: "squash", label: "Squash", sport: Sport.SQUASH },
+  { id: "all", label: "All", sportKey: null },
+  { id: "football", label: "Football", sportKey: "football" },
+  { id: "tennis", label: "Tennis", sportKey: "tennis" },
+  { id: "basketball", label: "Basketball", sportKey: "basketball" },
+  { id: "gym", label: "Gym", sportKey: "gym" },
+  { id: "running", label: "Running", sportKey: "running" },
+  { id: "swimming", label: "Swimming", sportKey: "swimming" },
+  { id: "squash", label: "Squash", sportKey: "squash" },
 ] as const;
 
 export type DiscoverSportFilterId =
@@ -21,5 +22,5 @@ export interface DiscoverPlayer {
   avatarUrl: string | null;
   location: string | null;
   profileIntent: ProfileIntent | null;
-  sports: { sport: Sport; skillLevel: string }[];
+  sports: { sport: string; skillLevel: string }[];
 }

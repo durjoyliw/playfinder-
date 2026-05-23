@@ -6,11 +6,13 @@ import { useRouter } from "next/navigation";
 interface FeedCardMessageClubButtonProps {
   authorId: string;
   clubName: string;
+  fullWidth?: boolean;
 }
 
 export function FeedCardMessageClubButton({
   authorId,
   clubName,
+  fullWidth = false,
 }: FeedCardMessageClubButtonProps) {
   const { user } = useSession();
   const router = useRouter();
@@ -35,7 +37,11 @@ export function FeedCardMessageClubButton({
     <button
       type="button"
       onClick={handleClick}
-      className="flex items-center gap-2 rounded-full bg-[#3B82F6] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#4a90f7]"
+      className={
+        fullWidth
+          ? "flex w-full items-center justify-center gap-2 rounded-xl bg-[#3B82F6] py-3 text-sm font-bold text-white transition-colors hover:bg-[#4a90f7]"
+          : "flex w-full items-center justify-center gap-2 rounded-xl bg-[#3B82F6] py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#4a90f7]"
+      }
     >
       💬 Message club
     </button>
