@@ -34,8 +34,8 @@ export default function ChannelHeader() {
 
   useEffect(() => {
     const membership = channel.state.membership;
-    setIsMuted(!!membership?.muted);
-  }, [channel.state.membership?.muted, channel]);
+    setIsMuted(!!(membership as any)?.muted);
+  }, [channel]);
 
   useEffect(() => {
     if (!menuOpen) return;
