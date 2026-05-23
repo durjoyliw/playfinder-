@@ -38,7 +38,7 @@ export function DiscoverPage({ userSports }: DiscoverPageProps) {
     userSports.find((s) => s.id === activeSportId) ?? userSports[0];
   const sportName = activeSport?.name ?? "Running";
 
-  const { data, status, error, isFetching } = useQuery({
+  const { data, status, isFetching } = useQuery({
     queryKey: ["discover-places", activeTab, sportName],
     queryFn: () =>
       kyInstance
@@ -56,10 +56,6 @@ export function DiscoverPage({ userSports }: DiscoverPageProps) {
 
   const places = data ?? [];
   const loading = status === "pending" || isFetching;
-  const mapError =
-    !loading && (error || places.length === 0)
-      ? `No ${activeTab === "venues" ? "venues" : "clubs"} found nearby`
-      : null;
 
   if (userSports.length === 0) {
     return (
@@ -72,40 +68,36 @@ export function DiscoverPage({ userSports }: DiscoverPageProps) {
   }
 
   return (
-    <div className="overflow-x-hidden bg-[#0d0d0d] pb-4">
+    <div className="overflow-x-hidden bg-[#0d0d0d] pb-20">
       <DiscoverSportPills
         sports={userSports}
         activeSportId={activeSportId}
         onSelect={setActiveSportId}
       />
 
-      <div className="mx-4 my-3">
-        <h2 className="text-xl font-bold text-white">
-          Find your sport in Glasgow
+      <div style={{ margin: "12px 16px 16px" }}>
+        <h2 className="text-[20px] font-bold text-white">
+          Explore venues and clubs near you
         </h2>
-        <p className="mt-1 text-sm text-[#888888]">
+        <p className="mt-1 text-[14px] text-[#888888]">
           Places to play, based on your sports
         </p>
       </div>
 
       <DiscoverVenueClubTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <div className="mt-3">
-        <DiscoverMap
-          places={places}
-          tabType={activeTab}
-          sportLabel={sportName}
-          loading={loading}
-          error={mapError}
-        />
-      </div>
+      <DiscoverMap
+        places={places}
+        tabType={activeTab}
+        sportLabel={sportName}
+        loading={loading}
+      />
 
       <DiscoverPlaceList
         places={places}
         tabType={activeTab}
         sportKey={activeSportId}
         loading={loading}
-        error={mapError}
       />
     </div>
   );
@@ -121,8 +113,11 @@ function DiscoverSportPills({
   onSelect: (id: string) => void;
 }) {
   return (
-    <div className="overflow-x-auto px-4 py-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-      <div className="flex gap-2">
+    <div
+      className="mb-3 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      style={{ padding: "0 16px" }}
+    >
+      <div className="flex" style={{ gap: 8 }}>
         {sports.map((sport) => {
           const isActive = sport.id === activeSportId;
           return (
@@ -131,11 +126,12 @@ function DiscoverSportPills({
               type="button"
               onClick={() => onSelect(sport.id)}
               className={cn(
-                "shrink-0 whitespace-nowrap rounded-full px-4 py-[7px] text-[13px] transition-colors",
+                "shrink-0 whitespace-nowrap rounded-full border-none transition-colors",
                 isActive
                   ? "bg-[#C9F31D] font-bold text-black"
                   : "bg-[#1a1a1a] font-medium text-[#888888]",
               )}
+              style={{ padding: "7px 16px", fontSize: 13 }}
             >
               {sport.name}
             </button>
@@ -168,11 +164,16 @@ function DiscoverVenueClubTabs({
             type="button"
             onClick={() => onTabChange(tab.id)}
             className={cn(
-              "flex-1 py-3 text-sm font-bold transition-colors",
+              "flex-1 text-center transition-colors",
               isActive
                 ? "border-b-2 border-[#C9F31D] text-white"
                 : "text-[#555555]",
             )}
+            style={{
+              padding: 12,
+              fontSize: 14,
+              fontWeight: 600,
+            }}
           >
             {tab.label}
           </button>
