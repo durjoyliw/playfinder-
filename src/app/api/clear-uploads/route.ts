@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { getUploadThingFileKey } from "@/lib/uploadthing-file-key";
 import { UTApi } from "uploadthing/server";
 
 export async function GET(req: Request) {
@@ -30,10 +31,7 @@ export async function GET(req: Request) {
     });
 
     new UTApi().deleteFiles(
-      unusedMedia.map(
-        (m) =>
-          m.url.split(`/a/${process.env.NEXT_PUBLIC_UPLOADTHING_APP_ID}/`)[1],
-      ),
+      unusedMedia.map((m) => getUploadThingFileKey(m.url)),
     );
 
     await prisma.media.deleteMany({
