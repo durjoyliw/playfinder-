@@ -34,7 +34,10 @@ export function useUpdateProfileMutation() {
       ]);
     },
     onSuccess: async ([updatedUser, uploadResult]) => {
-      const newAvatarUrl = uploadResult?.[0].serverData.avatarUrl;
+      const uploaded = Array.isArray(uploadResult) ? uploadResult[0] : undefined;
+      const newAvatarUrl = uploaded
+        ? uploaded.serverData?.avatarUrl ?? uploaded.url
+        : undefined;
 
       const queryFilter: QueryFilters = {
         queryKey: ["post-feed"],

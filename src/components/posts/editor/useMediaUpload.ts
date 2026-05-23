@@ -17,6 +17,8 @@ export default function useMediaUpload() {
 
   const { startUpload, isUploading } = useUploadThing("attachment", {
     onBeforeUploadBegin(files) {
+      if (!files?.length) return [];
+
       const renamedFiles = files.map((file) => {
         const extension = file.name.split(".").pop();
         return new File(
@@ -37,15 +39,19 @@ export default function useMediaUpload() {
     },
     onUploadProgress: setUploadProgress,
     onClientUploadComplete(res) {
+      if (!res?.length) return;
+
       setAttachments((prev) =>
         prev.map((a) => {
           const uploadResult = res.find((r) => r.name === a.file.name);
 
           if (!uploadResult) return a;
 
+          const mediaId = uploadResult.serverData?.mediaId;
+
           return {
             ...a,
-            mediaId: uploadResult.serverData.mediaId,
+            mediaId,
             isUploading: false,
           };
         }),
