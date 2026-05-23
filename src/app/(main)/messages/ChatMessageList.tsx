@@ -65,7 +65,7 @@ export default function ChatMessageList() {
       const own = message.own_reactions?.find((r) => r.type === type);
       try {
         if (own) {
-          await client.deleteReaction(message.id, type);
+          await channel.deleteReaction(message.id, type);
         } else {
           await channel.sendReaction(message.id, { type });
         }
