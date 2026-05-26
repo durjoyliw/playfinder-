@@ -89,6 +89,7 @@ model Follow {
 model Post {
   id                  String         @id @default(cuid())
   content             String
+  type                String         @default("ARENA")
   userId              String
   user                User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   attachments         Media[]
@@ -103,6 +104,7 @@ model Post {
   expiresAt           DateTime?
   slotsNeeded         Int?
   isHighlight         Boolean        @default(false)
+  visibility          String         @default("PUBLIC")
 
   createdAt DateTime @default(now())
 
@@ -201,4 +203,5 @@ enum NotificationType {
   LIKE
   FOLLOW
   COMMENT
+  TEAMMATE
 }

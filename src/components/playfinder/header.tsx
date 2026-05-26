@@ -3,24 +3,31 @@
 import { MapboxLocationAutocomplete } from "@/components/mapbox-location-autocomplete";
 import { useUserSettings } from "@/hooks/use-user-settings";
 import kyInstance from "@/lib/ky";
-import { getDisplayArea } from "@/lib/location";
 import { NotificationCountInfo } from "@/lib/types";
 import type { UserSettingsData } from "@/lib/settings";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { IconSettings } from "@tabler/icons-react";
-import { Bell, ChevronDown, MapPin } from "lucide-react";
+import {
+  IconBell,
+  IconBolt,
+  IconMapPin,
+  IconSearch,
+  IconSettings,
+} from "@tabler/icons-react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 interface HeaderProps {
   initialUnreadNotificationCount: number;
 }
 
 export function Header({ initialUnreadNotificationCount }: HeaderProps) {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const locationRef = useRef<HTMLDivElement>(null);
   const [locationOpen, setLocationOpen] = useState(false);
   const [locationDraft, setLocationDraft] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: userSettings } = useUserSettings();
 
@@ -46,8 +53,6 @@ export function Header({ initialUnreadNotificationCount }: HeaderProps) {
       setLocationOpen(false);
     },
   });
-
-  const displayLocation = getDisplayArea(userSettings?.location);
 
   useEffect(() => {
     if (locationOpen) {
@@ -76,27 +81,54 @@ export function Header({ initialUnreadNotificationCount }: HeaderProps) {
     locationMutation.mutate(placeName);
   };
 
+  const handleSearchSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    const q = searchQuery.trim();
+    router.push(q ? `/search?q=${encodeURIComponent(q)}` : "/search");
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-[#0d0d0d] px-4 py-3">
-      <div className="flex items-center justify-between">
-        <Link href="/" className="text-xl font-bold italic text-[#C9F31D]">
-          PlayFinder
+      <div className="flex items-center gap-3">
+        <Link href="/" className="flex min-w-0 items-center">
+          <div
+            className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-[#C9F31D]"
+            aria-hidden
+          >
+            <IconBolt className="h-[18px] w-[18px] text-black" stroke={2.5} />
+          </div>
         </Link>
 
-        <div className="flex items-center gap-3">
+        <form
+          onSubmit={handleSearchSubmit}
+          className="flex min-w-0 flex-1 items-center gap-2 rounded-[20px] border border-[#2a2a2a] bg-[#161616] px-3.5 py-1.5"
+        >
+          <IconSearch
+            className="h-[18px] w-[18px] flex-shrink-0 text-[#555555]"
+            stroke={1.75}
+            aria-hidden
+          />
+          <input
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search"
+            className="min-w-0 flex-1 border-none bg-transparent text-sm text-[#f0f0f0] outline-none placeholder:text-[#555555] focus:ring-0"
+            aria-label="Search"
+          />
+        </form>
+
+        <div className="flex items-center justify-end gap-0.5">
           <div ref={locationRef} className="relative">
             <button
               type="button"
               onClick={() => setLocationOpen((open) => !open)}
-              className="flex items-center gap-1.5 rounded-full bg-[#1f1f1f] px-3 py-1.5 text-sm text-white transition-colors hover:bg-[#2a2a2a]"
+              className="rounded-lg p-2 transition-colors hover:bg-[#1f1f1f]"
               aria-expanded={locationOpen}
               aria-haspopup="dialog"
+              aria-label="Update your area"
             >
-              <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
-              <span>{displayLocation}</span>
-              <ChevronDown
-                className={`h-3.5 w-3.5 text-muted-foreground transition-transform ${locationOpen ? "rotate-180" : ""}`}
-              />
+              <IconMapPin className="h-5 w-5 text-[#888888]" stroke={1.75} />
             </button>
 
             {locationOpen && (
@@ -121,14 +153,14 @@ export function Header({ initialUnreadNotificationCount }: HeaderProps) {
 
           <Link
             href="/notifications"
-            className="relative rounded-full p-2 transition-colors hover:bg-[#1f1f1f]"
+            className="relative rounded-lg p-2 transition-colors hover:bg-[#1f1f1f]"
             aria-label={
               data.unreadCount > 0
                 ? `Notifications, ${data.unreadCount} unread`
                 : "Notifications"
             }
           >
-            <Bell className="h-5 w-5 text-muted-foreground" />
+            <IconBell className="h-5 w-5 text-[#888888]" stroke={1.75} />
             {data.unreadCount > 0 && (
               <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#C9F31D] px-1 text-[10px] font-bold text-black">
                 {data.unreadCount > 9 ? "9+" : data.unreadCount}
@@ -138,10 +170,10 @@ export function Header({ initialUnreadNotificationCount }: HeaderProps) {
 
           <Link
             href="/settings"
-            className="rounded-full p-2 transition-colors hover:bg-[#1f1f1f]"
+            className="rounded-lg p-2 transition-colors hover:bg-[#1f1f1f]"
             aria-label="Settings"
           >
-            <IconSettings className="h-5 w-5 text-muted-foreground" stroke={1.75} />
+            <IconSettings className="h-5 w-5 text-[#888888]" stroke={1.75} />
           </Link>
         </div>
       </div>

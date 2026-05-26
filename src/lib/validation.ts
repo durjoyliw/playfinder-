@@ -36,6 +36,7 @@ export const createBroadcastSchema = z
     expiresAt: z.string().datetime().nullable().optional(),
     content: requiredString.max(280),
     slotsNeeded: z.number().int().min(1).max(10).nullable().optional(),
+    visibility: z.enum(["PUBLIC", "TEAMMATES_ONLY"]).default("PUBLIC"),
   })
   .refine(
     (data) =>

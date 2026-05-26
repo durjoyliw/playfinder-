@@ -3,11 +3,11 @@
 import useFollowerInfo from "@/hooks/useFollowerInfo";
 import kyInstance from "@/lib/ky";
 import { FollowerInfo } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import { IconBolt, IconClock } from "@tabler/icons-react";
 import { QueryKey, useMutation, useQueryClient } from "@tanstack/react-query";
-import { UserPlus } from "lucide-react";
 import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
-import { cn } from "@/lib/utils";
 
 interface FollowButtonProps {
   userId: string;
@@ -23,14 +23,11 @@ export default function FollowButton({
   className,
 }: FollowButtonProps) {
   const { toast } = useToast();
-
   const queryClient = useQueryClient();
-
   const { data } = useFollowerInfo(userId, initialState);
-
   const queryKey: QueryKey = ["follower-info", userId];
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: () =>
       data.isFollowedByUser
         ? kyInstance.delete(`/api/users/${userId}/followers`)
@@ -39,13 +36,18 @@ export default function FollowButton({
       await queryClient.cancelQueries({ queryKey });
 
       const previousState = queryClient.getQueryData<FollowerInfo>(queryKey);
+      const nextFollowed = !previousState?.isFollowedByUser;
 
-      queryClient.setQueryData<FollowerInfo>(queryKey, () => ({
-        followers:
-          (previousState?.followers || 0) +
-          (previousState?.isFollowedByUser ? -1 : 1),
-        isFollowedByUser: !previousState?.isFollowedByUser,
-      }));
+      queryClient.setQueryData<FollowerInfo>(queryKey, () => {
+        const isFollowedByThem = previousState?.isFollowedByThem ?? false;
+        return {
+          followers:
+            (previousState?.followers || 0) + (previousState?.isFollowedByUser ? -1 : 1),
+          isFollowedByUser: nextFollowed,
+          isFollowedByThem,
+          isTeammate: nextFollowed && isFollowedByThem,
+        };
+      });
 
       return { previousState };
     },
@@ -57,34 +59,75 @@ export default function FollowButton({
         description: "Something went wrong. Please try again.",
       });
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
+    },
   });
 
   if (variant === "icon") {
     return (
       <Button
         type="button"
-        variant="outline"
-        size="icon"
+        disabled={isPending}
         className={cn(
-          "h-12 w-12 rounded-xl border-[#333] bg-[#1a1a1a] text-white hover:bg-[#262626] hover:text-[#C9F31D]",
-          data.isFollowedByUser && "text-[#C9F31D]",
+          "h-12 w-12 rounded-xl border font-semibold",
+          data.isTeammate
+            ? "border-[rgba(201,243,29,0.4)] bg-transparent text-[#C9F31D] hover:bg-[rgba(201,243,29,0.08)]"
+            : data.isFollowedByUser
+              ? "border-[#2a2a2a] bg-[#161616] text-[#888888] hover:bg-[#1f1f1f]"
+              : "border-[#C9F31D] bg-[#C9F31D] text-black hover:bg-[#b8e019]",
           className,
         )}
         onClick={() => mutate()}
-        aria-label={data.isFollowedByUser ? "Unfollow user" : "Follow user"}
+        aria-label={
+          data.isTeammate
+            ? "Teammate"
+            : data.isFollowedByUser
+              ? "Pending teammate request"
+              : "Add teammate"
+        }
       >
-        <UserPlus className="h-5 w-5" />
+        {data.isTeammate ? (
+          <IconBolt className="h-5 w-5" stroke={2} />
+        ) : data.isFollowedByUser ? (
+          <IconClock className="h-5 w-5" stroke={1.75} />
+        ) : (
+          <IconBolt className="h-5 w-5" stroke={2} />
+        )}
       </Button>
     );
   }
 
   return (
     <Button
-      variant={data.isFollowedByUser ? "secondary" : "default"}
-      className={className}
+      type="button"
+      disabled={isPending}
+      className={cn(
+        "rounded-xl font-semibold",
+        data.isTeammate
+          ? "border border-[rgba(201,243,29,0.4)] bg-transparent text-[#C9F31D] hover:bg-[rgba(201,243,29,0.08)]"
+          : data.isFollowedByUser
+            ? "border border-[#2a2a2a] bg-[#161616] text-[#888888] hover:bg-[#1f1f1f]"
+            : "bg-[#C9F31D] text-black hover:bg-[#b8e019]",
+        className,
+      )}
       onClick={() => mutate()}
     >
-      {data.isFollowedByUser ? "Unfollow" : "Follow"}
+      {data.isTeammate ? (
+        <span className="inline-flex items-center gap-1">
+          Teammate <IconBolt className="h-4 w-4" stroke={2} />
+        </span>
+      ) : data.isFollowedByUser ? (
+        <span className="inline-flex items-center gap-1.5">
+          <IconClock className="h-4 w-4" stroke={1.75} />
+          Pending
+        </span>
+      ) : (
+        <span className="inline-flex items-center gap-1.5">
+          <IconBolt className="h-4 w-4" stroke={2} />
+          Add Teammate
+        </span>
+      )}
     </Button>
   );
 }

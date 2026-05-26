@@ -1,6 +1,30 @@
 import { validateRequest } from "@/auth";
+import { isTeammate } from "@/lib/teammate";
 import prisma from "@/lib/prisma";
 import { FollowerInfo } from "@/lib/types";
+import { NotificationType } from "@prisma/client";
+
+async function createTeammateNotifications(
+  userAId: string,
+  userBId: string,
+) {
+  await prisma.$transaction([
+    prisma.notification.create({
+      data: {
+        issuerId: userBId,
+        recipientId: userAId,
+        type: NotificationType.TEAMMATE,
+      },
+    }),
+    prisma.notification.create({
+      data: {
+        issuerId: userAId,
+        recipientId: userBId,
+        type: NotificationType.TEAMMATE,
+      },
+    }),
+  ]);
+}
 
 export async function GET(
   req: Request,
@@ -24,6 +48,14 @@ export async function GET(
             followerId: true,
           },
         },
+        following: {
+          where: {
+            followingId: loggedInUser.id,
+          },
+          select: {
+            followingId: true,
+          },
+        },
         _count: {
           select: {
             followers: true,
@@ -36,9 +68,14 @@ export async function GET(
       return Response.json({ error: "User not found" }, { status: 404 });
     }
 
+    const isFollowedByUser = user.followers.length > 0;
+    const isFollowedByThem = user.following.length > 0;
+
     const data: FollowerInfo = {
       followers: user._count.followers,
-      isFollowedByUser: !!user.followers.length,
+      isFollowedByUser,
+      isFollowedByThem,
+      isTeammate: isFollowedByUser && isFollowedByThem,
     };
 
     return Response.json(data);
@@ -59,6 +96,12 @@ export async function POST(
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    if (loggedInUser.id === userId) {
+      return Response.json({ error: "Cannot follow yourself" }, { status: 400 });
+    }
+
+    const wasMutualBefore = await isTeammate(loggedInUser.id, userId);
+
     await prisma.$transaction([
       prisma.follow.upsert({
         where: {
@@ -77,10 +120,17 @@ export async function POST(
         data: {
           issuerId: loggedInUser.id,
           recipientId: userId,
-          type: "FOLLOW",
+          type: NotificationType.FOLLOW,
         },
       }),
     ]);
+
+    if (!wasMutualBefore) {
+      const isMutualNow = await isTeammate(loggedInUser.id, userId);
+      if (isMutualNow) {
+        await createTeammateNotifications(loggedInUser.id, userId);
+      }
+    }
 
     return new Response();
   } catch (error) {
@@ -111,7 +161,7 @@ export async function DELETE(
         where: {
           issuerId: loggedInUser.id,
           recipientId: userId,
-          type: "FOLLOW",
+          type: NotificationType.FOLLOW,
         },
       }),
     ]);

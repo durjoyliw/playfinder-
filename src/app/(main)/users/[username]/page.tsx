@@ -1,6 +1,7 @@
 import { validateRequest } from "@/auth";
 import AthleteProfile from "@/components/playfinder-profile/athlete-profile";
 import prisma from "@/lib/prisma";
+import { countTeammates } from "@/lib/teammate";
 import { FollowerInfo, getUserProfileInclude } from "@/lib/types";
 import { PostIntent } from "@prisma/client";
 import { Metadata } from "next";
@@ -59,14 +60,21 @@ export default async function Page({ params: { username } }: PageProps) {
 
   const user = await getUser(username, loggedInUser.id);
 
+  const isFollowedByUser = user.followers.some(
+    ({ followerId }) => followerId === loggedInUser.id,
+  );
+  const isFollowedByThem = user.following.some(
+    ({ followingId }) => followingId === loggedInUser.id,
+  );
+
   const followerInfo: FollowerInfo = {
     followers: user._count.followers,
-    isFollowedByUser: user.followers.some(
-      ({ followerId }) => followerId === loggedInUser.id,
-    ),
+    isFollowedByUser,
+    isFollowedByThem,
+    isTeammate: isFollowedByUser && isFollowedByThem,
   };
 
-  const [gamesCount, broadcastsCount] = await Promise.all([
+  const [gamesCount, broadcastsCount, teammatesCount] = await Promise.all([
     prisma.post.count({
       where: {
         userId: user.id,
@@ -76,11 +84,13 @@ export default async function Page({ params: { username } }: PageProps) {
     prisma.post.count({
       where: { userId: user.id },
     }),
+    countTeammates(user.id),
   ]);
 
   const profile = buildAthleteProfileData(user, loggedInUser.id, {
     games: gamesCount,
     broadcasts: broadcastsCount,
+    teammates: teammatesCount,
   });
 
   return (

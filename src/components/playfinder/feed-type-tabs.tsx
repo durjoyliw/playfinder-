@@ -4,9 +4,9 @@ import type { FeedTypeTab } from "@/lib/feed-type-tabs";
 import { cn } from "@/lib/utils";
 
 const TABS: { id: FeedTypeTab; label: string }[] = [
-  { id: "players", label: "Players" },
-  { id: "teams", label: "Teams" },
-  { id: "posts", label: "Posts" },
+  // Visual order: SOCIAL (left) then ARENA (right). IDs/logic unchanged.
+  { id: "posts", label: "SOCIAL" },
+  { id: "players", label: "ARENA" },
 ];
 
 interface FeedTypeTabsProps {

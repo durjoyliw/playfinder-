@@ -22,11 +22,15 @@ interface UserTooltipProps extends PropsWithChildren {
 export default function UserTooltip({ children, user }: UserTooltipProps) {
   const { user: loggedInUser } = useSession();
 
+  const isFollowedByUser = user.followers.some(
+    ({ followerId }) => followerId === loggedInUser.id,
+  );
+
   const followerState: FollowerInfo = {
     followers: user._count.followers,
-    isFollowedByUser: !!user.followers.some(
-      ({ followerId }) => followerId === loggedInUser.id,
-    ),
+    isFollowedByUser,
+    isFollowedByThem: false,
+    isTeammate: false,
   };
 
   return (

@@ -25,6 +25,7 @@ export interface AthleteProfileData {
   stats: {
     games: number;
     broadcasts: number;
+    teammates: number;
   };
   sports: AthleteSport[];
 }

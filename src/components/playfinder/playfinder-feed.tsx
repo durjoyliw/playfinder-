@@ -5,7 +5,7 @@ import { postMatchesFeedTypeTab, type FeedTypeTab } from "@/lib/feed-type-tabs";
 import { mapPostToHomeFeedCard } from "@/lib/home-feed-card";
 import { filterActivePlayfinderPosts } from "@/lib/playfinder";
 import kyInstance from "@/lib/ky";
-import { PostData, PostsPage } from "@/lib/types";
+import { PlayfinderPostsPage } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 
@@ -16,13 +16,16 @@ interface PlayFinderFeedProps {
 
 export function PlayFinderFeed({ sportFilter, feedTypeTab }: PlayFinderFeedProps) {
   const { data, status, isFetching } = useQuery({
-    queryKey: ["post-feed", "playfinder", sportFilter],
+    queryKey: ["post-feed", "playfinder", sportFilter, feedTypeTab],
     queryFn: () =>
       kyInstance
         .get("/api/posts/playfinder", {
-          searchParams: { sport: sportFilter },
+          searchParams: {
+            sport: sportFilter,
+            tab: feedTypeTab === "posts" ? "social" : "arena",
+          },
         })
-        .json<PostsPage>(),
+        .json<PlayfinderPostsPage>(),
   });
 
   const showImIn = feedTypeTab === "players" || feedTypeTab === "teams";
@@ -70,7 +73,7 @@ export function PlayFinderFeed({ sportFilter, feedTypeTab }: PlayFinderFeedProps
       {posts.map((post, index) => (
         <HomeFeedCard
           key={post.id}
-          {...mapPostToHomeFeedCard(post as PostData, showImIn)}
+          {...mapPostToHomeFeedCard(post, showImIn)}
           cardIndex={index}
         />
       ))}

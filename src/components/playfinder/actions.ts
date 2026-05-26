@@ -27,6 +27,7 @@ export async function submitBroadcast(input: unknown) {
       expiresAt,
       slotsNeeded:
         data.intent === PostIntent.LOOKING_TO_PLAY ? data.slotsNeeded ?? null : null,
+      visibility: data.visibility,
     },
     include: getPostDataInclude(user.id),
   });

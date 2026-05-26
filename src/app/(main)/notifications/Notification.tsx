@@ -19,6 +19,11 @@ export default function Notification({ notification }: NotificationProps) {
       icon: <User2 className="size-7 text-primary" />,
       href: `/users/${notification.issuer.username}`,
     },
+    TEAMMATE: {
+      message: `You and ${notification.issuer.displayName} are now Teammates ⚡`,
+      icon: <User2 className="size-7 text-[#C9F31D]" />,
+      href: `/users/${notification.issuer.username}`,
+    },
     COMMENT: {
       message: `${notification.issuer.displayName} commented on your post`,
       icon: <MessageCircle className="size-7 fill-primary text-primary" />,

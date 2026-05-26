@@ -38,9 +38,42 @@ function mapUserSports(
   });
 }
 
+function formatProfileLocation(raw: string | null | undefined): string | null {
+  const value = raw?.trim();
+  if (!value) return null;
+
+  const parts = value
+    .split(",")
+    .map((p) => p.trim())
+    .filter(Boolean);
+
+  const firstPart = parts[0] ?? value;
+
+  // UK-style postcode detection (e.g. "G42 8RT", "SW1A 1AA").
+  const postcodeMatch = value.match(
+    /\b([A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2})\b/i,
+  );
+
+  if (!postcodeMatch) return firstPart;
+
+  const postcode = postcodeMatch[1].toUpperCase().replace(/\s+/, " ");
+  const partWithPostcodeIdx = parts.findIndex((p) => /[A-Z]{1,2}\d/i.test(p));
+
+  let area =
+    partWithPostcodeIdx === 0 ? (parts[1] ?? null) : (parts[0] ?? null);
+
+  if (area) {
+    area = area.replace(new RegExp(postcodeMatch[1], "i"), "").trim();
+    if (!area) area = null;
+  }
+
+  return area ? `${area}, ${postcode}` : postcode;
+}
+
 export interface ProfileStats {
   games: number;
   broadcasts: number;
+  teammates: number;
 }
 
 export function buildAthleteProfileData(
@@ -48,7 +81,7 @@ export function buildAthleteProfileData(
   loggedInUserId: string,
   stats: ProfileStats,
 ): AthleteProfileData {
-  const location = user.location?.trim() || null;
+  const location = formatProfileLocation(user.location) ?? null;
 
   return {
     userId: user.id,
@@ -66,6 +99,7 @@ export function buildAthleteProfileData(
     stats: {
       games: stats.games,
       broadcasts: stats.broadcasts,
+      teammates: stats.teammates,
     },
     sports: mapUserSports(user.sports),
   };

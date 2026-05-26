@@ -92,7 +92,7 @@ export function FeedCard({
   const likeState = { likes, isLikedByUser };
   const profileHref = `/users/${username}`;
   const isLooking =
-    isLookingToPlayIntent(intent) || type === "looking";
+    isLookingToPlayIntent(intent) || (intent == null && type === "looking");
 
   return (
     <div className="overflow-hidden rounded-xl bg-[#1a1a1a]">

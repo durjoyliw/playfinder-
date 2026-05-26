@@ -1,12 +1,14 @@
 "use client";
 
 import { useSession } from "@/app/(main)/SessionProvider";
+import { usePlayFinder } from "@/components/playfinder/playfinder-provider";
 import { cn } from "@/lib/utils";
 import { Compass, Home, MessageCircle, Plus, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 interface BottomNavProps {
+  /** kept for backward-compat; FAB uses composer routing from context */
   onBroadcast?: () => void;
 }
 
@@ -23,6 +25,7 @@ interface NavItem {
 export function BottomNav({ onBroadcast }: BottomNavProps) {
   const pathname = usePathname();
   const { user } = useSession();
+  const { openComposer } = usePlayFinder();
 
   const navItems: NavItem[] = [
     {
@@ -85,7 +88,7 @@ export function BottomNav({ onBroadcast }: BottomNavProps) {
 
         <button
           type="button"
-          onClick={onBroadcast}
+          onClick={openComposer}
           className="-mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#C9F31D] shadow-lg shadow-[#C9F31D]/30 transition-all hover:bg-[#d4f73a] active:scale-95"
         >
           <Plus className="h-7 w-7 text-black" strokeWidth={2.5} />

@@ -53,6 +53,14 @@ export function getUserProfileInclude(loggedInUserId: string) {
         followerId: true,
       },
     },
+    following: {
+      where: {
+        followingId: loggedInUserId,
+      },
+      select: {
+        followingId: true,
+      },
+    },
     _count: {
       select: {
         posts: true,
@@ -209,6 +217,17 @@ export interface NotificationsPage {
 export interface FollowerInfo {
   followers: number;
   isFollowedByUser: boolean;
+  isFollowedByThem: boolean;
+  isTeammate: boolean;
+}
+
+export type PlayfinderFeedPost = PostData & {
+  isTeammate: boolean;
+};
+
+export interface PlayfinderPostsPage {
+  posts: PlayfinderFeedPost[];
+  nextCursor: string | null;
 }
 
 export interface LikeInfo {

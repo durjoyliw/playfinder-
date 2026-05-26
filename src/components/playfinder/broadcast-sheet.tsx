@@ -12,6 +12,7 @@ import { CreateBroadcastValues } from "@/lib/validation";
 import { cn } from "@/lib/utils";
 import { PostIntent, Sport } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { IconBolt, IconWorld } from "@tabler/icons-react";
 import { X } from "lucide-react";
 import { useEffect, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
@@ -59,6 +60,9 @@ export function BroadcastSheet({ open, onOpenChange }: BroadcastSheetProps) {
   const [timeLabel, setTimeLabel] = useState("");
   const [slotsNeeded, setSlotsNeeded] = useState(2);
   const [content, setContent] = useState("");
+  const [visibility, setVisibility] = useState<"PUBLIC" | "TEAMMATES_ONLY">(
+    "PUBLIC",
+  );
 
   const isBanter = intent === PostIntent.BANTER;
   const isLookingToPlay = intent === PostIntent.LOOKING_TO_PLAY;
@@ -91,6 +95,7 @@ export function BroadcastSheet({ open, onOpenChange }: BroadcastSheetProps) {
     setTimeLabel("");
     setSlotsNeeded(2);
     setContent("");
+    setVisibility("PUBLIC");
   };
 
   const mutation = useMutation({
@@ -144,6 +149,7 @@ export function BroadcastSheet({ open, onOpenChange }: BroadcastSheetProps) {
       timeLabel: isBanter ? undefined : timeLabel,
       content,
       slotsNeeded: isLookingToPlay ? slotsNeeded : null,
+      visibility,
     });
   };
 
@@ -320,6 +326,40 @@ export function BroadcastSheet({ open, onOpenChange }: BroadcastSheetProps) {
             <p className="mt-1 text-right text-xs text-gray-500">
               {content.length}/280
             </p>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-500">
+              Who can see this
+            </label>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setVisibility("PUBLIC")}
+                className={cn(
+                  "flex flex-1 items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium transition-colors",
+                  visibility === "PUBLIC"
+                    ? "border-[#C9F31D] bg-[#C9F31D] text-black"
+                    : "border-[#2a2a2a] bg-[#161616] text-[#888888]",
+                )}
+              >
+                <IconWorld className="h-4 w-4" stroke={1.75} />
+                Everyone
+              </button>
+              <button
+                type="button"
+                onClick={() => setVisibility("TEAMMATES_ONLY")}
+                className={cn(
+                  "flex flex-1 items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium transition-colors",
+                  visibility === "TEAMMATES_ONLY"
+                    ? "border-[#C9F31D] bg-[#C9F31D] text-black"
+                    : "border-[#2a2a2a] bg-[#161616] text-[#888888]",
+                )}
+              >
+                <IconBolt className="h-4 w-4" stroke={2} />
+                Teammates only
+              </button>
+            </div>
           </div>
 
           <LoadingButton

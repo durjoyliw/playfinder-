@@ -18,7 +18,7 @@ const containerStyle: CSSProperties = {
   display: "flex",
   overflowX: "auto",
   gap: 8,
-  padding: "0 12px 8px",
+  padding: "10px 12px 8px",
   scrollbarWidth: "none",
   msOverflowStyle: "none",
   WebkitOverflowScrolling: "touch",
@@ -45,7 +45,7 @@ export function SportTabs({ tabs, activeTab, onTabChange }: SportTabsProps) {
             whiteSpace: "nowrap",
             cursor: "pointer",
             border: "none",
-            backgroundColor: isActive ? "#C9F31D" : "#1a1a1a",
+            backgroundColor: isActive ? "#C9F31D" : "#161616",
             color: isActive ? "#000000" : "#888888",
             flexShrink: 0,
           };
