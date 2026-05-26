@@ -14,7 +14,7 @@ interface PlayFinderHomeProps {
 }
 
 export function PlayFinderHome({ feedSportTabs }: PlayFinderHomeProps) {
-  const { openBroadcast } = usePlayFinder();
+  const { openComposer } = usePlayFinder();
   const [sportFilter, setSportFilter] = useState("all");
   const { activeFeedTypeTab, setActiveFeedTypeTab } = usePlayFinder();
   const feedTypeTab = activeFeedTypeTab;
@@ -35,7 +35,7 @@ export function PlayFinderHome({ feedSportTabs }: PlayFinderHomeProps) {
         onTabChange={setSportFilter}
       />
       <LiveActivityBar />
-      <ComposeRow onBroadcast={openBroadcast} />
+      <ComposeRow onBroadcast={() => openComposer()} />
       <FeedTypeTabs activeTab={feedTypeTab} onTabChange={setFeedTypeTab} />
       <PlayFinderFeed sportFilter={sportFilter} feedTypeTab={feedTypeTab} />
     </div>

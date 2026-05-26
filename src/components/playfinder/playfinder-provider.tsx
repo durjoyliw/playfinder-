@@ -1,14 +1,18 @@
 "use client";
 
-import { createContext, useCallback, useContext, useState } from "react";
-import { BroadcastSheet } from "./broadcast-sheet";
-import { SocialComposer } from "./social-composer";
+import {
+  ComposerSheet,
+  type ComposerTab,
+} from "@/components/playfinder/composer-sheet";
 import type { FeedTypeTab } from "@/lib/feed-type-tabs";
+import { createContext, useCallback, useContext, useState } from "react";
 
 interface PlayFinderContextValue {
+  openComposer: (defaultTab?: ComposerTab) => void;
+  /** @deprecated Use openComposer("arena") */
   openBroadcast: () => void;
+  /** @deprecated Use openComposer("social") */
   openSocial: () => void;
-  openComposer: () => void;
   activeFeedTypeTab: FeedTypeTab;
   setActiveFeedTypeTab: (tab: FeedTypeTab) => void;
 }
@@ -16,39 +20,40 @@ interface PlayFinderContextValue {
 const PlayFinderContext = createContext<PlayFinderContextValue | null>(null);
 
 export function PlayFinderProvider({ children }: { children: React.ReactNode }) {
-  const [broadcastOpen, setBroadcastOpen] = useState(false);
-  const [socialOpen, setSocialOpen] = useState(false);
+  const [composerOpen, setComposerOpen] = useState(false);
+  const [composerDefaultTab, setComposerDefaultTab] =
+    useState<ComposerTab>("arena");
   const [activeFeedTypeTab, setActiveFeedTypeTab] =
     useState<FeedTypeTab>("players");
 
-  const openBroadcast = useCallback(() => setBroadcastOpen(true), []);
-  const openSocial = useCallback(() => setSocialOpen(true), []);
+  const openComposer = useCallback(
+    (defaultTab?: ComposerTab) => {
+      const tab =
+        defaultTab ?? (activeFeedTypeTab === "posts" ? "social" : "arena");
+      setComposerDefaultTab(tab);
+      setComposerOpen(true);
+    },
+    [activeFeedTypeTab],
+  );
 
-  const openComposer = useCallback(() => {
-    // SOCIAL tab == "posts" in existing IDs
-    if (activeFeedTypeTab === "posts") {
-      setSocialOpen(true);
-      return;
-    }
-    setBroadcastOpen(true);
-  }, [activeFeedTypeTab]);
+  const openBroadcast = useCallback(() => openComposer("arena"), [openComposer]);
+  const openSocial = useCallback(() => openComposer("social"), [openComposer]);
 
   return (
     <PlayFinderContext.Provider
       value={{
+        openComposer,
         openBroadcast,
         openSocial,
-        openComposer,
         activeFeedTypeTab,
         setActiveFeedTypeTab,
       }}
     >
       {children}
-      <BroadcastSheet open={broadcastOpen} onOpenChange={setBroadcastOpen} />
-      <SocialComposer
-        open={socialOpen}
-        onOpenChange={setSocialOpen}
-        onSwitchToArena={() => setBroadcastOpen(true)}
+      <ComposerSheet
+        open={composerOpen}
+        onOpenChange={setComposerOpen}
+        defaultTab={composerDefaultTab}
       />
     </PlayFinderContext.Provider>
   );

@@ -7,11 +7,6 @@ import { Compass, Home, MessageCircle, Plus, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-interface BottomNavProps {
-  /** kept for backward-compat; FAB uses composer routing from context */
-  onBroadcast?: () => void;
-}
-
 type NavItemId = "home" | "discover" | "messages" | "profile";
 
 interface NavItem {
@@ -22,7 +17,7 @@ interface NavItem {
   isActive: (pathname: string, username: string) => boolean;
 }
 
-export function BottomNav({ onBroadcast }: BottomNavProps) {
+export function BottomNav() {
   const pathname = usePathname();
   const { user } = useSession();
   const { openComposer } = usePlayFinder();
