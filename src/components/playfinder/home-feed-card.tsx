@@ -19,6 +19,7 @@ export function HomeFeedCard({
   authorId,
   username,
   intent,
+  fromTab,
   avatar,
   name,
   timestamp,
@@ -43,6 +44,8 @@ export function HomeFeedCard({
   const voltAvatar = cardIndex % 2 === 0;
   const isOwnPost = user.id === authorId;
   const isLookingToPlay = isLookingToPlayIntent(intent);
+  const tabParam = fromTab ?? "social";
+  const postHref = `/posts/${postId}?tab=${tabParam}`;
 
   const handleImIn = () => {
     if (isOwnPost) return;
@@ -166,7 +169,7 @@ export function HomeFeedCard({
       <p className="mb-3.5 mt-2.5 text-sm leading-[1.6] text-white">{content}</p>
 
       {imageUrl && (
-        <Link href={`/posts/${postId}`} className="mb-3.5 block">
+        <Link href={postHref} className="mb-3.5 block">
           <img
             src={imageUrl}
             alt=""
@@ -192,7 +195,7 @@ export function HomeFeedCard({
             pill
           />
           <Link
-            href={`/posts/${postId}`}
+            href={postHref}
             className={cn(ACTION_PILL, "text-[#888888] hover:text-white")}
             aria-label="View comments"
           >

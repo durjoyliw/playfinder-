@@ -10,7 +10,7 @@ import {
   MapPin,
   BadgeCheck,
 } from "lucide-react";
-import { isLookingToPlayIntent } from "@/lib/playfinder";
+import { getPostTypeBadge, isLookingToPlayIntent } from "@/lib/playfinder";
 import Link from "next/link";
 
 type CardType = "looking" | "recruiting" | "banter";
@@ -27,6 +27,7 @@ export interface FeedCardProps {
   type: CardType;
   /** Raw post intent from API (for robust LOOKING_TO_PLAY detection) */
   intent?: string;
+  postType?: string | null;
   avatar: string;
   name: string;
   timestamp: string;
@@ -56,18 +57,13 @@ const cardAccentColors: Record<CardType, string> = {
   banter: "#EAB308",
 };
 
-const intentBadges: Record<CardType, { label: string; color: string }> = {
-  looking: { label: "Looking to Play", color: "bg-[#C9F31D] text-black" },
-  recruiting: { label: "Recruiting", color: "bg-[#3B82F6] text-white" },
-  banter: { label: "Banter", color: "bg-[#EAB308] text-black" },
-};
-
 export function FeedCard({
   postId,
   authorId,
   username,
   type,
   intent,
+  postType,
   avatar,
   name,
   timestamp,
@@ -93,6 +89,7 @@ export function FeedCard({
   const profileHref = `/users/${username}`;
   const isLooking =
     isLookingToPlayIntent(intent) || (intent == null && type === "looking");
+  const typeBadge = getPostTypeBadge(postType ?? null);
 
   return (
     <div className="overflow-hidden rounded-xl bg-[#1a1a1a]">
@@ -102,7 +99,9 @@ export function FeedCard({
       />
 
       <div className="p-4">
-        <div className="mb-3 flex items-start justify-between">
+        <div
+          className={`mb-3 flex items-start justify-between${compact ? " pr-10" : ""}`}
+        >
           <Link
             href={profileHref}
             className="flex min-w-0 items-center gap-3 transition-opacity hover:opacity-80"
@@ -140,11 +139,7 @@ export function FeedCard({
                 Urgent
               </span>
             )}
-            <span
-              className={`rounded-full px-2.5 py-1 text-xs font-medium ${intentBadges[type].color}`}
-            >
-              {intentBadges[type].label}
-            </span>
+            <span style={typeBadge.style}>{typeBadge.label}</span>
           </div>
         </div>
 

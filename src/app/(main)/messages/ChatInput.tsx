@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Camera, ImageIcon, Loader2, Mic, Send } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useChannelStateContext } from "stream-chat-react";
+import { useSession } from "../SessionProvider";
 import { useChatComposer } from "./chat-composer-context";
 import { usePendingDmDraft } from "./pending-dm-context";
 
@@ -13,14 +14,33 @@ const LINE_HEIGHT_PX = 22;
 
 export default function ChatInput() {
   const { toast } = useToast();
+  const { user } = useSession();
   const { draft, clearDraft } = usePendingDmDraft();
   const { channel } = useChannelStateContext();
   const { registerFillInput, scrollToBottom } = useChatComposer();
   const [text, setText] = useState(draft ?? "");
   const [isSending, setIsSending] = useState(false);
+  const [, setChannelRevision] = useState(0);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const onChannelUpdated = () => {
+      setChannelRevision((revision) => revision + 1);
+    };
+    channel.on("channel.updated", onChannelUpdated);
+    return () => {
+      channel.off("channel.updated", onChannelUpdated);
+    };
+  }, [channel]);
+
+  const pending = channel.data?.pending === true;
+  const messageLocked = channel.data?.messageLocked === true;
+  const requestedBy = channel.data?.requestedBy as string | undefined;
+  const isRequestReceiver = pending && requestedBy !== user.id;
+  const isRequestSender = pending && requestedBy === user.id;
+  const inputLocked = pending && isRequestSender && messageLocked;
 
   useEffect(() => {
     if (draft) setText(draft);
@@ -49,11 +69,14 @@ export default function ChatInput() {
   const sendMessage = useCallback(
     async (messageText: string) => {
       const trimmed = messageText.trim();
-      if (!trimmed || isSending) return;
+      if (!trimmed || isSending || inputLocked) return;
 
       setIsSending(true);
       try {
         await channel.sendMessage({ text: trimmed });
+        if (isRequestSender) {
+          await channel.updatePartial({ set: { messageLocked: true } });
+        }
         setText("");
         clearDraft();
         channel.stopTyping();
@@ -68,7 +91,14 @@ export default function ChatInput() {
         setIsSending(false);
       }
     },
-    [channel, clearDraft, isSending, scrollToBottom],
+    [
+      channel,
+      clearDraft,
+      inputLocked,
+      isRequestSender,
+      isSending,
+      scrollToBottom,
+    ],
   );
 
   const sendText = useCallback(() => {
@@ -97,10 +127,13 @@ export default function ChatInput() {
   };
 
   const handleImageFile = async (file: File | undefined) => {
-    if (!file) return;
+    if (!file || inputLocked) return;
     setIsSending(true);
     try {
       await channel.sendImage(file);
+      if (isRequestSender) {
+        await channel.updatePartial({ set: { messageLocked: true } });
+      }
       requestAnimationFrame(() => scrollToBottom());
     } catch (error) {
       console.error("Failed to send image", error);
@@ -109,13 +142,24 @@ export default function ChatInput() {
     }
   };
 
+  if (isRequestReceiver) {
+    return null;
+  }
+
+  if (inputLocked) {
+    return (
+      <div className="bg-[#0d0d0d] px-4 py-3">
+        <p className="w-full text-center text-sm text-[#888888]">
+          Request sent — waiting for a reply
+        </p>
+      </div>
+    );
+  }
+
   const hasText = text.trim().length > 0;
 
   return (
-    <div
-      className="z-10 flex flex-shrink-0 flex-col border-t border-[#262626] bg-[#0d0d0d] px-3 py-2.5"
-      style={{ paddingBottom: "max(10px, env(safe-area-inset-bottom))" }}
-    >
+    <div className="bg-[#0d0d0d] px-3 py-2.5">
       <div className="flex items-end gap-2">
         <input
           ref={cameraInputRef}
@@ -173,7 +217,7 @@ export default function ChatInput() {
           onKeyDown={handleKeyDown}
           onBlur={() => channel.stopTyping().catch(() => {})}
           placeholder="Message..."
-          className="max-h-[108px] min-h-[40px] min-w-0 flex-1 resize-none rounded-full border-none bg-[#1a1a1a] px-4 py-2.5 text-sm leading-[22px] text-white outline-none placeholder:text-[#888888] focus:ring-0"
+          className="max-h-[108px] min-w-0 flex-1 resize-none rounded-full border-none bg-[#1a1a1a] px-4 py-2.5 text-sm leading-[22px] text-white outline-none placeholder:text-[#888888] focus:ring-0"
         />
 
         {hasText ? (

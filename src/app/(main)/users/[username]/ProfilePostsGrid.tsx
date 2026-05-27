@@ -2,8 +2,8 @@
 
 import InfiniteScrollContainer from "@/components/InfiniteScrollContainer";
 import kyInstance from "@/lib/ky";
+import { getPostTypeBadge } from "@/lib/playfinder";
 import { PostsPage } from "@/lib/types";
-import { cn } from "@/lib/utils";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,19 +11,6 @@ import { Loader2 } from "lucide-react";
 
 interface ProfilePostsGridProps {
   userId: string;
-}
-
-function getBadgeStyle(badge: string): string {
-  if (badge === "Looking to play") {
-    return "bg-[#C9F31D]/20 text-[#C9F31D]";
-  }
-  if (badge === "Banter") {
-    return "bg-purple-500/20 text-purple-400";
-  }
-  if (badge === "Recruiting") {
-    return "bg-orange-500/20 text-orange-400";
-  }
-  return "bg-gray-500/20 text-gray-400";
 }
 
 export default function ProfilePostsGrid({ userId }: ProfilePostsGridProps) {
@@ -80,6 +67,7 @@ export default function ProfilePostsGrid({ userId }: ProfilePostsGridProps) {
     >
       {posts.map((post) => {
         const imageAttachment = post.attachments.find((a) => a.type === "IMAGE");
+        const typeBadge = getPostTypeBadge(post.type ?? null);
 
         return (
           <Link
@@ -101,14 +89,11 @@ export default function ProfilePostsGrid({ userId }: ProfilePostsGridProps) {
               <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />
             </div>
             <div className="p-3">
-              <span
-                className={cn(
-                  "mb-1.5 inline-block rounded px-2 py-0.5 text-[10px] font-medium",
-                  getBadgeStyle("Post"),
-                )}
-              >
-                Post
-              </span>
+              <div className="mb-1.5 flex items-center justify-end gap-2">
+                <span className="inline-block" style={typeBadge.style}>
+                  {typeBadge.label}
+                </span>
+              </div>
               <p className="line-clamp-2 text-xs text-gray-300">{post.content}</p>
             </div>
           </Link>

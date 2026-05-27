@@ -3,7 +3,7 @@
 import { useChannelStateContext } from "stream-chat-react";
 import { useSession } from "../SessionProvider";
 import { useChatComposer } from "./chat-composer-context";
-import { getInitials, getOtherMember } from "./messages-utils";
+import { getChannelRequestData, getInitials, getOtherMember } from "./messages-utils";
 
 export default function EmptyChatState() {
   const { user } = useSession();
@@ -11,6 +11,7 @@ export default function EmptyChatState() {
   const { fillInput } = useChatComposer();
   const other = getOtherMember(channel, user.id);
   const displayName = other?.name ?? "Player";
+  const { isTeammate } = getChannelRequestData(channel);
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
@@ -26,7 +27,14 @@ export default function EmptyChatState() {
         )}
       </div>
       <p className="mt-4 font-bold text-white">{displayName}</p>
-      <p className="mt-1 text-sm text-[#888888]">You matched on PlayFinder</p>
+      <p
+        className="mt-1 text-sm"
+        style={{
+          color: isTeammate ? "rgba(201,243,29,0.55)" : "#555555",
+        }}
+      >
+        {isTeammate ? "Teammates ⚡" : "Not teammates yet"}
+      </p>
       <button
         type="button"
         onClick={() => fillInput("Hey! 👋")}

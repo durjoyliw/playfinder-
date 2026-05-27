@@ -135,3 +135,31 @@ export function getPostContext(channel: Channel): PostContextData | null {
   const data = channel.data as { postContext?: PostContextData } | undefined;
   return data?.postContext ?? null;
 }
+
+export interface ChannelRequestData {
+  pending: boolean;
+  requestedBy?: string;
+  messageRequestId?: string;
+  messageLocked: boolean;
+  isTeammate: boolean;
+}
+
+export function getChannelRequestData(channel: Channel): ChannelRequestData {
+  const data = channel.data as
+    | {
+        pending?: boolean;
+        requestedBy?: string;
+        messageRequestId?: string;
+        messageLocked?: boolean;
+        isTeammate?: boolean;
+      }
+    | undefined;
+
+  return {
+    pending: data?.pending === true,
+    requestedBy: data?.requestedBy,
+    messageRequestId: data?.messageRequestId,
+    messageLocked: data?.messageLocked === true,
+    isTeammate: data?.isTeammate === true,
+  };
+}

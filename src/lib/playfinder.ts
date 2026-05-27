@@ -57,6 +57,24 @@ export function formatSportLabel(sport: Sport | null | undefined): string | unde
   return PLAYFINDER_SPORTS.find((s) => s.enum === sport)?.label ?? sport;
 }
 
+export function getPostTypeBadge(postType: string | null) {
+  const isArena = postType === "ARENA" || postType === "BROADCAST";
+  return {
+    label: isArena ? "Arena" : "Social",
+    style: {
+      background: isArena ? "rgba(201,243,29,0.1)" : "rgba(55,138,221,0.12)",
+      border: isArena
+        ? "1px solid rgba(201,243,29,0.25)"
+        : "1px solid rgba(55,138,221,0.25)",
+      color: isArena ? "#C9F31D" : "#378ADD",
+      fontSize: "11px",
+      fontWeight: 700,
+      borderRadius: "5px",
+      padding: "3px 8px",
+    },
+  };
+}
+
 /** True for LOOKING_TO_PLAY regardless of enum/string casing */
 export function isLookingToPlayIntent(intent: unknown): boolean {
   if (intent == null) return false;
@@ -175,6 +193,7 @@ export function mapPostToFeedCard(post: PostData): FeedCardProps {
     username: post.user.username,
     type: intentToCardType(post.intent),
     intent: String(post.intent),
+    postType: post.type ?? null,
     avatar: post.user.avatarUrl ?? getInitials(post.user.displayName),
     name: post.user.displayName,
     timestamp: formatRelativeDate(post.createdAt),

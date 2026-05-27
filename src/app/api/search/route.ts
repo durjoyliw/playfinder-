@@ -1,15 +1,23 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
+import { PLAYFINDER_SPORTS } from "@/lib/sports";
 import { getPostDataInclude, PostsPage } from "@/lib/types";
+import { Sport } from "@prisma/client";
 import { NextRequest } from "next/server";
+
+function sportEnumsMatchingQuery(q: string): Sport[] {
+  const lower = q.toLowerCase();
+  return PLAYFINDER_SPORTS.filter(
+    (s) =>
+      s.label.toLowerCase().includes(lower) ||
+      s.id.toLowerCase().includes(lower),
+  ).map((s) => s.enum);
+}
 
 export async function GET(req: NextRequest) {
   try {
-    const q = req.nextUrl.searchParams.get("q") || "";
+    const q = req.nextUrl.searchParams.get("q")?.trim() ?? "";
     const cursor = req.nextUrl.searchParams.get("cursor") || undefined;
-
-    const searchQuery = q.split(" ").join(" & ");
-
     const pageSize = 10;
 
     const { user } = await validateRequest();
@@ -18,28 +26,18 @@ export async function GET(req: NextRequest) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    if (!q) {
+      return Response.json({ posts: [], nextCursor: null } satisfies PostsPage);
+    }
+
+    const sportMatches = sportEnumsMatchingQuery(q);
+
     const posts = await prisma.post.findMany({
       where: {
+        type: "SOCIAL",
         OR: [
-          {
-            content: {
-              search: searchQuery,
-            },
-          },
-          {
-            user: {
-              displayName: {
-                search: searchQuery,
-              },
-            },
-          },
-          {
-            user: {
-              username: {
-                search: searchQuery,
-              },
-            },
-          },
+          { content: { contains: q, mode: "insensitive" } },
+          ...(sportMatches.length ? [{ sport: { in: sportMatches } }] : []),
         ],
       },
       include: getPostDataInclude(user.id),

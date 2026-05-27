@@ -23,9 +23,6 @@ const OVERPASS_FALLBACK =
 const OVERPASS_TIMEOUT_MS = 8000;
 const MAX_RESULTS = 15;
 
-/** Minimal bbox query to verify POST fetch works from Next.js */
-const OVERPASS_SIMPLE_TEST_QUERY = `[out:json][timeout:25];node["leisure"="sports_centre"](55.82,-4.35,55.92,-4.15);out 5;`;
-
 interface OverpassElement {
   type: "node" | "way" | "relation";
   id: number;
@@ -44,14 +41,8 @@ function elementCoords(el: OverpassElement): { lat: number; lng: number } | null
 async function fetchOverpassFromEndpoint(
   endpoint: string,
   query: string,
-  logLabel = "overpass",
 ): Promise<OverpassElement[]> {
   const body = `data=${encodeURIComponent(query)}`;
-
-  console.log(`[Overpass:${logLabel}] POST url:`, endpoint);
-  console.log(`[Overpass:${logLabel}] query string:`, query);
-  console.log(`[Overpass:${logLabel}] POST body:`, body);
-
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), OVERPASS_TIMEOUT_MS);
 
@@ -68,12 +59,6 @@ async function fetchOverpassFromEndpoint(
     });
     clearTimeout(timeoutId);
 
-    console.log(
-      `[Overpass:${logLabel}] response status:`,
-      response.status,
-      response.statusText,
-    );
-
     if (!response.ok) {
       const errorText = await response.text().catch(() => "");
       throw new Error(
@@ -82,53 +67,24 @@ async function fetchOverpassFromEndpoint(
     }
 
     const data = (await response.json()) as { elements?: OverpassElement[] };
-    const elements = data.elements ?? [];
-    console.log(`[Overpass:${logLabel}] elements returned:`, elements.length);
-    return elements;
+    return data.elements ?? [];
   } catch (error) {
     clearTimeout(timeoutId);
     if (error instanceof Error && error.name === "AbortError") {
       throw new Error(
-        `Overpass request timed out after ${OVERPASS_TIMEOUT_MS}ms (${logLabel})`,
+        `Overpass request timed out after ${OVERPASS_TIMEOUT_MS}ms`,
       );
     }
     throw error;
   }
 }
 
-let hasRunOverpassConnectivityTest = false;
-
-async function runOverpassConnectivityTestOnce(): Promise<void> {
-  if (hasRunOverpassConnectivityTest) return;
-  hasRunOverpassConnectivityTest = true;
-
-  try {
-    const testElements = await fetchOverpassFromEndpoint(
-      OVERPASS_PRIMARY,
-      OVERPASS_SIMPLE_TEST_QUERY,
-      "simple-test",
-    );
-    console.log(
-      "[Overpass] simple test OK — fetch works from Next.js, sample count:",
-      testElements.length,
-    );
-  } catch (testError) {
-    console.error("[Overpass] simple test FAILED:", testError);
-  }
-}
-
 async function fetchOverpass(query: string): Promise<OverpassElement[]> {
-  await runOverpassConnectivityTestOnce();
-
   try {
-    return await fetchOverpassFromEndpoint(
-      OVERPASS_PRIMARY,
-      query,
-      "primary",
-    );
+    return await fetchOverpassFromEndpoint(OVERPASS_PRIMARY, query);
   } catch (primaryError) {
     console.warn("Overpass primary mirror failed, trying fallback:", primaryError);
-    return fetchOverpassFromEndpoint(OVERPASS_FALLBACK, query, "fallback");
+    return fetchOverpassFromEndpoint(OVERPASS_FALLBACK, query);
   }
 }
 
@@ -188,7 +144,8 @@ export async function GET(req: Request) {
 
     const { searchParams } = new URL(req.url);
     const type = (searchParams.get("type") ?? "venues") as DiscoverTabType;
-    const sport = searchParams.get("sport") ?? "Running";
+    const sport =
+      searchParams.get("sport") ?? searchParams.get("sportKey") ?? "running";
     const lat = parseFloat(
       searchParams.get("lat") ?? String(GLASGOW_CENTER.lat),
     );
@@ -200,32 +157,39 @@ export async function GET(req: Request) {
       return Response.json({ error: "Invalid coordinates" }, { status: 400 });
     }
 
+    const staticPlaces = getMockDiscoverPlaces(type, sport);
+    if (staticPlaces.length === 0) {
+      return Response.json([]);
+    }
+
     const osmSportTags = resolveOsmSportTags(sport);
     const query =
       type === "clubs"
         ? buildClubsOverpassQuery(lat, lng, sport)
         : buildVenuesOverpassQuery(lat, lng, sport);
 
-    console.log("[GET /api/discover] params:", { type, sport, lat, lng });
-    console.log("[GET /api/discover] built Overpass query:", query);
-
     try {
       const elements = await fetchOverpass(query);
-      const places = elementsToPlaces(elements, lat, lng, osmSportTags);
-      console.log(
-        "[GET /api/discover] Overpass success, places after filter:",
-        places.length,
+      const overpassPlaces = elementsToPlaces(
+        elements,
+        lat,
+        lng,
+        osmSportTags,
       );
-      return Response.json(places);
+      if (overpassPlaces.length > 0) {
+        return Response.json(overpassPlaces);
+      }
     } catch (overpassError) {
-      console.error("Overpass mirrors unavailable, using mock data:", overpassError);
-      return Response.json(getMockDiscoverPlaces(type, sport));
+      console.warn("Overpass unavailable, using static venues:", overpassError);
     }
+
+    return Response.json(staticPlaces);
   } catch (error) {
     console.error("GET /api/discover failed:", error);
     const { searchParams } = new URL(req.url);
     const type = (searchParams.get("type") ?? "venues") as DiscoverTabType;
-    const sport = searchParams.get("sport") ?? "Running";
+    const sport =
+      searchParams.get("sport") ?? searchParams.get("sportKey") ?? "running";
     return Response.json(getMockDiscoverPlaces(type, sport));
   }
 }

@@ -1,5 +1,5 @@
 import { validateRequest } from "@/auth";
-import { getSportDisplay, ONBOARDING_SPORTS } from "@/lib/onboarding-sports";
+import { getSportDisplay } from "@/lib/onboarding-sports";
 import prisma from "@/lib/prisma";
 import { getProfileIntentDisplay } from "@/lib/settings";
 import { NextRequest } from "next/server";
@@ -32,30 +32,14 @@ export async function GET(req: NextRequest) {
       return Response.json({ players: [] });
     }
 
-    const sportIdsFromCatalog = ONBOARDING_SPORTS.filter(
-      (s) =>
-        s.name.toLowerCase().includes(q.toLowerCase()) ||
-        s.id.toLowerCase().includes(q.toLowerCase()),
-    ).map((s) => s.id);
+    const cleanQuery = q.startsWith("@") ? q.slice(1) : q;
 
     const players = await prisma.user.findMany({
       where: {
         id: { not: user.id },
         OR: [
           { displayName: { contains: q, mode: "insensitive" } },
-          { username: { contains: q, mode: "insensitive" } },
-          {
-            sports: {
-              some: {
-                OR: [
-                  { sport: { contains: q, mode: "insensitive" } },
-                  ...(sportIdsFromCatalog.length
-                    ? [{ sport: { in: sportIdsFromCatalog } }]
-                    : []),
-                ],
-              },
-            },
-          },
+          { username: { contains: cleanQuery, mode: "insensitive" } },
         ],
       },
       select: {

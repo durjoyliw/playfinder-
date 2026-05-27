@@ -10,11 +10,13 @@ import { FollowerInfo, UserProfileData } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import {
   IconBolt,
+  IconArrowLeft,
   IconCalendarEvent,
   IconMapPin,
   IconPlus,
 } from "@tabler/icons-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AthleteProfileData, SkillTier } from "./types";
 
 interface AthleteProfileProps {
@@ -42,9 +44,19 @@ export default function AthleteProfile({
   user,
   followerInfo,
 }: AthleteProfileProps) {
+  const router = useRouter();
+
   return (
     <div className="w-full pb-36 text-white">
       <div className="relative">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="absolute left-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-[#161616] text-[#888888] transition-colors hover:text-white"
+          aria-label="Go back"
+        >
+          <IconArrowLeft className="h-4 w-4" stroke={1.75} />
+        </button>
         <div className="relative h-28 overflow-hidden bg-gradient-to-br from-[#1a1a1a] to-[#0d0d0d]">
           {profile.avatarUrl && (
             <div

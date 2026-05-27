@@ -57,7 +57,7 @@ export default function ProfileIntentPill({
   const pillContent = (
     <>
       <span className={`h-2 w-2 rounded-full ${display.dotClassName}`} />
-      <span className="max-w-[220px] truncate">{display.summary}</span>
+      <span className="max-w-[220px] truncate">{display.label}</span>
       {isOwnProfile && <ChevronDown className="h-4 w-4 flex-shrink-0" />}
     </>
   );

@@ -74,6 +74,7 @@ export function PlayFinderFeed({ sportFilter, feedTypeTab }: PlayFinderFeedProps
         <HomeFeedCard
           key={post.id}
           {...mapPostToHomeFeedCard(post, showImIn)}
+          fromTab={feedTypeTab === "posts" ? "social" : "arena"}
           cardIndex={index}
         />
       ))}

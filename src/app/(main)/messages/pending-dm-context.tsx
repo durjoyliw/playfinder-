@@ -1,15 +1,16 @@
 "use client";
 
-import kyInstance from "@/lib/ky";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   createContext,
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { useChatContext } from "stream-chat-react";
+import { openOrRequestDm } from "./open-dm";
 
 interface PendingDmContextValue {
   draft: string | null;
@@ -30,6 +31,7 @@ export function PendingDmProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { client } = useChatContext();
   const [draft, setDraft] = useState<string | null>(null);
+  const openedForRef = useRef<string | null>(null);
 
   const clearDraft = useCallback(() => setDraft(null), []);
 
@@ -37,39 +39,53 @@ export function PendingDmProvider({ children }: { children: React.ReactNode }) {
     const to = searchParams.get("to");
     const draftParam = searchParams.get("draft");
 
-    if (!to || !draftParam || !client.userID) return;
+    if (draftParam) {
+      setDraft(draftParam);
+    }
+
+    if (!to) {
+      openedForRef.current = null;
+      return;
+    }
+
+    if (!client.userID) return;
+
+    if (openedForRef.current === to) return;
 
     let cancelled = false;
 
     async function openDm() {
       try {
-        await kyInstance.post("/api/messages/prepare-dm", {
-          json: { recipientId: to },
+        const result = await openOrRequestDm({
+          client,
+          currentUserId: client.userID!,
+          targetUserId: to!,
         });
 
-        const channel = client.channel("messaging", {
-          members: [client.userID!, to],
-        });
+        if (cancelled) return;
 
-        await channel.watch();
-
-        if (!cancelled && channel.id) {
-          setDraft(decodeURIComponent(draftParam));
+        if (result.type === "channel" && result.channel.id) {
+          openedForRef.current = to;
           router.replace(
-            `/messages/${encodeURIComponent(channel.id)}`,
+            `/messages/${encodeURIComponent(result.channel.id)}`,
           );
+        } else if (result.type === "blocked") {
+          openedForRef.current = to;
+          router.replace("/messages");
+        } else {
+          console.error("Failed to open DM: unexpected result", result);
         }
       } catch (error) {
         console.error("Failed to open DM", error);
       }
     }
 
-    openDm();
+    void openDm();
 
     return () => {
       cancelled = true;
     };
-  }, [searchParams, client, router]);
+  }, [searchParams, client, client.userID, router]);
 
   return (
     <PendingDmContext.Provider value={{ draft, clearDraft }}>

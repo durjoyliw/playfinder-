@@ -40,10 +40,9 @@ export async function GET(req: NextRequest) {
             OR: [{ expiresAt: null }, { expiresAt: { gt: now } }],
           },
           {
+            type: "ARENA",
             OR: [
               { content: { contains: q, mode: "insensitive" } },
-              { location: { contains: q, mode: "insensitive" } },
-              { timeLabel: { contains: q, mode: "insensitive" } },
               ...(sportMatches.length
                 ? [{ sport: { in: sportMatches } }]
                 : []),

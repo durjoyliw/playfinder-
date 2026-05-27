@@ -3,7 +3,7 @@
 import { useSession } from "@/app/(main)/SessionProvider";
 import {
   formatSportLabel,
-  intentToCardType,
+  getPostTypeBadge,
   isLookingToPlayIntent,
 } from "@/lib/playfinder";
 import { getInitials, SKILL_LEVEL_OPTIONS } from "@/lib/settings";
@@ -17,21 +17,6 @@ import { useRouter } from "next/navigation";
 interface SearchGameCardProps {
   post: PostData;
 }
-
-const intentBadgeStyles: Record<
-  ReturnType<typeof intentToCardType>,
-  string
-> = {
-  looking: "bg-[#C9F31D] text-black",
-  recruiting: "bg-[#3B82F6] text-white",
-  banter: "bg-[#EAB308] text-black",
-};
-
-const intentLabels: Record<ReturnType<typeof intentToCardType>, string> = {
-  looking: "Looking to Play",
-  recruiting: "Recruiting",
-  banter: "Banter",
-};
 
 function getAuthorSkill(post: PostData): string | undefined {
   if (!post.sport) return undefined;
@@ -48,8 +33,8 @@ function getAuthorSkill(post: PostData): string | undefined {
 export function SearchGameCard({ post }: SearchGameCardProps) {
   const { user } = useSession();
   const router = useRouter();
-  const cardType = intentToCardType(post.intent);
   const isLooking = isLookingToPlayIntent(post.intent);
+  const typeBadge = getPostTypeBadge(post.type ?? null);
   const isOwn = user.id === post.user.id;
   const skill = getAuthorSkill(post);
   const sportLabel = formatSportLabel(post.sport);
@@ -66,14 +51,7 @@ export function SearchGameCard({ post }: SearchGameCardProps) {
   return (
     <article className="mx-4 my-2.5 rounded-xl border border-[#222222] bg-[#161616] p-3.5">
       <div className="mb-2 flex items-center justify-between gap-2">
-        <span
-          className={cn(
-            "rounded-full px-2.5 py-0.5 text-[10px] font-bold",
-            intentBadgeStyles[cardType],
-          )}
-        >
-          {sportLabel ?? intentLabels[cardType]}
-        </span>
+        <span style={typeBadge.style}>{typeBadge.label}</span>
         {isLooking && post.slotsNeeded != null && post.slotsNeeded > 0 && (
           <span className="rounded-full bg-[#2a1a00] px-2.5 py-0.5 text-[10px] font-semibold text-amber-400">
             {post.slotsNeeded} slots left

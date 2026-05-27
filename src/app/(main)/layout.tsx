@@ -1,8 +1,9 @@
 import { validateRequest } from "@/auth";
-import { PlayFinderShell } from "@/components/playfinder/playfinder-shell";
+import { PlayFinderProvider } from "@/components/playfinder/playfinder-provider";
 import { userNeedsOnboarding } from "@/lib/onboarding";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { MainAppShell } from "./main-app-shell";
 import SessionProvider from "./SessionProvider";
 
 export default async function Layout({
@@ -27,11 +28,13 @@ export default async function Layout({
 
   return (
     <SessionProvider value={session}>
-      <PlayFinderShell
-        initialUnreadNotificationCount={unreadNotificationCount}
-      >
-        {children}
-      </PlayFinderShell>
+      <PlayFinderProvider>
+        <MainAppShell
+          initialUnreadNotificationCount={unreadNotificationCount}
+        >
+          {children}
+        </MainAppShell>
+      </PlayFinderProvider>
     </SessionProvider>
   );
 }

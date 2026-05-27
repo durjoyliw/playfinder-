@@ -43,3 +43,25 @@ export async function ensureDirectMessageChannel(
 
   return channel;
 }
+
+export async function createPendingMessageRequestChannel(
+  fromUserId: string,
+  toUserId: string,
+  messageRequestId: string,
+) {
+  const channel = streamServerClient.channel(
+    "messaging",
+    messageRequestId,
+    {
+      members: [fromUserId, toUserId],
+      created_by_id: fromUserId,
+      pending: true,
+      requestedBy: fromUserId,
+      messageRequestId,
+      messageLocked: false,
+    },
+  );
+
+  await channel.create();
+  return channel;
+}

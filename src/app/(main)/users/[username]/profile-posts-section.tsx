@@ -106,9 +106,21 @@ export default function ProfilePostsSection({
             <div
               key={post.id}
               className="relative cursor-pointer"
-              onClick={() => router.push(`/posts/${post.id}`)}
+              onClick={() => {
+                const tab =
+                  post.type === "ARENA" || post.type === "BROADCAST"
+                    ? "arena"
+                    : "social";
+                router.push(`/posts/${post.id}?tab=${tab}`);
+              }}
               onKeyDown={(e) => {
-                if (e.key === "Enter") router.push(`/posts/${post.id}`);
+                if (e.key === "Enter") {
+                  const tab =
+                    post.type === "ARENA" || post.type === "BROADCAST"
+                      ? "arena"
+                      : "social";
+                  router.push(`/posts/${post.id}?tab=${tab}`);
+                }
               }}
               role="link"
               tabIndex={0}

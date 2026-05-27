@@ -1,11 +1,17 @@
 "use client";
 
 import { useSession } from "@/app/(main)/SessionProvider";
+import { useToast } from "@/components/ui/use-toast";
+import useFollowerInfo from "@/hooks/useFollowerInfo";
+import kyInstance from "@/lib/ky";
 import { getDisplayArea } from "@/lib/location";
+import { FollowerInfo } from "@/lib/types";
 import { getInitials } from "@/lib/settings";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { IconBolt, IconMessage } from "@tabler/icons-react";
+import { QueryKey, useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export interface SearchPlayerResult {
   id: string;
@@ -26,6 +32,81 @@ interface SearchPlayerRowProps {
   query: string;
 }
 
+const defaultFollowerInfo: FollowerInfo = {
+  followers: 0,
+  isFollowedByUser: false,
+  isFollowedByThem: false,
+  isTeammate: false,
+};
+
+function SearchTeammateAction({ userId }: { userId: string }) {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const { data } = useFollowerInfo(userId, defaultFollowerInfo);
+  const queryKey: QueryKey = ["follower-info", userId];
+
+  const { mutate: follow, isPending } = useMutation({
+    mutationFn: () => kyInstance.post(`/api/users/${userId}/followers`),
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey });
+      const previousState = queryClient.getQueryData<FollowerInfo>(queryKey);
+      const isFollowedByThem = previousState?.isFollowedByThem ?? false;
+      queryClient.setQueryData<FollowerInfo>(queryKey, () => ({
+        followers: (previousState?.followers || 0) + 1,
+        isFollowedByUser: true,
+        isFollowedByThem,
+        isTeammate: isFollowedByThem,
+      }));
+      return { previousState };
+    },
+    onError(error, _variables, context) {
+      queryClient.setQueryData(queryKey, context?.previousState);
+      console.error(error);
+      toast({
+        variant: "destructive",
+        description: "Something went wrong. Please try again.",
+      });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
+    },
+  });
+
+  if (data.isTeammate) {
+    return (
+      <span className="flex-shrink-0 rounded-full border border-[rgba(201,243,29,0.4)] bg-[#1e1e1e] px-3 py-1.5 text-xs font-semibold text-[#C9F31D]">
+        Teammates ⚡
+      </span>
+    );
+  }
+
+  if (data.isFollowedByUser && !data.isFollowedByThem) {
+    return (
+      <span className="flex-shrink-0 rounded-full border border-[#2a2a2a] bg-[#161616] px-3 py-1.5 text-xs font-semibold text-[#888888]">
+        Requested
+      </span>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      disabled={isPending}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        follow();
+      }}
+      className="flex-shrink-0 rounded-full bg-[#C9F31D] px-3 py-1.5 text-xs font-bold text-black transition-colors hover:bg-[#d4f73a] disabled:opacity-50"
+    >
+      <span className="inline-flex items-center gap-1">
+        <IconBolt className="h-3.5 w-3.5" stroke={2} />
+        Add Teammate
+      </span>
+    </button>
+  );
+}
+
 export function SearchPlayerRow({ player, query }: SearchPlayerRowProps) {
   const { user } = useSession();
   const router = useRouter();
@@ -35,10 +116,7 @@ export function SearchPlayerRow({ player, query }: SearchPlayerRowProps) {
     e.preventDefault();
     e.stopPropagation();
     if (isSelf) return;
-    const draft = `Hey ${player.displayName}! Found you on PlayFinder search — up for a game?`;
-    router.push(
-      `/messages?to=${encodeURIComponent(player.id)}&draft=${encodeURIComponent(draft)}`,
-    );
+    router.push(`/messages?to=${encodeURIComponent(player.id)}`);
   };
 
   const distanceLabel = player.location
@@ -68,10 +146,14 @@ export function SearchPlayerRow({ player, query }: SearchPlayerRowProps) {
         >
           {player.displayName}
         </Link>
+        <p className="text-xs text-[#666666]">@{player.username}</p>
 
         <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-[#666666]">
           <span
-            className={cn("h-2 w-2 flex-shrink-0 rounded-full", player.intent.dotClassName)}
+            className={cn(
+              "h-2 w-2 flex-shrink-0 rounded-full",
+              player.intent.dotClassName,
+            )}
           />
           <span>{player.intent.label}</span>
           {distanceLabel && (
@@ -109,13 +191,17 @@ export function SearchPlayerRow({ player, query }: SearchPlayerRowProps) {
       </div>
 
       {!isSelf && (
-        <button
-          type="button"
-          onClick={handleMessage}
-          className="flex-shrink-0 rounded-full bg-[#C9F31D] px-3 py-1.5 text-xs font-bold text-black transition-colors hover:bg-[#d4f73a]"
-        >
-          Message
-        </button>
+        <div className="flex flex-shrink-0 items-center gap-2">
+          <SearchTeammateAction userId={player.id} />
+          <button
+            type="button"
+            onClick={handleMessage}
+            className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#1e1e1e] text-[#888888] transition-colors hover:text-white"
+            aria-label={`Message ${player.displayName}`}
+          >
+            <IconMessage className="h-4 w-4" stroke={1.75} />
+          </button>
+        </div>
       )}
     </div>
   );

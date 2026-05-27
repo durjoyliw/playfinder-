@@ -1,8 +1,8 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
 import { Pencil, Search } from "lucide-react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
 import type { Channel } from "stream-chat";
 import {
@@ -13,10 +13,18 @@ import { useSession } from "../SessionProvider";
 import {
   channelMatchesSearch,
   formatConversationTime,
+  getChannelRequestData,
   getInitials,
   getOtherMember,
 } from "./messages-utils";
 import NewChatDialog from "./NewChatDialog";
+
+type InboxTab = "messages" | "requests";
+
+function isIncomingRequest(channel: Channel, currentUserId: string) {
+  const { pending, requestedBy } = getChannelRequestData(channel);
+  return pending && requestedBy !== currentUserId;
+}
 
 function ConversationPreview({
   channel,
@@ -81,10 +89,13 @@ function ConversationPreview({
 
 export default function ConversationsList() {
   const { user } = useSession();
-  const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
   const [showNewChatDialog, setShowNewChatDialog] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const activeTab: InboxTab =
+    searchParams.get("tab") === "requests" ? "requests" : "messages";
 
   const ChannelPreviewCustom = useCallback(
     (props: ChannelPreviewUIComponentProps) => (
@@ -95,10 +106,17 @@ export default function ConversationsList() {
 
   const channelRenderFilterFn = useCallback(
     (channels: Channel[]) =>
-      channels.filter((ch) =>
-        channelMatchesSearch(ch, searchQuery, user.id),
-      ),
-    [searchQuery, user.id],
+      channels.filter((ch) => {
+        const incoming = isIncomingRequest(ch, user.id);
+        if (activeTab === "requests") {
+          if (!incoming) return false;
+        } else if (incoming) {
+          return false;
+        }
+
+        return channelMatchesSearch(ch, searchQuery, user.id);
+      }),
+    [activeTab, searchQuery, user.id],
   );
 
   const listFilters = {
@@ -130,6 +148,19 @@ export default function ConversationsList() {
         </div>
       </div>
 
+      <div className="flex gap-2 px-4 pb-3">
+        <TabButton
+          active={activeTab === "messages"}
+          href="/messages"
+          label="Messages"
+        />
+        <TabButton
+          active={activeTab === "requests"}
+          href="/messages?tab=requests"
+          label="Requests"
+        />
+      </div>
+
       <div className="px-4 pb-3">
         <div className="relative">
           <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#888888]" />
@@ -157,7 +188,9 @@ export default function ConversationsList() {
             <p className="px-4 py-8 text-center text-sm text-[#888888]">
               {searchQuery
                 ? "No conversations match your search."
-                : "No conversations yet. Start a new chat."}
+                : activeTab === "requests"
+                  ? "No message requests yet."
+                  : "No conversations yet. Start a new chat."}
             </p>
           )}
         />
@@ -167,5 +200,28 @@ export default function ConversationsList() {
         <NewChatDialog onOpenChange={setShowNewChatDialog} />
       )}
     </div>
+  );
+}
+
+function TabButton({
+  active,
+  href,
+  label,
+}: {
+  active: boolean;
+  href: string;
+  label: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
+        active
+          ? "bg-[#C9F31D] text-black"
+          : "bg-[#1a1a1a] text-[#888888] hover:text-white"
+      }`}
+    >
+      {label}
+    </Link>
   );
 }

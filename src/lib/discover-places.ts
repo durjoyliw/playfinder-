@@ -1,10 +1,10 @@
 import { DISCOVER_VENUES } from "@/lib/venues";
 import {
-  matchesOsmSportTags as matchTags,
+  matchesOsmSportTags,
   resolveOsmSportTags,
 } from "@/lib/discover-sport-map";
 
-export { matchTags as matchesOsmSportTags, resolveOsmSportTags, SPORT_MAP } from "@/lib/discover-sport-map";
+export { matchesOsmSportTags, resolveOsmSportTags, SPORT_MAP } from "@/lib/discover-sport-map";
 
 /** Glasgow city centre */
 export const GLASGOW_CENTER = { lat: 55.8642, lng: -4.2518 };
@@ -107,32 +107,108 @@ export const MOCK_CLUBS: DiscoverPlace[] = [
   { id: "c15", name: "Shettleston Boxing Club", address: "Shettleston, Glasgow G32", lat: 55.847, lng: -4.196, distanceMiles: 3.1, openStatus: null, bookable: false, website: "https://glasgowlife.sportsuite.co.uk", sports: ["Boxing"] },
   { id: "c16", name: "Easterhouse Phoenix Boxing Club", address: "5 Shandwick St, Glasgow G34 9BN", lat: 55.866, lng: -4.116, distanceMiles: 5.2, openStatus: null, bookable: false, website: "https://glasgowlife.sportsuite.co.uk", sports: ["Boxing"] },
   { id: "c17", name: "Kynoch Boxing Gym", address: "Glasgow City Centre", lat: 55.862, lng: -4.245, distanceMiles: 0.9, openStatus: null, bookable: true, website: "https://glasgowlife.sportsuite.co.uk", sports: ["Boxing"] },
-  { id: "c18", name: "Steven McLaren Martial Arts", address: "Easterhouse Sports Centre, Auchinlea Rd G34 9HQ", lat: 55.866, lng: -4.116, distanceMiles: 5.2, openStatus: null, bookable: false, website: "https://glasgowlife.sportsuite.co.uk", sports: ["Martial Arts", "Taekwondo"] },
-  { id: "c19", name: "Craigend Karate Club", address: "St Rose of Lima Primary, Glasgow G33 5QS", lat: 55.879, lng: -4.163, distanceMiles: 4.3, openStatus: null, bookable: false, website: "https://glasgowlife.sportsuite.co.uk", sports: ["Martial Arts", "Karate"] },
+  { id: "c18", name: "Steven McLaren Martial Arts", address: "Easterhouse Sports Centre, Auchinlea Rd G34 9HQ", lat: 55.866, lng: -4.116, distanceMiles: 5.2, openStatus: null, bookable: false, website: "https://glasgowlife.sportsuite.co.uk", sports: ["MartialArts", "Taekwondo"] },
+  { id: "c19", name: "Craigend Karate Club", address: "St Rose of Lima Primary, Glasgow G33 5QS", lat: 55.879, lng: -4.163, distanceMiles: 4.3, openStatus: null, bookable: false, website: "https://glasgowlife.sportsuite.co.uk", sports: ["MartialArts", "Karate"] },
   { id: "c20", name: "Sunny Cycles Community Club", address: "Glasgow Southside", lat: 55.835, lng: -4.261, distanceMiles: 2.9, openStatus: null, bookable: false, website: "https://glasgowlife.sportsuite.co.uk", sports: ["Cycling"] },
   { id: "c21", name: "Glasgow University Cycling Club", address: "Stevenson Building, Glasgow G12 8QQ", lat: 55.872, lng: -4.289, distanceMiles: 1.6, openStatus: null, bookable: false, website: "https://www.glasgowunisrc.org/gusa/clubs/", sports: ["Cycling"] },
   { id: "c22", name: "Glasgow Warriors", address: "Scotstoun Stadium, Danes Dr G14 9HD", lat: 55.877, lng: -4.354, distanceMiles: 3.8, openStatus: null, bookable: false, website: "https://glasgowwarriors.org", sports: ["Rugby"] },
   { id: "c23", name: "Hillhead Rugby Club", address: "Hughenden Rd, Glasgow G12", lat: 55.876, lng: -4.302, distanceMiles: 2.1, openStatus: null, bookable: false, website: "https://hillheadsportsclub.co.uk", sports: ["Rugby"] },
-  { id: "c24", name: "Glasgow University Hockey Club", address: "Garscube Sports Complex, Glasgow G61", lat: 55.912, lng: -4.323, distanceMiles: 4.1, openStatus: null, bookable: false, website: "https://www.glasgowunisrc.org/gusa/clubs/", sports: ["Hockey"] },
-  { id: "c25", name: "The Climbing Academy", address: "Glasgow City Centre", lat: 55.861, lng: -4.252, distanceMiles: 1.1, openStatus: "Open now", bookable: true, website: "https://theclimbingacademy.com", sports: ["Climbing", "Bouldering"] },
+  { id: "c24", name: "Glasgow University Hockey Club", address: "Garscube Sports Complex, Glasgow G61", lat: 55.912, lng: -4.323, distanceMiles: 4.1, openStatus: null, bookable: false, website: "https://www.glasgowunisrc.org/gusa/clubs/", sports: ["Hockey", "FieldHockey"] },
+  { id: "c25", name: "The Climbing Academy", address: "Glasgow City Centre", lat: 55.861, lng: -4.252, distanceMiles: 1.1, openStatus: "Open now", bookable: true, website: "https://theclimbingacademy.com", sports: ["Climbing"] },
   { id: "c26", name: "Glasgow Roller Derby", address: "ARC, Glasgow Caledonian University G4 0BA", lat: 55.866, lng: -4.251, distanceMiles: 0.8, openStatus: null, bookable: false, website: "https://glasgowrollerderby.co.uk", sports: ["Roller Derby"] },
   { id: "c27", name: "Pinkston Watersports", address: "Pinkston Rd, Glasgow G4 0HF", lat: 55.868, lng: -4.239, distanceMiles: 1.0, openStatus: "Open now", bookable: true, website: "https://pinkston.co.uk", sports: ["Kayaking", "Canoeing", "Rowing"] },
   { id: "c28", name: "Glasgow University Boat Club", address: "Garscube Sports Complex, Glasgow G61", lat: 55.912, lng: -4.323, distanceMiles: 4.1, openStatus: null, bookable: false, website: "https://www.glasgowunisrc.org/gusa/clubs/", sports: ["Rowing"] },
   { id: "c29", name: "Glasgow Golf Club", address: "Killermont, Bearsden G61 2TW", lat: 55.912, lng: -4.322, distanceMiles: 4.2, openStatus: null, bookable: true, website: "https://glasgowgolfclub.com", sports: ["Golf"] },
   { id: "c30", name: "Glasgow University Gymnastics Club", address: "Stevenson Building, Glasgow G12 8QQ", lat: 55.872, lng: -4.289, distanceMiles: 1.6, openStatus: null, bookable: false, website: "https://www.glasgowunisrc.org/gusa/clubs/", sports: ["Gymnastics", "Trampolining"] },
   { id: "c31", name: "The Vanguard Centre", address: "Railway Arch, Glasgow City Centre", lat: 55.859, lng: -4.248, distanceMiles: 1.3, openStatus: null, bookable: true, website: "https://glasgowlife.sportsuite.co.uk", sports: ["Fencing"] },
-  { id: "c32", name: "Easterhouse Table Tennis Club", address: "Easterhouse Phoenix Centre, 5 Shandwick St G34 9BN", lat: 55.866, lng: -4.116, distanceMiles: 5.2, openStatus: null, bookable: false, website: "https://glasgowlife.sportsuite.co.uk", sports: ["Table Tennis"] },
+  { id: "c32", name: "Easterhouse Table Tennis Club", address: "Easterhouse Phoenix Centre, 5 Shandwick St G34 9BN", lat: 55.866, lng: -4.116, distanceMiles: 5.2, openStatus: null, bookable: false, website: "https://glasgowlife.sportsuite.co.uk", sports: ["TableTennis"] },
   { id: "c33", name: "Glasgow University Netball Club", address: "Stevenson Building, Glasgow G12 8QQ", lat: 55.872, lng: -4.289, distanceMiles: 1.6, openStatus: null, bookable: false, website: "https://www.glasgowunisrc.org/gusa/clubs/", sports: ["Netball"] },
   { id: "c34", name: "Glasgow University Sports Association", address: "Stevenson Building, Glasgow G12 8QQ", lat: 55.872, lng: -4.289, distanceMiles: 1.6, openStatus: "Open now", bookable: true, website: "https://www.glasgowunisrc.org/gusa/clubs/", sports: ["Football", "Tennis", "Basketball", "Swimming", "Squash", "Rowing", "Cycling", "Rugby", "Hockey", "Boxing", "Gymnastics", "Judo", "Karate", "Volleyball", "Badminton"] },
 ];
 
+export function normalizeSportForFilter(sport: string): string {
+  const key = sport.trim().toLowerCase().replace(/\s+/g, "-");
+  const map: Record<string, string> = {
+    football: "Football",
+    futsal: "Futsal",
+    tennis: "Tennis",
+    basketball: "Basketball",
+    gym: "Gym",
+    running: "Running",
+    swimming: "Swimming",
+    rugby: "Rugby",
+    cricket: "Cricket",
+    cycling: "Cycling",
+    badminton: "Badminton",
+    squash: "Squash",
+    golf: "Golf",
+    boxing: "Boxing",
+    volleyball: "Volleyball",
+    "table-tennis": "TableTennis",
+    climbing: "Climbing",
+    yoga: "Yoga",
+    pilates: "Pilates",
+    dance: "Dancing",
+    dancing: "Dancing",
+    hiking: "Hiking",
+    judo: "Judo",
+    karate: "Karate",
+    taekwondo: "Taekwondo",
+    bjj: "BJJ",
+    "muay-thai": "MuayThai",
+    "martial-arts": "MartialArts",
+    baseball: "Baseball",
+    softball: "Softball",
+    gymnastics: "Gymnastics",
+    trampolining: "Trampolining",
+    skateboarding: "Skateboarding",
+    parkour: "Parkour",
+    "field-hockey": "FieldHockey",
+    "ice-skating": "IceSkating",
+    "ice-hockey": "IceHockey",
+    "open-water-swimming": "OpenWaterSwimming",
+    "mountain-biking": "MountainBiking",
+    "beach-volleyball": "BeachVolleyball",
+    "water-polo": "Waterpolo",
+    "trail-running": "TrailRunning",
+    "american-football": "AmericanFootball",
+    "australian-football": "AustralianFootball",
+    "gaelic-football": "GaelicFootball",
+    athletics: "Athletics",
+    netball: "Netball",
+    fencing: "Fencing",
+    rowing: "Rowing",
+    kayaking: "Kayaking",
+    skiing: "Skiing",
+    snowboarding: "Snowboarding",
+    curling: "Curling",
+    archery: "Archery",
+    esports: "Esports",
+    chess: "Chess",
+    darts: "Darts",
+    snooker: "Snooker",
+    cheerleading: "Cheerleading",
+    triathlon: "Triathlon",
+    orienteering: "Orienteering",
+    bmx: "BMX",
+  };
+
+  if (map[key]) return map[key];
+
+  if (/^[A-Z][a-zA-Z]+$/.test(sport.trim())) {
+    return sport.trim();
+  }
+
+  return key
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join("");
+}
+
 function placeMatchesSport(place: DiscoverPlace, sport: string): boolean {
-  if (!place.sports?.length) return false;
-  const needle = sport.trim().toLowerCase();
-  return place.sports.some((s) => {
-    const hay = s.toLowerCase();
-    return hay === needle || hay.includes(needle) || needle.includes(hay);
-  });
+  if (!place.sports?.length || !sport.trim()) return false;
+  const normalized = normalizeSportForFilter(sport);
+  return place.sports.some((s) => s === normalized);
 }
 
 function filterPlacesBySport(
@@ -143,10 +219,9 @@ function filterPlacesBySport(
     (a, b) => a.distanceMiles - b.distanceMiles,
   );
 
-  if (!sport?.trim()) return sorted;
+  if (!sport?.trim()) return [];
 
-  const filtered = sorted.filter((place) => placeMatchesSport(place, sport));
-  return filtered.length > 0 ? filtered : sorted;
+  return sorted.filter((place) => placeMatchesSport(place, sport));
 }
 
 export function getMockDiscoverPlaces(
@@ -165,7 +240,7 @@ export function matchesOsmSport(
   tags: Record<string, string>,
   sportDisplayName: string,
 ): boolean {
-  return matchTags(tags, resolveOsmSportTags(sportDisplayName));
+  return matchesOsmSportTags(tags, resolveOsmSportTags(sportDisplayName));
 }
 
 export function parseOpenStatus(

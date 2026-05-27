@@ -14,6 +14,7 @@ interface DiscoverMapProps {
   tabType: DiscoverTabType;
   sportLabel: string;
   loading: boolean;
+  fullScreen?: boolean;
 }
 
 const GLASGOW_CENTER_LNG_LAT: [number, number] = [
@@ -26,6 +27,7 @@ export function DiscoverMap({
   tabType,
   sportLabel,
   loading,
+  fullScreen = false,
 }: DiscoverMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -145,7 +147,13 @@ export function DiscoverMap({
   const hasToken = !!process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
   return (
-    <div className="relative mx-4 mb-4 h-[420px] overflow-hidden rounded-xl border border-[#222222]">
+    <div
+      className={
+        fullScreen
+          ? "absolute inset-0 z-0 h-full w-full overflow-hidden"
+          : "relative mx-4 mb-4 h-[420px] overflow-hidden rounded-xl border border-[#222222]"
+      }
+    >
       <style>{`
         .mapboxgl-ctrl-group {
           background: #1a1a1a !important;
@@ -200,7 +208,7 @@ export function DiscoverMap({
         </div>
       )}
 
-      {hasToken && !loading && places.length > 0 && (
+      {hasToken && !loading && places.length > 0 && !fullScreen && (
         <div className="pointer-events-none absolute bottom-2 left-2 z-10">
           <span
             className="rounded-lg border border-[#333333] text-xs text-white"

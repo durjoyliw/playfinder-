@@ -37,6 +37,8 @@ model User {
   comments              Comment[]
   receivedNotifications Notification[] @relation("Recipient")
   issuedNotifications   Notification[] @relation("Issuer")
+  sentMessageRequests     MessageRequest[] @relation("MessageRequestsSent")
+  receivedMessageRequests MessageRequest[] @relation("MessageRequestsReceived")
 
   createdAt DateTime @default(now())
 
@@ -199,9 +201,24 @@ model Notification {
   @@map("notifications")
 }
 
+model MessageRequest {
+  id         String   @id @default(cuid())
+  fromUserId String
+  fromUser   User     @relation("MessageRequestsSent", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUserId   String
+  toUser     User     @relation("MessageRequestsReceived", fields: [toUserId], references: [id], onDelete: Cascade)
+  channelId  String   @unique
+  status     String   @default("PENDING")
+  createdAt  DateTime @default(now())
+
+  @@index([fromUserId, toUserId, status])
+  @@map("message_requests")
+}
+
 enum NotificationType {
   LIKE
   FOLLOW
   COMMENT
   TEAMMATE
+  MESSAGE_REQUEST
 }

@@ -6,22 +6,20 @@ import { FeedCardLikeButton } from "@/components/playfinder/feed-card-like-butto
 import { FeedCardMessageClubButton } from "@/components/playfinder/feed-card-message-club-button";
 import { FeedCardShareButton } from "@/components/playfinder/feed-card-share-button";
 import { PostOptionsMenu } from "@/components/playfinder/post-options-menu";
-import { isLookingToPlayIntent, mapPostToFeedCard } from "@/lib/playfinder";
+import {
+  getPostTypeBadge,
+  isLookingToPlayIntent,
+  mapPostToFeedCard,
+} from "@/lib/playfinder";
 import { PostData } from "@/lib/types";
 import { ArrowLeft, BadgeCheck, Clock, MapPin } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface PostDetailViewProps {
   post: PostData;
   loggedInUserId: string;
 }
-
-const intentBadges = {
-  looking: { label: "Looking to Play", color: "bg-[#C9F31D] text-black" },
-  recruiting: { label: "Recruiting", color: "bg-[#3B82F6] text-white" },
-  banter: { label: "Banter", color: "bg-[#EAB308] text-black" },
-} as const;
 
 const accentColors = {
   looking: "#C9F31D",
@@ -31,9 +29,10 @@ const accentColors = {
 
 export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const card = mapPostToFeedCard(post);
   const isOwnPost = post.userId === loggedInUserId;
-  const badge = intentBadges[card.type];
+  const typeBadge = getPostTypeBadge(post.type ?? null);
   const profileHref = `/users/${card.username}`;
   const isLooking =
     isLookingToPlayIntent(post.intent) || card.type === "looking";
@@ -43,7 +42,10 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
       <header className="sticky top-0 z-40 flex items-center border-b border-[#262626] bg-[#0d0d0d] px-4 py-3">
         <button
           type="button"
-          onClick={() => router.back()}
+          onClick={() => {
+            const tab = searchParams.get("tab") ?? "social";
+            router.push(`/?tab=${tab}`);
+          }}
           className="rounded-full p-2 text-white hover:bg-[#161616]"
           aria-label="Go back"
         >
@@ -98,10 +100,8 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
                 </p>
               </div>
             </Link>
-            <span
-              className={`flex-shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${badge.color}`}
-            >
-              {badge.label}
+            <span className="flex-shrink-0" style={typeBadge.style}>
+              {typeBadge.label}
             </span>
           </div>
 

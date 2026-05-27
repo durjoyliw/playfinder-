@@ -10,6 +10,8 @@ export interface HomeFeedCardProps {
   username: string;
   /** Raw post intent from API (for robust LOOKING_TO_PLAY detection) */
   intent?: string;
+  /** Feed tab to preserve when opening post details */
+  fromTab?: "social" | "arena";
   avatar: string;
   name: string;
   timestamp: string;

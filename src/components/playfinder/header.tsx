@@ -14,7 +14,7 @@ import {
   IconSettings,
 } from "@tabler/icons-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 
 interface HeaderProps {
@@ -23,8 +23,11 @@ interface HeaderProps {
 
 export function Header({ initialUnreadNotificationCount }: HeaderProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const urlSearchParams = useSearchParams();
   const queryClient = useQueryClient();
   const locationRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const [locationOpen, setLocationOpen] = useState(false);
   const [locationDraft, setLocationDraft] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -59,6 +62,17 @@ export function Header({ initialUnreadNotificationCount }: HeaderProps) {
       setLocationDraft(userSettings?.location ?? "");
     }
   }, [locationOpen, userSettings?.location]);
+
+  useEffect(() => {
+    const q = urlSearchParams.get("q") ?? "";
+    setSearchQuery(q);
+  }, [urlSearchParams]);
+
+  useEffect(() => {
+    if (pathname === "/search") {
+      requestAnimationFrame(() => searchInputRef.current?.focus());
+    }
+  }, [pathname]);
 
   useEffect(() => {
     if (!locationOpen) return;
@@ -109,6 +123,7 @@ export function Header({ initialUnreadNotificationCount }: HeaderProps) {
             aria-hidden
           />
           <input
+            ref={searchInputRef}
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
