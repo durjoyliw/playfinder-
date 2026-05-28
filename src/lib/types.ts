@@ -124,10 +124,14 @@ export function getPlayfinderFeedPostInclude(loggedInUserId: string) {
         userId: true,
       },
     },
+    interests: {
+      select: { userId: true, status: true, id: true },
+    },
     _count: {
       select: {
         likes: true,
         comments: true,
+        interests: true,
       },
     },
   } satisfies Prisma.PostInclude;
@@ -155,10 +159,14 @@ export function getPostDataInclude(loggedInUserId: string) {
         userId: true,
       },
     },
+    interests: {
+      select: { userId: true, status: true, id: true },
+    },
     _count: {
       select: {
         likes: true,
         comments: true,
+        interests: true,
       },
     },
   } satisfies Prisma.PostInclude;
@@ -201,6 +209,7 @@ export const notificationsInclude = {
   post: {
     select: {
       content: true,
+      userId: true,
     },
   },
 } satisfies Prisma.NotificationInclude;
@@ -223,6 +232,9 @@ export interface FollowerInfo {
 
 export type PlayfinderFeedPost = PostData & {
   isTeammate: boolean;
+  acceptedCount: number;
+  spotsLeft: number;
+  userInterestStatus: string | null;
 };
 
 export interface PlayfinderPostsPage {

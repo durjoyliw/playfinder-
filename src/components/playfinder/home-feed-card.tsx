@@ -1,6 +1,7 @@
 "use client";
 
 import { useSession } from "@/app/(main)/SessionProvider";
+import { FeedCardImInButton } from "@/components/playfinder/feed-card-im-in-button";
 import { FeedCardLikeButton } from "@/components/playfinder/feed-card-like-button";
 import { FeedCardShareButton } from "@/components/playfinder/feed-card-share-button";
 import type { HomeFeedCardProps } from "@/lib/home-feed-card";
@@ -9,7 +10,6 @@ import { cn } from "@/lib/utils";
 import { IconBolt, IconFlame, IconLock } from "@tabler/icons-react";
 import { Clock, MapPin } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 const ACTION_PILL =
   "flex flex-1 items-center justify-center rounded-[10px] border border-[#2a2a2a] bg-[#1f1f1f] py-[9px] text-center text-[13px] transition-colors";
@@ -36,9 +36,13 @@ export function HomeFeedCard({
   isHotTake = false,
   visibility = "PUBLIC",
   cardIndex = 0,
+  postType = null,
+  acceptedCount = 0,
+  spotsLeft = 0,
+  isFull = false,
+  userInterestStatus = null,
 }: HomeFeedCardProps) {
   const { user } = useSession();
-  const router = useRouter();
   const profileHref = `/users/${username}`;
   const hasPhoto = avatar.startsWith("http");
   const voltAvatar = cardIndex % 2 === 0;
@@ -46,15 +50,9 @@ export function HomeFeedCard({
   const isLookingToPlay = isLookingToPlayIntent(intent);
   const tabParam = fromTab ?? "social";
   const postHref = `/posts/${postId}?tab=${tabParam}`;
-
-  const handleImIn = () => {
-    if (isOwnPost) return;
-    const sportLabel = sport ?? "your game";
-    const draft = `I'm in! 👋 Saw your post about ${sportLabel} — still need players?`;
-    router.push(
-      `/messages?to=${encodeURIComponent(authorId)}&draft=${encodeURIComponent(draft)}`,
-    );
-  };
+  const isArenaPost = postType === "ARENA" || postType === "BROADCAST";
+  const showSpots =
+    isArenaPost && (acceptedCount > 0 || spotsLeft > 0);
 
   return (
     <article
@@ -168,6 +166,46 @@ export function HomeFeedCard({
 
       <p className="mb-3.5 mt-2.5 text-sm leading-[1.6] text-white">{content}</p>
 
+      {showSpots && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            margin: "8px 0",
+          }}
+        >
+          {Array.from({ length: acceptedCount }).map((_, i) => (
+            <div
+              key={`filled-${i}`}
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: "50%",
+                background: "#C9F31D",
+                border: "2px solid #C9F31D",
+              }}
+            />
+          ))}
+          {Array.from({ length: spotsLeft }).map((_, i) => (
+            <div
+              key={`empty-${i}`}
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: "50%",
+                border: "2px dashed #444",
+              }}
+            />
+          ))}
+          <span style={{ fontSize: 13, color: "#C9F31D", fontWeight: 600 }}>
+            {spotsLeft > 0
+              ? `${spotsLeft} spot${spotsLeft > 1 ? "s" : ""} left`
+              : "Full"}
+          </span>
+        </div>
+      )}
+
       {imageUrl && (
         <Link href={postHref} className="mb-3.5 block">
           <img
@@ -181,13 +219,15 @@ export function HomeFeedCard({
       <div className="flex w-full items-center gap-2">
         <div className="flex min-w-0 flex-1 gap-2">
           {showImInButton && isLookingToPlay && !isOwnPost && (
-            <button
-              type="button"
-              onClick={handleImIn}
-              className={cn(ACTION_PILL, "font-bold text-white")}
-            >
-              I&apos;m in 👋
-            </button>
+            <div className="min-w-0 flex-1">
+              <FeedCardImInButton
+                postId={postId}
+                authorId={authorId}
+                isFull={isFull}
+                userInterestStatus={userInterestStatus}
+                fullWidth
+              />
+            </div>
           )}
           <FeedCardLikeButton
             postId={postId}

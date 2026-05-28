@@ -29,6 +29,11 @@ export interface HomeFeedCardProps {
   visibility?: string;
   /** Visual-only index for avatar colour alternation */
   cardIndex?: number;
+  postType?: string | null;
+  acceptedCount?: number;
+  spotsLeft?: number;
+  isFull?: boolean;
+  userInterestStatus?: string | null;
 }
 
 export function mapPostToHomeFeedCard(
@@ -57,5 +62,10 @@ export function mapPostToHomeFeedCard(
     isTeammate: post.isTeammate,
     isHotTake: post.isHighlight,
     visibility: post.visibility,
+    postType: post.type ?? null,
+    acceptedCount: post.acceptedCount,
+    spotsLeft: post.spotsLeft,
+    isFull: post.isFull,
+    userInterestStatus: post.userInterestStatus,
   };
 }

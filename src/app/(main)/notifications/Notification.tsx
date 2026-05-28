@@ -11,7 +11,7 @@ interface NotificationProps {
 
 export default function Notification({ notification }: NotificationProps) {
   const notificationTypeMap: Record<
-    NotificationType,
+    Exclude<NotificationType, "GAME_INTEREST">,
     { message: string; icon: JSX.Element; href: string }
   > = {
     FOLLOW: {
@@ -34,9 +34,29 @@ export default function Notification({ notification }: NotificationProps) {
       icon: <Heart className="size-7 fill-red-500 text-red-500" />,
       href: `/posts/${notification.postId}`,
     },
+    MESSAGE_REQUEST: {
+      message: `${notification.issuer.displayName} sent you a message request`,
+      icon: <MessageCircle className="size-7 text-primary" />,
+      href: `/messages`,
+    },
   };
 
-  const { message, icon, href } = notificationTypeMap[notification.type];
+  const entry =
+    notification.type === "GAME_INTEREST"
+      ? {
+          message:
+            notification.post?.userId === notification.recipientId
+              ? `${notification.issuer.displayName} is interested in your game`
+              : `${notification.issuer.displayName} accepted you for the game`,
+          icon: <MessageCircle className="size-7 text-[#C9F31D]" />,
+          href: notification.postId ? `/posts/${notification.postId}` : "/",
+        }
+      : notificationTypeMap[notification.type];
+  if (!entry) {
+    return null;
+  }
+
+  const { message, icon, href } = entry;
 
   return (
     <Link href={href} className="block">

@@ -1,5 +1,6 @@
 import { normalizeSportKey } from "@/lib/onboarding-sports";
 import { PLAYFINDER_SPORTS, getSportById } from "@/lib/sports";
+import { computeInterestFields } from "@/lib/post-interest";
 import { PostData } from "@/lib/types";
 import { formatRelativeDate } from "@/lib/utils";
 import { PostIntent, Sport } from "@prisma/client";
@@ -172,7 +173,10 @@ function getExpiryInfo(
   };
 }
 
-export function mapPostToFeedCard(post: PostData): FeedCardProps {
+export function mapPostToFeedCard(
+  post: PostData,
+  loggedInUserId?: string,
+): FeedCardProps {
   const isLookingToPlay = isLookingToPlayIntent(post.intent);
 
   const { expiresIn, expiryPercent } = isLookingToPlay
@@ -186,6 +190,15 @@ export function mapPostToFeedCard(post: PostData): FeedCardProps {
     !!expiresAtDate &&
     expiresAtDate > now &&
     differenceInMilliseconds(expiresAtDate, now) < TWO_HOURS_MS;
+
+  const interestFields = computeInterestFields(
+    post,
+    loggedInUserId ?? "",
+  );
+  const isArenaPost =
+    post.type === "ARENA" || post.type === "BROADCAST";
+  const showSpots =
+    isArenaPost && post.slotsNeeded != null && post.slotsNeeded > 0;
 
   return {
     postId: post.id,
@@ -208,12 +221,11 @@ export function mapPostToFeedCard(post: PostData): FeedCardProps {
     likes: post._count.likes,
     isLikedByUser: post.likes.length > 0,
     replies: post._count.comments,
-    slotsRemaining:
-      isLookingToPlay && post.slotsNeeded != null ? post.slotsNeeded : undefined,
-    playerSlots:
-      isLookingToPlay && post.slotsNeeded != null
-        ? Array.from({ length: post.slotsNeeded }, () => ({ filled: false }))
-        : [],
+    slotsRemaining: showSpots ? interestFields.spotsLeft : undefined,
+    acceptedCount: showSpots ? interestFields.acceptedCount : undefined,
+    isFull: interestFields.isFull,
+    userInterestStatus: interestFields.userInterestStatus,
+    playerSlots: [],
   };
 }
 

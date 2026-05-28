@@ -39,6 +39,7 @@ model User {
   issuedNotifications   Notification[] @relation("Issuer")
   sentMessageRequests     MessageRequest[] @relation("MessageRequestsSent")
   receivedMessageRequests MessageRequest[] @relation("MessageRequestsReceived")
+  interests               PostInterest[]
 
   createdAt DateTime @default(now())
 
@@ -105,8 +106,10 @@ model Post {
   timeLabel           String?
   expiresAt           DateTime?
   slotsNeeded         Int?
+  isFull              Boolean        @default(false)
   isHighlight         Boolean        @default(false)
   visibility          String         @default("PUBLIC")
+  interests           PostInterest[]
 
   createdAt DateTime @default(now())
 
@@ -114,16 +117,110 @@ model Post {
 }
 
 enum Sport {
-  FOOTBALL
-  TENNIS
-  BASKETBALL
-  GYM
-  RUNNING
-  SWIMMING
-  SQUASH
+  ACROBATICS
+  AMERICAN_FOOTBALL
+  ARCHERY
+  ATHLETICS
+  AUSTRALIAN_FOOTBALL
   BADMINTON
+  BASEBALL
+  BASKETBALL
+  BEACH_VOLLEYBALL
+  BJJ
+  BMX
+  BOBSLED
+  BOWLING
+  BOWLS
+  BOXING
+  CALISTHENICS
+  CANOEING
+  CAPOEIRA
+  CHEERLEADING
+  CHESS
+  CLIMBING
   CRICKET
+  CROSSFIT
+  CURLING
   CYCLING
+  DANCE
+  DANCING
+  DARTS
+  DISCUS
+  DIVING
+  DODGEBALL
+  EQUESTRIAN
+  ESPORTS
+  FENCING
+  FIELD_HOCKEY
+  FLOORBALL
+  FOOTBALL
+  FRISBEE
+  FUTSAL
+  GAELIC_FOOTBALL
+  GOLF
+  GYM
+  GYMNASTICS
+  HANDBALL
+  HIGH_JUMP
+  HIKING
+  HOCKEY
+  HORSE_RIDING
+  HURLING
+  ICE_HOCKEY
+  ICE_SKATING
+  JAVELIN
+  JUDO
+  KARATE
+  KARTING
+  KAYAKING
+  KICKBOXING
+  KITESURFING
+  LACROSSE
+  LONG_JUMP
+  MARTIAL_ARTS
+  MMA
+  MOTORSPORT
+  MOUNTAIN_BIKING
+  MUAY_THAI
+  NETBALL
+  OPEN_WATER_SWIMMING
+  ORIENTEERING
+  PADEL
+  PADDLEBOARDING
+  PARKOUR
+  PILATES
+  PICKLEBALL
+  POLO
+  POOL
+  POWERLIFTING
+  RUGBY
+  RUGBY_LEAGUE
+  ROWING
+  RUNNING
+  SAILING
+  SHINTY
+  SHOOTING
+  SHOT_PUT
+  SKATEBOARDING
+  SKIING
+  SNOOKER
+  SNOWBOARDING
+  SOFTBALL
+  SQUASH
+  SURFING
+  SWIMMING
+  TABLE_TENNIS
+  TAEKWONDO
+  TENNIS
+  TRAIL_RUNNING
+  TRIATHLON
+  TRAMPOLINING
+  VOLLEYBALL
+  WATER_POLO
+  WEIGHTLIFTING
+  WINDSURFING
+  WRESTLING
+  YOGA
 }
 
 enum PostIntent {
@@ -221,4 +318,18 @@ enum NotificationType {
   COMMENT
   TEAMMATE
   MESSAGE_REQUEST
+  GAME_INTEREST
+}
+
+model PostInterest {
+  id        String   @id @default(cuid())
+  postId    String
+  userId    String
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@map("post_interests")
 }

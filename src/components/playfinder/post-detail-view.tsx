@@ -5,6 +5,7 @@ import { FeedCardImInButton } from "@/components/playfinder/feed-card-im-in-butt
 import { FeedCardLikeButton } from "@/components/playfinder/feed-card-like-button";
 import { FeedCardMessageClubButton } from "@/components/playfinder/feed-card-message-club-button";
 import { FeedCardShareButton } from "@/components/playfinder/feed-card-share-button";
+import { PostInterestedPanel } from "@/components/playfinder/post-interested-panel";
 import { PostOptionsMenu } from "@/components/playfinder/post-options-menu";
 import {
   getPostTypeBadge,
@@ -30,12 +31,20 @@ const accentColors = {
 export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const card = mapPostToFeedCard(post);
+  const card = mapPostToFeedCard(post, loggedInUserId);
   const isOwnPost = post.userId === loggedInUserId;
   const typeBadge = getPostTypeBadge(post.type ?? null);
   const profileHref = `/users/${card.username}`;
   const isLooking =
     isLookingToPlayIntent(post.intent) || card.type === "looking";
+  const isArenaPost =
+    post.type === "ARENA" || post.type === "BROADCAST";
+  const showSpots =
+    isArenaPost &&
+    card.acceptedCount != null &&
+    card.slotsRemaining != null;
+  const pendingInterestCount =
+    post.interests?.filter((i) => i.status === "PENDING").length ?? 0;
 
   return (
     <div className="mx-auto min-h-screen w-full max-w-lg bg-[#0d0d0d] pb-8">
@@ -115,28 +124,56 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
             {card.content}
           </p>
 
-          {isLooking && (card.playerSlots?.length ?? 0) > 0 && (
-              <div className="mb-4 flex items-center gap-3">
-                <div className="flex -space-x-1">
-                  {card.playerSlots!.map((slot, i) => (
-                    <div
-                      key={i}
-                      className={`flex h-8 w-8 items-center justify-center rounded-full border-2 text-xs font-bold ${
-                        slot.filled
-                          ? "border-[#C9F31D] bg-[#C9F31D] text-black"
-                          : "border-dashed border-gray-500 bg-transparent"
-                      }`}
-                    >
-                      {slot.filled && "✓"}
-                    </div>
-                  ))}
-                </div>
-                <span className="text-sm font-medium text-[#C9F31D]">
-                  {card.slotsRemaining} spot
-                  {card.slotsRemaining !== 1 ? "s" : ""} left
-                </span>
-              </div>
-            )}
+          {showSpots && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                margin: "8px 0 16px",
+              }}
+            >
+              {Array.from({ length: card.acceptedCount ?? 0 }).map((_, i) => (
+                <div
+                  key={`filled-${i}`}
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: "50%",
+                    background: "#C9F31D",
+                    border: "2px solid #C9F31D",
+                  }}
+                />
+              ))}
+              {Array.from({ length: card.slotsRemaining ?? 0 }).map((_, i) => (
+                <div
+                  key={`empty-${i}`}
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: "50%",
+                    border: "2px dashed #444",
+                  }}
+                />
+              ))}
+              <span
+                style={{ fontSize: 13, color: "#C9F31D", fontWeight: 600 }}
+              >
+                {(card.slotsRemaining ?? 0) > 0
+                  ? `${card.slotsRemaining} spot${(card.slotsRemaining ?? 0) > 1 ? "s" : ""} left`
+                  : "Full"}
+              </span>
+            </div>
+          )}
+
+          {isOwnPost && isArenaPost && (
+            <PostInterestedPanel
+              postId={post.id}
+              authorId={post.userId}
+              postType={post.type ?? null}
+              initialPendingCount={pendingInterestCount}
+            />
+          )}
 
           {isLooking && (card.timeChip || card.locationChip) && (
               <div className="mb-4 flex flex-wrap gap-2">
@@ -155,14 +192,14 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
               </div>
             )}
 
-          {isLooking && (
+          {isLooking && !isOwnPost && (
             <div className="mb-4">
               <FeedCardImInButton
                 fullWidth
+                postId={card.postId}
                 authorId={card.authorId}
-                sport={card.sport}
-                location={card.locationChip ?? card.location}
-                timeLabel={card.timeChip}
+                isFull={card.isFull}
+                userInterestStatus={card.userInterestStatus}
               />
             </div>
           )}

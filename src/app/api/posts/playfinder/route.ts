@@ -6,6 +6,7 @@ import {
 } from "@/lib/playfinder";
 import { getTeammateIds } from "@/lib/teammate";
 import prisma from "@/lib/prisma";
+import { computeInterestFields } from "@/lib/post-interest";
 import {
   getPlayfinderFeedPostInclude,
   type PlayfinderFeedPost,
@@ -25,12 +26,16 @@ function sortTeammatesFirst(posts: PlayfinderFeedPost[]): PlayfinderFeedPost[] {
   ];
 }
 
-/** Post.type filter — guarded so a missing/stale schema column does not crash the feed. */
+/** Post.type filter — Social includes SOCIAL and any legacy/non-arena type (null, GENERAL, etc.). */
 function buildPostTypeFilter(tab: string | null): Prisma.PostWhereInput | null {
   try {
     const normalized = tab?.toLowerCase() ?? null;
-    const postType = normalized === "social" ? "SOCIAL" : "ARENA";
-    return { type: postType };
+    if (normalized === "social") {
+      return {
+        NOT: { type: { in: ["ARENA", "BROADCAST"] } },
+      };
+    }
+    return { type: { in: ["ARENA", "BROADCAST"] } };
   } catch {
     return null;
   }
@@ -88,19 +93,26 @@ export async function GET(req: NextRequest) {
 
     let sportFilter: Prisma.PostWhereInput;
 
+    const isSocialTab = tab?.toLowerCase() === "social";
+
     if (sportTab === "all") {
-      const userSports = await prisma.userSport.findMany({
-        where: { userId: user.id },
-        select: { sport: true },
-      });
+      if (isSocialTab) {
+        // Social "All" — show every non-arena post; do not restrict to profile sports.
+        sportFilter = {};
+      } else {
+        const userSports = await prisma.userSport.findMany({
+          where: { userId: user.id },
+          select: { sport: true },
+        });
 
-      const mappedSports = userSports
-        .map((s) => sportTabToPostSport(s.sport))
-        .filter((s): s is Sport => !!s);
+        const mappedSports = userSports
+          .map((s) => sportTabToPostSport(s.sport))
+          .filter((s): s is Sport => !!s);
 
-      sportFilter = {
-        sport: mappedSports.length ? { in: mappedSports } : { in: [] },
-      };
+        sportFilter = {
+          sport: mappedSports.length ? { in: mappedSports } : { in: [] },
+        };
+      }
     } else if (postSport) {
       sportFilter = { sport: postSport };
     } else {
@@ -149,15 +161,20 @@ export async function GET(req: NextRequest) {
 
     const activePosts = filterActivePlayfinderPosts(posts as PostData[]);
 
-    const feedPosts: PlayfinderFeedPost[] = activePosts.map((post) => ({
-      ...post,
-      isTeammate: teammateIdSet.has(post.user.id),
-    }));
+    const feedPosts: PlayfinderFeedPost[] = activePosts.map((post) => {
+      const interestFields = computeInterestFields(post, user.id);
+      return {
+        ...post,
+        isTeammate: teammateIdSet.has(post.user.id),
+        ...interestFields,
+      };
+    });
 
     const sortedPosts = sortTeammatesFirst(feedPosts);
 
-    const postTypeForLog =
-      tab?.toLowerCase() === "social" ? "SOCIAL" : "ARENA";
+    const postTypeForLog = isSocialTab
+      ? "NOT ARENA/BROADCAST"
+      : "ARENA/BROADCAST";
 
     console.log("[playfinder feed]", {
       sportTab,

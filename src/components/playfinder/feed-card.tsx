@@ -38,6 +38,9 @@ export interface FeedCardProps {
   isUrgent?: boolean;
   playerSlots?: PlayerSlot[];
   slotsRemaining?: number;
+  acceptedCount?: number;
+  isFull?: boolean;
+  userInterestStatus?: string | null;
   timeChip?: string;
   locationChip?: string;
   skillLevel?: string;
@@ -74,6 +77,9 @@ export function FeedCard({
   isUrgent = false,
   playerSlots = [],
   slotsRemaining = 0,
+  acceptedCount = 0,
+  isFull = false,
+  userInterestStatus = null,
   timeChip,
   locationChip,
   skillLevel,
@@ -89,6 +95,10 @@ export function FeedCard({
   const profileHref = `/users/${username}`;
   const isLooking =
     isLookingToPlayIntent(intent) || (intent == null && type === "looking");
+  const isArenaPost =
+    postType === "ARENA" || postType === "BROADCAST";
+  const showSpots =
+    isArenaPost && (acceptedCount > 0 || slotsRemaining > 0);
   const typeBadge = getPostTypeBadge(postType ?? null);
 
   return (
@@ -149,38 +159,58 @@ export function FeedCard({
           </span>
         )}
 
-        {isLooking && playerSlots.length > 0 && (
-          <div className="mb-3 flex items-center gap-3">
-            <div className="flex -space-x-1 items-center">
-              {playerSlots.map((slot, i) => (
-                <div
-                  key={i}
-                  className={`flex h-8 w-8 items-center justify-center rounded-full border-2 text-xs font-bold ${
-                    slot.filled
-                      ? "border-[#C9F31D] bg-[#C9F31D] text-black"
-                      : "border-dashed border-muted-foreground bg-transparent"
-                  }`}
-                >
-                  {slot.filled && "✓"}
-                </div>
-              ))}
-            </div>
-            <span className="text-sm font-medium text-[#C9F31D]">
-              {slotsRemaining} spot{slotsRemaining !== 1 ? "s" : ""} left
+        <p className="mb-3 text-sm leading-relaxed text-white">{content}</p>
+
+        {showSpots && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              margin: "8px 0",
+            }}
+          >
+            {Array.from({ length: acceptedCount }).map((_, i) => (
+              <div
+                key={`filled-${i}`}
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: "50%",
+                  background: "#C9F31D",
+                  border: "2px solid #C9F31D",
+                }}
+              />
+            ))}
+            {Array.from({ length: slotsRemaining }).map((_, i) => (
+              <div
+                key={`empty-${i}`}
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: "50%",
+                  border: "2px dashed #444",
+                }}
+              />
+            ))}
+            <span
+              style={{ fontSize: 13, color: "#C9F31D", fontWeight: 600 }}
+            >
+              {slotsRemaining > 0
+                ? `${slotsRemaining} spot${slotsRemaining > 1 ? "s" : ""} left`
+                : "Full"}
             </span>
           </div>
         )}
-
-        <p className="mb-3 text-sm leading-relaxed text-white">{content}</p>
 
         {!compact && isLooking && (
           <div className="mb-3">
             <FeedCardImInButton
               fullWidth
+              postId={postId}
               authorId={authorId}
-              sport={sport}
-              location={locationChip ?? location}
-              timeLabel={timeChip}
+              isFull={isFull}
+              userInterestStatus={userInterestStatus}
             />
           </div>
         )}

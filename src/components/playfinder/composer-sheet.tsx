@@ -8,7 +8,11 @@ import {
   toDatetimeLocalValue,
 } from "@/lib/broadcast-time";
 import kyInstance from "@/lib/ky";
-import { PLAYFINDER_SPORTS, POST_INTENTS } from "@/lib/playfinder";
+import {
+  getSportDisplay,
+  LEGACY_SPORT_ENUM_TO_KEY,
+} from "@/lib/onboarding-sports";
+import { POST_INTENTS } from "@/lib/playfinder";
 import type { UserSettingsData } from "@/lib/settings";
 import { getInitials } from "@/lib/settings";
 import { PostsPage } from "@/lib/types";
@@ -25,6 +29,7 @@ import {
   IconWorld,
 } from "@tabler/icons-react";
 import { Minus, Plus, X } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { submitBroadcast } from "./actions";
@@ -40,7 +45,7 @@ interface ComposerSheetProps {
 const SHEET_CONTENT_MIN_H = "min-h-[32rem]";
 
 const textareaClassName =
-  "w-full min-h-[120px] resize-none bg-transparent text-[15px] text-[#f0f0f0] placeholder:text-[#666666] focus:outline-none";
+  "w-full min-h-[140px] resize-none rounded-xl border border-[#2a2a2a] bg-[#1e1e1e] p-3 text-[15px] text-[#f0f0f0] placeholder:text-[#666666] focus:outline-none";
 
 const fieldClassName =
   "w-full rounded-xl border border-[#333] bg-[#1a1a1a] px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-[#C9F31D] focus:outline-none [color-scheme:dark]";
@@ -51,30 +56,85 @@ const ARENA_INTENTS = POST_INTENTS.filter(
     o.value === PostIntent.RECRUITING,
 );
 
+/** Normalises profile sport keys (kebab, snake, PascalCase, legacy enum) to onboarding id form. */
+function normalizeProfileSportKey(raw: string): string {
+  const trimmed = raw.trim();
+  if (!trimmed) return "";
+
+  if (LEGACY_SPORT_ENUM_TO_KEY[trimmed]) {
+    return LEGACY_SPORT_ENUM_TO_KEY[trimmed];
+  }
+  const upper = trimmed.toUpperCase();
+  if (LEGACY_SPORT_ENUM_TO_KEY[upper]) {
+    return LEGACY_SPORT_ENUM_TO_KEY[upper];
+  }
+
+  if (trimmed.includes("_") || trimmed === upper) {
+    return trimmed.toLowerCase().replace(/_/g, "-");
+  }
+  if (trimmed.includes("-")) {
+    return trimmed.toLowerCase();
+  }
+  if (/^[a-z]+$/.test(trimmed)) {
+    return trimmed;
+  }
+  if (/^[A-Z][a-z]+$/.test(trimmed)) {
+    return trimmed.toLowerCase();
+  }
+  if (/[A-Z]/.test(trimmed)) {
+    return trimmed
+      .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+      .toLowerCase();
+  }
+
+  return trimmed.toLowerCase();
+}
+
+/** Maps a profile sport string to Prisma Sport enum when possible. */
+function profileSportKeyToEnum(raw: string): Sport | undefined {
+  const key = normalizeProfileSportKey(raw);
+  if (!key) return undefined;
+
+  const enumCandidate = key.replace(/-/g, "_").toUpperCase();
+  if (Object.values(Sport).includes(enumCandidate as Sport)) {
+    return enumCandidate as Sport;
+  }
+
+  return Object.values(Sport).find(
+    (value) => normalizeProfileSportKey(value) === key,
+  );
+}
+
+const visibilityActiveClass =
+  "rounded-[20px] border border-[#C9F31D] bg-[#C9F31D] px-4 py-2 text-[13px] font-bold text-[#0d0d0d]";
+const visibilityInactiveClass =
+  "rounded-[20px] border border-[#2a2a2a] bg-transparent px-4 py-2 text-[13px] text-[#888]";
+
+const composerSubmitButtonClassName =
+  "w-full rounded-xl bg-[#C9F31D] py-[14px] text-[15px] font-bold text-[#0d0d0d] hover:bg-[#b8e019]";
+
+const composerFooterClassName =
+  "mt-auto flex flex-col gap-3 border-t border-[#262626] pt-4";
+
+const composerMediaRowClassName = "flex min-h-9 items-center gap-2";
+
 function VisibilityToggle({
   visibility,
   onChange,
-  variant = "social",
 }: {
   visibility: "PUBLIC" | "TEAMMATES_ONLY";
   onChange: (v: "PUBLIC" | "TEAMMATES_ONLY") => void;
-  variant?: "social" | "arena";
 }) {
-  const activeClass =
-    variant === "arena"
-      ? "border-[#C9F31D] bg-[#C9F31D] text-black"
-      : "border-[rgba(201,243,29,0.5)] bg-[rgba(201,243,29,0.08)] text-[#C9F31D]";
-
   return (
     <div className="flex gap-2">
       <button
         type="button"
         onClick={() => onChange("PUBLIC")}
         className={cn(
-          "flex flex-1 items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium transition-colors",
+          "flex flex-1 items-center justify-center gap-1.5 transition-colors",
           visibility === "PUBLIC"
-            ? activeClass
-            : "border-[#2a2a2a] bg-[#161616] text-[#666666]",
+            ? visibilityActiveClass
+            : visibilityInactiveClass,
         )}
       >
         <IconWorld className="h-4 w-4" stroke={1.75} />
@@ -84,10 +144,10 @@ function VisibilityToggle({
         type="button"
         onClick={() => onChange("TEAMMATES_ONLY")}
         className={cn(
-          "flex flex-1 items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium transition-colors",
+          "flex flex-1 items-center justify-center gap-1.5 transition-colors",
           visibility === "TEAMMATES_ONLY"
-            ? activeClass
-            : "border-[#2a2a2a] bg-[#161616] text-[#666666]",
+            ? visibilityActiveClass
+            : visibilityInactiveClass,
         )}
       >
         <IconBolt className="h-4 w-4" stroke={2} />
@@ -120,8 +180,8 @@ export function ComposerSheet({
   const [selectedSportIds, setSelectedSportIds] = useState<string[]>([]);
 
   // —— Arena state ——
-  const [sport, setSport] = useState<Sport>(Sport.FOOTBALL);
-  const [intent, setIntent] = useState<PostIntent>(PostIntent.LOOKING_TO_PLAY);
+  const [selectedSport, setSelectedSport] = useState<string | null>(null);
+  const [selectedIntent, setSelectedIntent] = useState<PostIntent | null>(null);
   const [location, setLocation] = useState("");
   const [gameAt, setGameAt] = useState("");
   const [timeLabel, setTimeLabel] = useState("");
@@ -131,8 +191,8 @@ export function ComposerSheet({
     "PUBLIC" | "TEAMMATES_ONLY"
   >("PUBLIC");
 
-  const isBanter = intent === PostIntent.BANTER;
-  const isLookingToPlay = intent === PostIntent.LOOKING_TO_PLAY;
+  const isBanter = selectedIntent === PostIntent.BANTER;
+  const isLookingToPlay = selectedIntent === PostIntent.LOOKING_TO_PLAY;
 
   useEffect(() => {
     setMounted(true);
@@ -162,16 +222,13 @@ export function ComposerSheet({
     staleTime: 60_000,
   });
 
-  const availableSocialSports = useMemo(() => {
-    const allowed = new Set((profile?.sports ?? []).map((s) => String(s.sport)));
-    return PLAYFINDER_SPORTS.filter((s) => allowed.has(s.id));
-  }, [profile?.sports]);
+  const userSports = useMemo(() => profile?.sports ?? [], [profile?.sports]);
 
   const avatarInitials = getInitials(profile?.displayName ?? user.displayName);
 
   const resetArenaForm = () => {
-    setSport(Sport.FOOTBALL);
-    setIntent(PostIntent.LOOKING_TO_PLAY);
+    setSelectedSport(null);
+    setSelectedIntent(null);
     setLocation("");
     setGameAt("");
     setTimeLabel("");
@@ -247,11 +304,26 @@ export function ComposerSheet({
     setTimeLabel(formatBroadcastTimeLabel(new Date(value).toISOString()));
   };
 
+  const arenaValid =
+    arenaContent.trim().length > 0 &&
+    selectedSport !== null &&
+    selectedIntent !== null;
+
   const handleArenaSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!arenaValid || !selectedSport || !selectedIntent) return;
+
+    const enumSport = profileSportKeyToEnum(selectedSport);
+    if (!enumSport) {
+      toast({
+        variant: "destructive",
+        description: "Could not map the selected sport. Try updating your sports in Settings.",
+      });
+      return;
+    }
     arenaMutation.mutate({
-      sport,
-      intent,
+      sport: enumSport,
+      intent: selectedIntent,
       location,
       timeLabel: isBanter ? undefined : timeLabel,
       content: arenaContent,
@@ -377,17 +449,19 @@ export function ComposerSheet({
                   Tag a sport (optional)
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {availableSocialSports.map((s) => {
-                    const selected = selectedSportIds.includes(s.id);
+                  {userSports.map((entry) => {
+                    const sportKey = normalizeProfileSportKey(entry.sport);
+                    const { name, emoji } = getSportDisplay(entry.sport);
+                    const selected = selectedSportIds.includes(sportKey);
                     return (
                       <button
-                        key={s.id}
+                        key={sportKey}
                         type="button"
                         onClick={() =>
                           setSelectedSportIds((prev) =>
                             selected
-                              ? prev.filter((id) => id !== s.id)
-                              : [...prev, s.id],
+                              ? prev.filter((id) => id !== sportKey)
+                              : [...prev, sportKey],
                           )
                         }
                         className={cn(
@@ -397,14 +471,17 @@ export function ComposerSheet({
                             : "border-[#2a2a2a] bg-[#161616] text-[#666666]",
                         )}
                       >
-                        {s.emoji} {s.label}
+                        {emoji} {name}
                       </button>
                     );
                   })}
-                  {!availableSocialSports.length && (
-                    <span className="text-sm text-[#666666]">
-                      Add sports in settings to tag them here.
-                    </span>
+                  {!userSports.length && (
+                    <Link
+                      href="/settings/sports"
+                      className="text-sm text-[#C9F31D] hover:underline"
+                    >
+                      Add sports in Settings
+                    </Link>
                   )}
                 </div>
               </div>
@@ -416,27 +493,26 @@ export function ComposerSheet({
                 <VisibilityToggle
                   visibility={socialVisibility}
                   onChange={setSocialVisibility}
-                  variant="social"
                 />
               </div>
 
-              <div className="mt-auto flex items-center justify-between gap-3 border-t border-[#262626] pt-4">
-                <input
-                  ref={photoInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={() => {}}
-                />
-                <input
-                  ref={cameraInputRef}
-                  type="file"
-                  accept="image/*"
-                  capture="environment"
-                  className="hidden"
-                  onChange={() => {}}
-                />
-                <div className="flex items-center gap-2">
+              <div className={composerFooterClassName}>
+                <div className={composerMediaRowClassName}>
+                  <input
+                    ref={photoInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={() => {}}
+                  />
+                  <input
+                    ref={cameraInputRef}
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    className="hidden"
+                    onChange={() => {}}
+                  />
                   <button
                     type="button"
                     onClick={handlePhotoPick}
@@ -474,7 +550,7 @@ export function ComposerSheet({
                   type="submit"
                   loading={socialMutation.isPending}
                   disabled={!canSubmitSocial || socialMutation.isPending}
-                  className="rounded-[20px] bg-[#C9F31D] px-5 py-2 text-sm font-bold text-[#0d0d0d] hover:bg-[#b8e019]"
+                  className={composerSubmitButtonClassName}
                 >
                   Post
                 </LoadingButton>
@@ -505,7 +581,6 @@ export function ComposerSheet({
                     placeholder="Tell people what you need..."
                     maxLength={280}
                     className={textareaClassName}
-                    required
                   />
                   <p className="absolute bottom-0 right-0 text-xs text-[#666666]">
                     {arenaContent.length}/280
@@ -518,21 +593,34 @@ export function ComposerSheet({
                   Sport
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {PLAYFINDER_SPORTS.map((s) => (
-                    <button
-                      key={s.id}
-                      type="button"
-                      onClick={() => setSport(s.enum)}
-                      className={cn(
-                        "rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
-                        sport === s.enum
-                          ? "border-[#C9F31D] bg-[#C9F31D] text-[#0d0d0d]"
-                          : "border-[#2a2a2a] bg-[#161616] text-[#666666]",
-                      )}
+                  {userSports.map((entry) => {
+                    const sportKey = normalizeProfileSportKey(entry.sport);
+                    const { name, emoji } = getSportDisplay(entry.sport);
+                    const selected = selectedSport === sportKey;
+                    return (
+                      <button
+                        key={sportKey}
+                        type="button"
+                        onClick={() => setSelectedSport(sportKey)}
+                        className={cn(
+                          "rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
+                          selected
+                            ? "border-[#C9F31D] bg-[#C9F31D] text-[#0d0d0d]"
+                            : "border-[#2a2a2a] bg-[#161616] text-[#666666]",
+                        )}
+                      >
+                        {emoji} {name}
+                      </button>
+                    );
+                  })}
+                  {!userSports.length && (
+                    <Link
+                      href="/settings/sports"
+                      className="text-sm text-[#C9F31D] hover:underline"
                     >
-                      {s.emoji} {s.label}
-                    </button>
-                  ))}
+                      Add sports in Settings
+                    </Link>
+                  )}
                 </div>
               </div>
 
@@ -546,7 +634,7 @@ export function ComposerSheet({
                       key={option.value}
                       type="button"
                       onClick={() => {
-                        setIntent(option.value);
+                        setSelectedIntent(option.value);
                         if (!gameAt) {
                           const defaultDate = new Date();
                           defaultDate.setHours(
@@ -566,7 +654,7 @@ export function ComposerSheet({
                       }}
                       className={cn(
                         "rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
-                        intent === option.value
+                        selectedIntent === option.value
                           ? option.className
                           : "border-[#2a2a2a] bg-[#161616] text-[#666666]",
                       )}
@@ -590,7 +678,6 @@ export function ComposerSheet({
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder="e.g. Glasgow Green, Powerleague Paisley"
                   className={fieldClassName}
-                  required
                 />
               </div>
 
@@ -608,7 +695,6 @@ export function ComposerSheet({
                     value={gameAt}
                     onChange={(e) => handleGameAtChange(e.target.value)}
                     className={fieldClassName}
-                    required
                   />
                   {timeLabel && (
                     <p className="mt-1.5 text-xs text-[#666666]">{timeLabel}</p>
@@ -656,15 +742,19 @@ export function ComposerSheet({
                 <VisibilityToggle
                   visibility={arenaVisibility}
                   onChange={setArenaVisibility}
-                  variant="arena"
                 />
               </div>
 
-              <div className="mt-auto pt-2">
+              <div className={composerFooterClassName}>
+                <div className={composerMediaRowClassName} aria-hidden />
                 <LoadingButton
                   type="submit"
                   loading={arenaMutation.isPending}
-                  className="w-full rounded-xl bg-[#C9F31D] py-3.5 text-base font-bold text-[#0d0d0d] hover:bg-[#b8e019]"
+                  disabled={!arenaValid || arenaMutation.isPending}
+                  className={cn(
+                    composerSubmitButtonClassName,
+                    !arenaValid && "cursor-not-allowed opacity-40",
+                  )}
                 >
                   Post broadcast
                 </LoadingButton>

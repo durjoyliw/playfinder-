@@ -1,53 +1,95 @@
 "use client";
 
 import { useSession } from "@/app/(main)/SessionProvider";
-import { useRouter } from "next/navigation";
+import kyInstance from "@/lib/ky";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 
 interface FeedCardImInButtonProps {
+  postId: string;
   authorId: string;
-  sport?: string;
-  location?: string;
-  timeLabel?: string;
+  isFull?: boolean;
+  userInterestStatus?: string | null;
   fullWidth?: boolean;
 }
 
 export function FeedCardImInButton({
+  postId,
   authorId,
-  sport,
+  isFull = false,
+  userInterestStatus = null,
   fullWidth = false,
 }: FeedCardImInButtonProps) {
   const { user } = useSession();
-  const router = useRouter();
+  const queryClient = useQueryClient();
+  const [localStatus, setLocalStatus] = useState<string | null>(userInterestStatus);
 
   const isOwnPost = user.id === authorId;
+  const hasInterest =
+    localStatus === "PENDING" ||
+    localStatus === "ACCEPTED" ||
+    userInterestStatus === "PENDING" ||
+    userInterestStatus === "ACCEPTED";
 
-  const handleClick = () => {
-    if (isOwnPost) return;
-
-    const sportLabel = sport ?? "your game";
-
-    const draft = `I'm in! 👋 Saw your post about ${sportLabel} — still need players?`;
-
-    router.push(
-      `/messages?to=${encodeURIComponent(authorId)}&draft=${encodeURIComponent(draft)}`,
-    );
-  };
+  const mutation = useMutation({
+    mutationFn: () =>
+      kyInstance.post(`/api/posts/${postId}/interest`).json<{ status: string }>(),
+    onSuccess: (data) => {
+      setLocalStatus(data.status);
+      queryClient.invalidateQueries({ queryKey: ["post-feed"] });
+    },
+  });
 
   if (isOwnPost) {
     return null;
   }
 
+  const baseClass = fullWidth
+    ? "flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-colors"
+    : "flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold transition-colors";
+
+  if (isFull) {
+    return (
+      <button
+        type="button"
+        disabled
+        className={baseClass}
+        style={{
+          background: "#1a1a1a",
+          color: "#555",
+          cursor: "not-allowed",
+        }}
+      >
+        Game Full
+      </button>
+    );
+  }
+
+  if (hasInterest) {
+    return (
+      <button
+        type="button"
+        disabled
+        className={baseClass}
+        style={{
+          background: "#1a2a1a",
+          color: "#C9F31D",
+          cursor: "default",
+        }}
+      >
+        Interested ✓
+      </button>
+    );
+  }
+
   return (
     <button
       type="button"
-      onClick={handleClick}
-      className={
-        fullWidth
-          ? "flex w-full items-center justify-center gap-2 rounded-xl bg-[#C9F31D] px-4 py-2.5 text-sm font-bold text-black transition-colors hover:bg-[#d4f73a]"
-          : "flex w-full items-center justify-center gap-2 rounded-xl bg-[#C9F31D] py-2.5 text-sm font-bold text-black transition-colors hover:bg-[#d4f73a]"
-      }
+      onClick={() => mutation.mutate()}
+      disabled={mutation.isPending}
+      className={`${baseClass} bg-[#C9F31D] text-black hover:bg-[#d4f73a] disabled:opacity-70`}
     >
-      I&apos;m in 👋
+      {mutation.isPending ? "..." : "I'm in 🤙"}
     </button>
   );
 }
