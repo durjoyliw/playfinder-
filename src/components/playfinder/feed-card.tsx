@@ -5,6 +5,7 @@ import { FeedCardImInButton } from "@/components/playfinder/feed-card-im-in-butt
 import { FeedCardLikeButton } from "@/components/playfinder/feed-card-like-button";
 import { FeedCardMessageClubButton } from "@/components/playfinder/feed-card-message-club-button";
 import { FeedCardShareButton } from "@/components/playfinder/feed-card-share-button";
+import { IconCheck } from "@tabler/icons-react";
 import {
   Clock,
   MapPin,
@@ -177,10 +178,15 @@ export function FeedCard({
                   width: 28,
                   height: 28,
                   borderRadius: "50%",
-                  background: "#C9F31D",
                   border: "2px solid #C9F31D",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: "transparent",
                 }}
-              />
+              >
+                <IconCheck size={14} color="#C9F31D" stroke={2.5} />
+              </div>
             ))}
             {Array.from({ length: slotsRemaining }).map((_, i) => (
               <div
@@ -190,6 +196,7 @@ export function FeedCard({
                   height: 28,
                   borderRadius: "50%",
                   border: "2px dashed #444",
+                  background: "transparent",
                 }}
               />
             ))}

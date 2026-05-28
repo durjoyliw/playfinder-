@@ -46,7 +46,7 @@ export default function Notification({ notification }: NotificationProps) {
       ? {
           message:
             notification.post?.userId === notification.recipientId
-              ? `${notification.issuer.displayName} is interested in your game`
+              ? `${notification.issuer.displayName} is interested in joining your game`
               : `${notification.issuer.displayName} accepted you for the game`,
           icon: <MessageCircle className="size-7 text-[#C9F31D]" />,
           href: notification.postId ? `/posts/${notification.postId}` : "/",

@@ -4,11 +4,13 @@ import { formatSportLabel } from "@/lib/playfinder";
 import { getInitials } from "@/lib/settings";
 import kyInstance from "@/lib/ky";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface InterestUser {
   id: string;
+  username: string;
   displayName: string;
   avatarUrl: string | null;
   sports: { sport: string; skillLevel: string }[];
@@ -136,15 +138,18 @@ export function PostInterestedPanel({
                 key={interest.id}
                 className="flex items-center justify-between gap-3 rounded-xl bg-[#1a1a1a] p-3"
               >
-                <div className="flex min-w-0 items-center gap-3">
+                <Link
+                  href={`/users/${interest.user.username}`}
+                  className="flex min-w-0 flex-1 items-center gap-3 no-underline"
+                >
                   {interest.user.avatarUrl?.startsWith("http") ? (
                     <img
                       src={interest.user.avatarUrl}
                       alt=""
-                      className="h-9 w-9 rounded-full object-cover"
+                      className="h-9 w-9 flex-shrink-0 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#2a2a2a] text-xs font-bold text-white">
+                    <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[#2a2a2a] text-xs font-bold text-white">
                       {getInitials(interest.user.displayName)}
                     </div>
                   )}
@@ -161,7 +166,7 @@ export function PostInterestedPanel({
                       </span>
                     )}
                   </div>
-                </div>
+                </Link>
 
                 <div className="flex flex-shrink-0 items-center gap-2">
                   {interest.status === "ACCEPTED" ? (

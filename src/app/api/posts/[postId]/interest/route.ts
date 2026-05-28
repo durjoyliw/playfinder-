@@ -15,7 +15,7 @@ export async function POST(
 
     const post = await prisma.post.findUnique({
       where: { id: postId },
-      select: { userId: true },
+      select: { id: true, userId: true },
     });
 
     if (!post) {
@@ -48,19 +48,56 @@ export async function POST(
         },
       });
 
-      await tx.notification.create({
-        data: {
-          issuerId: user.id,
-          recipientId: post.userId,
-          postId,
-          type: NotificationType.GAME_INTEREST,
-        },
-      });
+      if (post.userId !== user.id) {
+        await tx.notification.create({
+          data: {
+            recipientId: post.userId,
+            issuerId: user.id,
+            type: NotificationType.GAME_INTEREST,
+            postId: post.id,
+          },
+        });
+      }
 
       return created;
     });
 
     return Response.json(interest);
+  } catch (error) {
+    console.error(error);
+    return Response.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  _req: Request,
+  { params: { postId } }: { params: { postId: string } },
+) {
+  try {
+    const { user } = await validateRequest();
+
+    if (!user) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const interest = await prisma.postInterest.findUnique({
+      where: {
+        postId_userId: {
+          postId,
+          userId: user.id,
+        },
+      },
+    });
+
+    if (!interest || interest.status !== "PENDING") {
+      return Response.json({ error: "Not found" }, { status: 404 });
+    }
+
+    await prisma.postInterest.delete({
+      where: { id: interest.id },
+    });
+
+    return Response.json({ success: true });
   } catch (error) {
     console.error(error);
     return Response.json({ error: "Internal server error" }, { status: 500 });

@@ -87,7 +87,10 @@ export type PatchUserProfileValues = z.infer<typeof patchUserProfileSchema>;
 
 const userSportEntrySchema = z.object({
   sport: z.string().refine(isValidSportKey, "Invalid sport"),
-  skillLevel: z.nativeEnum(SkillLevel),
+  skillLevel: z.preprocess(
+    (value) => (value === "" ? null : value),
+    z.nativeEnum(SkillLevel).nullish(),
+  ),
 });
 
 export const updateUserSportsSchema = z.object({

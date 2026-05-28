@@ -10,6 +10,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import {
   BarChart3,
+  Ban,
   FileText,
   MessageCircle,
   Info,
@@ -123,6 +124,14 @@ export function SettingsHub() {
             icon={<Zap className="h-5 w-5" />}
             label="Intent Status"
             value={intentLabel}
+          />
+        </SettingsSection>
+
+        <SettingsSection title="Privacy">
+          <SettingsRow
+            href="/settings/blocked"
+            icon={<Ban className="h-5 w-5" />}
+            label="Blocked Accounts"
           />
         </SettingsSection>
 

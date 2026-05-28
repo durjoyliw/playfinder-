@@ -12,10 +12,15 @@ import {
   isLookingToPlayIntent,
   mapPostToFeedCard,
 } from "@/lib/playfinder";
+import kyInstance from "@/lib/ky";
+import { computeSpotsLeft } from "@/lib/post-interest";
 import { PostData } from "@/lib/types";
+import { IconCheck, IconX } from "@tabler/icons-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, BadgeCheck, Clock, MapPin } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useMemo } from "react";
 
 interface PostDetailViewProps {
   post: PostData;
@@ -31,6 +36,7 @@ const accentColors = {
 export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
   const card = mapPostToFeedCard(post, loggedInUserId);
   const isOwnPost = post.userId === loggedInUserId;
   const typeBadge = getPostTypeBadge(post.type ?? null);
@@ -45,6 +51,39 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
     card.slotsRemaining != null;
   const pendingInterestCount =
     post.interests?.filter((i) => i.status === "PENDING").length ?? 0;
+
+  const acceptedInterests = useMemo(
+    () =>
+      (post.interests ?? [])
+        .filter((i) => i.status === "ACCEPTED")
+        .sort((a, b) => a.id.localeCompare(b.id)),
+    [post.interests],
+  );
+
+  const slotsRemaining = computeSpotsLeft(
+    post.slotsNeeded,
+    acceptedInterests.length,
+  );
+
+  const removeSpotMutation = useMutation({
+    mutationFn: (interestId: string) =>
+      kyInstance
+        .patch(`/api/posts/${post.id}/interests/${interestId}`, {
+          json: { action: "REMOVE" },
+        })
+        .json(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["post-feed"] });
+      queryClient.invalidateQueries({ queryKey: ["post-interests", post.id] });
+      router.refresh();
+    },
+  });
+
+  function handleRemoveSpot(spotIndex: number) {
+    const interest = acceptedInterests[spotIndex];
+    if (!interest) return;
+    removeSpotMutation.mutate(interest.id);
+  }
 
   return (
     <div className="mx-auto min-h-screen w-full max-w-lg bg-[#0d0d0d] pb-8">
@@ -133,19 +172,53 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
                 margin: "8px 0 16px",
               }}
             >
-              {Array.from({ length: card.acceptedCount ?? 0 }).map((_, i) => (
+              {acceptedInterests.map((interest, i) => (
                 <div
-                  key={`filled-${i}`}
-                  style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: "50%",
-                    background: "#C9F31D",
-                    border: "2px solid #C9F31D",
-                  }}
-                />
+                  key={interest.id}
+                  style={{ position: "relative", display: "inline-block" }}
+                >
+                  <div
+                    style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: "50%",
+                      border: "2px solid #C9F31D",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      background: "transparent",
+                    }}
+                  >
+                    <IconCheck size={14} color="#C9F31D" stroke={2.5} />
+                  </div>
+                  {isOwnPost && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveSpot(i)}
+                      disabled={removeSpotMutation.isPending}
+                      aria-label="Remove spot"
+                      style={{
+                        position: "absolute",
+                        top: -6,
+                        right: -6,
+                        width: 16,
+                        height: 16,
+                        borderRadius: "50%",
+                        background: "#ef4444",
+                        border: "none",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        padding: 0,
+                      }}
+                    >
+                      <IconX size={10} color="#fff" stroke={2.5} />
+                    </button>
+                  )}
+                </div>
               ))}
-              {Array.from({ length: card.slotsRemaining ?? 0 }).map((_, i) => (
+              {Array.from({ length: slotsRemaining }).map((_, i) => (
                 <div
                   key={`empty-${i}`}
                   style={{
@@ -153,14 +226,15 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
                     height: 28,
                     borderRadius: "50%",
                     border: "2px dashed #444",
+                    background: "transparent",
                   }}
                 />
               ))}
               <span
                 style={{ fontSize: 13, color: "#C9F31D", fontWeight: 600 }}
               >
-                {(card.slotsRemaining ?? 0) > 0
-                  ? `${card.slotsRemaining} spot${(card.slotsRemaining ?? 0) > 1 ? "s" : ""} left`
+                {slotsRemaining > 0
+                  ? `${slotsRemaining} spot${slotsRemaining > 1 ? "s" : ""} left`
                   : "Full"}
               </span>
             </div>

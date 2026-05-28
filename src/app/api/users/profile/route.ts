@@ -147,7 +147,7 @@ export async function PUT(req: Request) {
               data: sports.map((entry) => ({
                 userId: user.id,
                 sport: entry.sport,
-                skillLevel: entry.skillLevel,
+                skillLevel: entry.skillLevel ?? null,
               })),
             }),
           ]

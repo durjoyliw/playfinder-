@@ -48,5 +48,17 @@ export default async function Page({ params: { postId } }: PageProps) {
 
   const post = await getPost(postId, user.id);
 
+  const blocked = await prisma.block.findFirst({
+    where: {
+      OR: [
+        { blockerId: user.id, blockedId: post.userId },
+        { blockerId: post.userId, blockedId: user.id },
+      ],
+    },
+    select: { id: true },
+  });
+
+  if (blocked) notFound();
+
   return <PostDetailView post={post} loggedInUserId={user.id} />;
 }

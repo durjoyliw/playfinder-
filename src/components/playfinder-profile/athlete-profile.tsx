@@ -4,7 +4,6 @@ import ProfileActions from "@/app/(main)/users/[username]/ProfileActions";
 import ProfileBioEditor from "@/app/(main)/users/[username]/ProfileBioEditor";
 import ProfileIntentPill from "@/app/(main)/users/[username]/ProfileIntentPill";
 import ProfilePostsSection from "@/app/(main)/users/[username]/profile-posts-section";
-import EditProfileButton from "@/app/(main)/users/[username]/EditProfileButton";
 import UserAvatar from "@/components/UserAvatar";
 import { FollowerInfo, UserProfileData } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -12,6 +11,7 @@ import {
   IconBolt,
   IconArrowLeft,
   IconCalendarEvent,
+  IconEdit,
   IconMapPin,
   IconPlus,
 } from "@tabler/icons-react";
@@ -76,6 +76,15 @@ export default function AthleteProfile({
                 )`,
             }}
           />
+          {profile.isOwnProfile && (
+            <Link
+              href="/settings/edit-profile"
+              className="absolute right-3 top-3 z-10 flex items-center gap-1.5 rounded-[20px] border border-[#333] bg-black/60 px-3.5 py-1.5 text-[13px] font-medium text-[#f0f0f0] transition-colors hover:bg-black/70"
+            >
+              <IconEdit className="h-3.5 w-3.5" stroke={1.75} />
+              Edit
+            </Link>
+          )}
         </div>
 
         <div className="absolute -bottom-12 left-4">
@@ -116,17 +125,11 @@ export default function AthleteProfile({
           isOwnProfile={profile.isOwnProfile}
         />
 
-        <div className="mt-4 flex w-full gap-2">
-          {profile.isOwnProfile ? (
-            <EditProfileButton
-              user={user}
-              label="Edit Profile"
-              className="w-full rounded-xl border border-[#2a2a2a] bg-[#161616] py-6 font-semibold text-[#f0f0f0] hover:bg-[#1f1f1f]"
-            />
-          ) : (
+        {!profile.isOwnProfile && (
+          <div className="mt-4 flex w-full gap-2">
             <ProfileActions user={user} followerInfo={followerInfo} />
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       <div className="mx-4 mt-6 rounded-xl border border-[#262626] bg-[#1a1a1a] p-4">

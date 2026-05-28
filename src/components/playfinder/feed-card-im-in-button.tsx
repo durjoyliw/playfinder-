@@ -23,19 +23,28 @@ export function FeedCardImInButton({
   const { user } = useSession();
   const queryClient = useQueryClient();
   const [localStatus, setLocalStatus] = useState<string | null>(userInterestStatus);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+
+  const status = localStatus ?? userInterestStatus;
+  const isPending = status === "PENDING";
+  const isAccepted = status === "ACCEPTED";
 
   const isOwnPost = user.id === authorId;
-  const hasInterest =
-    localStatus === "PENDING" ||
-    localStatus === "ACCEPTED" ||
-    userInterestStatus === "PENDING" ||
-    userInterestStatus === "ACCEPTED";
 
-  const mutation = useMutation({
+  const expressMutation = useMutation({
     mutationFn: () =>
       kyInstance.post(`/api/posts/${postId}/interest`).json<{ status: string }>(),
     onSuccess: (data) => {
       setLocalStatus(data.status);
+      queryClient.invalidateQueries({ queryKey: ["post-feed"] });
+    },
+  });
+
+  const cancelMutation = useMutation({
+    mutationFn: () => kyInstance.delete(`/api/posts/${postId}/interest`),
+    onSuccess: () => {
+      setLocalStatus(null);
+      setShowCancelConfirm(false);
       queryClient.invalidateQueries({ queryKey: ["post-feed"] });
     },
   });
@@ -65,7 +74,53 @@ export function FeedCardImInButton({
     );
   }
 
-  if (hasInterest) {
+  if (isPending && showCancelConfirm) {
+    return (
+      <div
+        className={
+          fullWidth
+            ? "flex w-full gap-2"
+            : "flex w-full gap-2"
+        }
+      >
+        <button
+          type="button"
+          onClick={() => setShowCancelConfirm(false)}
+          disabled={cancelMutation.isPending}
+          className={`${baseClass} flex-1 border border-[#2a2a2a] bg-[#1a1a1a] text-[#888888] hover:bg-[#1f1f1f]`}
+        >
+          Keep
+        </button>
+        <button
+          type="button"
+          onClick={() => cancelMutation.mutate()}
+          disabled={cancelMutation.isPending}
+          className={`${baseClass} flex-1 bg-[#ef4444] text-white hover:bg-[#dc2626]`}
+        >
+          {cancelMutation.isPending ? "..." : "Cancel interest"}
+        </button>
+      </div>
+    );
+  }
+
+  if (isPending) {
+    return (
+      <button
+        type="button"
+        onClick={() => setShowCancelConfirm(true)}
+        className={baseClass}
+        style={{
+          background: "#1a2a1a",
+          color: "#C9F31D",
+          cursor: "pointer",
+        }}
+      >
+        Interested ✓
+      </button>
+    );
+  }
+
+  if (isAccepted) {
     return (
       <button
         type="button"
@@ -85,11 +140,11 @@ export function FeedCardImInButton({
   return (
     <button
       type="button"
-      onClick={() => mutation.mutate()}
-      disabled={mutation.isPending}
+      onClick={() => expressMutation.mutate()}
+      disabled={expressMutation.isPending}
       className={`${baseClass} bg-[#C9F31D] text-black hover:bg-[#d4f73a] disabled:opacity-70`}
     >
-      {mutation.isPending ? "..." : "I'm in 🤙"}
+      {expressMutation.isPending ? "..." : "I'm in 🤙"}
     </button>
   );
 }

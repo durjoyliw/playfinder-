@@ -14,9 +14,20 @@ export async function GET(req: NextRequest) {
       return Response.json({ users: [] });
     }
 
+    const blockedIds = await prisma.block.findMany({
+      where: {
+        OR: [{ blockerId: user.id }, { blockedId: user.id }],
+      },
+      select: { blockerId: true, blockedId: true },
+    });
+
+    const excludedUserIds = blockedIds.map((b) =>
+      b.blockerId === user.id ? b.blockedId : b.blockerId,
+    );
+
     const users = await prisma.user.findMany({
       where: {
-        id: { not: user.id },
+        id: { notIn: [user.id, ...excludedUserIds] },
         OR: [
           { displayName: { contains: q, mode: "insensitive" } },
           { username: { contains: q, mode: "insensitive" } },

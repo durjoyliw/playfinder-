@@ -32,11 +32,22 @@ export async function GET(req: NextRequest) {
       return Response.json({ players: [] });
     }
 
+    const blockedIds = await prisma.block.findMany({
+      where: {
+        OR: [{ blockerId: user.id }, { blockedId: user.id }],
+      },
+      select: { blockerId: true, blockedId: true },
+    });
+
+    const excludedUserIds = blockedIds.map((b) =>
+      b.blockerId === user.id ? b.blockedId : b.blockerId,
+    );
+
     const cleanQuery = q.startsWith("@") ? q.slice(1) : q;
 
     const players = await prisma.user.findMany({
       where: {
-        id: { not: user.id },
+        id: { notIn: [user.id, ...excludedUserIds] },
         OR: [
           { displayName: { contains: q, mode: "insensitive" } },
           { username: { contains: cleanQuery, mode: "insensitive" } },

@@ -69,6 +69,25 @@ export async function GET(req: NextRequest) {
     const teammateIds = await getTeammateIds(user.id);
     const teammateIdSet = new Set(teammateIds);
 
+    const blockedIds = await prisma.block.findMany({
+      where: {
+        OR: [{ blockerId: user.id }, { blockedId: user.id }],
+      },
+      select: { blockerId: true, blockedId: true },
+    });
+
+    const mutedIds = await prisma.mute.findMany({
+      where: { muterId: user.id },
+      select: { mutedId: true },
+    });
+
+    const excludedUserIds = [
+      ...blockedIds.map((b) =>
+        b.blockerId === user.id ? b.blockedId : b.blockerId,
+      ),
+      ...mutedIds.map((m) => m.mutedId),
+    ];
+
     const expiryFilter: Prisma.PostWhereInput = {
       OR: [{ expiresAt: { gt: now } }, { expiresAt: null }],
     };
@@ -125,6 +144,7 @@ export async function GET(req: NextRequest) {
       expiryFilter,
       visibilityFilter,
       sportFilter,
+      { userId: { notIn: excludedUserIds } },
       ...(typeFilter ? [typeFilter] : []),
     ];
 

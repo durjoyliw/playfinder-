@@ -3,13 +3,14 @@
 import { Pencil, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Channel } from "stream-chat";
 import {
   ChannelList,
   type ChannelPreviewUIComponentProps,
 } from "stream-chat-react";
 import { useSession } from "../SessionProvider";
+import kyInstance from "@/lib/ky";
 import {
   channelMatchesSearch,
   formatConversationTime,
@@ -92,10 +93,35 @@ export default function ConversationsList() {
   const searchParams = useSearchParams();
   const [showNewChatDialog, setShowNewChatDialog] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [blockedUserIds, setBlockedUserIds] = useState<Set<string>>(new Set());
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const activeTab: InboxTab =
     searchParams.get("tab") === "requests" ? "requests" : "messages";
+
+  useEffect(() => {
+    let cancelled = false;
+    kyInstance
+      .get("/api/users/blocked")
+      .json<
+        Array<{
+          blocked: { id: string };
+        }>
+      >()
+      .then((blocks) => {
+        if (cancelled) return;
+        setBlockedUserIds(new Set(blocks.map((b) => b.blocked.id)));
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const blockedUserIdsMemo = useMemo(() => blockedUserIds, [blockedUserIds]);
 
   const ChannelPreviewCustom = useCallback(
     (props: ChannelPreviewUIComponentProps) => (
@@ -114,9 +140,15 @@ export default function ConversationsList() {
           return false;
         }
 
+        const other = getOtherMember(ch, user.id);
+        const otherId = other?.id;
+        if (otherId && blockedUserIdsMemo.has(otherId)) {
+          return false;
+        }
+
         return channelMatchesSearch(ch, searchQuery, user.id);
       }),
-    [activeTab, searchQuery, user.id],
+    [activeTab, blockedUserIdsMemo, searchQuery, user.id],
   );
 
   const listFilters = {

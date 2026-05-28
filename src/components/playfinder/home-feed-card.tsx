@@ -7,7 +7,7 @@ import { FeedCardShareButton } from "@/components/playfinder/feed-card-share-but
 import type { HomeFeedCardProps } from "@/lib/home-feed-card";
 import { isLookingToPlayIntent } from "@/lib/playfinder";
 import { cn } from "@/lib/utils";
-import { IconBolt, IconFlame, IconLock } from "@tabler/icons-react";
+import { IconBolt, IconCheck, IconFlame, IconLock } from "@tabler/icons-react";
 import { Clock, MapPin } from "lucide-react";
 import Link from "next/link";
 
@@ -182,10 +182,15 @@ export function HomeFeedCard({
                 width: 28,
                 height: 28,
                 borderRadius: "50%",
-                background: "#C9F31D",
                 border: "2px solid #C9F31D",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "transparent",
               }}
-            />
+            >
+              <IconCheck size={14} color="#C9F31D" stroke={2.5} />
+            </div>
           ))}
           {Array.from({ length: spotsLeft }).map((_, i) => (
             <div
@@ -195,6 +200,7 @@ export function HomeFeedCard({
                 height: 28,
                 borderRadius: "50%",
                 border: "2px dashed #444",
+                background: "transparent",
               }}
             />
           ))}

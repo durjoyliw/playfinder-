@@ -1,6 +1,7 @@
 "use client";
 
 import { useToast } from "@/components/ui/use-toast";
+import kyInstance from "@/lib/ky";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, MoreVertical } from "lucide-react";
 import Link from "next/link";
@@ -26,6 +27,8 @@ export default function ChannelHeader() {
   const { channel } = useChannelStateContext();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [blockConfirmOpen, setBlockConfirmOpen] = useState(false);
+  const [blockPending, setBlockPending] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const other = getOtherMember(channel, sessionUser.id);
@@ -85,10 +88,28 @@ export default function ChannelHeader() {
     setMenuOpen(false);
   }, [channel, router, setActiveChannel, toast]);
 
-  const blockUser = useCallback(() => {
-    toast({ description: "User blocked" });
-    setMenuOpen(false);
-  }, [toast]);
+  const confirmBlockUser = useCallback(async () => {
+    const otherId = other?.id;
+    if (!otherId) return;
+
+    setBlockPending(true);
+    try {
+      await kyInstance.post(`/api/users/${otherId}/block`);
+      toast({ description: `${displayName} blocked` });
+      setActiveChannel(undefined);
+      router.push("/messages");
+    } catch (error) {
+      console.error(error);
+      toast({
+        variant: "destructive",
+        description: "Something went wrong. Please try again.",
+      });
+    } finally {
+      setBlockPending(false);
+      setBlockConfirmOpen(false);
+      setMenuOpen(false);
+    }
+  }, [displayName, other?.id, router, setActiveChannel, toast]);
 
   const profileHref = other?.username
     ? `/users/${other.username}`
@@ -169,15 +190,45 @@ export default function ChannelHeader() {
               </button>
               <button
                 type="button"
-                onClick={blockUser}
+                onClick={() => setBlockConfirmOpen(true)}
                 className="block w-full px-4 py-2.5 text-left text-sm text-red-400 transition-colors hover:bg-[#2a2a2a]"
               >
-                Block user
+                Block {displayName}
               </button>
             </div>
           )}
         </div>
       </header>
+
+      {blockConfirmOpen && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 px-6">
+          <div className="w-full max-w-sm rounded-2xl border border-[#2a2a2a] bg-[#161616] p-5">
+            <p className="text-lg font-bold text-white">Block {displayName}?</p>
+            <p className="mt-2 text-sm text-[#888888]">
+              They won&apos;t be able to see your profile or posts.
+            </p>
+            <div className="mt-5 flex gap-2">
+              <button
+                type="button"
+                disabled={blockPending}
+                onClick={() => void confirmBlockUser()}
+                className="flex-1 rounded-xl px-4 py-2.5 text-sm font-semibold disabled:opacity-70"
+                style={{ background: "#ef4444", color: "#fff" }}
+              >
+                Block
+              </button>
+              <button
+                type="button"
+                disabled={blockPending}
+                onClick={() => setBlockConfirmOpen(false)}
+                className="flex-1 rounded-xl border border-[#2a2a2a] bg-transparent px-4 py-2.5 text-sm font-semibold text-[#f0f0f0] disabled:opacity-70"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {postContext?.label && (
         <div className="px-4 pb-2">

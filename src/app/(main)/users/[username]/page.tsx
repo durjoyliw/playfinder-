@@ -30,6 +30,20 @@ async function getUser(username: string, loggedInUserId: string) {
 
   if (!user) notFound();
 
+  if (user.id !== loggedInUserId) {
+    const blocked = await prisma.block.findFirst({
+      where: {
+        OR: [
+          { blockerId: loggedInUserId, blockedId: user.id },
+          { blockerId: user.id, blockedId: loggedInUserId },
+        ],
+      },
+      select: { id: true },
+    });
+
+    if (blocked) notFound();
+  }
+
   return user;
 }
 
@@ -87,11 +101,17 @@ export default async function Page({ params: { username } }: PageProps) {
     countTeammates(user.id),
   ]);
 
-  const profile = buildAthleteProfileData(user, loggedInUser.id, {
-    games: gamesCount,
-    broadcasts: broadcastsCount,
-    teammates: teammatesCount,
-  });
+  const isOwnProfile =
+    loggedInUser.username.toLowerCase() === username.toLowerCase();
+
+  const profile = {
+    ...buildAthleteProfileData(user, loggedInUser.id, {
+      games: gamesCount,
+      broadcasts: broadcastsCount,
+      teammates: teammatesCount,
+    }),
+    isOwnProfile,
+  };
 
   return (
     <AthleteProfile

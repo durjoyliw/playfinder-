@@ -153,15 +153,42 @@ export async function DELETE(
     await prisma.$transaction([
       prisma.follow.deleteMany({
         where: {
-          followerId: loggedInUser.id,
-          followingId: userId,
+          OR: [
+            {
+              followerId: loggedInUser.id,
+              followingId: userId,
+            },
+            {
+              followerId: userId,
+              followingId: loggedInUser.id,
+            },
+          ],
         },
       }),
       prisma.notification.deleteMany({
         where: {
-          issuerId: loggedInUser.id,
-          recipientId: userId,
-          type: NotificationType.FOLLOW,
+          OR: [
+            {
+              issuerId: loggedInUser.id,
+              recipientId: userId,
+              type: NotificationType.FOLLOW,
+            },
+            {
+              issuerId: userId,
+              recipientId: loggedInUser.id,
+              type: NotificationType.FOLLOW,
+            },
+            {
+              issuerId: loggedInUser.id,
+              recipientId: userId,
+              type: NotificationType.TEAMMATE,
+            },
+            {
+              issuerId: userId,
+              recipientId: loggedInUser.id,
+              type: NotificationType.TEAMMATE,
+            },
+          ],
         },
       }),
     ]);

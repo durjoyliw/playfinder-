@@ -9,8 +9,9 @@ import {
 } from "@/lib/broadcast-time";
 import kyInstance from "@/lib/ky";
 import {
-  getSportDisplay,
+  getOnboardingSport,
   LEGACY_SPORT_ENUM_TO_KEY,
+  normalizeSportKey,
 } from "@/lib/onboarding-sports";
 import { POST_INTENTS } from "@/lib/playfinder";
 import type { UserSettingsData } from "@/lib/settings";
@@ -105,6 +106,55 @@ function profileSportKeyToEnum(raw: string): Sport | undefined {
   );
 }
 
+function capitalizeSportLabel(keyOrRaw: string): string {
+  const key = normalizeProfileSportKey(keyOrRaw) || keyOrRaw.trim();
+  if (!key) return keyOrRaw.trim() || "Sport";
+
+  return key
+    .split(/[-_\s]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join(" ");
+}
+
+function defaultSportEmoji(key: string): string {
+  const k = key.toLowerCase();
+  if (
+    k.includes("run") ||
+    k.includes("athletic") ||
+    k.includes("jog") ||
+    k.includes("marathon") ||
+    k.includes("triathlon")
+  ) {
+    return "🏃";
+  }
+  return "⚽";
+}
+
+/** Always returns a label + emoji — never drops a profile sport due to missing catalog mapping. */
+function getComposerSportDisplay(raw: string): { name: string; emoji: string } {
+  const trimmed = raw.trim();
+  if (!trimmed) {
+    return { name: "Sport", emoji: "⚽" };
+  }
+
+  const normalizedKey =
+    normalizeProfileSportKey(trimmed) || normalizeSportKey(trimmed);
+  const catalogEntry = normalizedKey
+    ? getOnboardingSport(normalizedKey)
+    : undefined;
+
+  if (catalogEntry) {
+    return { name: catalogEntry.name, emoji: catalogEntry.emoji };
+  }
+
+  const labelKey = normalizedKey || trimmed;
+  return {
+    name: capitalizeSportLabel(labelKey),
+    emoji: defaultSportEmoji(labelKey),
+  };
+}
+
 const visibilityActiveClass =
   "rounded-[20px] border border-[#C9F31D] bg-[#C9F31D] px-4 py-2 text-[13px] font-bold text-[#0d0d0d]";
 const visibilityInactiveClass =
@@ -116,7 +166,7 @@ const composerSubmitButtonClassName =
 const composerFooterClassName =
   "mt-auto flex flex-col gap-3 border-t border-[#262626] pt-4";
 
-const composerMediaRowClassName = "flex min-h-9 items-center gap-2";
+const composerMediaRowClassName = "flex min-h-11 items-center gap-2";
 
 function VisibilityToggle({
   visibility,
@@ -449,13 +499,17 @@ export function ComposerSheet({
                   Tag a sport (optional)
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {userSports.map((entry) => {
-                    const sportKey = normalizeProfileSportKey(entry.sport);
-                    const { name, emoji } = getSportDisplay(entry.sport);
+                  {userSports.map((entry, index) => {
+                    const sportKey =
+                      normalizeProfileSportKey(entry.sport) ||
+                      `sport-${index}`;
+                    const { name, emoji } = getComposerSportDisplay(
+                      entry.sport,
+                    );
                     const selected = selectedSportIds.includes(sportKey);
                     return (
                       <button
-                        key={sportKey}
+                        key={`${sportKey}-${index}`}
                         type="button"
                         onClick={() =>
                           setSelectedSportIds((prev) =>
@@ -497,6 +551,14 @@ export function ComposerSheet({
               </div>
 
               <div className={composerFooterClassName}>
+                <LoadingButton
+                  type="submit"
+                  loading={socialMutation.isPending}
+                  disabled={!canSubmitSocial || socialMutation.isPending}
+                  className={composerSubmitButtonClassName}
+                >
+                  Post
+                </LoadingButton>
                 <div className={composerMediaRowClassName}>
                   <input
                     ref={photoInputRef}
@@ -546,14 +608,6 @@ export function ComposerSheet({
                     <IconGif className="h-5 w-5" stroke={1.75} />
                   </button>
                 </div>
-                <LoadingButton
-                  type="submit"
-                  loading={socialMutation.isPending}
-                  disabled={!canSubmitSocial || socialMutation.isPending}
-                  className={composerSubmitButtonClassName}
-                >
-                  Post
-                </LoadingButton>
               </div>
             </form>
           ) : (
@@ -593,13 +647,17 @@ export function ComposerSheet({
                   Sport
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {userSports.map((entry) => {
-                    const sportKey = normalizeProfileSportKey(entry.sport);
-                    const { name, emoji } = getSportDisplay(entry.sport);
+                  {userSports.map((entry, index) => {
+                    const sportKey =
+                      normalizeProfileSportKey(entry.sport) ||
+                      `sport-${index}`;
+                    const { name, emoji } = getComposerSportDisplay(
+                      entry.sport,
+                    );
                     const selected = selectedSport === sportKey;
                     return (
                       <button
-                        key={sportKey}
+                        key={`${sportKey}-${index}`}
                         type="button"
                         onClick={() => setSelectedSport(sportKey)}
                         className={cn(
@@ -746,7 +804,6 @@ export function ComposerSheet({
               </div>
 
               <div className={composerFooterClassName}>
-                <div className={composerMediaRowClassName} aria-hidden />
                 <LoadingButton
                   type="submit"
                   loading={arenaMutation.isPending}
@@ -758,6 +815,7 @@ export function ComposerSheet({
                 >
                   Post broadcast
                 </LoadingButton>
+                <div className={composerMediaRowClassName} aria-hidden />
               </div>
             </form>
           )}

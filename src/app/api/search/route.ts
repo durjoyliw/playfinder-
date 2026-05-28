@@ -30,11 +30,23 @@ export async function GET(req: NextRequest) {
       return Response.json({ posts: [], nextCursor: null } satisfies PostsPage);
     }
 
+    const blockedIds = await prisma.block.findMany({
+      where: {
+        OR: [{ blockerId: user.id }, { blockedId: user.id }],
+      },
+      select: { blockerId: true, blockedId: true },
+    });
+
+    const excludedUserIds = blockedIds.map((b) =>
+      b.blockerId === user.id ? b.blockedId : b.blockerId,
+    );
+
     const sportMatches = sportEnumsMatchingQuery(q);
 
     const posts = await prisma.post.findMany({
       where: {
         type: "SOCIAL",
+        userId: { notIn: excludedUserIds },
         OR: [
           { content: { contains: q, mode: "insensitive" } },
           ...(sportMatches.length ? [{ sport: { in: sportMatches } }] : []),
