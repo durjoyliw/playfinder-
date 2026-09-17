@@ -56,9 +56,15 @@ export function DiscoverMap({
     const nav = new mapboxgl.NavigationControl({ showCompass: false });
     map.addControl(nav, "top-right");
 
+    map.on("load", () => map.resize());
+
+    const onResize = () => map.resize();
+    window.addEventListener("resize", onResize);
+
     mapRef.current = map;
 
     return () => {
+      window.removeEventListener("resize", onResize);
       existingPopupRef.current?.remove();
       existingPopupRef.current = null;
       markersRef.current.forEach((m) => m.remove());

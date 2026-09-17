@@ -7,15 +7,15 @@ import { getDisplayArea } from "@/lib/location";
 import kyInstance from "@/lib/ky";
 import { PostsPage } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { IconArrowLeft } from "@tabler/icons-react";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "@/app/(main)/SessionProvider";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SearchClubRow } from "./SearchClubRow";
 import { SearchEmptyState } from "./SearchEmptyState";
 import { SearchGameCard } from "./SearchGameCard";
+import { SearchHeader } from "./SearchHeader";
 import { SearchPlayerRow, type SearchPlayerResult } from "./SearchPlayerRow";
 import { SearchPostRow } from "./SearchPostRow";
 import { searchClubsLocal, searchVenuesLocal } from "./search-local-data";
@@ -42,8 +42,13 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
   const { data: userSettings } = useUserSettings();
   const urlQuery = searchParams.get("q")?.trim() ?? initialQuery;
   const [filter, setFilter] = useState<SearchFilter>("profiles");
+  const [draftQuery, setDraftQuery] = useState(urlQuery);
 
   const areaLabel = getDisplayArea(userSettings?.location);
+
+  useEffect(() => {
+    setDraftQuery(urlQuery);
+  }, [urlQuery]);
 
   useEffect(() => {
     if (urlQuery) addRecentSearch(urlQuery);
@@ -178,7 +183,12 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
   })();
 
   return (
-    <div className="flex min-h-[calc(100dvh-3.5rem-5rem)] flex-col bg-[#0d0d0d]">
+    <div className="flex min-h-[calc(100dvh-3.5rem-5rem)] flex-col bg-[#08090a] font-grotesk">
+      <SearchHeader
+        value={draftQuery}
+        onChange={setDraftQuery}
+        onSubmit={runSearch}
+      />
       {!urlQuery ? (
         <div className="flex-1 overflow-y-auto">
           <SearchEmptyState onSearch={runSearch} />
@@ -186,15 +196,6 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
       ) : (
         <>
           <div className="flex items-center gap-2 px-4 py-3">
-            <button
-              type="button"
-              onClick={() => router.push("/")}
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#2a2a2a] bg-[#161616] text-[#888888] transition-colors hover:text-white"
-              aria-label="Back to home feed"
-            >
-              <IconArrowLeft className="h-4 w-4" stroke={2} />
-            </button>
-
             <div className="flex min-w-0 flex-1 gap-2 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {FILTER_PILLS.map((pill) => {
                 const isActive = filter === pill.id;
@@ -206,8 +207,8 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
                     className={cn(
                       "shrink-0 whitespace-nowrap rounded-[20px] border px-4 py-2 text-sm transition-colors",
                       isActive
-                        ? "border-[#C9F31D] bg-[#C9F31D] font-bold text-black"
-                        : "border-[#2a2a2a] bg-[#161616] font-medium text-[#888888]",
+                        ? "border-[#c9f31d] bg-[#c9f31d] font-bold text-[#0a0b0a]"
+                        : "border-[#2a2f2a] bg-[#131614] font-medium text-[#7e8a7e]",
                     )}
                   >
                     {pill.label}

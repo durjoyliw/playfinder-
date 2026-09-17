@@ -4,9 +4,10 @@
 
 @import "mapbox-gl/dist/mapbox-gl.css";
 
-/* Mapbox canvas must fill its container or the map renders black */
-.mapboxgl-map,
-.mapboxgl-canvas {
+/* Fill the map container only — never stretch the WebGL canvas.
+   Forcing canvas width/height to 100% desyncs tiles from HTML overlays
+   (pins, logo) when zooming. */
+.mapboxgl-map {
   width: 100% !important;
   height: 100% !important;
 }
@@ -187,7 +188,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background font-grotesk text-foreground;
   }
 }
 
@@ -275,8 +276,8 @@
 
 .pf-map-marker {
   position: relative;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 42px;
   padding: 0;
   border: 0;
   background: none;
@@ -284,9 +285,13 @@
 }
 
 .pf-map-pin {
+  position: absolute;
+  top: 0;
+  left: 50%;
   display: grid;
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
+  margin-left: -14px;
   place-items: center;
   border: 2px solid #0a0b0a;
   border-radius: 50% 50% 50% 0;
@@ -304,13 +309,13 @@
   position: absolute;
   bottom: 0;
   left: 50%;
-  width: 36px;
-  height: 36px;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
   pointer-events: none;
   border: 2px solid var(--pf-volt);
   border-radius: 50%;
   opacity: 0;
-  transform: translate(-50%, 50%) scale(0.5);
   animation: pf-marker-pulse 2s infinite ease-out;
 }
 
@@ -328,11 +333,11 @@
 
 @keyframes pf-marker-pulse {
   0% {
-    transform: translate(-50%, 50%) scale(0.5);
+    transform: scale(0.6);
     opacity: 0.6;
   }
   100% {
-    transform: translate(-50%, 50%) scale(2);
+    transform: scale(2.4);
     opacity: 0;
   }
 }

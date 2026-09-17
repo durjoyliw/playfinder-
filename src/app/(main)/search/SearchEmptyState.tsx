@@ -38,7 +38,7 @@ export function SearchEmptyState({ onSearch }: SearchEmptyStateProps) {
     <div className="px-4 py-4">
       {recent.length > 0 && (
         <section className="mb-6">
-          <h2 className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-[#666666]">
+          <h2 className="mb-3 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#7e8a7e]">
             Recent searches
           </h2>
           <ul>
@@ -70,7 +70,7 @@ export function SearchEmptyState({ onSearch }: SearchEmptyStateProps) {
       )}
 
       <section>
-        <h2 className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-[#666666]">
+        <h2 className="mb-3 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#7e8a7e]">
           Browse by sport
         </h2>
         <div className="flex flex-wrap gap-2">
@@ -79,7 +79,7 @@ export function SearchEmptyState({ onSearch }: SearchEmptyStateProps) {
               key={sport.id}
               type="button"
               onClick={() => handleSportClick(sport.label)}
-              className="rounded-full bg-[#1a1a1a] px-3 py-2 text-sm text-white transition-colors hover:bg-[#1f1f1f]"
+              className="rounded-[10px] border border-[#2a2f2a] bg-[#131614] px-3 py-2 text-sm text-[#f2f5ef] transition-colors hover:border-[#c9f31d]"
             >
               {sport.emoji} {sport.label}
             </button>

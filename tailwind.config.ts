@@ -20,6 +20,7 @@ const config = {
     },
     extend: {
       fontFamily: {
+        sans: ["var(--font-space-grotesk)", "system-ui", "sans-serif"],
         grotesk: ["var(--font-space-grotesk)", "system-ui", "sans-serif"],
         "dm-mono": ["var(--font-dm-mono)", "ui-monospace", "monospace"],
       },
@@ -81,8 +82,8 @@ const config = {
           "50%": { transform: "scale(1.1)", opacity: "0.6" },
         },
         "pf-marker-pulse": {
-          "0%": { transform: "translate(-50%, 50%) scale(0.5)", opacity: "0.6" },
-          "100%": { transform: "translate(-50%, 50%) scale(2)", opacity: "0" },
+          "0%": { transform: "scale(0.6)", opacity: "0.6" },
+          "100%": { transform: "scale(2.4)", opacity: "0" },
         },
       },
       animation: {

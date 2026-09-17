@@ -1,11 +1,5 @@
 "use client";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
 import kyInstance from "@/lib/ky";
 import {
@@ -13,11 +7,17 @@ import {
   PROFILE_INTENT_PROFILE_OPTIONS,
 } from "@/lib/settings";
 import type { UserSettingsData } from "@/lib/settings";
+import { cn } from "@/lib/utils";
 import { ProfileIntent } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+
+const INTENT_COLOURS: Record<ProfileIntent, string> = {
+  [ProfileIntent.LOOKING_TO_PLAY]: "#c9f31d",
+  [ProfileIntent.JOIN_A_TEAM]: "#56ccf2",
+  [ProfileIntent.JUST_VIBES]: "#eab308",
+};
 
 interface ProfileIntentPillProps {
   profileIntent: ProfileIntent | null;
@@ -31,8 +31,9 @@ export default function ProfileIntentPill({
   const { toast } = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [intent, setIntent] = useState(profileIntent ?? ProfileIntent.LOOKING_TO_PLAY);
-  const display = getProfileIntentDisplay(intent);
+  const [intent, setIntent] = useState(
+    profileIntent ?? ProfileIntent.LOOKING_TO_PLAY,
+  );
 
   const mutation = useMutation({
     mutationFn: (intentTag: ProfileIntent) =>
@@ -44,66 +45,71 @@ export default function ProfileIntentPill({
       setIntent(next);
       queryClient.invalidateQueries({ queryKey: ["user-settings"] });
       router.refresh();
-      toast({ description: "Intent updated" });
+      toast({ description: "Status updated" });
     },
     onError: () => {
       toast({
         variant: "destructive",
-        description: "Failed to update intent. Please try again.",
+        description: "Failed to update status. Please try again.",
       });
     },
   });
 
-  const pillContent = (
-    <>
-      <span className={`h-2 w-2 rounded-full ${display.dotClassName}`} />
-      <span className="max-w-[220px] truncate">{display.label}</span>
-      {isOwnProfile && <ChevronDown className="h-4 w-4 flex-shrink-0" />}
-    </>
-  );
-
-  if (!isOwnProfile) {
-    return (
-      <div
-        className={`mt-4 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium ${display.pillClassName}`}
-      >
-        {pillContent}
-      </div>
-    );
-  }
-
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button
-          type="button"
-          className={`mt-4 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${display.pillClassName}`}
+    <div className="mt-5">
+      <p className="mb-2.5 font-dm-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[#7e8a7e]">
+        Current status
+      </p>
+      {isOwnProfile ? (
+        <div className="flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {PROFILE_INTENT_PROFILE_OPTIONS.map((option) => {
+            const colour = INTENT_COLOURS[option.value];
+            const selected = intent === option.value;
+            return (
+              <button
+                key={option.value}
+                type="button"
+                disabled={mutation.isPending}
+                onClick={() => mutation.mutate(option.value)}
+                className={cn(
+                  "flex min-h-11 shrink-0 items-center gap-1.5 rounded-xl border px-3.5 py-2.5 text-[13px] font-semibold whitespace-nowrap transition-all active:scale-95",
+                  selected
+                    ? "text-[#f2f5ef]"
+                    : "border-[#2a2f2a] bg-[#131614] text-[#b4bcaf]",
+                )}
+                style={
+                  selected
+                    ? {
+                        borderColor: colour,
+                        background: `color-mix(in srgb, ${colour} 8%, #131614)`,
+                      }
+                    : undefined
+                }
+              >
+                <span
+                  className="h-2 w-2 rounded-full"
+                  style={{ background: colour }}
+                />
+                {option.label}
+              </button>
+            );
+          })}
+        </div>
+      ) : (
+        <div
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border px-3.5 py-2.5 text-[13px] font-semibold text-[#f2f5ef]"
+          style={{
+            borderColor: `${INTENT_COLOURS[intent]}44`,
+            background: `color-mix(in srgb, ${INTENT_COLOURS[intent]} 8%, #131614)`,
+          }}
         >
-          {pillContent}
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="center"
-        className="w-72 border-[#262626] bg-[#161616] p-1"
-      >
-        {PROFILE_INTENT_PROFILE_OPTIONS.map((option) => (
-          <DropdownMenuItem
-            key={option.value}
-            className="cursor-pointer rounded-lg px-3 py-2.5 text-white focus:bg-[#1f1f1f] focus:text-white"
-            onClick={() => mutation.mutate(option.value)}
-            disabled={mutation.isPending}
-          >
-            <div className="flex flex-col gap-0.5">
-              <span className="text-sm font-medium">
-                {option.emoji} {option.label}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {option.description}
-              </span>
-            </div>
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+          <span
+            className="h-2 w-2 rounded-full"
+            style={{ background: INTENT_COLOURS[intent] }}
+          />
+          {getProfileIntentDisplay(intent).label}
+        </div>
+      )}
+    </div>
   );
 }

@@ -34,6 +34,7 @@ import { Clock3, MapPin, Minus, Plus, Send, Users, X, Zap } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { ComposerDateTimePicker } from "./composer-datetime-picker";
 import { submitBroadcast } from "./actions";
 
 export type ComposerTab = "social" | "arena";
@@ -216,13 +217,20 @@ function FieldRow({
   label,
   icon,
   children,
+  className,
 }: {
   label?: string;
   icon?: ReactNode;
   children: ReactNode;
+  className?: string;
 }) {
   return (
-    <div className="flex min-h-[52px] items-center gap-2.5 rounded-[14px] border border-[#2a2f2a] bg-[#131614] px-4 py-3.5">
+    <div
+      className={cn(
+        "flex min-h-[52px] items-center gap-2.5 rounded-[14px] border border-[#2a2f2a] bg-[#131614] px-4 py-3.5",
+        className,
+      )}
+    >
       {(label || icon) && (
         <span className="flex min-w-[50px] shrink-0 items-center gap-1 text-[13px] font-semibold text-[#7e8a7e]">
           {icon}
@@ -774,43 +782,41 @@ export function ComposerSheet({
               </FieldRow>
 
               {!isBanter && (
-                <FieldRow icon={<Clock3 className="h-3.5 w-3.5" />}>
-                  <input
-                    id="broadcast-time"
-                    type="datetime-local"
+                <FieldRow
+                  icon={<Clock3 className="mt-0.5 h-3.5 w-3.5 shrink-0" />}
+                  className="items-start"
+                >
+                  <ComposerDateTimePicker
                     value={gameAt}
-                    onChange={(e) => handleGameAtChange(e.target.value)}
-                    className={fieldInputClassName}
+                    onChange={handleGameAtChange}
                   />
                 </FieldRow>
               )}
 
-              {isLookingToPlay && (
-                <FieldRow icon={<Users className="h-3.5 w-3.5" />}>
-                  <div className="flex items-center gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setSlotsNeeded((n) => Math.max(1, n - 1))}
-                      className="grid h-8 w-8 place-items-center rounded-[10px] border border-[#2a2f2a] text-white hover:border-[#C8FF00] hover:text-[#C8FF00]"
-                      aria-label="Decrease players"
-                    >
-                      <Minus className="h-4 w-4" />
-                    </button>
-                    <span className="min-w-[2rem] text-center text-[15px] font-semibold text-white">
-                      {slotsNeeded}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setSlotsNeeded((n) => Math.min(10, n + 1))}
-                      className="grid h-8 w-8 place-items-center rounded-[10px] border border-[#2a2f2a] text-white hover:border-[#C8FF00] hover:text-[#C8FF00]"
-                      aria-label="Increase players"
-                    >
-                      <Plus className="h-4 w-4" />
-                    </button>
-                    <span className="text-xs text-[#7e8a7e]">players needed</span>
-                  </div>
-                </FieldRow>
-              )}
+              <FieldRow icon={<Users className="h-3.5 w-3.5" />}>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setSlotsNeeded((n) => Math.max(1, n - 1))}
+                    className="grid h-8 w-8 place-items-center rounded-[10px] border border-[#2a2f2a] text-white hover:border-[#C8FF00] hover:text-[#C8FF00]"
+                    aria-label="Decrease players"
+                  >
+                    <Minus className="h-4 w-4" />
+                  </button>
+                  <span className="min-w-[2rem] text-center text-[15px] font-semibold text-white">
+                    {slotsNeeded}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setSlotsNeeded((n) => Math.min(10, n + 1))}
+                    className="grid h-8 w-8 place-items-center rounded-[10px] border border-[#2a2f2a] text-white hover:border-[#C8FF00] hover:text-[#C8FF00]"
+                    aria-label="Increase players"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </button>
+                  <span className="text-xs text-[#7e8a7e]">players needed</span>
+                </div>
+              </FieldRow>
 
               <FieldRow label="Visible">
                 <VisibilityToggle

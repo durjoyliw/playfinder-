@@ -61,8 +61,8 @@ export default function ProfilePostsSection({
             className={cn(
               "border-b-2 px-3 pb-2 text-sm font-medium capitalize transition-colors",
               tab === t
-                ? "border-[#C9F31D] text-[#C9F31D]"
-                : "border-transparent text-gray-500 hover:text-white",
+                ? "border-[#c9f31d] text-[#c9f31d]"
+                : "border-transparent text-[#7e8a7e] hover:text-white",
             )}
           >
             {t}
