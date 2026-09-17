@@ -84,7 +84,7 @@ export function Header({ initialUnreadNotificationCount }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 flex shrink-0 items-center gap-2.5 border-b border-white/[0.04] bg-[rgba(8,9,10,0.92)] px-4 py-3 pt-[calc(12px+env(safe-area-inset-top,0px))] font-grotesk backdrop-blur-[20px]">
       <Link
-        href="/"
+        href="/home"
         className="flex min-w-0 items-center gap-2.5 lg:hidden"
         aria-label="PlayFinder home"
       >

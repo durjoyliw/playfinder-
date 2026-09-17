@@ -23,7 +23,7 @@ export function DesktopSidebar() {
   const profileHref = `/users/${user.username}`;
 
   const navItems: NavItem[] = [
-    { id: "home", label: "Home", icon: Home, href: "/", isActive: (p) => p === "/" },
+    { id: "home", label: "Home", icon: Home, href: "/home", isActive: (p) => p === "/home" },
     {
       id: "discover",
       label: "Discover",
@@ -50,7 +50,7 @@ export function DesktopSidebar() {
   return (
     <div className="sticky top-0 hidden h-screen w-[275px] shrink-0 flex-col py-3 pl-6 pr-3 font-grotesk lg:flex">
       <Link
-        href="/"
+        href="/home"
         className="mb-2 flex w-fit items-center gap-2.5 rounded-full p-2.5 transition-colors hover:bg-[#131614]"
         aria-label="PlayFinder home"
       >

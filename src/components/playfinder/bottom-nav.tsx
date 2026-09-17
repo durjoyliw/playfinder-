@@ -27,8 +27,8 @@ export function BottomNav() {
       id: "home",
       label: "Home",
       icon: Home,
-      href: "/",
-      isActive: (path) => path === "/",
+      href: "/home",
+      isActive: (path) => path === "/home",
     },
     {
       id: "discover",

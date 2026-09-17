@@ -92,7 +92,7 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
           type="button"
           onClick={() => {
             const tab = searchParams.get("tab") ?? "social";
-            router.push(`/?tab=${tab}`);
+            router.push(`/home?tab=${tab}`);
           }}
           className="rounded-full p-2 text-white hover:bg-[#161616]"
           aria-label="Go back"

@@ -10,7 +10,7 @@ export async function userNeedsOnboarding(userId: string): Promise<boolean> {
 }
 
 export async function getPostAuthRedirect(userId: string): Promise<string> {
-  return (await userNeedsOnboarding(userId)) ? "/onboarding" : "/";
+  return (await userNeedsOnboarding(userId)) ? "/onboarding" : "/home";
 }
 
 export function getFirstName(displayName: string): string {

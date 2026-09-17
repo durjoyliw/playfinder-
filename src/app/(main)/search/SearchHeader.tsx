@@ -39,7 +39,7 @@ export function SearchHeader({ value, onChange, onSubmit }: SearchHeaderProps) {
     <div className="flex items-center gap-2.5 px-4 pb-1 pt-3">
       <button
         type="button"
-        onClick={() => router.push("/")}
+        onClick={() => router.push("/home")}
         className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-[#2a2f2a] bg-[#131614] text-[#b4bcaf] transition-transform active:scale-90 lg:hidden"
         aria-label="Back"
       >

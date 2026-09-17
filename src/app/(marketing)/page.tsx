@@ -1,9 +1,5 @@
 import { validateRequest } from "@/auth";
-import { PlayFinderAuthenticatedHome } from "@/components/playfinder/authenticated-home";
 import { PlayFinderLanding } from "@/components/marketing/playfinder-landing";
-import { buildFeedSportTabs } from "@/lib/feed-sport-tabs";
-import { userNeedsOnboarding } from "@/lib/onboarding";
-import prisma from "@/lib/prisma";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
@@ -17,35 +13,7 @@ export default async function MarketingPage() {
   const session = await validateRequest();
 
   if (session.user) {
-    if (await userNeedsOnboarding(session.user.id)) {
-      redirect("/onboarding");
-    }
-
-    const [unreadNotificationCount, userSports] = await Promise.all([
-      prisma.notification.count({
-        where: {
-          recipientId: session.user.id,
-          read: false,
-        },
-      }),
-      prisma.userSport.findMany({
-        where: { userId: session.user.id },
-        select: { sport: true },
-        orderBy: { id: "asc" },
-      }),
-    ]);
-
-    const feedSportTabs = buildFeedSportTabs(
-      userSports.map((entry) => entry.sport),
-    );
-
-    return (
-      <PlayFinderAuthenticatedHome
-        session={session}
-        initialUnreadNotificationCount={unreadNotificationCount}
-        feedSportTabs={feedSportTabs}
-      />
-    );
+    redirect("/home");
   }
 
   return <PlayFinderLanding />;

@@ -159,7 +159,7 @@ export function PostOptionsMenu({
         open={showDelete}
         onClose={() => setShowDelete(false)}
         onDeleted={() => {
-          if (redirectToFeedOnDelete) router.push("/");
+          if (redirectToFeedOnDelete) router.push("/home");
         }}
       />
     </>

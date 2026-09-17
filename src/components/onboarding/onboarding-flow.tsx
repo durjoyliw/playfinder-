@@ -266,7 +266,7 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
         },
       });
       await queryClient.invalidateQueries({ queryKey: ["user-settings"] });
-      router.push("/");
+      router.push("/home");
       router.refresh();
     } catch {
       setError("Something went wrong. Please try again.");

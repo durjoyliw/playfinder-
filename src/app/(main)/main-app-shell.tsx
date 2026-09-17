@@ -31,9 +31,10 @@ export function MainAppShell({
   const isDiscoverRoute = pathname.startsWith("/discover");
   const isProfileRoute = pathname.startsWith("/users/");
   const isSearchRoute = pathname.startsWith("/search");
+  const isHomeRoute = pathname === "/home";
 
   const isFullBleedRoute = isMessagesRoute || isDiscoverRoute;
-  const isWideColumnRoute = isProfileRoute || isSearchRoute;
+  const isWideColumnRoute = isProfileRoute || isSearchRoute || isHomeRoute;
 
   const rightRail = isFullBleedRoute ? null : isProfileRoute ? (
     <ProfileDesktopRightRail />

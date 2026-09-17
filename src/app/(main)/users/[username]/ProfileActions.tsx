@@ -251,7 +251,7 @@ export default function ProfileActions({
     try {
       await kyInstance.post(`/api/users/${user.id}/block`);
       toast({ description: `${user.displayName} blocked` });
-      router.push("/");
+      router.push("/home");
     } catch (error) {
       console.error(error);
       toast({
