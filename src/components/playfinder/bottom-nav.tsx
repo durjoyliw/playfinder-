@@ -76,8 +76,8 @@ export function BottomNav() {
         <button
           type="button"
           onClick={() => openComposer()}
-          className="-mt-[30px] grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[#c9f31d] text-[#0a0b0a] transition-transform active:scale-90"
-          style={{ boxShadow: "0 6px 24px var(--pf-volt-glow)" }}
+          className="-mt-[30px] grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[#C8FF00] text-black transition-transform active:scale-90"
+          style={{ boxShadow: "0 0 16px rgba(200,255,0,0.5)" }}
           aria-label="Create post"
         >
           <Plus className="h-[26px] w-[26px]" strokeWidth={2.5} />

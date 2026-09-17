@@ -108,7 +108,7 @@ export function HomeFeedCard({
   );
 
   const actionRow = (
-    <div className="flex items-center gap-6">
+    <div className="flex items-center gap-5">
       {showImInButton && isLookingToPlay && !isOwnPost && !isArenaLayout && (
         <div className="min-w-0 flex-1">
           <FeedCardImInButton
@@ -295,7 +295,7 @@ export function HomeFeedCard({
   }
 
   return (
-    <article className="border-b border-white/[0.04] px-4 py-[18px]">
+    <article className="border-b border-white/[0.04] px-4 py-4">
       <div className="mb-3.5 flex items-center gap-3">
         {avatarEl}
         <div className="min-w-0 flex-1">
@@ -335,7 +335,7 @@ export function HomeFeedCard({
         )}
       </div>
 
-      <p className="mb-3.5 text-base leading-[1.55] text-[#f2f5ef] [word-break:break-word]">
+      <p className="mb-3 text-[15px] leading-normal text-[#f2f5ef] [word-break:break-word]">
         {content}
       </p>
 
@@ -344,7 +344,7 @@ export function HomeFeedCard({
       {imageUrl && (
         <Link
           href={postHref}
-          className="relative mb-3.5 block aspect-[16/10] overflow-hidden rounded-2xl"
+          className="relative mb-3 block aspect-[16/10] overflow-hidden rounded-[14px]"
         >
           <img src={imageUrl} alt="" className="h-full w-full object-cover" />
           <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 to-transparent to-50%" />

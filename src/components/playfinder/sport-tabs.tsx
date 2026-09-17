@@ -2,6 +2,7 @@
 
 import type { FeedSportTab } from "@/lib/feed-sport-tabs";
 import { getSportIcon } from "@/lib/discover-sport-icons";
+import { getSportColour } from "@/lib/sport-visuals";
 import { cn } from "@/lib/utils";
 import { Zap } from "lucide-react";
 
@@ -13,16 +14,18 @@ interface SportTabsProps {
 
 export function SportTabs({ tabs, activeTab, onTabChange }: SportTabsProps) {
   return (
-    <div className="min-w-0 bg-[#08090a] pt-[18px]">
+    <div className="min-w-0">
       <div
         id="sport-tabs-scroll"
         role="tablist"
         aria-label="Filter by sport"
-        className="flex gap-2 overflow-x-auto px-4 py-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex gap-[7px] overflow-x-auto px-4 pb-1.5 pt-2.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {tabs.map((sport) => {
           const isActive = activeTab === sport.id;
           const SportIcon = getSportIcon(sport.id);
+          const chipColour =
+            sport.id === "all" ? "#c9f31d" : getSportColour(sport.id);
 
           return (
             <button
@@ -32,23 +35,26 @@ export function SportTabs({ tabs, activeTab, onTabChange }: SportTabsProps) {
               aria-selected={isActive}
               onClick={() => onTabChange(sport.id)}
               className={cn(
-                "flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[14px] border px-4 py-[11px] text-[13px] font-semibold transition-all duration-200 ease-[cubic-bezier(.2,.8,.2,1)] active:scale-95",
+                "flex min-h-[34px] shrink-0 items-center gap-[5px] whitespace-nowrap rounded-full border px-[13px] py-2 text-xs font-semibold transition-all duration-200 ease-[cubic-bezier(.2,.8,.2,1)] active:scale-95",
                 isActive
-                  ? "border-[#c9f31d] bg-[#c9f31d] text-[#0a0b0a]"
-                  : "border-[#2a2f2a] bg-[#131614] text-[#b4bcaf]",
+                  ? "border-transparent text-[#0a0b0a]"
+                  : "border-[#2a2f2a] bg-[#131614] text-[#7e8a7e]",
               )}
               style={
                 isActive
-                  ? { boxShadow: "0 4px 20px var(--pf-volt-glow)" }
+                  ? {
+                      background: chipColour,
+                      boxShadow: `0 2px 12px ${chipColour}4d`,
+                    }
                   : undefined
               }
             >
               {sport.id === "all" ? (
-                <Zap className="h-4 w-4" />
+                <Zap className="h-[15px] w-[15px]" />
               ) : (
-                <SportIcon className="h-4 w-4" />
+                <SportIcon className="h-[15px] w-[15px]" />
               )}
-              {sport.label}
+              <span>{sport.label}</span>
             </button>
           );
         })}

@@ -33,14 +33,17 @@ export function SportPills({ selected, onSelect, sports }: {
     <div className="sport-pills">
       {sports.map((sport) => {
         const Icon = SPORT_ICONS[sport as keyof typeof SPORT_ICONS];
+        const isActive = selected === sport;
+        const colour = SPORT_COLOURS[sport];
         return (
           <button
             key={sport}
-            className={`sport-pill ${selected === sport ? 'active' : ''}`}
+            className={`sport-chip ${isActive ? 'active' : ''}`}
+            style={isActive && colour ? { ['--chip-colour' as string]: colour } : undefined}
             onClick={() => onSelect(sport)}
           >
-            {Icon && <Icon size={16} />}
-            {sport}
+            {Icon && <Icon size={15} />}
+            <span>{sport === 'All' ? 'All' : sport}</span>
           </button>
         );
       })}

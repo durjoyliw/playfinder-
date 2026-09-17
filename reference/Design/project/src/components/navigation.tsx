@@ -33,11 +33,15 @@ export function BottomNav({ screen, go, onCompose }: {
 export function TopBar({ onSearch }: { onSearch: () => void }) {
   return (
     <header className="topbar">
-      <div className="logo"><Zap size={20} fill="currentColor" /></div>
-      <div className="city-pill"><MapPin size={14} /> Glasgow</div>
+      <span className="topbar-logo"><Zap size={20} fill="currentColor" /></span>
       <div className="spacer" />
-      <button className="icon-btn" onClick={onSearch}><Search size={20} /></button>
-      <button className="icon-btn" style={{ position: 'relative' }}>
+      <button className="icon-btn" onClick={onSearch} aria-label="Search">
+        <Search size={20} />
+      </button>
+      <button className="icon-btn" aria-label="Change location">
+        <MapPin size={20} />
+      </button>
+      <button className="icon-btn" style={{ position: 'relative' }} aria-label="Notifications">
         <Bell size={20} /><span className="badge-dot" />
       </button>
     </header>

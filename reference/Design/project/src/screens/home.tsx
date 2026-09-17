@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { SlidersHorizontal } from 'lucide-react';
 import {
   SOCIAL_POSTS, ARENA_POSTS, SPORTS_LIST, CURRENT_USER,
 } from '@/data';
 import { SportPills } from '@/components/shared';
 import { SocialPostCard, ArenaPostCard } from '@/components/post-cards';
 
-export function HomeScreen() {
+export function HomeScreen({ onCompose }: { onCompose: () => void }) {
   const [feedTab, setFeedTab] = useState<'social' | 'arena'>('social');
   const [selectedSport, setSelectedSport] = useState('All');
 
@@ -20,38 +19,36 @@ export function HomeScreen() {
 
   return (
     <div className="fade-in">
-      <div className="home-hero">
-        <div className="greeting">Good evening, {CURRENT_USER.name.split(' ')[0]}</div>
-        <h1>Who's <span className="accent">playing?</span></h1>
-      </div>
-
-      <div style={{ padding: '18px 16px 0' }}>
-        <SportPills selected={selectedSport} onSelect={setSelectedSport} sports={SPORTS_LIST} />
-      </div>
-
-      <div className="activity-strip">
-        <div>
-          <div className="count">127</div>
-          <div className="label"><strong>athletes active</strong> nearby</div>
+      <div className="home-sticky-header">
+        <div className="home-filter-row">
+          <SportPills selected={selectedSport} onSelect={setSelectedSport} sports={SPORTS_LIST} />
         </div>
-        <div className="live-orb" />
-      </div>
 
-      <div className="feed-tabs">
-        <button
-          className={`feed-tab ${feedTab === 'social' ? 'active' : ''}`}
-          data-tone="social"
-          onClick={() => setFeedTab('social')}
-        >
-          Social <span className="count">{filteredSocial.length}</span>
+        <button className="broadcast-prompt" onClick={onCompose}>
+          <span className="broadcast-avatar" style={{ background: CURRENT_USER.avatarColour }}>
+            {CURRENT_USER.initials.slice(0, 1)}
+          </span>
+          <span className="broadcast-copy">Need players or a game?</span>
+          <span className="broadcast-action">Broadcast</span>
         </button>
-        <button
-          className={`feed-tab ${feedTab === 'arena' ? 'active' : ''}`}
-          data-tone="arena"
-          onClick={() => setFeedTab('arena')}
-        >
-          Arena <span className="count">{filteredArena.length}</span>
-        </button>
+
+        <div className="segmented-control">
+          <button
+            className={`segment ${feedTab === 'social' ? 'active' : ''}`}
+            onClick={() => setFeedTab('social')}
+          >
+            Social
+            <span className="count">{filteredSocial.length}</span>
+          </button>
+          <button
+            className={`segment ${feedTab === 'arena' ? 'active' : ''}`}
+            onClick={() => setFeedTab('arena')}
+          >
+            Arena
+            <span className="count">{filteredArena.length}</span>
+          </button>
+          <div className={`segment-indicator ${feedTab}`} />
+        </div>
       </div>
 
       {feedTab === 'social' ? (

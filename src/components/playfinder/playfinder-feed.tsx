@@ -68,7 +68,7 @@ export function PlayFinderFeed({ sportFilter, feedTypeTab }: PlayFinderFeedProps
   return (
     <div
       className={
-        isSocial ? "pb-4 pt-4" : "flex flex-col gap-3.5 px-4 pb-4 pt-4"
+    isSocial ? "pb-4" : "flex flex-col gap-3 px-4 pb-4 pt-3.5"
       }
     >
       {isFetching && (

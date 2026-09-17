@@ -25,7 +25,7 @@ function App() {
         <div className="app-shell">
           <TopBar onSearch={() => go('search')} />
           <div className="content-area">
-            {screen === 'home' && <HomeScreen />}
+            {screen === 'home' && <HomeScreen onCompose={() => setComposerOpen(true)} />}
             {screen === 'discover' && <DiscoverScreen />}
             {screen === 'search' && <SearchScreen onBack={() => go('home')} />}
             {screen === 'profile' && <ProfileScreen />}

@@ -46,10 +46,10 @@ interface ComposerSheetProps {
 const SHEET_CONTENT_MIN_H = "min-h-[32rem]";
 
 const textareaClassName =
-  "w-full min-h-[140px] resize-none rounded-xl border border-[#2a2a2a] bg-[#1e1e1e] p-3 text-[15px] text-[#f0f0f0] placeholder:text-[#666666] focus:outline-none";
+  "w-full min-h-[110px] resize-none rounded-[14px] border border-[#2a2f2a] bg-[#131614] p-4 text-base text-white placeholder:text-[#888888] outline-none focus:border-[#C8FF00]";
 
 const fieldClassName =
-  "w-full rounded-xl border border-[#333] bg-[#1a1a1a] px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-[#C9F31D] focus:outline-none [color-scheme:dark]";
+  "w-full rounded-[14px] border border-[#2a2f2a] bg-[#131614] px-4 py-3.5 text-[15px] text-white placeholder:text-[#888888] outline-none focus:border-[#C8FF00] [color-scheme:dark]";
 
 const ARENA_INTENTS = POST_INTENTS.filter(
   (o) =>
@@ -156,17 +156,25 @@ function getComposerSportDisplay(raw: string): { name: string; emoji: string } {
 }
 
 const visibilityActiveClass =
-  "rounded-[20px] border border-[#C9F31D] bg-[#C9F31D] px-4 py-2 text-[13px] font-bold text-[#0d0d0d]";
+  "rounded-[12px] border border-[#C8FF00] bg-[#C8FF00] px-4 py-2.5 text-[13px] font-bold text-black";
 const visibilityInactiveClass =
-  "rounded-[20px] border border-[#2a2a2a] bg-transparent px-4 py-2 text-[13px] text-[#888]";
+  "rounded-[12px] border border-[#2a2f2a] bg-[#131614] px-4 py-2.5 text-[13px] text-[#888888]";
 
 const composerSubmitButtonClassName =
-  "w-full rounded-xl bg-[#C9F31D] py-[14px] text-[15px] font-bold text-[#0d0d0d] hover:bg-[#b8e019]";
+  "h-auto w-full rounded-full bg-[#C8FF00] py-[14px] text-[15px] font-bold text-black hover:bg-[#C8FF00]/90";
 
 const composerFooterClassName =
-  "mt-auto flex flex-col gap-3 border-t border-[#262626] pt-4";
+  "mt-auto flex flex-col gap-3 border-t border-[#2a2f2a] pt-4";
 
 const composerMediaRowClassName = "flex min-h-11 items-center gap-2";
+
+const sportChipSelectedClass =
+  "rounded-full border border-[#C8FF00] bg-[#C8FF00] px-3 py-1.5 text-sm font-medium text-black transition-colors";
+const sportChipIdleClass =
+  "rounded-full border border-[#2a2f2a] bg-[#131614] px-3 py-1.5 text-sm font-medium text-[#888888] transition-colors";
+
+const sectionLabelClass =
+  "mb-2 block font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#888888]";
 
 function VisibilityToggle({
   visibility,
@@ -393,70 +401,74 @@ export function ComposerSheet({
   if (!mounted || !open) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-end justify-center">
+    <div className="fixed inset-0 z-[200] flex items-end justify-center">
       <button
         type="button"
-        className="absolute inset-0 bg-black/80"
+        className="absolute inset-0 bg-black/70 backdrop-blur-[6px]"
         aria-label="Close composer"
         onClick={() => onOpenChange(false)}
       />
 
       <div
-        className="relative z-10 flex w-full max-w-[480px] flex-col rounded-t-[20px] bg-[#161616] text-white"
+        className="relative z-10 flex w-full max-w-[480px] flex-col rounded-t-2xl border border-[#2a2f2a] border-b-0 bg-[#161616] text-white shadow-[0_-10px_40px_rgba(0,0,0,0.5)]"
         role="dialog"
         aria-modal="true"
         aria-labelledby="composer-sheet-title"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-center pt-3">
-          <div
-            className="h-1 w-10 rounded-sm bg-[#333333]"
-            aria-hidden
-          />
+        <div className="flex justify-center pt-4">
+          <div className="h-1 w-10 rounded-sm bg-[#353c34]" aria-hidden />
         </div>
 
-        <div className="relative flex items-center border-b border-[#262626] px-4 pb-0 pt-2">
-          <div className="flex flex-1" role="tablist" aria-label="Composer type">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === "social"}
-              onClick={() => setActiveTab("social")}
-              className={cn(
-                "flex-1 border-b-2 py-3 text-center text-sm font-semibold transition-colors",
-                activeTab === "social"
-                  ? "border-[#C9F31D] text-white"
-                  : "border-transparent text-[#666666]",
-              )}
-            >
-              SOCIAL
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === "arena"}
-              onClick={() => setActiveTab("arena")}
-              className={cn(
-                "flex-1 border-b-2 py-3 text-center text-sm font-semibold transition-colors",
-                activeTab === "arena"
-                  ? "border-[#C9F31D] text-[#C9F31D]"
-                  : "border-transparent text-[#666666]",
-              )}
-            >
-              ARENA
-            </button>
-          </div>
+        <div className="relative mb-4 flex items-center justify-between px-4 pt-4">
+          <h2
+            id="composer-sheet-title"
+            className="text-[22px] font-bold tracking-[-0.03em] text-white"
+          >
+            Create
+          </h2>
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="absolute right-3 top-2 rounded-full p-1.5 text-[#888888] hover:bg-[#1f1f1f] hover:text-white"
+            className="grid h-[38px] w-[38px] place-items-center rounded-full bg-[#131614] text-[#b4bcaf] transition-transform active:scale-90"
             aria-label="Close"
           >
-            <X className="h-5 w-5" />
+            <X className="h-[18px] w-[18px]" />
           </button>
         </div>
 
-        <div className="max-h-[85vh] overflow-y-auto px-4 pb-8 pt-4">
+        <div className="flex px-4" role="tablist" aria-label="Composer type">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "social"}
+            onClick={() => setActiveTab("social")}
+            className={cn(
+              "flex-1 border-b-2 py-3 text-center text-sm font-semibold transition-colors",
+              activeTab === "social"
+                ? "border-[#C8FF00] text-white"
+                : "border-transparent text-[#888888]",
+            )}
+          >
+            Social
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "arena"}
+            onClick={() => setActiveTab("arena")}
+            className={cn(
+              "flex-1 border-b-2 py-3 text-center text-sm font-semibold transition-colors",
+              activeTab === "arena"
+                ? "border-[#C8FF00] text-white"
+                : "border-transparent text-[#888888]",
+            )}
+          >
+            Arena
+          </button>
+        </div>
+
+        <div className="max-h-[85vh] overflow-y-auto px-4 pb-[calc(24px+env(safe-area-inset-bottom,0px))] pt-4">
           {activeTab === "social" ? (
             <form
               onSubmit={(e) => {
@@ -467,7 +479,7 @@ export function ComposerSheet({
               className={cn("flex flex-col", SHEET_CONTENT_MIN_H)}
             >
               <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#2a2a2a] text-sm font-bold text-white">
+                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#c9f31d] text-xs font-bold text-black">
                   {user.avatarUrl ? (
                     <img
                       src={user.avatarUrl}
@@ -488,14 +500,14 @@ export function ComposerSheet({
                     className={textareaClassName}
                     required
                   />
-                  <p className="absolute bottom-0 right-0 text-xs text-[#666666]">
+                  <p className="absolute bottom-0 right-0 text-xs text-[#888888]">
                     {socialContent.length}/280
                   </p>
                 </div>
               </div>
 
               <div className="mt-5">
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[#666666]">
+                <p className={sectionLabelClass}>
                   Tag a sport (optional)
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -519,10 +531,7 @@ export function ComposerSheet({
                           )
                         }
                         className={cn(
-                          "rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
-                          selected
-                            ? "border-[#C9F31D] bg-[#C9F31D] text-[#0d0d0d]"
-                            : "border-[#2a2a2a] bg-[#161616] text-[#666666]",
+                          selected ? sportChipSelectedClass : sportChipIdleClass,
                         )}
                       >
                         {emoji} {name}
@@ -532,7 +541,7 @@ export function ComposerSheet({
                   {!userSports.length && (
                     <Link
                       href="/settings/sports"
-                      className="text-sm text-[#C9F31D] hover:underline"
+                      className="text-sm text-[#C8FF00] hover:underline"
                     >
                       Add sports in Settings
                     </Link>
@@ -541,7 +550,7 @@ export function ComposerSheet({
               </div>
 
               <div className="mt-5">
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[#666666]">
+                <p className={sectionLabelClass}>
                   Visibility
                 </p>
                 <VisibilityToggle
@@ -578,7 +587,7 @@ export function ComposerSheet({
                   <button
                     type="button"
                     onClick={handlePhotoPick}
-                    className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1a1a1a] text-[#666666] hover:text-white"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-[#2a2f2a] bg-[#131614] text-[#888888] hover:border-[#C8FF00] hover:text-[#C8FF00]"
                     aria-label="Add photo"
                   >
                     <IconPhoto className="h-5 w-5" stroke={1.75} />
@@ -586,7 +595,7 @@ export function ComposerSheet({
                   <button
                     type="button"
                     onClick={handleCameraPick}
-                    className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1a1a1a] text-[#666666] hover:text-white"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-[#2a2f2a] bg-[#131614] text-[#888888] hover:border-[#C8FF00] hover:text-[#C8FF00]"
                     aria-label="Take photo"
                   >
                     <IconCamera className="h-5 w-5" stroke={1.75} />
@@ -594,7 +603,7 @@ export function ComposerSheet({
                   <button
                     type="button"
                     onClick={handleEmojiPick}
-                    className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1a1a1a] text-[#666666] hover:text-white"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-[#2a2f2a] bg-[#131614] text-[#888888] hover:border-[#C8FF00] hover:text-[#C8FF00]"
                     aria-label="Add emoji"
                   >
                     <IconMoodSmile className="h-5 w-5" stroke={1.75} />
@@ -602,7 +611,7 @@ export function ComposerSheet({
                   <button
                     type="button"
                     onClick={handleGifPick}
-                    className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1a1a1a] text-[#666666] hover:text-white"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-[#2a2f2a] bg-[#131614] text-[#888888] hover:border-[#C8FF00] hover:text-[#C8FF00]"
                     aria-label="Add GIF"
                   >
                     <IconGif className="h-5 w-5" stroke={1.75} />
@@ -616,7 +625,7 @@ export function ComposerSheet({
               className={cn("flex flex-col space-y-4", SHEET_CONTENT_MIN_H)}
             >
               <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#2a2a2a] text-sm font-bold text-white">
+                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#c9f31d] text-xs font-bold text-black">
                   {user.avatarUrl ? (
                     <img
                       src={user.avatarUrl}
@@ -636,14 +645,14 @@ export function ComposerSheet({
                     maxLength={280}
                     className={textareaClassName}
                   />
-                  <p className="absolute bottom-0 right-0 text-xs text-[#666666]">
+                  <p className="absolute bottom-0 right-0 text-xs text-[#888888]">
                     {arenaContent.length}/280
                   </p>
                 </div>
               </div>
 
               <div>
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[#666666]">
+                <p className={sectionLabelClass}>
                   Sport
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -661,10 +670,7 @@ export function ComposerSheet({
                         type="button"
                         onClick={() => setSelectedSport(sportKey)}
                         className={cn(
-                          "rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
-                          selected
-                            ? "border-[#C9F31D] bg-[#C9F31D] text-[#0d0d0d]"
-                            : "border-[#2a2a2a] bg-[#161616] text-[#666666]",
+                          selected ? sportChipSelectedClass : sportChipIdleClass,
                         )}
                       >
                         {emoji} {name}
@@ -674,7 +680,7 @@ export function ComposerSheet({
                   {!userSports.length && (
                     <Link
                       href="/settings/sports"
-                      className="text-sm text-[#C9F31D] hover:underline"
+                      className="text-sm text-[#C8FF00] hover:underline"
                     >
                       Add sports in Settings
                     </Link>
@@ -683,7 +689,7 @@ export function ComposerSheet({
               </div>
 
               <div>
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[#666666]">
+                <p className={sectionLabelClass}>
                   Intent
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -714,7 +720,7 @@ export function ComposerSheet({
                         "rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
                         selectedIntent === option.value
                           ? option.className
-                          : "border-[#2a2a2a] bg-[#161616] text-[#666666]",
+                          : "border-[#2a2f2a] bg-[#131614] text-[#888888]",
                       )}
                     >
                       {option.label}
@@ -726,7 +732,7 @@ export function ComposerSheet({
               <div>
                 <label
                   htmlFor="broadcast-location"
-                  className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[#666666]"
+                  className={sectionLabelClass}
                 >
                   Location
                 </label>
@@ -743,7 +749,7 @@ export function ComposerSheet({
                 <div>
                   <label
                     htmlFor="broadcast-time"
-                    className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[#666666]"
+                    className={sectionLabelClass}
                   >
                     Date & time
                   </label>
@@ -755,14 +761,14 @@ export function ComposerSheet({
                     className={fieldClassName}
                   />
                   {timeLabel && (
-                    <p className="mt-1.5 text-xs text-[#666666]">{timeLabel}</p>
+                    <p className="mt-1.5 text-xs text-[#888888]">{timeLabel}</p>
                   )}
                 </div>
               )}
 
               {isLookingToPlay && (
                 <div>
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[#666666]">
+                  <p className={sectionLabelClass}>
                     Players needed
                   </p>
                   <div className="flex items-center gap-3">
@@ -771,7 +777,7 @@ export function ComposerSheet({
                       onClick={() =>
                         setSlotsNeeded((n) => Math.max(1, n - 1))
                       }
-                      className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#333] bg-[#1a1a1a] text-white hover:bg-[#262626]"
+                      className="flex h-10 w-10 items-center justify-center rounded-[14px] border border-[#2a2f2a] bg-[#131614] text-white hover:border-[#C8FF00] hover:text-[#C8FF00]"
                       aria-label="Decrease players"
                     >
                       <Minus className="h-4 w-4" />
@@ -784,7 +790,7 @@ export function ComposerSheet({
                       onClick={() =>
                         setSlotsNeeded((n) => Math.min(10, n + 1))
                       }
-                      className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#333] bg-[#1a1a1a] text-white hover:bg-[#262626]"
+                      className="flex h-10 w-10 items-center justify-center rounded-[14px] border border-[#2a2f2a] bg-[#131614] text-white hover:border-[#C8FF00] hover:text-[#C8FF00]"
                       aria-label="Increase players"
                     >
                       <Plus className="h-4 w-4" />
@@ -794,7 +800,7 @@ export function ComposerSheet({
               )}
 
               <div>
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[#666666]">
+                <p className={sectionLabelClass}>
                   Visibility
                 </p>
                 <VisibilityToggle

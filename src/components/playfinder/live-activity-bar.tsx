@@ -20,7 +20,7 @@ export function LiveActivityBar() {
 
   return (
     <div
-      className="relative mx-4 mt-[18px] flex items-center gap-3.5 overflow-hidden rounded-2xl border border-[#2a2f2a] px-[18px] py-4"
+      className="relative mx-4 mb-2 mt-3 flex items-center gap-3.5 overflow-hidden rounded-2xl border border-[#2a2f2a] px-[18px] py-3.5"
       style={{
         background:
           "linear-gradient(135deg, var(--pf-surface) 0%, var(--pf-bg-2) 100%)",
