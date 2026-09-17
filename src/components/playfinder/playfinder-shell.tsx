@@ -14,7 +14,7 @@ function PlayFinderShellInner({
   initialUnreadNotificationCount,
 }: PlayFinderShellProps) {
   return (
-    <div className="min-h-screen bg-[#0d0d0d]">
+    <div className="min-h-screen bg-[#08090a] font-grotesk text-[#f2f5ef]">
       <div className="relative mx-auto flex min-h-screen w-full max-w-[480px] flex-col">
         <Header
           initialUnreadNotificationCount={initialUnreadNotificationCount}

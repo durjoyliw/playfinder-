@@ -1,5 +1,6 @@
 "use client";
 
+import { useSession } from "@/app/(main)/SessionProvider";
 import { ComposeRow } from "@/components/playfinder/compose-row";
 import { FeedTypeTabs } from "@/components/playfinder/feed-type-tabs";
 import { LiveActivityBar } from "@/components/playfinder/live-activity-bar";
@@ -14,7 +15,14 @@ interface PlayFinderHomeProps {
   feedSportTabs: FeedSportTab[];
 }
 
+function greetingForHour(hour: number) {
+  if (hour < 12) return "Good morning";
+  if (hour < 18) return "Good afternoon";
+  return "Good evening";
+}
+
 export function PlayFinderHome({ feedSportTabs }: PlayFinderHomeProps) {
+  const { user } = useSession();
   const { openComposer } = usePlayFinder();
   const [sportFilter, setSportFilter] = useState("all");
   const { activeFeedTypeTab, setActiveFeedTypeTab } = usePlayFinder();
@@ -34,8 +42,19 @@ export function PlayFinderHome({ feedSportTabs }: PlayFinderHomeProps) {
     }
   }, [feedSportTabs, sportFilter]);
 
+  const firstName = (user.displayName || user.username).split(" ")[0];
+  const greeting = greetingForHour(new Date().getHours());
+
   return (
-    <div className="bg-[#0d0d0d]">
+    <div className="bg-[#08090a]">
+      <div className="px-4 pb-1 pt-6">
+        <div className="mb-1 text-sm text-[#7e8a7e]">
+          {greeting}, {firstName}
+        </div>
+        <h1 className="text-[clamp(30px,9vw,40px)] font-bold leading-[0.95] tracking-[-0.04em] text-[#f2f5ef]">
+          Who&apos;s <span className="text-[#c9f31d]">playing?</span>
+        </h1>
+      </div>
       <SportTabs
         tabs={feedSportTabs}
         activeTab={sportFilter}

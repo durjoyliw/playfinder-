@@ -25,28 +25,28 @@ export function BottomNav() {
   const navItems: NavItem[] = [
     {
       id: "home",
-      label: "HOME",
+      label: "Home",
       icon: Home,
       href: "/",
       isActive: (path) => path === "/",
     },
     {
       id: "discover",
-      label: "DISCOVER",
+      label: "Discover",
       icon: Compass,
       href: "/discover",
       isActive: (path) => path.startsWith("/discover"),
     },
     {
       id: "messages",
-      label: "MESSAGES",
+      label: "Messages",
       icon: MessageCircle,
       href: "/messages",
       isActive: (path) => path.startsWith("/messages"),
     },
     {
       id: "profile",
-      label: "PROFILE",
+      label: "Profile",
       icon: User,
       href: `/users/${user.username}`,
       isActive: (path, username) =>
@@ -56,51 +56,39 @@ export function BottomNav() {
 
   const linkClass = (active: boolean) =>
     cn(
-      "flex flex-col items-center gap-1 p-2 transition-colors",
-      active
-        ? "text-[#C9F31D]"
-        : "text-muted-foreground hover:text-white",
+      "flex min-h-12 flex-1 flex-col items-center justify-center gap-1 font-dm-mono text-[10px] font-medium uppercase tracking-[0.04em] transition-colors active:scale-90",
+      active ? "text-[#c9f31d]" : "text-[#7e8a7e]",
     );
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-[#0d0d0d] px-2 pb-6 pt-2">
-      <div className="mx-auto flex max-w-md items-center justify-around">
+    <nav className="fixed bottom-0 left-0 right-0 z-[100] flex h-[calc(64px+env(safe-area-inset-bottom,0px))] shrink-0 items-center justify-around border-t border-white/[0.05] bg-[rgba(8,9,10,0.95)] pb-[env(safe-area-inset-bottom,0px)] font-grotesk backdrop-blur-[24px]">
+      <div className="mx-auto flex h-full w-full max-w-md items-center justify-around">
         {navItems.slice(0, 2).map((item) => {
           const active = item.isActive(pathname, user.username);
           return (
-            <Link
-              key={item.id}
-              href={item.href}
-              className={linkClass(active)}
-            >
-              <item.icon className="h-5 w-5" />
-              <span className="text-[10px] font-medium tracking-wider">
-                {item.label}
-              </span>
+            <Link key={item.id} href={item.href} className={linkClass(active)}>
+              <item.icon className="h-6 w-6" />
+              <span>{item.label}</span>
             </Link>
           );
         })}
 
         <button
           type="button"
-          onClick={openComposer}
-          className="-mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#C9F31D] shadow-lg shadow-[#C9F31D]/30 transition-all hover:bg-[#d4f73a] active:scale-95"
+          onClick={() => openComposer()}
+          className="-mt-[30px] grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[#c9f31d] text-[#0a0b0a] transition-transform active:scale-90"
+          style={{ boxShadow: "0 6px 24px var(--pf-volt-glow)" }}
+          aria-label="Create post"
         >
-          <Plus className="h-7 w-7 text-black" strokeWidth={2.5} />
+          <Plus className="h-[26px] w-[26px]" strokeWidth={2.5} />
         </button>
 
         {navItems.slice(2).map((item) => {
           const active = item.isActive(pathname, user.username);
           return (
-            <Link
-              key={item.id}
-              href={item.href}
-              className={linkClass(active)}
-            >
-              <item.icon className="h-5 w-5" />
-              <span className="text-[10px] font-medium tracking-wider">
-                {item.label}
-              </span>
+            <Link key={item.id} href={item.href} className={linkClass(active)}>
+              <item.icon className="h-6 w-6" />
+              <span>{item.label}</span>
             </Link>
           );
         })}

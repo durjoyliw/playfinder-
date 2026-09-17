@@ -105,6 +105,21 @@
 
 @layer base {
   :root {
+    --pf-bg: #08090a;
+    --pf-bg-2: #0d0f0d;
+    --pf-surface: #131614;
+    --pf-surface-2: #1a1e1b;
+    --pf-surface-3: #232824;
+    --pf-border: #2a2f2a;
+    --pf-border-light: #353c34;
+    --pf-text: #f2f5ef;
+    --pf-text-2: #b4bcaf;
+    --pf-text-3: #7e8a7e;
+    --pf-text-4: #5a635a;
+    --pf-volt: #c9f31d;
+    --pf-volt-dim: #94b813;
+    --pf-volt-glow: rgba(201, 243, 29, 0.35);
+    --pf-blue: #56ccf2;
     --background: 0 0% 5.1%;
     --foreground: 0 0% 95%;
 
@@ -236,4 +251,100 @@
 
 .str-chat__channel-search-bar-button--exit-search {
   display: none;
+}
+
+/* Bolt reference: map pins, pulses, glows (dynamic Mapbox DOM + effects Tailwind can't own) */
+.pf-live-orb {
+  position: relative;
+  margin-left: auto;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--pf-volt), transparent 70%);
+}
+
+.pf-live-orb::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: var(--pf-volt);
+  animation: pf-live-pulse 1.5s infinite;
+}
+
+.pf-map-marker {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.pf-map-pin {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 2px solid #0a0b0a;
+  border-radius: 50% 50% 50% 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transform: rotate(-45deg);
+}
+
+.pf-map-pin-emoji {
+  font-size: 13px;
+  line-height: 1;
+  transform: rotate(45deg);
+}
+
+.pf-map-pulse {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 36px;
+  height: 36px;
+  pointer-events: none;
+  border: 2px solid var(--pf-volt);
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, 50%) scale(0.5);
+  animation: pf-marker-pulse 2s infinite ease-out;
+}
+
+@keyframes pf-live-pulse {
+  0%,
+  100% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.6;
+  }
+}
+
+@keyframes pf-marker-pulse {
+  0% {
+    transform: translate(-50%, 50%) scale(0.5);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%, 50%) scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes pf-status-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.7);
+    opacity: 0.5;
+  }
 }

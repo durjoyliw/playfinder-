@@ -7,6 +7,8 @@ import {
   type OpenStatus,
 } from "@/lib/discover-places";
 import { getSportIcon } from "@/lib/discover-sport-icons";
+import { getSportEmoji } from "@/lib/sports";
+import { getSportColour } from "@/lib/sport-visuals";
 import { cn } from "@/lib/utils";
 import { IconUsers } from "@tabler/icons-react";
 
@@ -70,23 +72,26 @@ export function DiscoverPlaceList({
   loading,
 }: DiscoverPlaceListProps) {
   const isVenues = tabType === "venues";
-  const sectionTitle = isVenues ? "Nearby venues" : "Nearby clubs";
   const SportIcon = getSportIcon(sportKey);
+  const sportColour = getSportColour(sportKey);
+  const sportEmoji = getSportEmoji(sportKey);
 
   if (loading) {
     return (
       <div>
-        <div
-          className="mb-3 flex items-center justify-between"
-          style={{ margin: "0 16px 12px" }}
-        >
-          <span className="text-[15px] font-bold text-white">{sectionTitle}</span>
+        <div className="mb-3.5 px-4">
+          <div className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#7e8a7e]">
+            Glasgow · within 5 mi
+          </div>
+          <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[#f2f5ef]">
+            {isVenues ? "Play near you" : "Local clubs"}
+          </div>
         </div>
-        <div className="space-y-2.5">
+        <div>
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="mx-4 h-[72px] animate-pulse rounded-xl bg-[#1a1a1a]"
+              className="mx-4 mb-2.5 h-[96px] animate-pulse rounded-2xl bg-[#131614]"
             />
           ))}
         </div>
@@ -97,7 +102,15 @@ export function DiscoverPlaceList({
   if (places.length === 0) {
     return (
       <div className="px-4">
-        <p className="text-center text-[13px] text-[#555555]">
+        <div className="mb-3.5">
+          <div className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#7e8a7e]">
+            Glasgow · within 5 mi
+          </div>
+          <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[#f2f5ef]">
+            {isVenues ? "Play near you" : "Local clubs"}
+          </div>
+        </div>
+        <p className="py-5 text-center text-sm text-[#7e8a7e]">
           Try a different sport or check back later
         </p>
       </div>
@@ -106,68 +119,74 @@ export function DiscoverPlaceList({
 
   return (
     <div>
-      <div
-        className="flex items-center justify-between"
-        style={{ margin: "0 16px 12px" }}
-      >
-        <span className="text-[15px] font-bold text-white">{sectionTitle}</span>
-        <span className="text-[13px] font-bold text-[#C9F31D]">
-          {places.length} found
-        </span>
+      <div className="mb-3.5 px-4">
+        <div className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#7e8a7e]">
+          Glasgow · within 5 mi
+        </div>
+        <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[#f2f5ef]">
+          {isVenues ? "Play near you" : "Local clubs"}
+        </div>
       </div>
 
-      <div>
+      <div className="px-4">
         {places.map((place) => (
           <div
             key={place.id}
-            className="mx-4 mb-2.5 flex items-center gap-3 rounded-xl border border-[#222222] bg-[#161616]"
-            style={{ padding: 14 }}
+            className="mb-2.5 flex gap-3 rounded-2xl border border-[#2a2f2a] bg-[#131614] p-3 transition-transform active:scale-[0.98]"
           >
             <a
               href={`https://maps.google.com/?q=${place.lat},${place.lng}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex min-w-0 flex-1 items-center gap-3 transition-colors active:opacity-80"
+              className="flex min-w-0 flex-1 gap-3"
             >
               <div
-                className={cn(
-                  "flex shrink-0 items-center justify-center rounded-[10px]",
-                  isVenues
-                    ? "bg-[rgba(201,243,29,0.1)]"
-                    : "bg-[rgba(55,138,221,0.1)]",
-                )}
-                style={{ width: 44, height: 44 }}
+                className="relative h-[72px] w-[72px] shrink-0 overflow-hidden rounded-[14px]"
+                style={{
+                  background: isVenues
+                    ? `${sportColour}1f`
+                    : "rgba(86,204,242,0.12)",
+                }}
               >
                 {isVenues ? (
-                  <SportIcon className="h-5 w-5 text-[#C9F31D]" stroke={1.75} />
+                  <>
+                    <div className="grid h-full w-full place-items-center">
+                      <SportIcon
+                        className="h-7 w-7"
+                        color={sportColour}
+                        stroke={1.75}
+                      />
+                    </div>
+                    <span className="absolute bottom-1 left-1 text-base drop-shadow">
+                      {sportEmoji}
+                    </span>
+                  </>
                 ) : (
-                  <IconUsers className="h-5 w-5 text-[#378ADD]" stroke={1.75} />
+                  <div className="grid h-full w-full place-items-center">
+                    <IconUsers className="h-6 w-6 text-[#56ccf2]" stroke={1.75} />
+                  </div>
                 )}
               </div>
 
-              <div className="min-w-0 flex-1">
-                <p className="text-[14px] font-bold text-white">{place.name}</p>
+              <div className="flex min-w-0 flex-1 flex-col">
+                <p className="text-sm font-semibold leading-tight text-[#f2f5ef]">
+                  {place.name}
+                </p>
                 {place.address && (
-                  <p
-                    className="truncate text-[#888888]"
-                    style={{ fontSize: 12, marginTop: 2 }}
-                  >
+                  <p className="mt-1 truncate text-xs text-[#7e8a7e]">
                     {place.address}
                   </p>
                 )}
-                <div
-                  className="flex flex-wrap items-center gap-1.5"
-                  style={{ marginTop: 6 }}
-                >
-                  <span className="text-[12px] font-bold text-[#C9F31D]">
+                <div className="mt-auto flex flex-wrap items-center gap-2.5 pt-2">
+                  <span className="font-dm-mono text-xs font-medium text-[#c9f31d]">
                     {formatDistanceMiles(place.distanceMiles)}
                   </span>
                   {place.openStatus != null && place.openStatus !== "" && (
                     <OpenStatusBadge status={place.openStatus} />
                   )}
                   {place.bookable && (
-                    <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-[#1a1a2a] text-[#60a5fa]">
-                      Bookable
+                    <span className="ml-auto rounded-md border border-[#56ccf2]/20 bg-[rgba(86,204,242,0.1)] px-2 py-1 font-dm-mono text-[8px] font-semibold tracking-[0.08em] text-[#56ccf2]">
+                      BOOKABLE
                     </span>
                   )}
                 </div>
@@ -179,7 +198,7 @@ export function DiscoverPlaceList({
                 href={place.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="shrink-0 text-[12px] font-semibold text-[#C9F31D] hover:underline"
+                className="self-center shrink-0 text-xs font-semibold text-[#c9f31d] hover:underline"
                 onClick={(e) => e.stopPropagation()}
               >
                 Visit →

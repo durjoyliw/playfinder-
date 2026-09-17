@@ -1,7 +1,9 @@
 "use client";
 
 import type { FeedSportTab } from "@/lib/feed-sport-tabs";
-import type { CSSProperties } from "react";
+import { getSportIcon } from "@/lib/discover-sport-icons";
+import { cn } from "@/lib/utils";
+import { Zap } from "lucide-react";
 
 interface SportTabsProps {
   tabs: FeedSportTab[];
@@ -9,46 +11,18 @@ interface SportTabsProps {
   onTabChange: (tabId: string) => void;
 }
 
-const wrapperStyle: CSSProperties = {
-  backgroundColor: "#0d0d0d",
-  minWidth: 0,
-};
-
-const containerStyle: CSSProperties = {
-  display: "flex",
-  overflowX: "auto",
-  gap: 8,
-  padding: "10px 12px 8px",
-  scrollbarWidth: "none",
-  msOverflowStyle: "none",
-  WebkitOverflowScrolling: "touch",
-};
-
 export function SportTabs({ tabs, activeTab, onTabChange }: SportTabsProps) {
   return (
-    <div style={wrapperStyle}>
-      <style>{`#sport-tabs-scroll::-webkit-scrollbar { display: none; }`}</style>
+    <div className="min-w-0 bg-[#08090a] pt-[18px]">
       <div
         id="sport-tabs-scroll"
         role="tablist"
         aria-label="Filter by sport"
-        style={containerStyle}
+        className="flex gap-2 overflow-x-auto px-4 py-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {tabs.map((sport) => {
           const isActive = activeTab === sport.id;
-
-          const tabStyle: CSSProperties = {
-            borderRadius: 9999,
-            padding: "7px 16px",
-            fontSize: 13,
-            fontWeight: isActive ? 700 : 500,
-            whiteSpace: "nowrap",
-            cursor: "pointer",
-            border: "none",
-            backgroundColor: isActive ? "#C9F31D" : "#161616",
-            color: isActive ? "#000000" : "#888888",
-            flexShrink: 0,
-          };
+          const SportIcon = getSportIcon(sport.id);
 
           return (
             <button
@@ -57,8 +31,23 @@ export function SportTabs({ tabs, activeTab, onTabChange }: SportTabsProps) {
               role="tab"
               aria-selected={isActive}
               onClick={() => onTabChange(sport.id)}
-              style={tabStyle}
+              className={cn(
+                "flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[14px] border px-4 py-[11px] text-[13px] font-semibold transition-all duration-200 ease-[cubic-bezier(.2,.8,.2,1)] active:scale-95",
+                isActive
+                  ? "border-[#c9f31d] bg-[#c9f31d] text-[#0a0b0a]"
+                  : "border-[#2a2f2a] bg-[#131614] text-[#b4bcaf]",
+              )}
+              style={
+                isActive
+                  ? { boxShadow: "0 4px 20px var(--pf-volt-glow)" }
+                  : undefined
+              }
             >
+              {sport.id === "all" ? (
+                <Zap className="h-4 w-4" />
+              ) : (
+                <SportIcon className="h-4 w-4" />
+              )}
               {sport.label}
             </button>
           );

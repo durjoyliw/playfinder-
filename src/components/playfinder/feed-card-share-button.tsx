@@ -45,7 +45,7 @@ export function FeedCardShareButton({
       )}
       aria-label="Share post"
     >
-      <Share2 className="h-4 w-4" />
+      <Share2 className="h-5 w-5" />
       {!iconOnly && <span className="text-sm">Share</span>}
     </button>
   );

@@ -19,6 +19,10 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        grotesk: ["var(--font-space-grotesk)", "system-ui", "sans-serif"],
+        "dm-mono": ["var(--font-dm-mono)", "ui-monospace", "monospace"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -68,10 +72,25 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "pf-status-pulse": {
+          "0%, 100%": { transform: "scale(1)", opacity: "1" },
+          "50%": { transform: "scale(0.7)", opacity: "0.5" },
+        },
+        "pf-live-pulse": {
+          "0%, 100%": { transform: "scale(0.8)", opacity: "1" },
+          "50%": { transform: "scale(1.1)", opacity: "0.6" },
+        },
+        "pf-marker-pulse": {
+          "0%": { transform: "translate(-50%, 50%) scale(0.5)", opacity: "0.6" },
+          "100%": { transform: "translate(-50%, 50%) scale(2)", opacity: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "pf-status-pulse": "pf-status-pulse 2s ease-in-out infinite",
+        "pf-live-pulse": "pf-live-pulse 1.5s ease-in-out infinite",
+        "pf-marker-pulse": "pf-marker-pulse 2s ease-out infinite",
       },
     },
   },

@@ -19,7 +19,7 @@ export function MainAppShell({
 
   if (isMessagesRoute) {
     return (
-      <div className="mx-auto flex h-[100dvh] w-full max-w-[480px] flex-col overflow-hidden bg-[#0d0d0d]">
+      <div className="mx-auto flex h-[100dvh] w-full max-w-[480px] flex-col overflow-hidden bg-[#08090a] font-grotesk text-[#f2f5ef]">
         <div className="flex-shrink-0">
           <Header
             initialUnreadNotificationCount={initialUnreadNotificationCount}
@@ -36,7 +36,7 @@ export function MainAppShell({
   }
 
   return (
-    <div className="min-h-screen bg-[#0d0d0d]">
+    <div className="min-h-screen bg-[#08090a] font-grotesk text-[#f2f5ef]">
       <div className="relative mx-auto flex min-h-screen w-full max-w-[480px] flex-col">
         <Header
           initialUnreadNotificationCount={initialUnreadNotificationCount}

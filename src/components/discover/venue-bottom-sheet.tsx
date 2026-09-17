@@ -42,11 +42,13 @@ function nextSnap(snap: SheetSnap): SheetSnap {
 interface DiscoverVenueClubTabsProps {
   activeTab: DiscoverTabType;
   onTabChange: (tab: DiscoverTabType) => void;
+  nearbyCount: number;
 }
 
 function DiscoverVenueClubTabs({
   activeTab,
   onTabChange,
+  nearbyCount,
 }: DiscoverVenueClubTabsProps) {
   const tabs: { id: DiscoverTabType; label: string }[] = [
     { id: "venues", label: "Venues" },
@@ -54,27 +56,32 @@ function DiscoverVenueClubTabs({
   ];
 
   return (
-    <div className="flex shrink-0 border-b border-[#222222]" role="tablist">
-      {tabs.map((tab) => {
-        const isActive = activeTab === tab.id;
-        return (
-          <button
-            key={tab.id}
-            type="button"
-            role="tab"
-            aria-selected={isActive}
-            onClick={() => onTabChange(tab.id)}
-            className={cn(
-              "flex-1 border-b-2 py-3 text-center text-sm font-semibold transition-colors",
-              isActive
-                ? "border-[#C9F31D] text-white"
-                : "border-transparent text-[#555555]",
-            )}
-          >
-            {tab.label}
-          </button>
-        );
-      })}
+    <div className="flex shrink-0 items-center justify-between px-4 pb-3 pt-1">
+      <div className="flex gap-5" role="tablist">
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
+              onClick={() => onTabChange(tab.id)}
+              className={cn(
+                "relative pb-1.5 text-sm font-semibold transition-colors",
+                isActive
+                  ? "text-[#f2f5ef] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-sm after:bg-[#c9f31d]"
+                  : "text-[#7e8a7e]",
+              )}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+      <span className="font-dm-mono text-[11px] font-medium text-[#7e8a7e]">
+        {nearbyCount} nearby
+      </span>
     </div>
   );
 }
@@ -156,7 +163,7 @@ export function VenueBottomSheet({
   return (
     <div
       className={cn(
-        "absolute bottom-0 left-0 right-0 z-20 flex flex-col overflow-hidden rounded-t-[2rem] border-t border-[#222222] bg-[#0d0d0d] shadow-[0_-10px_40px_rgba(0,0,0,0.8)] transition-[height] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]",
+        "absolute bottom-0 left-0 right-0 z-20 flex flex-col overflow-hidden rounded-t-[24px] bg-[#08090a] shadow-[0_-10px_40px_rgba(0,0,0,0.4)] transition-[height] duration-300 ease-[cubic-bezier(.2,.8,.2,1)]",
         sheetHeightClass(snap),
       )}
     >
@@ -169,10 +176,14 @@ export function VenueBottomSheet({
         onMouseDown={handleMouseDown}
         onClick={handleHandleClick}
       >
-        <div className="h-1 w-10 rounded-full bg-[#333333]" />
+        <div className="h-1 w-10 rounded-full bg-[#353c34]" />
       </button>
 
-      <DiscoverVenueClubTabs activeTab={activeTab} onTabChange={onTabChange} />
+      <DiscoverVenueClubTabs
+        activeTab={activeTab}
+        onTabChange={onTabChange}
+        nearbyCount={places.length}
+      />
 
       <div
         className={cn(
