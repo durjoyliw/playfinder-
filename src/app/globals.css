@@ -353,3 +353,36 @@
     opacity: 0.5;
   }
 }
+
+@keyframes pf-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes pf-badge-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4) translate(4px, -4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translate(0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pf-card-in,
+  .animate-pf-badge-in,
+  [class*="animate-[pf-card-in"],
+  [class*="animate-[pf-badge-in"] {
+    animation: none !important;
+  }
+}

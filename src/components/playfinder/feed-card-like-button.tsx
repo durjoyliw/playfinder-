@@ -92,14 +92,14 @@ export function FeedCardLikeButton({
       onClick={() => mutate()}
       disabled={isPending}
       className={cn(
-        "flex items-center gap-1.5 text-[#7e8a7e] transition-colors hover:text-[#f2f5ef] disabled:opacity-50",
+        "group flex items-center gap-1.5 text-[#7e8a7e] transition-colors hover:text-[#f2f5ef] disabled:opacity-50",
         data.isLikedByUser && "text-[#c9f31d]",
         className,
       )}
       aria-label={data.isLikedByUser ? "Unlike post" : "Like post"}
     >
       <Heart
-        className="h-5 w-5"
+        className="h-5 w-5 transition-transform duration-150 ease-[cubic-bezier(0.34,1.36,0.64,1)] group-active:scale-125"
         style={
           data.isLikedByUser
             ? { fill: "#c9f31d", color: "#c9f31d" }

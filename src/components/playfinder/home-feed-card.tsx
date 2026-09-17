@@ -188,10 +188,11 @@ export function HomeFeedCard({
   if (isArenaLayout) {
     return (
       <article
-        className="relative overflow-hidden rounded-[18px] border border-[#2a2f2a] transition-transform active:scale-[0.98]"
+        className="relative overflow-hidden rounded-[18px] border border-[#2a2f2a] transition-transform animate-[pf-card-in_500ms_ease-in-out_backwards] active:scale-[0.98]"
         style={{
           background:
             "linear-gradient(160deg, var(--pf-surface-2), var(--pf-surface))",
+          animationDelay: `${(cardIndex % 8) * 40}ms`,
         }}
       >
         <div className="h-[3px] w-full" style={{ background: sportColour }} />
@@ -295,7 +296,10 @@ export function HomeFeedCard({
   }
 
   return (
-    <article className="border-b border-white/[0.04] px-4 py-4">
+    <article
+      className="animate-[pf-card-in_500ms_ease-in-out_backwards] border-b border-white/[0.04] px-4 py-4"
+      style={{ animationDelay: `${(cardIndex % 8) * 40}ms` }}
+    >
       <div className="mb-3.5 flex items-center gap-3">
         {avatarEl}
         <div className="min-w-0 flex-1">

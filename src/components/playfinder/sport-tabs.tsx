@@ -38,7 +38,7 @@ export function SportTabs({ tabs, activeTab, onTabChange }: SportTabsProps) {
                 "flex min-h-[34px] shrink-0 items-center gap-[5px] whitespace-nowrap rounded-full border px-[13px] py-2 text-xs font-semibold transition-all duration-200 ease-[cubic-bezier(.2,.8,.2,1)] active:scale-95",
                 isActive
                   ? "border-transparent text-[#0a0b0a]"
-                  : "border-[#2a2f2a] bg-[#131614] text-[#7e8a7e]",
+                  : "border-[#2a2f2a] bg-[#131614] text-[#7e8a7e] hover:-translate-y-0.5 hover:border-[#353c34]",
               )}
               style={
                 isActive

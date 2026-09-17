@@ -14,7 +14,7 @@ export function ComposeRow({ onBroadcast }: ComposeRowProps) {
     <button
       type="button"
       onClick={onBroadcast}
-      className="mx-4 mb-2 flex w-[calc(100%-32px)] items-center gap-2.5 rounded-[14px] border border-[#2a2f2a] bg-[#131614] px-3.5 py-2.5 transition-[border-color,transform] active:scale-[0.98] active:border-[#353c34]"
+      className="mx-4 mb-2 flex w-[calc(100%-32px)] items-center gap-2.5 rounded-[14px] border border-[#2a2f2a] bg-[#131614] px-3.5 py-2.5 transition-[border-color,transform] hover:border-[#353c34] active:scale-[0.98] active:border-[#353c34]"
     >
       <div className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-full bg-[#c9f31d] text-[13px] font-bold text-[#0a0b0a]">
         {user.avatarUrl ? (

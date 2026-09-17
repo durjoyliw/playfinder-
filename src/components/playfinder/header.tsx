@@ -85,7 +85,7 @@ export function Header({ initialUnreadNotificationCount }: HeaderProps) {
     <header className="sticky top-0 z-50 flex shrink-0 items-center gap-2.5 border-b border-white/[0.04] bg-[rgba(8,9,10,0.92)] px-4 py-3 pt-[calc(12px+env(safe-area-inset-top,0px))] font-grotesk backdrop-blur-[20px]">
       <Link
         href="/"
-        className="flex min-w-0 items-center gap-2.5"
+        className="flex min-w-0 items-center gap-2.5 lg:hidden"
         aria-label="PlayFinder home"
       >
         <span
@@ -154,7 +154,7 @@ export function Header({ initialUnreadNotificationCount }: HeaderProps) {
       >
         <Bell className="h-5 w-5" />
         {data.unreadCount > 0 && (
-          <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full border-2 border-[#08090a] bg-[#c9f31d] px-1 font-dm-mono text-[9px] font-bold text-[#0a0b0a]">
+          <span className="absolute right-1 top-1 flex h-4 min-w-4 animate-[pf-badge-in_500ms_cubic-bezier(0.34,1.36,0.64,1)_backwards] items-center justify-center rounded-full border-2 border-[#08090a] bg-[#c9f31d] px-1 font-dm-mono text-[9px] font-bold text-[#0a0b0a]">
             {data.unreadCount > 9 ? "9+" : data.unreadCount}
           </span>
         )}
