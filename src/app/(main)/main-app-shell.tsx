@@ -39,7 +39,7 @@ export function MainAppShell({
 
   if (isDiscoverRoute) {
     return (
-      <div className="flex min-h-screen bg-[#08090a] font-grotesk text-[#f2f5ef]">
+      <div className="flex min-h-screen bg-[#08090a] font-grotesk text-[#f2f5ef] lg:pl-[max(24px,calc((100vw_-_1225px)_/_2))]">
         <DesktopSidebar />
         <div className="mx-auto flex h-[100dvh] w-full max-w-[480px] flex-col overflow-hidden lg:mx-0 lg:max-w-none lg:min-w-0 lg:flex-1">
           <div className="flex-shrink-0">
@@ -59,7 +59,7 @@ export function MainAppShell({
   }
 
   return (
-    <div className="flex min-h-screen bg-[#08090a] font-grotesk text-[#f2f5ef] lg:justify-center">
+    <div className="flex min-h-screen bg-[#08090a] font-grotesk text-[#f2f5ef] lg:pl-[max(24px,calc((100vw_-_1225px)_/_2))]">
       <DesktopSidebar />
       <div className="relative mx-auto flex min-h-screen w-full max-w-[480px] flex-col lg:mx-0 lg:border-x lg:border-[#2a2f2a]">
         <Header

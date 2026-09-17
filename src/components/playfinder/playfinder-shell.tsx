@@ -17,7 +17,7 @@ function PlayFinderShellInner({
 }: PlayFinderShellProps) {
   return (
     <div className="min-h-screen bg-[#08090a] font-grotesk text-[#f2f5ef]">
-      <div className="relative mx-auto flex min-h-screen w-full max-w-[480px] flex-col lg:max-w-[1225px] lg:flex-row lg:items-start lg:justify-center">
+      <div className="relative mx-auto flex min-h-screen w-full max-w-[480px] flex-col lg:mx-0 lg:max-w-none lg:flex-row lg:items-start lg:pl-[max(24px,calc((100vw_-_1225px)_/_2))]">
         <DesktopSidebar />
         <div className="flex w-full flex-1 flex-col lg:min-w-0 lg:max-w-[600px] lg:border-x lg:border-[#2a2f2a]">
           <Header
