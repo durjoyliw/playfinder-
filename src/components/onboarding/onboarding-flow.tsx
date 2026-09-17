@@ -15,7 +15,7 @@ import {
 } from "@/lib/settings";
 import { ProfileIntent, SkillLevel } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
-import { MapPin, MessageCircle, Trophy, Users, Zap } from "lucide-react";
+import { ArrowLeft, MapPin, MessageCircle, Trophy, Users, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
@@ -52,23 +52,120 @@ const INTENT_CARDS = [
   },
 ] as const;
 
+const BRAND_PANEL_LINES = [
+  "Set up your athlete profile in under a minute.",
+  "Search or pick from popular sports around Glasgow.",
+  "Tell us your level so games actually match your pace.",
+  "We only use this to surface games and players nearby.",
+  "Casual kickabout, a club, or just the banter. Your call.",
+  "Your profile is live. Time to find your first game.",
+] as const;
+
 interface OnboardingFlowProps {
   firstName: string;
 }
 
-function ProgressDots({ step, complete }: { step: number; complete?: boolean }) {
+/** Motion tokens + keyframes shared by this flow's step transitions, entrances
+ * and hover states. Values follow the transitions.dev motion scale
+ * (https://transitions.dev) — durations/eases/distances/blur named the same
+ * so they stay easy to keep in sync if that skill's tokens change. */
+function OnboardingMotionStyles() {
   return (
-    <div className="flex items-center justify-center gap-2 px-6 pt-6">
-      {Array.from({ length: TOTAL_STEPS }, (_, i) => (
-        <div
-          key={i}
-          className="h-2 rounded-full transition-all duration-300"
-          style={{
-            width: i === step && !complete ? 24 : 8,
-            backgroundColor: complete || i <= step ? VOLT : "#2a2a2a",
-          }}
-        />
-      ))}
+    <style>{`
+      .ob-flow {
+        --duration-quick: 150ms;
+        --duration-fast: 250ms;
+        --duration-very-slow: 500ms;
+        --ease-smooth-out: cubic-bezier(0.22, 1, 0.36, 1);
+        --ease-in-out: ease-in-out;
+        --ease-bounce: cubic-bezier(0.34, 1.36, 0.64, 1);
+        --distance-medium: 12px;
+        --distance-large: 30px;
+        --distance-step: 18px;
+        --blur-medium: 3px;
+        --blur-large: 8px;
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        .ob-reveal { animation: ob-reveal var(--duration-very-slow) var(--ease-in-out) both; }
+        .ob-reveal--1 { animation-delay: 50ms; }
+        .ob-success-badge { animation: ob-success-in var(--duration-very-slow) var(--ease-smooth-out) both; }
+        .ob-dropdown-in { animation: ob-dropdown-in var(--duration-fast) var(--ease-smooth-out) both; transform-origin: top center; }
+        .ob-step-fwd { animation: ob-step-in-fwd var(--duration-fast) var(--ease-smooth-out) both; }
+        .ob-step-back { animation: ob-step-in-back var(--duration-fast) var(--ease-smooth-out) both; }
+      }
+      @keyframes ob-reveal {
+        from { opacity: 0; transform: translateY(var(--distance-medium)); filter: blur(var(--blur-medium)); }
+        to { opacity: 1; transform: translateY(0); filter: blur(0); }
+      }
+      @keyframes ob-success-in {
+        from { opacity: 0; transform: translateY(var(--distance-large)) rotate(-8deg) scale(0.9); filter: blur(var(--blur-large)); }
+        to { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); filter: blur(0); }
+      }
+      @keyframes ob-dropdown-in {
+        from { opacity: 0; transform: scale(0.97) translateY(-4px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+      }
+      @keyframes ob-step-in-fwd {
+        from { opacity: 0; transform: translateX(var(--distance-step)); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+      @keyframes ob-step-in-back {
+        from { opacity: 0; transform: translateX(calc(-1 * var(--distance-step))); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+
+      .ob-lift { transition: transform var(--duration-fast) var(--ease-bounce), border-color var(--duration-quick) var(--ease-smooth-out); }
+      .ob-lift:hover { transform: translateY(-3px); }
+      .ob-lift:active { transform: translateY(-1px) scale(0.98); }
+
+      .ob-back-btn { transition: background var(--duration-quick) var(--ease-smooth-out), transform var(--duration-quick) var(--ease-smooth-out); }
+      .ob-back-btn:active { transform: scale(0.94); }
+
+      .ob-intent-card { transition: border-color var(--duration-fast) var(--ease-smooth-out), background-color var(--duration-fast) var(--ease-smooth-out), transform var(--duration-quick) var(--ease-smooth-out); }
+      .ob-intent-card:hover { transform: translateY(-2px); }
+      .ob-intent-card:active { transform: scale(0.99); }
+    `}</style>
+  );
+}
+
+function TopBar({
+  step,
+  complete,
+  onBack,
+}: {
+  step: number;
+  complete?: boolean;
+  onBack?: () => void;
+}) {
+  const showBack = step > 0 && step < TOTAL_STEPS - 1;
+  return (
+    <div className="grid grid-cols-[40px_1fr_40px] items-center px-4 pt-6 md:mx-auto md:max-w-[440px] md:px-0 md:pt-10">
+      {showBack ? (
+        <button
+          type="button"
+          onClick={onBack}
+          aria-label="Back"
+          className="ob-back-btn flex h-9 w-9 items-center justify-center rounded-full border border-[#2a2a2a] bg-[#161616] text-white hover:bg-[#1f1f1f]"
+        >
+          <ArrowLeft className="h-[18px] w-[18px]" />
+        </button>
+      ) : (
+        <span />
+      )}
+      <div className="flex items-center justify-center gap-2">
+        {Array.from({ length: TOTAL_STEPS }, (_, i) => (
+          <div
+            key={i}
+            className="h-2 rounded-full transition-all duration-300"
+            style={{
+              width: i === step && !complete ? 24 : 8,
+              backgroundColor: complete || i <= step ? VOLT : "#2a2a2a",
+            }}
+          />
+        ))}
+      </div>
+      <span />
     </div>
   );
 }
@@ -105,6 +202,7 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [step, setStep] = useState(0);
+  const [direction, setDirection] = useState<"fwd" | "back">("fwd");
   const [selectedSports, setSelectedSports] = useState<string[]>([]);
   const [skillLevels, setSkillLevels] = useState<Partial<Record<string, SkillLevel>>>(
     {},
@@ -147,7 +245,13 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
         return next;
       });
     }
+    setDirection("fwd");
     setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1));
+  };
+
+  const goBack = () => {
+    setDirection("back");
+    setStep((s) => Math.max(0, s - 1));
   };
 
   const handleComplete = async () => {
@@ -176,15 +280,15 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
         return (
           <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
             <span
-              className="mb-10 text-3xl font-bold italic"
+              className="ob-reveal mb-10 text-3xl font-bold italic leading-[1.15] pb-1"
               style={{ color: VOLT }}
             >
               PlayFinder
             </span>
-            <h1 className="text-3xl font-bold text-white">
-              Welcome {firstName}!
+            <h1 className="ob-reveal ob-reveal--1 text-3xl font-bold text-white">
+              Welcome, {firstName}!
             </h1>
-            <p className="mt-4 max-w-xs text-base leading-relaxed text-[#a3a3a3]">
+            <p className="ob-reveal ob-reveal--1 mt-4 max-w-xs text-base leading-relaxed text-[#a3a3a3]">
               Let&apos;s set up your athlete profile in 60 seconds.
             </p>
             <div className="mt-12 w-full">
@@ -196,9 +300,9 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
       case 1:
         return (
           <div className="flex min-h-0 flex-1 flex-col px-6 pb-8 pt-4">
-            <h1 className="text-2xl font-bold text-white">Choose your sports</h1>
-            <p className="mt-2 text-sm text-[#a3a3a3]">
-              Search or pick popular sports — you can change these later.
+            <h1 className="ob-reveal text-2xl font-bold text-white">Choose your sports</h1>
+            <p className="ob-reveal ob-reveal--1 mt-2 text-sm text-[#a3a3a3]">
+              Search or pick popular sports. You can change these later.
             </p>
             <div className="mt-6 min-h-0 flex-1">
               <SportsSearchPicker
@@ -220,8 +324,8 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
       case 2:
         return (
           <div className="flex flex-1 flex-col px-6 pb-8 pt-4">
-            <h1 className="text-2xl font-bold text-white">Your skill levels</h1>
-            <p className="mt-2 text-sm text-[#a3a3a3]">
+            <h1 className="ob-reveal text-2xl font-bold text-white">Your skill levels</h1>
+            <p className="ob-reveal ob-reveal--1 mt-2 text-sm text-[#a3a3a3]">
               Select one level for each sport.
             </p>
             <div className="mt-6 space-y-5">
@@ -243,7 +347,7 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
                           key={option.value}
                           type="button"
                           onClick={() => setSportSkill(sportKey, option.value)}
-                          className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                          className={`ob-lift rounded-full border px-3 py-1.5 text-xs font-medium ${
                             level === option.value
                               ? "border-[#C9F31D] bg-[#C9F31D] text-black"
                               : "border-[#2a2a2a] bg-[#0d0d0d] text-[#a3a3a3] hover:text-white"
@@ -268,8 +372,8 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
       case 3:
         return (
           <div className="flex flex-1 flex-col px-6 pb-8 pt-4">
-            <h1 className="text-2xl font-bold text-white">Where are you based?</h1>
-            <p className="mt-2 text-sm text-[#a3a3a3]">
+            <h1 className="ob-reveal text-2xl font-bold text-white">Where are you based?</h1>
+            <p className="ob-reveal ob-reveal--1 mt-2 text-sm text-[#a3a3a3]">
               We use this to show you local games and players.
             </p>
             <div className="mt-8">
@@ -290,7 +394,7 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
       case 4:
         return (
           <div className="flex flex-1 flex-col px-6 pb-8 pt-4">
-            <h1 className="text-2xl font-bold text-white">
+            <h1 className="ob-reveal text-2xl font-bold text-white">
               What are you looking for?
             </h1>
             <div className="mt-6 space-y-3">
@@ -310,7 +414,7 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
                       key={value}
                       type="button"
                       onClick={() => setProfileIntent(value)}
-                      className={`w-full rounded-xl border-2 p-4 text-left transition-colors ${bgClass} ${
+                      className={`ob-intent-card w-full rounded-xl border-2 p-4 text-left ${bgClass} ${
                         isSelected ? "" : "border-transparent opacity-80"
                       }`}
                       style={{
@@ -335,11 +439,11 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
         return (
           <div className="flex flex-1 flex-col px-6 pb-8 pt-4">
             <div className="flex flex-col items-center text-center">
-              <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[#C9F31D]">
+              <div className="ob-success-badge mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[#C9F31D]">
                 <Trophy className="h-8 w-8 text-black" />
               </div>
-              <h1 className="text-2xl font-bold text-white">You&apos;re all set!</h1>
-              <p className="mt-2 text-sm text-[#a3a3a3]">
+              <h1 className="ob-reveal text-2xl font-bold text-white">You&apos;re all set!</h1>
+              <p className="ob-reveal ob-reveal--1 mt-2 text-sm text-[#a3a3a3]">
                 Welcome to PlayFinder Glasgow. Your athlete profile is live.
               </p>
             </div>
@@ -414,20 +518,47 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
   })();
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-[480px] flex-col bg-[#0d0d0d]">
-      <ProgressDots step={step} complete={step === TOTAL_STEPS - 1} />
-      <div className="flex min-h-0 flex-1 flex-col">{content}</div>
-      {step > 0 && step < TOTAL_STEPS - 1 && (
-        <div className="px-6 pb-4">
-          <button
-            type="button"
-            onClick={() => setStep((s) => Math.max(0, s - 1))}
-            className="text-sm text-[#a3a3a3] hover:text-white"
-          >
-            Back
-          </button>
+    <div className="ob-flow flex min-h-screen w-full bg-[#0d0d0d]">
+      <OnboardingMotionStyles />
+
+      {/* Desktop brand panel — hidden below md, shown as a split-screen from there up */}
+      <div
+        className="relative hidden overflow-hidden border-r border-[#2a2a2a] md:flex md:w-[42%] md:min-w-[420px] md:flex-col md:justify-end md:p-12"
+        aria-hidden
+      >
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(https://picsum.photos/seed/playfinder-onboarding-${step}/900/1200)`,
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(13,13,13,0.25) 0%, rgba(13,13,13,0.95) 78%), radial-gradient(90% 60% at 15% 0%, rgba(201,243,29,0.16) 0%, rgba(13,13,13,0) 55%)",
+          }}
+        />
+        <span
+          className="absolute left-12 top-10 text-2xl font-bold italic leading-[1.15] pb-1.5"
+          style={{ color: VOLT }}
+        >
+          PlayFinder
+        </span>
+        <p className="relative max-w-[340px] text-xl font-semibold leading-snug text-white">
+          {BRAND_PANEL_LINES[step]}
+        </p>
+      </div>
+
+      <div className="mx-auto flex min-h-screen w-full max-w-[480px] flex-col md:mx-0 md:max-w-none md:flex-1">
+        <TopBar step={step} complete={step === TOTAL_STEPS - 1} onBack={goBack} />
+        <div
+          key={step}
+          className={`flex min-h-0 flex-1 flex-col ${direction === "fwd" ? "ob-step-fwd" : "ob-step-back"}`}
+        >
+          {content}
         </div>
-      )}
+      </div>
     </div>
   );
 }

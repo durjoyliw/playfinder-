@@ -46,7 +46,7 @@ export function SportsSearchPicker({ selected, onChange }: SportsSearchPickerPro
           className="w-full rounded-xl border border-[#333] bg-[#1a1a1a] px-4 py-3.5 text-base text-white placeholder:text-[#6b6b6b] focus:border-[#C9F31D] focus:outline-none"
         />
         {showDropdown && (
-          <ul className="absolute z-20 mt-1 max-h-52 w-full overflow-auto rounded-xl border border-[#333] bg-[#1a1a1a] py-1 shadow-lg">
+          <ul className="ob-dropdown-in absolute z-20 mt-1 max-h-52 w-full overflow-auto rounded-xl border border-[#333] bg-[#1a1a1a] py-1 shadow-lg">
             {filtered.length === 0 ? (
               <li className="px-4 py-3 text-sm text-gray-500">No sports found</li>
             ) : (
@@ -96,7 +96,7 @@ export function SportsSearchPicker({ selected, onChange }: SportsSearchPickerPro
                   type="button"
                   onClick={() => toggle(id)}
                   className={cn(
-                    "rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
+                    "ob-lift rounded-full border px-3 py-1.5 text-sm font-medium",
                     isSelected
                       ? "border-[#C9F31D] bg-[#C9F31D] text-black"
                       : "border-[#333] bg-[#161616] text-white hover:border-[#444]",
@@ -124,7 +124,7 @@ export function SportsSearchPicker({ selected, onChange }: SportsSearchPickerPro
               return (
                 <span
                   key={id}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-[#C9F31D] px-3 py-1.5 text-sm font-medium text-black"
+                  className="ob-lift inline-flex items-center gap-1.5 rounded-full bg-[#C9F31D] px-3 py-1.5 text-sm font-medium text-black"
                 >
                   {sport.emoji} {sport.name}
                   <button
