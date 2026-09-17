@@ -21,7 +21,7 @@ export default async function Page({ searchParams }: PageProps) {
   const q = params.q?.trim() ?? "";
 
   return (
-    <div className="mx-auto min-h-[calc(100dvh-3.5rem-5rem)] w-full max-w-[480px] bg-[#08090a]">
+    <div className="min-h-[calc(100dvh-3.5rem-5rem)] w-full bg-[#08090a]">
       <Suspense
         fallback={
           <div className="flex justify-center py-16">

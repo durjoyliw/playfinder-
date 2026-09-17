@@ -40,7 +40,7 @@ export function SearchHeader({ value, onChange, onSubmit }: SearchHeaderProps) {
       <button
         type="button"
         onClick={() => router.push("/")}
-        className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-[#2a2f2a] bg-[#131614] text-[#b4bcaf] transition-transform active:scale-90"
+        className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-[#2a2f2a] bg-[#131614] text-[#b4bcaf] transition-transform active:scale-90 lg:hidden"
         aria-label="Back"
       >
         <ChevronLeft className="h-[22px] w-[22px]" />
