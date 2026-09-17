@@ -29,9 +29,10 @@ import {
   IconPhoto,
   IconWorld,
 } from "@tabler/icons-react";
-import { Minus, Plus, X } from "lucide-react";
+import { getDisplayArea } from "@/lib/location";
+import { Clock3, MapPin, Minus, Plus, Send, Users, X, Zap } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { submitBroadcast } from "./actions";
 
@@ -43,13 +44,11 @@ interface ComposerSheetProps {
   defaultTab: ComposerTab;
 }
 
-const SHEET_CONTENT_MIN_H = "min-h-[32rem]";
-
 const textareaClassName =
-  "w-full min-h-[110px] resize-none rounded-[14px] border border-[#2a2f2a] bg-[#131614] p-4 text-base text-white placeholder:text-[#888888] outline-none focus:border-[#C8FF00]";
+  "mb-3.5 w-full min-h-[110px] resize-none rounded-[14px] border border-[#2a2f2a] bg-[#131614] p-4 text-base text-white outline-none placeholder:text-[#888888] focus:border-[#C8FF00]";
 
-const fieldClassName =
-  "w-full rounded-[14px] border border-[#2a2f2a] bg-[#131614] px-4 py-3.5 text-[15px] text-white placeholder:text-[#888888] outline-none focus:border-[#C8FF00] [color-scheme:dark]";
+const fieldInputClassName =
+  "min-h-6 w-full border-0 bg-transparent text-[15px] text-white outline-none placeholder:text-[#888888] [color-scheme:dark]";
 
 const ARENA_INTENTS = POST_INTENTS.filter(
   (o) =>
@@ -156,25 +155,23 @@ function getComposerSportDisplay(raw: string): { name: string; emoji: string } {
 }
 
 const visibilityActiveClass =
-  "rounded-[12px] border border-[#C8FF00] bg-[#C8FF00] px-4 py-2.5 text-[13px] font-bold text-black";
+  "rounded-[10px] border border-[#C8FF00] bg-[#C8FF00] px-3 py-2 text-xs font-bold text-black";
 const visibilityInactiveClass =
-  "rounded-[12px] border border-[#2a2f2a] bg-[#131614] px-4 py-2.5 text-[13px] text-[#888888]";
+  "rounded-[10px] border border-[#2a2f2a] bg-[#131614] px-3 py-2 text-xs font-semibold text-[#888888]";
 
 const composerSubmitButtonClassName =
-  "h-auto w-full rounded-full bg-[#C8FF00] py-[14px] text-[15px] font-bold text-black hover:bg-[#C8FF00]/90";
-
-const composerFooterClassName =
-  "mt-auto flex flex-col gap-3 border-t border-[#2a2f2a] pt-4";
-
-const composerMediaRowClassName = "flex min-h-11 items-center gap-2";
+  "ml-auto h-12 min-h-12 shrink-0 rounded-full bg-[#C8FF00] px-[22px] py-3 text-[15px] font-bold text-black hover:bg-[#C8FF00]/90";
 
 const sportChipSelectedClass =
-  "rounded-full border border-[#C8FF00] bg-[#C8FF00] px-3 py-1.5 text-sm font-medium text-black transition-colors";
+  "flex min-h-9 items-center gap-1 rounded-[10px] border border-[#C8FF00] bg-[#C8FF00] px-3 py-2 text-xs font-semibold text-black transition-colors";
 const sportChipIdleClass =
-  "rounded-full border border-[#2a2f2a] bg-[#131614] px-3 py-1.5 text-sm font-medium text-[#888888] transition-colors";
+  "flex min-h-9 items-center gap-1 rounded-[10px] border border-[#2a2f2a] bg-[#131614] px-3 py-2 text-xs font-semibold text-[#b4bcaf] transition-colors";
 
-const sectionLabelClass =
-  "mb-2 block font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#888888]";
+const footerChipClass =
+  "flex min-h-9 items-center gap-1.5 rounded-[10px] border border-[#2a2f2a] bg-[#131614] px-3 py-2 text-xs text-[#b4bcaf]";
+
+const mediaBtnClass =
+  "grid h-9 w-9 place-items-center rounded-[10px] border border-[#2a2f2a] bg-[#131614] text-[#b4bcaf] hover:border-[#C8FF00] hover:text-[#C8FF00]";
 
 function VisibilityToggle({
   visibility,
@@ -184,33 +181,73 @@ function VisibilityToggle({
   onChange: (v: "PUBLIC" | "TEAMMATES_ONLY") => void;
 }) {
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-wrap gap-2">
       <button
         type="button"
         onClick={() => onChange("PUBLIC")}
         className={cn(
-          "flex flex-1 items-center justify-center gap-1.5 transition-colors",
+          "flex items-center gap-1.5 transition-colors",
           visibility === "PUBLIC"
             ? visibilityActiveClass
             : visibilityInactiveClass,
         )}
       >
-        <IconWorld className="h-4 w-4" stroke={1.75} />
+        <IconWorld className="h-3.5 w-3.5" stroke={1.75} />
         Everyone
       </button>
       <button
         type="button"
         onClick={() => onChange("TEAMMATES_ONLY")}
         className={cn(
-          "flex flex-1 items-center justify-center gap-1.5 transition-colors",
+          "flex items-center gap-1.5 transition-colors",
           visibility === "TEAMMATES_ONLY"
             ? visibilityActiveClass
             : visibilityInactiveClass,
         )}
       >
-        <IconBolt className="h-4 w-4" stroke={2} />
-        Teammates only
+        <IconBolt className="h-3.5 w-3.5" stroke={2} />
+        Teammates
       </button>
+    </div>
+  );
+}
+
+function FieldRow({
+  label,
+  icon,
+  children,
+}: {
+  label?: string;
+  icon?: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <div className="flex min-h-[52px] items-center gap-2.5 rounded-[14px] border border-[#2a2f2a] bg-[#131614] px-4 py-3.5">
+      {(label || icon) && (
+        <span className="flex min-w-[50px] shrink-0 items-center gap-1 text-[13px] font-semibold text-[#7e8a7e]">
+          {icon}
+          {label}
+        </span>
+      )}
+      <div className="min-w-0 flex-1">{children}</div>
+    </div>
+  );
+}
+
+function ComposerAvatar({
+  url,
+  initials,
+}: {
+  url: string | null | undefined;
+  initials: string;
+}) {
+  return (
+    <div className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full bg-[#c9f31d] text-xs font-bold text-[#0a0b0a]">
+      {url ? (
+        <img src={url} alt="" className="h-full w-full object-cover" />
+      ) : (
+        initials
+      )}
     </div>
   );
 }
@@ -283,6 +320,8 @@ export function ComposerSheet({
   const userSports = useMemo(() => profile?.sports ?? [], [profile?.sports]);
 
   const avatarInitials = getInitials(profile?.displayName ?? user.displayName);
+  const postingAsName = profile?.displayName ?? user.displayName;
+  const areaChip = getDisplayArea(profile?.location);
 
   const resetArenaForm = () => {
     setSelectedSport(null);
@@ -398,7 +437,137 @@ export function ComposerSheet({
   const handleEmojiPick = () => socialTextareaRef.current?.focus();
   const handleGifPick = () => photoInputRef.current?.click();
 
+  const socialSportChipLabel = selectedSportIds.length
+    ? selectedSportIds
+        .map((id) => getComposerSportDisplay(id).name)
+        .join(", ")
+    : "Sport tag";
+
   if (!mounted || !open) return null;
+
+  const sportChips = userSports.map((entry, index) => {
+    const sportKey =
+      normalizeProfileSportKey(entry.sport) || `sport-${index}`;
+    const { name, emoji } = getComposerSportDisplay(entry.sport);
+    const selected =
+      activeTab === "social"
+        ? selectedSportIds.includes(sportKey)
+        : selectedSport === sportKey;
+
+    return (
+      <button
+        key={`${sportKey}-${index}`}
+        type="button"
+        onClick={() => {
+          if (activeTab === "social") {
+            setSelectedSportIds((prev) =>
+              selected
+                ? prev.filter((id) => id !== sportKey)
+                : [...prev, sportKey],
+            );
+            return;
+          }
+          setSelectedSport(sportKey);
+        }}
+        className={cn(selected ? sportChipSelectedClass : sportChipIdleClass)}
+      >
+        {emoji} {name}
+      </button>
+    );
+  });
+
+  const sportsEmptyState = !userSports.length ? (
+    <Link
+      href="/settings/sports"
+      className="text-sm text-[#C8FF00] hover:underline"
+    >
+      Add sports in Settings
+    </Link>
+  ) : null;
+
+  const composerFooter = (
+    <div className="flex flex-wrap items-center gap-2">
+      <span className={footerChipClass}>
+        <MapPin className="h-[13px] w-[13px]" />
+        {areaChip}
+      </span>
+      {activeTab === "social" && (
+        <>
+          <span className={footerChipClass}>
+            <Zap className="h-[13px] w-[13px]" />
+            {socialSportChipLabel}
+          </span>
+          <input
+            ref={photoInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={() => {}}
+          />
+          <input
+            ref={cameraInputRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            className="hidden"
+            onChange={() => {}}
+          />
+          <button
+            type="button"
+            onClick={handlePhotoPick}
+            className={mediaBtnClass}
+            aria-label="Add photo"
+          >
+            <IconPhoto className="h-4 w-4" stroke={1.75} />
+          </button>
+          <button
+            type="button"
+            onClick={handleCameraPick}
+            className={mediaBtnClass}
+            aria-label="Take photo"
+          >
+            <IconCamera className="h-4 w-4" stroke={1.75} />
+          </button>
+          <button
+            type="button"
+            onClick={handleEmojiPick}
+            className={mediaBtnClass}
+            aria-label="Add emoji"
+          >
+            <IconMoodSmile className="h-4 w-4" stroke={1.75} />
+          </button>
+          <button
+            type="button"
+            onClick={handleGifPick}
+            className={mediaBtnClass}
+            aria-label="Add GIF"
+          >
+            <IconGif className="h-4 w-4" stroke={1.75} />
+          </button>
+        </>
+      )}
+      <LoadingButton
+        type="submit"
+        loading={
+          activeTab === "social"
+            ? socialMutation.isPending
+            : arenaMutation.isPending
+        }
+        disabled={
+          activeTab === "social"
+            ? !canSubmitSocial || socialMutation.isPending
+            : !arenaValid || arenaMutation.isPending
+        }
+        className={cn(
+          composerSubmitButtonClassName,
+          activeTab === "arena" && !arenaValid && "cursor-not-allowed opacity-40",
+        )}
+      >
+        {activeTab === "social" ? "Post" : "Post Arena"}
+        <Send className="h-[15px] w-[15px]" />
+      </LoadingButton>
+    </div>
+  );
 
   return createPortal(
     <div className="fixed inset-0 z-[200] flex items-end justify-center">
@@ -410,17 +579,15 @@ export function ComposerSheet({
       />
 
       <div
-        className="relative z-10 flex w-full max-w-[480px] flex-col rounded-t-2xl border border-[#2a2f2a] border-b-0 bg-[#161616] text-white shadow-[0_-10px_40px_rgba(0,0,0,0.5)]"
+        className="relative z-10 max-h-[90%] w-full max-w-[480px] overflow-y-auto rounded-t-[24px] border border-[#2a2f2a] border-b-0 bg-[#161616] px-4 pb-[calc(24px+env(safe-area-inset-bottom,0px))] pt-4 text-white shadow-[0_-10px_40px_rgba(0,0,0,0.5)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         role="dialog"
         aria-modal="true"
         aria-labelledby="composer-sheet-title"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-center pt-4">
-          <div className="h-1 w-10 rounded-sm bg-[#353c34]" aria-hidden />
-        </div>
+        <div className="mx-auto mb-4 h-1 w-10 rounded-sm bg-[#353c34]" aria-hidden />
 
-        <div className="relative mb-4 flex items-center justify-between px-4 pt-4">
+        <div className="mb-[18px] flex items-center justify-between">
           <h2
             id="composer-sheet-title"
             className="text-[22px] font-bold tracking-[-0.03em] text-white"
@@ -437,20 +604,34 @@ export function ComposerSheet({
           </button>
         </div>
 
-        <div className="flex px-4" role="tablist" aria-label="Composer type">
+        <div
+          className="mb-[18px] grid grid-cols-2 gap-2"
+          role="tablist"
+          aria-label="Composer type"
+        >
           <button
             type="button"
             role="tab"
             aria-selected={activeTab === "social"}
             onClick={() => setActiveTab("social")}
             className={cn(
-              "flex-1 border-b-2 py-3 text-center text-sm font-semibold transition-colors",
+              "min-h-14 rounded-2xl border p-4 text-left transition-all active:scale-[0.97]",
               activeTab === "social"
-                ? "border-[#C8FF00] text-white"
-                : "border-transparent text-[#888888]",
+                ? "border-[#C8FF00] bg-[rgba(200,255,0,0.05)]"
+                : "border-[#2a2f2a] bg-[#131614]",
             )}
           >
-            Social
+            <div
+              className={cn(
+                "mb-1 text-[15px] font-bold",
+                activeTab === "social" ? "text-[#C8FF00]" : "text-white",
+              )}
+            >
+              Social
+            </div>
+            <div className="text-xs text-[#7e8a7e]">
+              Share something with the community
+            </div>
           </button>
           <button
             type="button"
@@ -458,241 +639,96 @@ export function ComposerSheet({
             aria-selected={activeTab === "arena"}
             onClick={() => setActiveTab("arena")}
             className={cn(
-              "flex-1 border-b-2 py-3 text-center text-sm font-semibold transition-colors",
+              "min-h-14 rounded-2xl border p-4 text-left transition-all active:scale-[0.97]",
               activeTab === "arena"
-                ? "border-[#C8FF00] text-white"
-                : "border-transparent text-[#888888]",
+                ? "border-[#C8FF00] bg-[rgba(200,255,0,0.05)]"
+                : "border-[#2a2f2a] bg-[#131614]",
             )}
           >
-            Arena
+            <div
+              className={cn(
+                "mb-1 text-[15px] font-bold",
+                activeTab === "arena" ? "text-[#C8FF00]" : "text-white",
+              )}
+            >
+              Arena
+            </div>
+            <div className="text-xs text-[#7e8a7e]">
+              Find players. Create a game.
+            </div>
           </button>
         </div>
 
-        <div className="max-h-[85vh] overflow-y-auto px-4 pb-[calc(24px+env(safe-area-inset-bottom,0px))] pt-4">
-          {activeTab === "social" ? (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (!canSubmitSocial) return;
-                socialMutation.mutate();
-              }}
-              className={cn("flex flex-col", SHEET_CONTENT_MIN_H)}
-            >
-              <div className="flex items-start gap-3">
-                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#c9f31d] text-xs font-bold text-black">
-                  {user.avatarUrl ? (
-                    <img
-                      src={user.avatarUrl}
-                      alt=""
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    avatarInitials
-                  )}
-                </div>
-                <div className="relative min-w-0 flex-1">
-                  <textarea
-                    ref={socialTextareaRef}
-                    value={socialContent}
-                    onChange={(e) => setSocialContent(e.target.value)}
-                    placeholder="What's on your mind..."
-                    maxLength={280}
-                    className={textareaClassName}
-                    required
-                  />
-                  <p className="absolute bottom-0 right-0 text-xs text-[#888888]">
-                    {socialContent.length}/280
-                  </p>
-                </div>
-              </div>
+        <div className="mb-3.5 flex items-center gap-2.5 text-[13px] text-[#7e8a7e]">
+          <ComposerAvatar url={user.avatarUrl} initials={avatarInitials} />
+          <span>
+            Posting as <b className="text-white">{postingAsName}</b>
+          </span>
+        </div>
 
-              <div className="mt-5">
-                <p className={sectionLabelClass}>
-                  Tag a sport (optional)
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {userSports.map((entry, index) => {
-                    const sportKey =
-                      normalizeProfileSportKey(entry.sport) ||
-                      `sport-${index}`;
-                    const { name, emoji } = getComposerSportDisplay(
-                      entry.sport,
-                    );
-                    const selected = selectedSportIds.includes(sportKey);
-                    return (
-                      <button
-                        key={`${sportKey}-${index}`}
-                        type="button"
-                        onClick={() =>
-                          setSelectedSportIds((prev) =>
-                            selected
-                              ? prev.filter((id) => id !== sportKey)
-                              : [...prev, sportKey],
-                          )
-                        }
-                        className={cn(
-                          selected ? sportChipSelectedClass : sportChipIdleClass,
-                        )}
-                      >
-                        {emoji} {name}
-                      </button>
-                    );
-                  })}
-                  {!userSports.length && (
-                    <Link
-                      href="/settings/sports"
-                      className="text-sm text-[#C8FF00] hover:underline"
-                    >
-                      Add sports in Settings
-                    </Link>
-                  )}
-                </div>
-              </div>
+        {activeTab === "social" ? (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!canSubmitSocial) return;
+              socialMutation.mutate();
+            }}
+          >
+            <div className="relative">
+              <textarea
+                ref={socialTextareaRef}
+                value={socialContent}
+                onChange={(e) => setSocialContent(e.target.value)}
+                placeholder="What's happening in your sports world?"
+                maxLength={280}
+                className={textareaClassName}
+                required
+              />
+              <p className="pointer-events-none absolute bottom-6 right-3 text-xs text-[#888888]">
+                {socialContent.length}/280
+              </p>
+            </div>
 
-              <div className="mt-5">
-                <p className={sectionLabelClass}>
-                  Visibility
-                </p>
-                <VisibilityToggle
-                  visibility={socialVisibility}
-                  onChange={setSocialVisibility}
-                />
-              </div>
+            <div className="mb-3.5 flex flex-wrap gap-2">
+              {sportChips}
+              {sportsEmptyState}
+            </div>
 
-              <div className={composerFooterClassName}>
-                <LoadingButton
-                  type="submit"
-                  loading={socialMutation.isPending}
-                  disabled={!canSubmitSocial || socialMutation.isPending}
-                  className={composerSubmitButtonClassName}
-                >
-                  Post
-                </LoadingButton>
-                <div className={composerMediaRowClassName}>
-                  <input
-                    ref={photoInputRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={() => {}}
-                  />
-                  <input
-                    ref={cameraInputRef}
-                    type="file"
-                    accept="image/*"
-                    capture="environment"
-                    className="hidden"
-                    onChange={() => {}}
-                  />
-                  <button
-                    type="button"
-                    onClick={handlePhotoPick}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-[#2a2f2a] bg-[#131614] text-[#888888] hover:border-[#C8FF00] hover:text-[#C8FF00]"
-                    aria-label="Add photo"
-                  >
-                    <IconPhoto className="h-5 w-5" stroke={1.75} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleCameraPick}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-[#2a2f2a] bg-[#131614] text-[#888888] hover:border-[#C8FF00] hover:text-[#C8FF00]"
-                    aria-label="Take photo"
-                  >
-                    <IconCamera className="h-5 w-5" stroke={1.75} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleEmojiPick}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-[#2a2f2a] bg-[#131614] text-[#888888] hover:border-[#C8FF00] hover:text-[#C8FF00]"
-                    aria-label="Add emoji"
-                  >
-                    <IconMoodSmile className="h-5 w-5" stroke={1.75} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleGifPick}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-[#2a2f2a] bg-[#131614] text-[#888888] hover:border-[#C8FF00] hover:text-[#C8FF00]"
-                    aria-label="Add GIF"
-                  >
-                    <IconGif className="h-5 w-5" stroke={1.75} />
-                  </button>
-                </div>
-              </div>
-            </form>
-          ) : (
-            <form
-              onSubmit={handleArenaSubmit}
-              className={cn("flex flex-col space-y-4", SHEET_CONTENT_MIN_H)}
-            >
-              <div className="flex items-start gap-3">
-                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#c9f31d] text-xs font-bold text-black">
-                  {user.avatarUrl ? (
-                    <img
-                      src={user.avatarUrl}
-                      alt=""
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    avatarInitials
-                  )}
-                </div>
-                <div className="relative min-w-0 flex-1">
-                  <textarea
-                    id="broadcast-details"
-                    value={arenaContent}
-                    onChange={(e) => setArenaContent(e.target.value)}
-                    placeholder="Tell people what you need..."
-                    maxLength={280}
-                    className={textareaClassName}
-                  />
-                  <p className="absolute bottom-0 right-0 text-xs text-[#888888]">
-                    {arenaContent.length}/280
-                  </p>
-                </div>
-              </div>
+            <div className="mb-3.5">
+              <VisibilityToggle
+                visibility={socialVisibility}
+                onChange={setSocialVisibility}
+              />
+            </div>
 
-              <div>
-                <p className={sectionLabelClass}>
-                  Sport
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {userSports.map((entry, index) => {
-                    const sportKey =
-                      normalizeProfileSportKey(entry.sport) ||
-                      `sport-${index}`;
-                    const { name, emoji } = getComposerSportDisplay(
-                      entry.sport,
-                    );
-                    const selected = selectedSport === sportKey;
-                    return (
-                      <button
-                        key={`${sportKey}-${index}`}
-                        type="button"
-                        onClick={() => setSelectedSport(sportKey)}
-                        className={cn(
-                          selected ? sportChipSelectedClass : sportChipIdleClass,
-                        )}
-                      >
-                        {emoji} {name}
-                      </button>
-                    );
-                  })}
-                  {!userSports.length && (
-                    <Link
-                      href="/settings/sports"
-                      className="text-sm text-[#C8FF00] hover:underline"
-                    >
-                      Add sports in Settings
-                    </Link>
-                  )}
-                </div>
-              </div>
+            {composerFooter}
+          </form>
+        ) : (
+          <form onSubmit={handleArenaSubmit}>
+            <div className="relative">
+              <textarea
+                id="broadcast-details"
+                value={arenaContent}
+                onChange={(e) => setArenaContent(e.target.value)}
+                placeholder="What are you looking for? Describe the game..."
+                maxLength={280}
+                className={textareaClassName}
+              />
+              <p className="pointer-events-none absolute bottom-6 right-3 text-xs text-[#888888]">
+                {arenaContent.length}/280
+              </p>
+            </div>
 
-              <div>
-                <p className={sectionLabelClass}>
-                  Intent
-                </p>
-                <div className="flex flex-wrap gap-2">
+            <div className="mb-3.5 grid gap-2.5">
+              <FieldRow label="Sport">
+                <div className="flex flex-wrap gap-1.5">
+                  {sportChips}
+                  {sportsEmptyState}
+                </div>
+              </FieldRow>
+
+              <FieldRow label="Intent">
+                <div className="flex flex-wrap gap-1.5">
                   {ARENA_INTENTS.map((option) => (
                     <button
                       key={option.value}
@@ -710,122 +746,83 @@ export function ComposerSheet({
                           const local = toDatetimeLocalValue(defaultDate);
                           setGameAt(local);
                           setTimeLabel(
-                            formatBroadcastTimeLabel(
-                              defaultDate.toISOString(),
-                            ),
+                            formatBroadcastTimeLabel(defaultDate.toISOString()),
                           );
                         }
                       }}
                       className={cn(
-                        "rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
+                        "rounded-[10px] border px-3 py-1.5 text-xs font-semibold transition-colors",
                         selectedIntent === option.value
                           ? option.className
-                          : "border-[#2a2f2a] bg-[#131614] text-[#888888]",
+                          : "border-[#2a2f2a] bg-transparent text-[#888888]",
                       )}
                     >
                       {option.label}
                     </button>
                   ))}
                 </div>
-              </div>
+              </FieldRow>
 
-              <div>
-                <label
-                  htmlFor="broadcast-location"
-                  className={sectionLabelClass}
-                >
-                  Location
-                </label>
+              <FieldRow icon={<MapPin className="h-3.5 w-3.5" />}>
                 <input
                   id="broadcast-location"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  placeholder="e.g. Glasgow Green, Powerleague Paisley"
-                  className={fieldClassName}
+                  placeholder="Location, e.g. Powerleague Townhead"
+                  className={fieldInputClassName}
                 />
-              </div>
+              </FieldRow>
 
               {!isBanter && (
-                <div>
-                  <label
-                    htmlFor="broadcast-time"
-                    className={sectionLabelClass}
-                  >
-                    Date & time
-                  </label>
+                <FieldRow icon={<Clock3 className="h-3.5 w-3.5" />}>
                   <input
                     id="broadcast-time"
                     type="datetime-local"
                     value={gameAt}
                     onChange={(e) => handleGameAtChange(e.target.value)}
-                    className={fieldClassName}
+                    className={fieldInputClassName}
                   />
-                  {timeLabel && (
-                    <p className="mt-1.5 text-xs text-[#888888]">{timeLabel}</p>
-                  )}
-                </div>
+                </FieldRow>
               )}
 
               {isLookingToPlay && (
-                <div>
-                  <p className={sectionLabelClass}>
-                    Players needed
-                  </p>
+                <FieldRow icon={<Users className="h-3.5 w-3.5" />}>
                   <div className="flex items-center gap-3">
                     <button
                       type="button"
-                      onClick={() =>
-                        setSlotsNeeded((n) => Math.max(1, n - 1))
-                      }
-                      className="flex h-10 w-10 items-center justify-center rounded-[14px] border border-[#2a2f2a] bg-[#131614] text-white hover:border-[#C8FF00] hover:text-[#C8FF00]"
+                      onClick={() => setSlotsNeeded((n) => Math.max(1, n - 1))}
+                      className="grid h-8 w-8 place-items-center rounded-[10px] border border-[#2a2f2a] text-white hover:border-[#C8FF00] hover:text-[#C8FF00]"
                       aria-label="Decrease players"
                     >
                       <Minus className="h-4 w-4" />
                     </button>
-                    <span className="min-w-[2rem] text-center text-lg font-semibold text-white">
+                    <span className="min-w-[2rem] text-center text-[15px] font-semibold text-white">
                       {slotsNeeded}
                     </span>
                     <button
                       type="button"
-                      onClick={() =>
-                        setSlotsNeeded((n) => Math.min(10, n + 1))
-                      }
-                      className="flex h-10 w-10 items-center justify-center rounded-[14px] border border-[#2a2f2a] bg-[#131614] text-white hover:border-[#C8FF00] hover:text-[#C8FF00]"
+                      onClick={() => setSlotsNeeded((n) => Math.min(10, n + 1))}
+                      className="grid h-8 w-8 place-items-center rounded-[10px] border border-[#2a2f2a] text-white hover:border-[#C8FF00] hover:text-[#C8FF00]"
                       aria-label="Increase players"
                     >
                       <Plus className="h-4 w-4" />
                     </button>
+                    <span className="text-xs text-[#7e8a7e]">players needed</span>
                   </div>
-                </div>
+                </FieldRow>
               )}
 
-              <div>
-                <p className={sectionLabelClass}>
-                  Visibility
-                </p>
+              <FieldRow label="Visible">
                 <VisibilityToggle
                   visibility={arenaVisibility}
                   onChange={setArenaVisibility}
                 />
-              </div>
+              </FieldRow>
+            </div>
 
-              <div className={composerFooterClassName}>
-                <LoadingButton
-                  type="submit"
-                  loading={arenaMutation.isPending}
-                  disabled={!arenaValid || arenaMutation.isPending}
-                  className={cn(
-                    composerSubmitButtonClassName,
-                    !arenaValid && "cursor-not-allowed opacity-40",
-                  )}
-                >
-                  Post broadcast
-                </LoadingButton>
-                <div className={composerMediaRowClassName} aria-hidden />
-              </div>
-            </form>
-          )}
-        </div>
+            {composerFooter}
+          </form>
+        )}
       </div>
     </div>,
     document.body,

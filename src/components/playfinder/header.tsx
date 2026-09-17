@@ -83,12 +83,19 @@ export function Header({ initialUnreadNotificationCount }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-50 flex shrink-0 items-center gap-2.5 border-b border-white/[0.04] bg-[rgba(8,9,10,0.92)] px-4 py-3 pt-[calc(12px+env(safe-area-inset-top,0px))] font-grotesk backdrop-blur-[20px]">
-      <Link href="/" className="flex min-w-0 items-center">
+      <Link
+        href="/"
+        className="flex min-w-0 items-center gap-2.5"
+        aria-label="PlayFinder home"
+      >
         <span
           className="grid h-9 w-9 shrink-0 place-items-center rounded-[11px] bg-[#c9f31d] text-[#0a0b0a]"
           aria-hidden
         >
           <Zap className="h-5 w-5" fill="currentColor" />
+        </span>
+        <span className="truncate text-[22px] font-bold leading-none tracking-[-0.04em] text-white">
+          PlayFinder
         </span>
       </Link>
 
