@@ -2,9 +2,20 @@
 
 import { useSession } from "@/app/(main)/SessionProvider";
 import { usePlayFinder } from "@/components/playfinder/playfinder-provider";
+import kyInstance from "@/lib/ky";
 import { getInitials } from "@/lib/settings";
+import { NotificationCountInfo } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Compass, Home, MessageCircle, User, Zap } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import {
+  Bell,
+  Compass,
+  Home,
+  MessageCircle,
+  Settings,
+  User,
+  Zap,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -14,13 +25,30 @@ interface NavItem {
   icon: typeof Home;
   href: string;
   isActive: (pathname: string) => boolean;
+  badge?: number;
 }
 
-export function DesktopSidebar() {
+interface DesktopSidebarProps {
+  initialUnreadNotificationCount: number;
+}
+
+export function DesktopSidebar({
+  initialUnreadNotificationCount,
+}: DesktopSidebarProps) {
   const pathname = usePathname();
   const { user } = useSession();
   const { openComposer } = usePlayFinder();
   const profileHref = `/users/${user.username}`;
+
+  const { data } = useQuery({
+    queryKey: ["unread-notification-count"],
+    queryFn: () =>
+      kyInstance
+        .get("/api/notifications/unread-count")
+        .json<NotificationCountInfo>(),
+    initialData: { unreadCount: initialUnreadNotificationCount },
+    refetchInterval: 60 * 1000,
+  });
 
   const navItems: NavItem[] = [
     { id: "home", label: "Home", icon: Home, href: "/home", isActive: (p) => p === "/home" },
@@ -39,11 +67,26 @@ export function DesktopSidebar() {
       isActive: (p) => p.startsWith("/messages"),
     },
     {
+      id: "notifications",
+      label: "Notifications",
+      icon: Bell,
+      href: "/notifications",
+      isActive: (p) => p.startsWith("/notifications"),
+      badge: data.unreadCount,
+    },
+    {
       id: "profile",
       label: "Profile",
       icon: User,
       href: profileHref,
       isActive: (p) => p === profileHref || p.startsWith(`${profileHref}/`),
+    },
+    {
+      id: "settings",
+      label: "Settings",
+      icon: Settings,
+      href: "/settings",
+      isActive: (p) => p.startsWith("/settings"),
     },
   ];
 
@@ -71,7 +114,14 @@ export function DesktopSidebar() {
                 active ? "text-[#f2f5ef]" : "text-[#b4bcaf]",
               )}
             >
-              <item.icon className="h-6 w-6" />
+              <span className="relative">
+                <item.icon className="h-6 w-6" />
+                {!!item.badge && item.badge > 0 && (
+                  <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full border-2 border-[#08090a] bg-[#c9f31d] px-1 font-dm-mono text-[9px] font-bold text-[#0a0b0a]">
+                    {item.badge > 9 ? "9+" : item.badge}
+                  </span>
+                )}
+              </span>
               {item.label}
             </Link>
           );

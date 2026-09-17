@@ -4,6 +4,13 @@
 
 @import "mapbox-gl/dist/mapbox-gl.css";
 
+/* Reserve the scrollbar's width at all times so toggling a page's vertical
+   scrollbar on/off (e.g. Search results growing/shrinking) never shifts the
+   100vw-based desktop layout math (sidebar/right-rail centering) sideways. */
+html {
+  scrollbar-gutter: stable;
+}
+
 /* Fill the map container only — never stretch the WebGL canvas.
    Forcing canvas width/height to 100% desyncs tiles from HTML overlays
    (pins, logo) when zooming. */

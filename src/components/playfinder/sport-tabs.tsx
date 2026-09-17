@@ -3,6 +3,7 @@
 import type { FeedSportTab } from "@/lib/feed-sport-tabs";
 import { getSportIcon } from "@/lib/discover-sport-icons";
 import { getSportColour } from "@/lib/sport-visuals";
+import { useHorizontalScroll } from "@/hooks/use-horizontal-scroll";
 import { cn } from "@/lib/utils";
 import { Zap } from "lucide-react";
 
@@ -13,13 +14,18 @@ interface SportTabsProps {
 }
 
 export function SportTabs({ tabs, activeTab, onTabChange }: SportTabsProps) {
+  const { scrollRef, onMouseDown, wasDragged } =
+    useHorizontalScroll<HTMLDivElement>();
+
   return (
     <div className="min-w-0">
       <div
+        ref={scrollRef}
         id="sport-tabs-scroll"
         role="tablist"
         aria-label="Filter by sport"
-        className="flex gap-[7px] overflow-x-auto px-4 pb-1.5 pt-2.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        onMouseDown={onMouseDown}
+        className="flex select-none gap-[7px] overflow-x-auto px-4 pb-1.5 pt-2.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden cursor-grab active:cursor-grabbing"
       >
         {tabs.map((sport) => {
           const isActive = activeTab === sport.id;
@@ -33,7 +39,10 @@ export function SportTabs({ tabs, activeTab, onTabChange }: SportTabsProps) {
               type="button"
               role="tab"
               aria-selected={isActive}
-              onClick={() => onTabChange(sport.id)}
+              onClick={() => {
+                if (wasDragged()) return;
+                onTabChange(sport.id);
+              }}
               className={cn(
                 "flex min-h-[34px] shrink-0 items-center gap-[5px] whitespace-nowrap rounded-full border px-[13px] py-2 text-xs font-semibold transition-all duration-200 ease-[cubic-bezier(.2,.8,.2,1)] active:scale-95",
                 isActive

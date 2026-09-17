@@ -1,5 +1,6 @@
 "use client";
 
+import { DesktopSearchBox } from "@/components/playfinder/desktop-search-box";
 import { useUserSettings } from "@/hooks/use-user-settings";
 import kyInstance from "@/lib/ky";
 import { getDisplayArea } from "@/lib/location";
@@ -7,12 +8,9 @@ import { filterActivePlayfinderPosts } from "@/lib/playfinder";
 import { mapPostToHomeFeedCard } from "@/lib/home-feed-card";
 import { PlayfinderPostsPage } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
-import { Search } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export function DesktopRightRail() {
-  const router = useRouter();
   const { data: userSettings } = useUserSettings();
   const area = getDisplayArea(userSettings?.location);
 
@@ -40,15 +38,8 @@ export function DesktopRightRail() {
   const count = liveData?.count ?? 0;
 
   return (
-    <div className="sticky top-0 hidden h-screen w-[350px] shrink-0 flex-col gap-4 px-6 py-3 font-grotesk lg:flex">
-      <button
-        type="button"
-        onClick={() => router.push("/search")}
-        className="flex items-center gap-2.5 rounded-full border border-[#2a2f2a] bg-[#131614] px-4 py-3 text-sm text-[#7e8a7e] transition-colors hover:border-[#353c34]"
-      >
-        <Search className="h-[18px] w-[18px] shrink-0" />
-        Search PlayFinder
-      </button>
+    <div className="sticky top-0 hidden h-screen w-[350px] shrink-0 flex-col gap-4 px-6 py-3 font-grotesk xl:flex">
+      <DesktopSearchBox />
 
       <div className="relative overflow-hidden rounded-2xl border border-[#2a2f2a] p-4">
         <div

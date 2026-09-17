@@ -16,6 +16,7 @@ import { SearchClubRow } from "./SearchClubRow";
 import { SearchEmptyState } from "./SearchEmptyState";
 import { SearchGameCard } from "./SearchGameCard";
 import { SearchHeader } from "./SearchHeader";
+import { SearchLivePreview } from "./SearchLivePreview";
 import { SearchPlayerRow, type SearchPlayerResult } from "./SearchPlayerRow";
 import { SearchPostRow } from "./SearchPostRow";
 import { searchClubsLocal, searchVenuesLocal } from "./search-local-data";
@@ -43,6 +44,7 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
   const urlQuery = searchParams.get("q")?.trim() ?? initialQuery;
   const [filter, setFilter] = useState<SearchFilter>("profiles");
   const [draftQuery, setDraftQuery] = useState(urlQuery);
+  const [debouncedDraftQuery, setDebouncedDraftQuery] = useState(urlQuery);
 
   const areaLabel = getDisplayArea(userSettings?.location);
 
@@ -53,6 +55,20 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
   useEffect(() => {
     if (urlQuery) addRecentSearch(urlQuery);
   }, [urlQuery]);
+
+  // Live "as you type" preview: fires while the user is actively typing,
+  // i.e. before they've submitted this exact query (matches X's behaviour
+  // of showing results immediately instead of waiting for Enter).
+  useEffect(() => {
+    const id = window.setTimeout(
+      () => setDebouncedDraftQuery(draftQuery.trim()),
+      250,
+    );
+    return () => window.clearTimeout(id);
+  }, [draftQuery]);
+
+  const isTyping =
+    draftQuery.trim().length > 0 && draftQuery.trim() !== urlQuery;
 
   const runSearch = useCallback(
     (query: string) => {
@@ -74,6 +90,15 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
         .get("/api/search/players", { searchParams: { q: urlQuery } })
         .json<{ players: SearchPlayerResult[] }>(),
     enabled: !!urlQuery,
+  });
+
+  const livePreviewQuery = useQuery({
+    queryKey: ["search", "players", "preview", debouncedDraftQuery],
+    queryFn: () =>
+      kyInstance
+        .get("/api/search/players", { searchParams: { q: debouncedDraftQuery } })
+        .json<{ players: SearchPlayerResult[] }>(),
+    enabled: isTyping && debouncedDraftQuery.length > 0,
   });
 
   const postsQuery = useInfiniteQuery({
@@ -189,7 +214,14 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
         onChange={setDraftQuery}
         onSubmit={runSearch}
       />
-      {!urlQuery ? (
+      {isTyping ? (
+        <SearchLivePreview
+          query={draftQuery.trim()}
+          players={livePreviewQuery.data?.players ?? []}
+          isFetching={livePreviewQuery.isFetching}
+          onSeeAllResults={() => runSearch(draftQuery)}
+        />
+      ) : !urlQuery ? (
         <div className="flex-1 overflow-y-auto">
           <SearchEmptyState onSearch={runSearch} />
         </div>

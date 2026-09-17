@@ -2,6 +2,7 @@
 
 import { useSession } from "@/app/(main)/SessionProvider";
 import FollowButton from "@/components/FollowButton";
+import { DesktopSearchBox } from "@/components/playfinder/desktop-search-box";
 import { useUserSettings } from "@/hooks/use-user-settings";
 import kyInstance from "@/lib/ky";
 import { getDisplayArea } from "@/lib/location";
@@ -11,9 +12,7 @@ import { getInitials } from "@/lib/settings";
 import type { DiscoverPlayer } from "@/lib/discover";
 import { FollowerInfo, PlayfinderPostsPage } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
-import { Search } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 const defaultFollowerInfo: FollowerInfo = {
   followers: 0,
@@ -23,7 +22,6 @@ const defaultFollowerInfo: FollowerInfo = {
 };
 
 export function ProfileDesktopRightRail() {
-  const router = useRouter();
   const { user: viewer } = useSession();
   const { data: userSettings } = useUserSettings();
   const area = getDisplayArea(userSettings?.location);
@@ -55,15 +53,8 @@ export function ProfileDesktopRightRail() {
     .map((post) => mapPostToHomeFeedCard(post, false));
 
   return (
-    <div className="sticky top-0 hidden h-screen w-[350px] shrink-0 flex-col gap-4 px-6 py-3 font-grotesk lg:flex">
-      <button
-        type="button"
-        onClick={() => router.push("/search")}
-        className="flex items-center gap-2.5 rounded-full border border-[#2a2f2a] bg-[#131614] px-4 py-3 text-sm text-[#7e8a7e] transition-colors hover:border-[#353c34]"
-      >
-        <Search className="h-[18px] w-[18px] shrink-0" />
-        Search PlayFinder
-      </button>
+    <div className="sticky top-0 hidden h-screen w-[350px] shrink-0 flex-col gap-4 px-6 py-3 font-grotesk xl:flex">
+      <DesktopSearchBox />
 
       {suggestions.length > 0 && (
         <div className="rounded-2xl border border-[#2a2f2a] bg-[#131614] p-4">

@@ -13,11 +13,12 @@ import {
 } from "@/lib/discover-places";
 import { getSportIcon } from "@/lib/discover-sport-icons";
 import { getSportColour } from "@/lib/sport-visuals";
+import { useHorizontalScroll } from "@/hooks/use-horizontal-scroll";
 import kyInstance from "@/lib/ky";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Zap } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface DiscoverUserSport {
   id: string;
@@ -153,35 +154,8 @@ function DiscoverSportPills({
   activeSportId: string;
   onSelect: (id: string) => void;
 }) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const dragState = useRef({ down: false, startX: 0, startScroll: 0, dragged: false });
-
-  const onMouseDown = (e: React.MouseEvent) => {
-    const el = scrollRef.current;
-    if (!el) return;
-    dragState.current = {
-      down: true,
-      startX: e.clientX,
-      startScroll: el.scrollLeft,
-      dragged: false,
-    };
-
-    const onMouseMove = (moveEvent: MouseEvent) => {
-      if (!dragState.current.down || !scrollRef.current) return;
-      const delta = moveEvent.clientX - dragState.current.startX;
-      if (Math.abs(delta) > 3) dragState.current.dragged = true;
-      scrollRef.current.scrollLeft = dragState.current.startScroll - delta;
-    };
-
-    const onMouseUp = () => {
-      dragState.current.down = false;
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
-    };
-
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
-  };
+  const { scrollRef, onMouseDown, wasDragged } =
+    useHorizontalScroll<HTMLDivElement>();
 
   return (
     <div
@@ -202,7 +176,7 @@ function DiscoverSportPills({
             key={sport.id}
             type="button"
             onClick={() => {
-              if (dragState.current.dragged) return;
+              if (wasDragged()) return;
               onSelect(sport.id);
             }}
             className={cn(

@@ -44,7 +44,9 @@ export function MainAppShell({
 
   return (
     <div className="flex min-h-screen bg-[#08090a] font-grotesk text-[#f2f5ef] lg:pl-[max(24px,calc((100vw_-_1225px)_/_2))]">
-      <DesktopSidebar />
+      <DesktopSidebar
+        initialUnreadNotificationCount={initialUnreadNotificationCount}
+      />
 
       {isFullBleedRoute ? (
         <div className="mx-auto flex h-[100dvh] w-full max-w-[480px] flex-col overflow-hidden lg:mx-0 lg:max-w-none lg:min-w-0 lg:flex-1">
