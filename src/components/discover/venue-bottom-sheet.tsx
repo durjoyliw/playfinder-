@@ -39,13 +39,13 @@ function nextSnap(snap: SheetSnap): SheetSnap {
   return SNAP_ORDER[(index + 1) % SNAP_ORDER.length];
 }
 
-interface DiscoverVenueClubTabsProps {
+export interface DiscoverVenueClubTabsProps {
   activeTab: DiscoverTabType;
   onTabChange: (tab: DiscoverTabType) => void;
   nearbyCount: number;
 }
 
-function DiscoverVenueClubTabs({
+export function DiscoverVenueClubTabs({
   activeTab,
   onTabChange,
   nearbyCount,
