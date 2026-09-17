@@ -1,9 +1,4 @@
-import {
-  MapPin,
-  MessageCircle,
-  Radio,
-  Trophy,
-} from "lucide-react";
+import { MapPin, MessageCircle, Radio, Trophy } from "lucide-react";
 import Link from "next/link";
 
 const VOLT = "#C9F31D";
@@ -18,24 +13,28 @@ const features = [
     title: "Broadcast a game instantly",
     description:
       "Need one more player? Post a broadcast and get responses in minutes.",
+    photo: "https://picsum.photos/seed/playfinder-broadcast/640/960",
   },
   {
     icon: MapPin,
     title: "Find players near you",
     description:
       "Filter by sport and skill level. Find your match in seconds.",
+    photo: null,
   },
   {
     icon: MessageCircle,
     title: "Chat and organise",
     description:
       "DM players directly and coordinate everything in one place.",
+    photo: null,
   },
   {
     icon: Trophy,
     title: "Your athlete profile",
     description:
       "Your sports, skill levels, and what you're looking for. All in one place.",
+    photo: "https://picsum.photos/seed/playfinder-trophy/640/480",
   },
 ] as const;
 
@@ -48,17 +47,22 @@ const steps = [
   {
     number: "2",
     title: "Browse the local feed",
-    description:
-      "Filter by sport and see who's looking to play near you.",
+    description: "Filter by sport and see who's looking to play near you.",
   },
   {
     number: "3",
     title: "Broadcast or join a game",
-    description: "Post your own or tap I'm in. DM to lock in the details.",
+    description:
+      "Post your own, or tap I'm in and DM to lock in the details.",
   },
 ] as const;
 
-const avatars = ["MR", "SK", "JV", "RD"];
+const avatarSeeds = [
+  "playfinder-a",
+  "playfinder-b",
+  "playfinder-c",
+  "playfinder-d",
+];
 
 function GoogleIcon() {
   return (
@@ -97,27 +101,77 @@ export function PlayFinderLanding() {
           0%, 100% { opacity: 1; transform: scale(1); }
           50% { opacity: 0.5; transform: scale(0.85); }
         }
-        .pf-pulse-dot {
-          animation: pf-pulse 2s ease-in-out infinite;
+        @media (prefers-reduced-motion: no-preference) {
+          .pf-pulse-dot { animation: pf-pulse 2.2s ease-in-out infinite; }
+        }
+
+        .pf-hero-grid { display: grid; grid-template-columns: 1fr 0.95fr; gap: 64px; align-items: center; }
+        .pf-hero-photo { width: 100%; height: 460px; object-fit: cover; border-radius: 20px; display: block; border: 1px solid ${BORDER}; }
+        .pf-hero-card { position: absolute; left: -28px; bottom: -28px; width: 300px; background: ${CARD}; border: 1px solid ${BORDER}; border-radius: 20px; padding: 18px; box-shadow: 0 20px 48px rgba(0,0,0,0.45); }
+
+        .pf-features-grid { display: grid; grid-template-columns: 1.35fr 1fr; grid-template-rows: repeat(3, 1fr); gap: 16px; }
+        .pf-feature-card--tall { grid-row: span 3; min-height: 480px; }
+
+        .pf-steps-row { display: flex; align-items: flex-start; position: relative; }
+        .pf-step { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 28px; position: relative; }
+        .pf-step:not(:first-child)::before { content: ''; position: absolute; top: 23px; left: -50%; width: 100%; height: 2px; background: ${BORDER}; z-index: 1; }
+        .pf-step-circle { position: relative; z-index: 2; }
+
+        .pf-testimonial-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 56px; align-items: center; }
+        .pf-testimonial-photo { width: 100%; height: 340px; object-fit: cover; border-radius: 20px; border: 1px solid ${BORDER}; }
+
+        .pf-cta-band { display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+        .pf-footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+
+        .pf-btn-primary:active, .pf-btn-google:active, .pf-signin:active { transform: scale(0.97); }
+        .pf-btn-primary:focus-visible, .pf-btn-google:focus-visible, .pf-signin:focus-visible, .pf-mini-btn:focus-visible {
+          outline: 2px solid ${VOLT}; outline-offset: 2px;
+        }
+
+        @media (max-width: 860px) {
+          .pf-nav-inner { padding-left: 20px !important; padding-right: 20px !important; }
+          .pf-hero-grid { grid-template-columns: 1fr; gap: 40px; }
+          .pf-hero-visual { order: -1; }
+          .pf-hero-photo { height: 280px; }
+          .pf-hero-card { position: static; width: 100%; margin-top: 16px; }
+          .pf-h1 { font-size: 34px !important; }
+          .pf-features-grid { grid-template-columns: 1fr; grid-template-rows: none; }
+          .pf-feature-card--tall { grid-row: auto; min-height: 220px; }
+          .pf-steps-row { flex-direction: column; gap: 28px; }
+          .pf-step { flex-direction: row; text-align: left; padding: 0; align-items: flex-start; }
+          .pf-step:not(:first-child)::before { display: none; }
+          .pf-step-circle { margin-right: 16px !important; margin-bottom: 0 !important; }
+          .pf-testimonial-grid { grid-template-columns: 1fr; gap: 28px; }
+          .pf-testimonial-photo { height: 220px; }
+          .pf-cta-band { flex-direction: column; align-items: flex-start; }
+          .pf-footer-inner { flex-direction: column; align-items: flex-start; }
         }
       `}</style>
 
-      <div style={{ maxWidth: 480, margin: "0 auto", width: "100%" }}>
+      <div style={{ width: "100%", backgroundColor: BG }}>
         {/* Nav */}
         <nav
+          className="pf-nav-inner"
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            padding: "16px 20px",
+            padding: "18px 56px",
             borderBottom: `1px solid ${BORDER}`,
+            position: "sticky",
+            top: 0,
+            backgroundColor: "rgba(13,13,13,0.88)",
+            backdropFilter: "blur(10px)",
+            zIndex: 20,
           }}
         >
           <span
             style={{
-              fontSize: 22,
+              fontSize: 24,
               fontWeight: 700,
               fontStyle: "italic",
+              lineHeight: 1.15,
+              paddingBottom: 4,
               color: VOLT,
             }}
           >
@@ -125,9 +179,10 @@ export function PlayFinderLanding() {
           </span>
           <Link
             href="/login"
+            className="pf-signin"
             style={{
               display: "inline-block",
-              padding: "8px 18px",
+              padding: "10px 22px",
               borderRadius: 9999,
               border: `1px solid ${VOLT}`,
               color: VOLT,
@@ -141,205 +196,274 @@ export function PlayFinderLanding() {
         </nav>
 
         {/* Hero */}
-        <section
-          style={{
-            padding: "48px 24px 40px",
-            textAlign: "center",
-            backgroundColor: BG,
-          }}
-        >
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "6px 14px",
-              borderRadius: 9999,
-              backgroundColor: CARD,
-              border: `1px solid ${BORDER}`,
-              marginBottom: 28,
-              fontSize: 13,
-              color: MUTED,
-            }}
-          >
-            <span
-              className="pf-pulse-dot"
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
-                backgroundColor: VOLT,
-                display: "inline-block",
-              }}
-            />
-            Now live in Glasgow
-          </div>
+        <section style={{ padding: "72px 56px 96px", maxWidth: 1352, margin: "0 auto" }}>
+          <div className="pf-hero-grid">
+            <div>
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 9,
+                  padding: "7px 16px",
+                  borderRadius: 9999,
+                  backgroundColor: CARD,
+                  border: `1px solid ${BORDER}`,
+                  marginBottom: 28,
+                  fontSize: 13,
+                  color: MUTED,
+                }}
+              >
+                <span
+                  className="pf-pulse-dot"
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    backgroundColor: VOLT,
+                    display: "inline-block",
+                  }}
+                />
+                Live in Glasgow
+              </div>
 
-          <h1
-            style={{
-              margin: 0,
-              fontSize: 40,
-              fontWeight: 800,
-              lineHeight: 1.15,
-              letterSpacing: "-0.02em",
-              color: "#ffffff",
-            }}
-          >
-            Find your game.
-            <br />
-            <span style={{ color: VOLT }}>Find your people.</span>
-          </h1>
+              <h1
+                className="pf-h1"
+                style={{
+                  margin: 0,
+                  fontSize: 52,
+                  fontWeight: 800,
+                  lineHeight: 1.1,
+                  letterSpacing: "-0.02em",
+                  color: "#ffffff",
+                }}
+              >
+                Find your game.
+                <br />
+                <span
+                  style={{
+                    color: VOLT,
+                    fontStyle: "italic",
+                    display: "inline-block",
+                    lineHeight: 1.15,
+                    paddingBottom: 6,
+                  }}
+                >
+                  Find your people.
+                </span>
+              </h1>
 
-          <p
-            style={{
-              margin: "20px auto 0",
-              maxWidth: 340,
-              fontSize: 15,
-              lineHeight: 1.6,
-              color: MUTED,
-            }}
-          >
-            The local sports network for Glasgow. Connect with players, post a
-            game, and never miss a match again.
-          </p>
+              <p
+                style={{
+                  margin: "24px 0 0",
+                  maxWidth: 440,
+                  fontSize: 17,
+                  lineHeight: 1.6,
+                  color: MUTED,
+                }}
+              >
+                The local sports network for Glasgow. Post a game, find
+                players, and never miss a match.
+              </p>
 
-          <div style={{ marginTop: 32 }}>
-            <Link
-              href="/login"
-              style={{
-                display: "block",
-                width: "100%",
-                maxWidth: 320,
-                margin: "0 auto",
-                padding: "14px 24px",
-                borderRadius: 12,
-                backgroundColor: VOLT,
-                color: "#000000",
-                fontSize: 16,
-                fontWeight: 700,
-                textDecoration: "none",
-                textAlign: "center",
-              }}
-            >
-              Get started — it&apos;s free
-            </Link>
-          </div>
+              <div style={{ display: "flex", gap: 14, marginTop: 36, flexWrap: "wrap" }}>
+                <Link
+                  href="/login"
+                  className="pf-btn-primary"
+                  style={{
+                    padding: "15px 30px",
+                    borderRadius: 9999,
+                    backgroundColor: VOLT,
+                    color: "#000000",
+                    fontSize: 16,
+                    fontWeight: 700,
+                    textDecoration: "none",
+                  }}
+                >
+                  Get started for free
+                </Link>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              margin: "24px auto",
-              maxWidth: 280,
-              color: MUTED,
-              fontSize: 13,
-            }}
-          >
-            <div style={{ flex: 1, height: 1, backgroundColor: BORDER }} />
-            <span>or</span>
-            <div style={{ flex: 1, height: 1, backgroundColor: BORDER }} />
-          </div>
+                <Link
+                  href="/login"
+                  className="pf-btn-google"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 10,
+                    padding: "14px 26px",
+                    borderRadius: 9999,
+                    backgroundColor: CARD,
+                    border: `1px solid ${BORDER}`,
+                    color: "#ffffff",
+                    fontSize: 15,
+                    fontWeight: 600,
+                    textDecoration: "none",
+                  }}
+                >
+                  <GoogleIcon />
+                  Continue with Google
+                </Link>
+              </div>
+            </div>
 
-          <Link
-            href="/login"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 10,
-              width: "100%",
-              maxWidth: 320,
-              margin: "0 auto",
-              padding: "13px 24px",
-              borderRadius: 12,
-              backgroundColor: CARD,
-              border: `1px solid ${BORDER}`,
-              color: "#ffffff",
-              fontSize: 15,
-              fontWeight: 600,
-              textDecoration: "none",
-            }}
-          >
-            <GoogleIcon />
-            Continue with Google
-          </Link>
-
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 12,
-              marginTop: 32,
-            }}
-          >
-            <div style={{ display: "flex", paddingLeft: 8 }}>
-              {avatars.map((initials, i) => (
+            <div className="pf-hero-visual" style={{ position: "relative" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                className="pf-hero-photo"
+                src="https://picsum.photos/seed/playfinder-five-a-side-glasgow/900/1100"
+                alt="Players on a five-a-side football pitch at dusk"
+              />
+              <div className="pf-hero-card">
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: "50%",
+                      backgroundImage:
+                        "url(https://picsum.photos/seed/playfinder-fraser/80/80)",
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      border: `1px solid ${BORDER}`,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: "#ffffff" }}>
+                      Fraser is broadcasting
+                    </div>
+                    <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>
+                      5-a-side, Kelvingrove Park · Tonight, 7pm
+                    </div>
+                  </div>
+                </div>
                 <div
-                  key={initials}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginTop: 14,
+                    paddingTop: 14,
+                    borderTop: `1px solid ${BORDER}`,
+                  }}
+                >
+                  <span style={{ fontSize: 12, color: VOLT, fontWeight: 600 }}>
+                    2 spots left
+                  </span>
+                  <button
+                    type="button"
+                    className="pf-mini-btn"
+                    style={{
+                      padding: "8px 16px",
+                      borderRadius: 9999,
+                      backgroundColor: VOLT,
+                      color: "#000000",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      border: "none",
+                    }}
+                  >
+                    I&apos;m in
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Social proof */}
+        <div style={{ padding: "0 56px 8px", maxWidth: 1352, margin: "0 auto" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <div style={{ display: "flex" }}>
+              {avatarSeeds.map((seed, i) => (
+                <div
+                  key={seed}
                   style={{
                     width: 36,
                     height: 36,
                     borderRadius: "50%",
-                    backgroundColor: CARD,
+                    backgroundImage: `url(https://picsum.photos/seed/${seed}/72/72)`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
                     border: `2px solid ${BG}`,
-                    marginLeft: i === 0 ? 0 : -10,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 11,
-                    fontWeight: 700,
-                    color: VOLT,
+                    marginLeft: i === 0 ? 0 : -12,
                   }}
-                >
-                  {initials}
-                </div>
+                />
               ))}
             </div>
-            <span style={{ fontSize: 13, color: MUTED, textAlign: "left" }}>
-              200+ players already in Glasgow
+            <span style={{ fontSize: 14, color: MUTED }}>
+              <strong style={{ color: "#ffffff" }}>312 players</strong>{" "}
+              already active in Glasgow
             </span>
           </div>
-        </section>
+        </div>
 
         {/* Features */}
-        <section style={{ padding: "16px 20px 32px" }}>
-          <p
+        <section style={{ padding: "48px 56px 88px", maxWidth: 1352, margin: "0 auto" }}>
+          <h2
             style={{
-              margin: "0 0 16px 4px",
-              fontSize: 12,
-              fontWeight: 600,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: MUTED,
+              fontFamily: "inherit",
+              fontWeight: 700,
+              fontSize: 28,
+              margin: "0 0 32px",
+              letterSpacing: "-0.01em",
+              color: "#ffffff",
             }}
           >
-            Why PlayFinder
-          </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {features.map(({ icon: Icon, title, description }) => (
+            Everything you need to play more
+          </h2>
+          <div className="pf-features-grid">
+            {features.map(({ icon: Icon, title, description, photo }, i) => (
               <div
                 key={title}
+                className={i === 0 ? "pf-feature-card--tall" : undefined}
                 style={{
-                  padding: 20,
-                  borderRadius: 16,
+                  padding: 26,
+                  borderRadius: 20,
                   backgroundColor: CARD,
                   border: `1px solid ${BORDER}`,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "flex-end",
+                  position: "relative",
+                  overflow: "hidden",
+                  minHeight: photo ? 220 : 160,
                 }}
               >
+                {photo && (
+                  <>
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        backgroundImage: `url(${photo})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
+                    />
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        background:
+                          "linear-gradient(180deg, rgba(13,13,13,0.15) 0%, rgba(13,13,13,0.92) 100%)",
+                      }}
+                    />
+                  </>
+                )}
                 <Icon
                   size={22}
                   color={VOLT}
                   strokeWidth={2}
-                  style={{ marginBottom: 12 }}
+                  style={{ marginBottom: 14, position: "relative", zIndex: 1 }}
                 />
                 <h3
                   style={{
                     margin: "0 0 8px",
-                    fontSize: 16,
+                    fontSize: 17,
                     fontWeight: 700,
                     color: "#ffffff",
+                    position: "relative",
+                    zIndex: 1,
                   }}
                 >
                   {title}
@@ -349,7 +473,10 @@ export function PlayFinderLanding() {
                     margin: 0,
                     fontSize: 14,
                     lineHeight: 1.55,
-                    color: MUTED,
+                    color: photo ? "#d4d4d4" : MUTED,
+                    position: "relative",
+                    zIndex: 1,
+                    maxWidth: 360,
                   }}
                 >
                   {description}
@@ -360,38 +487,36 @@ export function PlayFinderLanding() {
         </section>
 
         {/* How it works */}
-        <section style={{ padding: "8px 20px 40px" }}>
-          <p
+        <section style={{ padding: "8px 56px 88px", maxWidth: 1352, margin: "0 auto" }}>
+          <h2
             style={{
-              margin: "0 0 20px 4px",
-              fontSize: 12,
-              fontWeight: 600,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: MUTED,
+              fontWeight: 700,
+              fontSize: 28,
+              margin: "0 0 32px",
+              letterSpacing: "-0.01em",
+              color: "#ffffff",
             }}
           >
             How it works
-          </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          </h2>
+          <div className="pf-steps-row">
             {steps.map(({ number, title, description }) => (
-              <div
-                key={number}
-                style={{ display: "flex", gap: 16, alignItems: "flex-start" }}
-              >
+              <div key={number} className="pf-step">
                 <div
+                  className="pf-step-circle"
                   style={{
-                    flexShrink: 0,
-                    width: 36,
-                    height: 36,
+                    width: 46,
+                    height: 46,
                     borderRadius: "50%",
                     backgroundColor: VOLT,
                     color: "#000000",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: 16,
                     fontWeight: 800,
+                    fontSize: 17,
+                    marginBottom: 22,
+                    flexShrink: 0,
                   }}
                 >
                   {number}
@@ -399,7 +524,7 @@ export function PlayFinderLanding() {
                 <div>
                   <h3
                     style={{
-                      margin: "0 0 6px",
+                      margin: "0 0 8px",
                       fontSize: 16,
                       fontWeight: 700,
                       color: "#ffffff",
@@ -413,6 +538,7 @@ export function PlayFinderLanding() {
                       fontSize: 14,
                       lineHeight: 1.55,
                       color: MUTED,
+                      maxWidth: 240,
                     }}
                   >
                     {description}
@@ -423,53 +549,104 @@ export function PlayFinderLanding() {
           </div>
         </section>
 
+        {/* Testimonial */}
+        <section style={{ padding: "8px 56px 88px", maxWidth: 1352, margin: "0 auto" }}>
+          <div className="pf-testimonial-grid">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className="pf-testimonial-photo"
+              src="https://picsum.photos/seed/playfinder-park-match/800/700"
+              alt="Players warming up at a local Glasgow park before a match"
+            />
+            <div>
+              <p
+                style={{
+                  fontSize: 24,
+                  fontWeight: 500,
+                  lineHeight: 1.4,
+                  margin: "0 0 24px",
+                  color: "#ffffff",
+                }}
+              >
+                &quot;I posted a broadcast on a Tuesday night and had a full
+                squad by Thursday. Beats scrolling through group chats.&quot;
+              </p>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: "50%",
+                    backgroundImage:
+                      "url(https://picsum.photos/seed/playfinder-boyle/72/72)",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    border: `1px solid ${BORDER}`,
+                  }}
+                />
+                <div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "#ffffff" }}>
+                    Fraser Boyle
+                  </div>
+                  <div style={{ fontSize: 13, color: MUTED, marginTop: 2 }}>
+                    Five-a-side captain, Partick
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Bottom CTA */}
-        <section style={{ padding: "0 20px 32px" }}>
+        <section style={{ padding: "0 56px 64px", maxWidth: 1352, margin: "0 auto" }}>
           <div
+            className="pf-cta-band"
             style={{
-              padding: 28,
-              borderRadius: 16,
-              backgroundColor: CARD,
+              padding: "64px 72px",
+              borderRadius: 24,
+              background: `radial-gradient(120% 140% at 20% 0%, rgba(201,243,29,0.12) 0%, rgba(22,22,22,0) 60%), ${CARD}`,
               border: `1px solid ${BORDER}`,
-              textAlign: "center",
             }}
           >
-            <h2
-              style={{
-                margin: "0 0 10px",
-                fontSize: 22,
-                fontWeight: 800,
-                color: "#ffffff",
-              }}
-            >
-              Ready to play?
-            </h2>
-            <p
-              style={{
-                margin: "0 0 24px",
-                fontSize: 14,
-                lineHeight: 1.55,
-                color: MUTED,
-              }}
-            >
-              Join Glasgow&apos;s local sports network and find your next game
-              today.
-            </p>
+            <div>
+              <h2
+                style={{
+                  margin: "0 0 10px",
+                  fontSize: 32,
+                  fontWeight: 800,
+                  color: "#ffffff",
+                }}
+              >
+                Ready to play?
+              </h2>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: 15,
+                  lineHeight: 1.55,
+                  color: MUTED,
+                  maxWidth: 420,
+                }}
+              >
+                Join Glasgow&apos;s local sports network and find your next
+                game today.
+              </p>
+            </div>
             <Link
               href="/login"
+              className="pf-btn-primary"
               style={{
-                display: "inline-block",
-                width: "100%",
-                padding: "14px 24px",
-                borderRadius: 12,
+                padding: "15px 30px",
+                borderRadius: 9999,
                 backgroundColor: VOLT,
                 color: "#000000",
                 fontSize: 16,
                 fontWeight: 700,
                 textDecoration: "none",
+                whiteSpace: "nowrap",
               }}
             >
-              Join PlayFinder free
+              Get started for free
             </Link>
           </div>
         </section>
@@ -477,15 +654,36 @@ export function PlayFinderLanding() {
         {/* Footer */}
         <footer
           style={{
-            padding: "24px 20px 40px",
-            textAlign: "center",
-            fontSize: 12,
-            lineHeight: 1.6,
-            color: MUTED,
+            padding: "40px 56px",
             borderTop: `1px solid ${BORDER}`,
           }}
         >
-          © 2026 PlayFinder · Glasgow Beta · Made for players, by players
+          <div className="pf-footer-inner" style={{ maxWidth: 1352, margin: "0 auto" }}>
+            <span
+              style={{
+                fontSize: 18,
+                fontWeight: 700,
+                fontStyle: "italic",
+                color: VOLT,
+              }}
+            >
+              PlayFinder
+            </span>
+            <div style={{ display: "flex", gap: 28 }}>
+              <Link href="/privacy" style={{ fontSize: 13, color: MUTED, textDecoration: "none" }}>
+                Privacy
+              </Link>
+              <Link href="/terms" style={{ fontSize: 13, color: MUTED, textDecoration: "none" }}>
+                Terms
+              </Link>
+              <Link href="/contact" style={{ fontSize: 13, color: MUTED, textDecoration: "none" }}>
+                Contact
+              </Link>
+            </div>
+            <span style={{ fontSize: 13, color: MUTED }}>
+              © 2026 PlayFinder. Made for players, in Glasgow.
+            </span>
+          </div>
         </footer>
       </div>
     </>
