@@ -120,7 +120,7 @@ export default function ChannelHeader() {
       <header className="relative flex items-center gap-3 px-3 py-3">
         <Link
           href="/messages"
-          className="flex-shrink-0 rounded-full p-2 text-white transition-colors hover:bg-[#1a1a1a]"
+          className="flex-shrink-0 rounded-full p-2 text-white transition-colors hover:bg-[#1a1a1a] lg:hidden"
           aria-label="Back to conversations"
         >
           <ArrowLeft className="h-5 w-5" />
