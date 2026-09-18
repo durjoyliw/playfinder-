@@ -145,6 +145,7 @@ export async function GET(req: NextRequest) {
       visibilityFilter,
       sportFilter,
       { userId: { notIn: excludedUserIds } },
+      { deletedAt: null },
       ...(typeFilter ? [typeFilter] : []),
     ];
 

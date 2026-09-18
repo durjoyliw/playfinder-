@@ -29,6 +29,7 @@ model User {
   completedOnboarding   Boolean                @default(false)
   role                  UserRole               @default(USER)
   status                UserStatus             @default(ACTIVE)
+  suspendedUntil        DateTime?
   sessions              Session[]
   posts                 Post[]
   sports                UserSport[]
@@ -47,6 +48,7 @@ model User {
   receivedMessageRequests MessageRequest[] @relation("MessageRequestsReceived")
   interests               PostInterest[]
   reports                 Report[]
+  appeals                 Appeal[]
 
   createdAt DateTime @default(now())
 
@@ -61,6 +63,9 @@ enum UserRole {
 
 enum UserStatus {
   ACTIVE
+  RESTRICTED
+  MESSAGING_DISABLED
+  EVENT_CREATION_DISABLED
   SUSPENDED
   BANNED
 }
@@ -129,6 +134,9 @@ model Post {
   isHighlight         Boolean        @default(false)
   visibility          String         @default("PUBLIC")
   interests           PostInterest[]
+  deletedAt           DateTime?
+  deletedBy           String?
+  deletionReason      String?
 
   createdAt DateTime @default(now())
 
@@ -399,4 +407,32 @@ model AuditLog {
 
   @@index([createdAt])
   @@map("audit_logs")
+}
+
+model FeatureFlag {
+  id             String   @id @default(cuid())
+  key            String   @unique
+  enabled        Boolean  @default(true)
+  rolloutPercent Int?
+  cityScope      String?
+  description    String?
+  updatedAt      DateTime @updatedAt
+  updatedBy      String?
+
+  @@map("feature_flags")
+}
+
+model Appeal {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reason     String
+  status     String    @default("PENDING")
+  reviewedBy String?
+  reviewedAt DateTime?
+  reviewNote String?
+  createdAt  DateTime  @default(now())
+
+  @@index([status])
+  @@map("appeals")
 }

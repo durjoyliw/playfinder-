@@ -1,10 +1,11 @@
 import { requireAdmin } from "@/lib/admin/auth";
-import { banUser, suspendUser, warnUser } from "@/lib/admin/users";
 import prisma from "@/lib/prisma";
 import { format } from "date-fns";
 import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { UserActionPanel } from "./user-actions";
+import { UserPostsList } from "./user-posts";
 
 export const metadata: Metadata = {
   title: "User",
@@ -27,15 +28,23 @@ export default async function AdminUserDetailPage({ params }: PageProps) {
       location: true,
       role: true,
       status: true,
+      suspendedUntil: true,
       createdAt: true,
+      posts: {
+        orderBy: { createdAt: "desc" },
+        take: 20,
+        select: {
+          id: true,
+          content: true,
+          createdAt: true,
+          deletedAt: true,
+          deletionReason: true,
+        },
+      },
     },
   });
 
   if (!user) notFound();
-
-  const warn = warnUser.bind(null, user.id);
-  const suspend = suspendUser.bind(null, user.id);
-  const ban = banUser.bind(null, user.id);
 
   return (
     <div className="space-y-6">
@@ -63,7 +72,15 @@ export default async function AdminUserDetailPage({ params }: PageProps) {
         </div>
         <div className="flex justify-between gap-4">
           <dt className="text-[#8a8f86]">Status</dt>
-          <dd>{user.status}</dd>
+          <dd className="font-medium text-[#dcef5a]">{user.status}</dd>
+        </div>
+        <div className="flex justify-between gap-4">
+          <dt className="text-[#8a8f86]">Suspended until</dt>
+          <dd>
+            {user.suspendedUntil
+              ? format(user.suspendedUntil, "d MMM yyyy HH:mm")
+              : "—"}
+          </dd>
         </div>
         <div className="flex justify-between gap-4">
           <dt className="text-[#8a8f86]">Joined</dt>
@@ -71,34 +88,8 @@ export default async function AdminUserDetailPage({ params }: PageProps) {
         </div>
       </dl>
 
-      <div className="flex flex-wrap gap-3">
-        <form action={warn}>
-          <button
-            type="submit"
-            className="h-10 rounded-md border border-[#2a2f2a] px-4 text-sm hover:bg-[#121412]"
-          >
-            Warn
-          </button>
-        </form>
-        <form action={suspend}>
-          <button
-            type="submit"
-            disabled={user.status === "SUSPENDED"}
-            className="h-10 rounded-md border border-amber-800/70 px-4 text-sm text-amber-300 hover:bg-amber-950/40 disabled:opacity-40"
-          >
-            Suspend
-          </button>
-        </form>
-        <form action={ban}>
-          <button
-            type="submit"
-            disabled={user.status === "BANNED"}
-            className="h-10 rounded-md border border-red-900/70 px-4 text-sm text-red-300 hover:bg-red-950/40 disabled:opacity-40"
-          >
-            Ban
-          </button>
-        </form>
-      </div>
+      <UserActionPanel userId={user.id} status={user.status} />
+      <UserPostsList posts={user.posts} />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { requireAdmin } from "@/lib/admin/auth";
 import prisma from "@/lib/prisma";
+import { UserStatus } from "@prisma/client";
 import { format } from "date-fns";
 import { Metadata } from "next";
 import Link from "next/link";
@@ -9,25 +10,34 @@ export const metadata: Metadata = {
 };
 
 interface PageProps {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; status?: string }>;
 }
 
 export default async function AdminUsersPage({ searchParams }: PageProps) {
   await requireAdmin();
-  const { q } = await searchParams;
+  const { q, status } = await searchParams;
   const query = q?.trim() ?? "";
+  const statusFilter = status?.trim().toUpperCase();
 
   const users = await prisma.user.findMany({
-    where: query
-      ? {
-          OR: [
-            { displayName: { contains: query, mode: "insensitive" } },
-            { username: { contains: query, mode: "insensitive" } },
-            { email: { contains: query, mode: "insensitive" } },
-            { location: { contains: query, mode: "insensitive" } },
-          ],
-        }
-      : undefined,
+    where: {
+      AND: [
+        query
+          ? {
+              OR: [
+                { displayName: { contains: query, mode: "insensitive" } },
+                { username: { contains: query, mode: "insensitive" } },
+                { email: { contains: query, mode: "insensitive" } },
+                { location: { contains: query, mode: "insensitive" } },
+              ],
+            }
+          : {},
+        statusFilter &&
+        (Object.values(UserStatus) as string[]).includes(statusFilter)
+          ? { status: statusFilter as UserStatus }
+          : {},
+      ],
+    },
     orderBy: { createdAt: "desc" },
     take: 100,
     select: {
@@ -47,6 +57,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
         <h1 className="text-2xl font-semibold">Users</h1>
         <p className="mt-1 text-sm text-[#8a8f86]">
           Search and moderate PlayFinder accounts
+          {statusFilter ? ` · filtered by ${statusFilter}` : ""}
         </p>
       </div>
 
