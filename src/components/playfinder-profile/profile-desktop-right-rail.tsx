@@ -3,6 +3,7 @@
 import { useSession } from "@/app/(main)/SessionProvider";
 import FollowButton from "@/components/FollowButton";
 import { DesktopSearchBox } from "@/components/playfinder/desktop-search-box";
+import { TrendingWidget } from "@/components/playfinder/trending-widget";
 import { useUserSettings } from "@/hooks/use-user-settings";
 import kyInstance from "@/lib/ky";
 import { getDisplayArea } from "@/lib/location";
@@ -144,6 +145,8 @@ export function ProfileDesktopRightRail() {
           </div>
         </div>
       )}
+
+      <TrendingWidget />
     </div>
   );
 }
