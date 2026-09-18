@@ -5,13 +5,9 @@ import { FeedCardImInButton } from "@/components/playfinder/feed-card-im-in-butt
 import { FeedCardLikeButton } from "@/components/playfinder/feed-card-like-button";
 import { FeedCardMessageClubButton } from "@/components/playfinder/feed-card-message-club-button";
 import { FeedCardShareButton } from "@/components/playfinder/feed-card-share-button";
+import { PostViewerMenu } from "@/components/playfinder/post-viewer-menu";
 import { IconCheck } from "@tabler/icons-react";
-import {
-  Clock,
-  MapPin,
-  BadgeCheck,
-  MessageCircle,
-} from "lucide-react";
+import { Clock, MapPin, BadgeCheck, MessageCircle } from "lucide-react";
 import { getPostTypeBadge, isLookingToPlayIntent } from "@/lib/playfinder";
 import Link from "next/link";
 import { useState } from "react";
@@ -99,10 +95,8 @@ export function FeedCard({
   const profileHref = `/users/${username}`;
   const isLooking =
     isLookingToPlayIntent(intent) || (intent == null && type === "looking");
-  const isArenaPost =
-    postType === "ARENA" || postType === "BROADCAST";
-  const showSpots =
-    isArenaPost && (acceptedCount > 0 || slotsRemaining > 0);
+  const isArenaPost = postType === "ARENA" || postType === "BROADCAST";
+  const showSpots = isArenaPost && (acceptedCount > 0 || slotsRemaining > 0);
   const typeBadge = getPostTypeBadge(postType ?? null);
 
   return (
@@ -114,38 +108,48 @@ export function FeedCard({
 
       <div className="p-4">
         <div
-          className={`mb-3 flex items-start justify-between${compact ? " pr-10" : ""}`}
+          className={`mb-3 flex items-start justify-between${compact ? "pr-10" : ""}`}
         >
-          <Link
-            href={profileHref}
-            className="flex min-w-0 items-center gap-3 transition-opacity hover:opacity-80"
-          >
-            {avatar.startsWith("http") ? (
-              <img
-                src={avatar}
-                alt=""
-                className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
-              />
-            ) : (
-              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#2a2a2a] text-sm font-bold text-white">
-                {avatar}
-              </div>
-            )}
+          <div className="flex min-w-0 items-center gap-1.5">
+            <PostViewerMenu
+              postId={postId}
+              authorId={authorId}
+              authorUsername={username}
+              authorName={name}
+            />
+            <Link
+              href={profileHref}
+              className="flex min-w-0 items-center gap-3 transition-opacity hover:opacity-80"
+            >
+              {avatar.startsWith("http") ? (
+                <img
+                  src={avatar}
+                  alt=""
+                  className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
+                />
+              ) : (
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#2a2a2a] text-sm font-bold text-white">
+                  {avatar}
+                </div>
+              )}
 
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="truncate font-semibold text-white">{name}</span>
-                {isVerified && (
-                  <BadgeCheck className="h-4 w-4 flex-shrink-0 fill-[#3B82F6] text-[#3B82F6]" />
-                )}
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="truncate font-semibold text-white">
+                    {name}
+                  </span>
+                  {isVerified && (
+                    <BadgeCheck className="h-4 w-4 flex-shrink-0 fill-[#3B82F6] text-[#3B82F6]" />
+                  )}
+                </div>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <span>{timestamp}</span>
+                  <span>·</span>
+                  <span>{location}</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span>{timestamp}</span>
-                <span>·</span>
-                <span>{location}</span>
-              </div>
-            </div>
-          </Link>
+            </Link>
+          </div>
 
           <div className="flex flex-shrink-0 items-center gap-2">
             {isUrgent && (
@@ -203,9 +207,7 @@ export function FeedCard({
                 }}
               />
             ))}
-            <span
-              style={{ fontSize: 13, color: "#A1C217", fontWeight: 600 }}
-            >
+            <span style={{ fontSize: 13, color: "#A1C217", fontWeight: 600 }}>
               {slotsRemaining > 0
                 ? `${slotsRemaining} spot${slotsRemaining > 1 ? "s" : ""} left`
                 : "Full"}
@@ -292,7 +294,10 @@ export function FeedCard({
                 </span>
 
                 <div className="flex flex-shrink-0 items-center gap-4">
-                  <FeedCardLikeButton postId={postId} initialState={likeState} />
+                  <FeedCardLikeButton
+                    postId={postId}
+                    initialState={likeState}
+                  />
                   <button
                     type="button"
                     onClick={() => setCommentsOpen((open) => !open)}

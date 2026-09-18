@@ -4,6 +4,7 @@ import { useSession } from "@/app/(main)/SessionProvider";
 import { FeedCardImInButton } from "@/components/playfinder/feed-card-im-in-button";
 import { FeedCardLikeButton } from "@/components/playfinder/feed-card-like-button";
 import { FeedCardShareButton } from "@/components/playfinder/feed-card-share-button";
+import { PostViewerMenu } from "@/components/playfinder/post-viewer-menu";
 import type { HomeFeedCardProps } from "@/lib/home-feed-card";
 import { isLookingToPlayIntent } from "@/lib/playfinder";
 import { getSportEmoji } from "@/lib/sports";
@@ -196,7 +197,7 @@ export function HomeFeedCard({
   if (isArenaLayout) {
     return (
       <article
-        className="relative overflow-hidden rounded-[18px] border border-[#2a2f2a] transition-transform animate-[pf-card-in_500ms_ease-in-out_backwards] active:scale-[0.98]"
+        className="relative animate-[pf-card-in_500ms_ease-in-out_backwards] overflow-hidden rounded-[18px] border border-[#2a2f2a] transition-transform active:scale-[0.98]"
         style={{
           background:
             "linear-gradient(160deg, var(--pf-surface-2), var(--pf-surface))",
@@ -204,6 +205,13 @@ export function HomeFeedCard({
         }}
       >
         <div className="h-[3px] w-full" style={{ background: sportColour }} />
+        <PostViewerMenu
+          postId={postId}
+          authorId={authorId}
+          authorUsername={username}
+          authorName={name}
+          className="absolute left-3.5 top-3.5 z-10"
+        />
         {isHotTake && (
           <div className="absolute right-3.5 top-3.5 z-10 inline-flex items-center gap-1 rounded-md border border-[#a1c217]/20 bg-[#a1c217]/10 px-[9px] py-1.5 font-dm-mono text-[9px] font-semibold tracking-[0.1em] text-[#a1c217]">
             <IconFlame className="h-3 w-3" stroke={2} aria-hidden />
@@ -246,7 +254,10 @@ export function HomeFeedCard({
           </div>
 
           {imageUrl && (
-            <Link href={postHref} className="relative mb-4 block aspect-[16/10] overflow-hidden rounded-2xl">
+            <Link
+              href={postHref}
+              className="relative mb-4 block aspect-[16/10] overflow-hidden rounded-2xl"
+            >
               <img
                 src={imageUrl}
                 alt=""
@@ -308,7 +319,13 @@ export function HomeFeedCard({
       className="animate-[pf-card-in_500ms_ease-in-out_backwards] border-b border-white/[0.04] px-4 py-4"
       style={{ animationDelay: `${(cardIndex % 8) * 40}ms` }}
     >
-      <div className="mb-3.5 flex items-center gap-3">
+      <div className="mb-3.5 flex items-center gap-2">
+        <PostViewerMenu
+          postId={postId}
+          authorId={authorId}
+          authorUsername={username}
+          authorName={name}
+        />
         {avatarEl}
         <div className="min-w-0 flex-1">
           <Link
@@ -319,10 +336,7 @@ export function HomeFeedCard({
           </Link>
           <p className="mt-1 flex flex-wrap items-center gap-x-1.5 text-xs text-[#7e8a7e]">
             {sport && (
-              <span
-                className="font-medium"
-                style={{ color: sportColour }}
-              >
+              <span className="font-medium" style={{ color: sportColour }}>
                 {sportEmoji} {sport}
               </span>
             )}
@@ -340,7 +354,7 @@ export function HomeFeedCard({
           </p>
         </div>
         {isHotTake && (
-          <span className="inline-flex shrink-0 items-center gap-1 rounded-md border border-[#ef9f27]/25 bg-[#ef9f27]/12 px-1.5 py-0.5 font-dm-mono text-[9px] font-bold tracking-wide text-[#EF9F27]">
+          <span className="bg-[#ef9f27]/12 inline-flex shrink-0 items-center gap-1 rounded-md border border-[#ef9f27]/25 px-1.5 py-0.5 font-dm-mono text-[9px] font-bold tracking-wide text-[#EF9F27]">
             <IconFlame className="h-3 w-3" stroke={2} aria-hidden />
             HOT TAKE
           </span>
