@@ -216,19 +216,20 @@ export function HomeFeedCard({
         }}
       >
         <div className="h-[3px] w-full" style={{ background: sportColour }} />
-        <PostViewerMenu
-          postId={postId}
-          authorId={authorId}
-          authorUsername={username}
-          authorName={name}
-          className="absolute left-3.5 top-3.5 z-10"
-        />
-        {isHotTake && (
-          <div className="absolute right-3.5 top-3.5 z-10 inline-flex items-center gap-1 rounded-md border border-[#a1c217]/20 bg-[#a1c217]/10 px-[9px] py-1.5 font-dm-mono text-[9px] font-semibold tracking-[0.1em] text-[#a1c217]">
-            <IconFlame className="h-3 w-3" stroke={2} aria-hidden />
-            LIVE SOON
-          </div>
-        )}
+        <div className="absolute right-3.5 top-3.5 z-10 flex items-center gap-2">
+          {isHotTake && (
+            <div className="inline-flex items-center gap-1 rounded-md border border-[#a1c217]/20 bg-[#a1c217]/10 px-[9px] py-1.5 font-dm-mono text-[9px] font-semibold tracking-[0.1em] text-[#a1c217]">
+              <IconFlame className="h-3 w-3" stroke={2} aria-hidden />
+              LIVE SOON
+            </div>
+          )}
+          <PostViewerMenu
+            postId={postId}
+            authorId={authorId}
+            authorUsername={username}
+            authorName={name}
+          />
+        </div>
 
         <div className="p-[18px]">
           <div className="mb-3.5 flex items-start gap-3">
@@ -335,12 +336,6 @@ export function HomeFeedCard({
       style={{ animationDelay: `${(cardIndex % 8) * 40}ms` }}
     >
       <div className="mb-3.5 flex items-center gap-2">
-        <PostViewerMenu
-          postId={postId}
-          authorId={authorId}
-          authorUsername={username}
-          authorName={name}
-        />
         {avatarEl}
         <div className="min-w-0 flex-1">
           <Link
@@ -374,6 +369,12 @@ export function HomeFeedCard({
             HOT TAKE
           </span>
         )}
+        <PostViewerMenu
+          postId={postId}
+          authorId={authorId}
+          authorUsername={username}
+          authorName={name}
+        />
       </div>
 
       <p className="mb-3 text-[15px] leading-normal text-[#f2f5ef] [word-break:break-word]">

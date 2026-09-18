@@ -113,12 +113,6 @@ export function FeedCard({
           className={`mb-3 flex items-start justify-between${compact ? "pr-10" : ""}`}
         >
           <div className="flex min-w-0 items-center gap-1.5">
-            <PostViewerMenu
-              postId={postId}
-              authorId={authorId}
-              authorUsername={username}
-              authorName={name}
-            />
             <Link
               href={profileHref}
               className="flex min-w-0 items-center gap-3 transition-opacity hover:opacity-80"
@@ -160,6 +154,12 @@ export function FeedCard({
               </span>
             )}
             <span style={typeBadge.style}>{typeBadge.label}</span>
+            <PostViewerMenu
+              postId={postId}
+              authorId={authorId}
+              authorUsername={username}
+              authorName={name}
+            />
           </div>
         </div>
 
