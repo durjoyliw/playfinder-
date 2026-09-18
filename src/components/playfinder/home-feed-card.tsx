@@ -5,14 +5,16 @@ import { FeedCardImInButton } from "@/components/playfinder/feed-card-im-in-butt
 import { FeedCardLikeButton } from "@/components/playfinder/feed-card-like-button";
 import { FeedCardShareButton } from "@/components/playfinder/feed-card-share-button";
 import { PostViewerMenu } from "@/components/playfinder/post-viewer-menu";
+import { SendPostDialog } from "@/components/playfinder/send-post-dialog";
 import type { HomeFeedCardProps } from "@/lib/home-feed-card";
 import { isLookingToPlayIntent } from "@/lib/playfinder";
 import { getSportEmoji } from "@/lib/sports";
 import { getSportColour } from "@/lib/sport-visuals";
 import { cn } from "@/lib/utils";
 import { IconBolt, IconCheck, IconFlame, IconLock } from "@tabler/icons-react";
-import { Clock, MapPin, MessageCircle } from "lucide-react";
+import { Clock, MapPin, MessageCircle, Send } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 export function HomeFeedCard({
   postId,
@@ -43,6 +45,7 @@ export function HomeFeedCard({
   userInterestStatus = null,
 }: HomeFeedCardProps) {
   const { user } = useSession();
+  const [sendDialogOpen, setSendDialogOpen] = useState(false);
   const profileHref = `/users/${username}`;
   const hasPhoto = avatar.startsWith("http");
   const voltAvatar = cardIndex % 2 === 0;
@@ -146,6 +149,14 @@ export function HomeFeedCard({
           iconOnly
           className="min-h-9 text-[#7e8a7e] hover:text-[#f2f5ef] active:scale-90"
         />
+        <button
+          type="button"
+          onClick={() => setSendDialogOpen(true)}
+          className="flex min-h-9 items-center text-[#7e8a7e] transition-transform hover:text-[#f2f5ef] active:scale-90"
+          aria-label="Send as message"
+        >
+          <Send className="h-[18px] w-[18px]" />
+        </button>
       </div>
     </div>
   );
@@ -310,6 +321,10 @@ export function HomeFeedCard({
 
           {actionRow}
         </div>
+
+        {sendDialogOpen && (
+          <SendPostDialog postId={postId} onOpenChange={setSendDialogOpen} />
+        )}
       </article>
     );
   }
@@ -396,6 +411,10 @@ export function HomeFeedCard({
             </span>
           )}
         </div>
+      )}
+
+      {sendDialogOpen && (
+        <SendPostDialog postId={postId} onOpenChange={setSendDialogOpen} />
       )}
     </article>
   );

@@ -6,8 +6,9 @@ import { FeedCardLikeButton } from "@/components/playfinder/feed-card-like-butto
 import { FeedCardMessageClubButton } from "@/components/playfinder/feed-card-message-club-button";
 import { FeedCardShareButton } from "@/components/playfinder/feed-card-share-button";
 import { PostViewerMenu } from "@/components/playfinder/post-viewer-menu";
+import { SendPostDialog } from "@/components/playfinder/send-post-dialog";
 import { IconCheck } from "@tabler/icons-react";
-import { Clock, MapPin, BadgeCheck, MessageCircle } from "lucide-react";
+import { Clock, MapPin, BadgeCheck, MessageCircle, Send } from "lucide-react";
 import { getPostTypeBadge, isLookingToPlayIntent } from "@/lib/playfinder";
 import Link from "next/link";
 import { useState } from "react";
@@ -92,6 +93,7 @@ export function FeedCard({
 }: FeedCardProps) {
   const likeState = { likes, isLikedByUser };
   const [commentsOpen, setCommentsOpen] = useState(false);
+  const [sendDialogOpen, setSendDialogOpen] = useState(false);
   const profileHref = `/users/${username}`;
   const isLooking =
     isLookingToPlayIntent(intent) || (intent == null && type === "looking");
@@ -308,9 +310,24 @@ export function FeedCard({
                     {replies > 0 && <span className="text-sm">{replies}</span>}
                   </button>
                   <FeedCardShareButton postId={postId} />
+                  <button
+                    type="button"
+                    onClick={() => setSendDialogOpen(true)}
+                    className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-white"
+                    aria-label="Send as message"
+                  >
+                    <Send className="h-4 w-4" />
+                  </button>
                 </div>
               </div>
             </div>
+
+            {sendDialogOpen && (
+              <SendPostDialog
+                postId={postId}
+                onOpenChange={setSendDialogOpen}
+              />
+            )}
 
             <FeedCardComments
               postId={postId}
