@@ -63,6 +63,12 @@ interface FeedCardCommentsProps {
   defaultOpen?: boolean;
   /** Always show reply input without toggling */
   showInputAlways?: boolean;
+  /**
+   * Controlled mode: the parent owns the open/closed state and renders its
+   * own trigger elsewhere (e.g. inline in a shared like/comment/share row),
+   * so this component renders only the expandable panel, no trigger button.
+   */
+  isOpen?: boolean;
 }
 
 export function FeedCardComments({
@@ -70,8 +76,13 @@ export function FeedCardComments({
   initialReplyCount = 0,
   defaultOpen = false,
   showInputAlways = false,
+  isOpen: controlledOpen,
 }: FeedCardCommentsProps) {
-  const [isOpen, setIsOpen] = useState(defaultOpen || showInputAlways);
+  const isControlled = controlledOpen !== undefined;
+  const [internalOpen, setInternalOpen] = useState(
+    defaultOpen || showInputAlways,
+  );
+  const isOpen = isControlled ? controlledOpen : internalOpen;
   const [input, setInput] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -161,11 +172,11 @@ export function FeedCardComments({
   const panelOpen = isOpen || showInputAlways;
 
   return (
-    <div className={showInputAlways ? "" : "border-t border-border"}>
-      {!showInputAlways && (
+    <div className={showInputAlways || isControlled ? "" : "border-t border-border"}>
+      {!showInputAlways && !isControlled && (
         <button
           type="button"
-          onClick={() => setIsOpen((open) => !open)}
+          onClick={() => setInternalOpen((open) => !open)}
           className="flex w-full items-center gap-1.5 px-0 py-3 text-muted-foreground transition-colors hover:text-white"
         >
           <MessageCircle className="h-4 w-4" />
@@ -184,12 +195,12 @@ export function FeedCardComments({
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Write a reply..."
-              className="flex-1 rounded-lg border border-[#2a2a2a] bg-[#161616] px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:border-[#C9F31D] focus:outline-none"
+              className="flex-1 rounded-lg border border-[#2a2a2a] bg-[#161616] px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:border-[#A1C217] focus:outline-none"
             />
             <button
               type="submit"
               disabled={!input.trim() || submitMutation.isPending}
-              className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-[#C9F31D] text-black transition-colors hover:bg-[#d4f73a] disabled:opacity-50"
+              className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-[#A1C217] text-black transition-colors hover:bg-[#aac62e] disabled:opacity-50"
               aria-label="Send reply"
             >
               {submitMutation.isPending ? (
@@ -205,7 +216,7 @@ export function FeedCardComments({
               type="button"
               onClick={() => fetchNextPage()}
               disabled={isFetching}
-              className="text-xs text-[#C9F31D] hover:underline disabled:opacity-50"
+              className="text-xs text-[#A1C217] hover:underline disabled:opacity-50"
             >
               Load earlier replies
             </button>
@@ -213,7 +224,7 @@ export function FeedCardComments({
 
           {status === "pending" && (
             <div className="flex justify-center py-2">
-              <Loader2 className="h-5 w-5 animate-spin text-[#C9F31D]" />
+              <Loader2 className="h-5 w-5 animate-spin text-[#A1C217]" />
             </div>
           )}
 

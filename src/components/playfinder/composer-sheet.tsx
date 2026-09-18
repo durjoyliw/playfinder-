@@ -46,7 +46,7 @@ interface ComposerSheetProps {
 }
 
 const textareaClassName =
-  "mb-3.5 w-full min-h-[110px] resize-none rounded-[14px] border border-[#2a2f2a] bg-[#131614] p-4 text-base text-white outline-none placeholder:text-[#888888] focus:border-[#C8FF00]";
+  "mb-3.5 w-full min-h-[110px] resize-none rounded-[14px] border border-[#2a2f2a] bg-[#131614] p-4 text-base text-white outline-none placeholder:text-[#888888] focus:border-[#A0CC00]";
 
 const fieldInputClassName =
   "min-h-6 w-full border-0 bg-transparent text-[15px] text-white outline-none placeholder:text-[#888888] [color-scheme:dark]";
@@ -156,15 +156,15 @@ function getComposerSportDisplay(raw: string): { name: string; emoji: string } {
 }
 
 const visibilityActiveClass =
-  "rounded-[10px] border border-[#C8FF00] bg-[#C8FF00] px-3 py-2 text-xs font-bold text-black";
+  "rounded-[10px] border border-[#A0CC00] bg-[#A0CC00] px-3 py-2 text-xs font-bold text-black";
 const visibilityInactiveClass =
   "rounded-[10px] border border-[#2a2f2a] bg-[#131614] px-3 py-2 text-xs font-semibold text-[#888888]";
 
 const composerSubmitButtonClassName =
-  "ml-auto h-12 min-h-12 shrink-0 rounded-full bg-[#C8FF00] px-[22px] py-3 text-[15px] font-bold text-black hover:bg-[#C8FF00]/90";
+  "ml-auto h-12 min-h-12 shrink-0 rounded-full bg-[#A0CC00] px-[22px] py-3 text-[15px] font-bold text-black hover:bg-[#A0CC00]/90";
 
 const sportChipSelectedClass =
-  "flex min-h-9 items-center gap-1 rounded-[10px] border border-[#C8FF00] bg-[#C8FF00] px-3 py-2 text-xs font-semibold text-black transition-colors";
+  "flex min-h-9 items-center gap-1 rounded-[10px] border border-[#A0CC00] bg-[#A0CC00] px-3 py-2 text-xs font-semibold text-black transition-colors";
 const sportChipIdleClass =
   "flex min-h-9 items-center gap-1 rounded-[10px] border border-[#2a2f2a] bg-[#131614] px-3 py-2 text-xs font-semibold text-[#b4bcaf] transition-colors";
 
@@ -172,7 +172,7 @@ const footerChipClass =
   "flex min-h-9 items-center gap-1.5 rounded-[10px] border border-[#2a2f2a] bg-[#131614] px-3 py-2 text-xs text-[#b4bcaf]";
 
 const mediaBtnClass =
-  "grid h-9 w-9 place-items-center rounded-[10px] border border-[#2a2f2a] bg-[#131614] text-[#b4bcaf] hover:border-[#C8FF00] hover:text-[#C8FF00]";
+  "grid h-9 w-9 place-items-center rounded-[10px] border border-[#2a2f2a] bg-[#131614] text-[#b4bcaf] hover:border-[#A0CC00] hover:text-[#A0CC00]";
 
 function VisibilityToggle({
   visibility,
@@ -250,7 +250,7 @@ function ComposerAvatar({
   initials: string;
 }) {
   return (
-    <div className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full bg-[#c9f31d] text-xs font-bold text-[#0a0b0a]">
+    <div className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full bg-[#a1c217] text-xs font-bold text-[#0a0b0a]">
       {url ? (
         <img src={url} alt="" className="h-full w-full object-cover" />
       ) : (
@@ -487,7 +487,7 @@ export function ComposerSheet({
   const sportsEmptyState = !userSports.length ? (
     <Link
       href="/settings/sports"
-      className="text-sm text-[#C8FF00] hover:underline"
+      className="text-sm text-[#A0CC00] hover:underline"
     >
       Add sports in Settings
     </Link>
@@ -625,14 +625,14 @@ export function ComposerSheet({
             className={cn(
               "min-h-14 rounded-2xl border p-4 text-left transition-all active:scale-[0.97]",
               activeTab === "social"
-                ? "border-[#C8FF00] bg-[rgba(200,255,0,0.05)]"
+                ? "border-[#A0CC00] bg-[rgba(200,255,0,0.05)]"
                 : "border-[#2a2f2a] bg-[#131614]",
             )}
           >
             <div
               className={cn(
                 "mb-1 text-[15px] font-bold",
-                activeTab === "social" ? "text-[#C8FF00]" : "text-white",
+                activeTab === "social" ? "text-[#A0CC00]" : "text-white",
               )}
             >
               Social
@@ -649,14 +649,14 @@ export function ComposerSheet({
             className={cn(
               "min-h-14 rounded-2xl border p-4 text-left transition-all active:scale-[0.97]",
               activeTab === "arena"
-                ? "border-[#C8FF00] bg-[rgba(200,255,0,0.05)]"
+                ? "border-[#A0CC00] bg-[rgba(200,255,0,0.05)]"
                 : "border-[#2a2f2a] bg-[#131614]",
             )}
           >
             <div
               className={cn(
                 "mb-1 text-[15px] font-bold",
-                activeTab === "arena" ? "text-[#C8FF00]" : "text-white",
+                activeTab === "arena" ? "text-[#A0CC00]" : "text-white",
               )}
             >
               Arena
@@ -798,7 +798,7 @@ export function ComposerSheet({
                   <button
                     type="button"
                     onClick={() => setSlotsNeeded((n) => Math.max(1, n - 1))}
-                    className="grid h-8 w-8 place-items-center rounded-[10px] border border-[#2a2f2a] text-white hover:border-[#C8FF00] hover:text-[#C8FF00]"
+                    className="grid h-8 w-8 place-items-center rounded-[10px] border border-[#2a2f2a] text-white hover:border-[#A0CC00] hover:text-[#A0CC00]"
                     aria-label="Decrease players"
                   >
                     <Minus className="h-4 w-4" />
@@ -809,7 +809,7 @@ export function ComposerSheet({
                   <button
                     type="button"
                     onClick={() => setSlotsNeeded((n) => Math.min(10, n + 1))}
-                    className="grid h-8 w-8 place-items-center rounded-[10px] border border-[#2a2f2a] text-white hover:border-[#C8FF00] hover:text-[#C8FF00]"
+                    className="grid h-8 w-8 place-items-center rounded-[10px] border border-[#2a2f2a] text-white hover:border-[#A0CC00] hover:text-[#A0CC00]"
                     aria-label="Increase players"
                   >
                     <Plus className="h-4 w-4" />

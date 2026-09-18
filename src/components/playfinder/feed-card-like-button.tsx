@@ -75,7 +75,7 @@ export function FeedCardLikeButton({
         className={cn(
           "flex flex-1 items-center justify-center rounded-[10px] border border-[#2a2a2a] bg-[#1f1f1f] py-[9px] text-center text-[13px] tabular-nums transition-colors disabled:opacity-50",
           data.isLikedByUser
-            ? "font-medium text-[#C9F31D]"
+            ? "font-medium text-[#A1C217]"
             : "text-[#888888] hover:text-white",
           className,
         )}
@@ -93,7 +93,7 @@ export function FeedCardLikeButton({
       disabled={isPending}
       className={cn(
         "group flex items-center gap-1.5 text-[#7e8a7e] transition-colors hover:text-[#f2f5ef] disabled:opacity-50",
-        data.isLikedByUser && "text-[#c9f31d]",
+        data.isLikedByUser && "text-[#a1c217]",
         className,
       )}
       aria-label={data.isLikedByUser ? "Unlike post" : "Like post"}
@@ -102,7 +102,7 @@ export function FeedCardLikeButton({
         className="h-5 w-5 transition-transform duration-150 ease-[cubic-bezier(0.34,1.36,0.64,1)] group-active:scale-125"
         style={
           data.isLikedByUser
-            ? { fill: "#c9f31d", color: "#c9f31d" }
+            ? { fill: "#a1c217", color: "#a1c217" }
             : undefined
         }
       />

@@ -30,11 +30,14 @@ export function MainAppShell({
   const isMessagesRoute = pathname.startsWith("/messages");
   const isDiscoverRoute = pathname.startsWith("/discover");
   const isProfileRoute = pathname.startsWith("/users/");
-  const isSearchRoute = pathname.startsWith("/search");
-  const isHomeRoute = pathname === "/home";
 
   const isFullBleedRoute = isMessagesRoute || isDiscoverRoute;
-  const isWideColumnRoute = isProfileRoute || isSearchRoute || isHomeRoute;
+  // Every non-full-bleed route shares the same 600px content column, so the
+  // sidebar and right rail sit at the exact same position on every page --
+  // Settings/Notifications used to fall back to the narrower 480px column,
+  // which shifted the rail inward and made it look like the "static" side
+  // panels were shrinking as you navigated.
+  const isWideColumnRoute = !isFullBleedRoute;
 
   const rightRail = isFullBleedRoute ? null : isProfileRoute ? (
     <ProfileDesktopRightRail />

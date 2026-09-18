@@ -59,7 +59,7 @@ export function EventDetails({ onBack }: EventDetailsProps) {
           
           {/* Status badge */}
           <div className="absolute bottom-4 left-4">
-            <span className="bg-[#C9F31D] text-black text-xs font-bold px-3 py-1 rounded-full">
+            <span className="bg-[#A1C217] text-black text-xs font-bold px-3 py-1 rounded-full">
               FILLING FAST
             </span>
           </div>
@@ -67,7 +67,7 @@ export function EventDetails({ onBack }: EventDetailsProps) {
           {/* Expiry timer */}
           <div className="absolute bottom-4 right-4">
             <div className="bg-black/60 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-2">
-              <Clock className="w-3.5 h-3.5 text-[#C9F31D]" />
+              <Clock className="w-3.5 h-3.5 text-[#A1C217]" />
               <span className="text-white text-xs font-medium">3h 25m left</span>
             </div>
           </div>
@@ -114,7 +114,7 @@ export function EventDetails({ onBack }: EventDetailsProps) {
                 <span className="text-xs uppercase tracking-wide">Spots</span>
               </div>
               <p className="text-white font-semibold">1 of 5</p>
-              <p className="text-[#C9F31D] text-sm">1 spot left</p>
+              <p className="text-[#A1C217] text-sm">1 spot left</p>
             </div>
             
             <div className="bg-[#1a1a1a] rounded-xl p-3">
@@ -141,7 +141,7 @@ export function EventDetails({ onBack }: EventDetailsProps) {
           <div className="mb-6">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-white font-semibold">Players ({playerSlots.filter(s => s.filled).length}/{playerSlots.length})</h3>
-              <button className="text-[#C9F31D] text-sm font-medium flex items-center gap-1">
+              <button className="text-[#A1C217] text-sm font-medium flex items-center gap-1">
                 View all <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -152,7 +152,7 @@ export function EventDetails({ onBack }: EventDetailsProps) {
                   <div
                     className={`w-14 h-14 rounded-full flex items-center justify-center text-sm font-bold transition-all
                       ${slot.filled 
-                        ? "bg-[#2a2a2a] text-white border-2 border-[#C9F31D]" 
+                        ? "bg-[#2a2a2a] text-white border-2 border-[#A1C217]" 
                         : "bg-transparent border-2 border-dashed border-muted-foreground"
                       }
                     `}
@@ -175,11 +175,11 @@ export function EventDetails({ onBack }: EventDetailsProps) {
             <div className="bg-[#1a1a1a] rounded-xl overflow-hidden">
               <div className="h-32 bg-[#1f1f1f] relative flex items-center justify-center">
                 <div className="text-center">
-                  <MapPin className="w-8 h-8 text-[#C9F31D] mx-auto mb-2" />
+                  <MapPin className="w-8 h-8 text-[#A1C217] mx-auto mb-2" />
                   <p className="text-muted-foreground text-sm">Glasgow Green Football Centre</p>
                 </div>
               </div>
-              <button className="w-full py-3 text-[#C9F31D] text-sm font-medium flex items-center justify-center gap-2 hover:bg-[#1f1f1f] transition-colors">
+              <button className="w-full py-3 text-[#A1C217] text-sm font-medium flex items-center justify-center gap-2 hover:bg-[#1f1f1f] transition-colors">
                 <MapPin className="w-4 h-4" />
                 Get Directions
               </button>
@@ -217,7 +217,7 @@ export function EventDetails({ onBack }: EventDetailsProps) {
             <p className="text-white font-semibold">1 spot left</p>
             <p className="text-muted-foreground text-sm">Expires in 3h 25m</p>
           </div>
-          <button className="bg-[#C9F31D] text-black px-8 py-3 rounded-full font-bold text-base hover:bg-[#d4f73a] active:scale-95 transition-all">
+          <button className="bg-[#A1C217] text-black px-8 py-3 rounded-full font-bold text-base hover:bg-[#aac62e] active:scale-95 transition-all">
             👋 {"I'm In"}
           </button>
         </div>

@@ -49,7 +49,7 @@ export function DiscoverPlayers() {
                 onClick={() => setSportFilter(filter.id)}
                 className={`flex-shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                   isActive
-                    ? "border-[#C9F31D] bg-[#C9F31D] text-black"
+                    ? "border-[#A1C217] bg-[#A1C217] text-black"
                     : "border-[#2a2a2a] bg-[#161616] text-[#f0f0f0] hover:border-[#3a3a3a]"
                 }`}
               >
@@ -63,7 +63,7 @@ export function DiscoverPlayers() {
       <div className="space-y-3 px-4 py-4">
         {status === "pending" && (
           <div className="flex justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-[#C9F31D]" />
+            <Loader2 className="h-8 w-8 animate-spin text-[#A1C217]" />
           </div>
         )}
 
@@ -109,7 +109,7 @@ function DiscoverPlayerCard({ player }: { player: DiscoverPlayer }) {
           {player.avatarUrl ? (
             <UserAvatar avatarUrl={player.avatarUrl} size={48} />
           ) : (
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#C9F31D] text-sm font-bold text-black">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#A1C217] text-sm font-bold text-black">
               {getInitials(player.displayName)}
             </div>
           )}
@@ -131,7 +131,7 @@ function DiscoverPlayerCard({ player }: { player: DiscoverPlayer }) {
               {player.sports.map(({ sport }) => (
                 <span
                   key={sport}
-                  className="rounded-full border border-[#C9F31D]/50 px-2 py-0.5 text-[10px] font-medium text-[#C9F31D]"
+                  className="rounded-full border border-[#A1C217]/50 px-2 py-0.5 text-[10px] font-medium text-[#A1C217]"
                 >
                   {getSportLabel(sport)}
                 </span>
@@ -152,7 +152,7 @@ function DiscoverPlayerCard({ player }: { player: DiscoverPlayer }) {
       <button
         type="button"
         onClick={handleMessage}
-        className="mt-3 w-full rounded-lg border border-[#C9F31D] py-2 text-sm font-semibold text-[#C9F31D] transition-colors hover:bg-[#C9F31D]/10"
+        className="mt-3 w-full rounded-lg border border-[#A1C217] py-2 text-sm font-semibold text-[#A1C217] transition-colors hover:bg-[#A1C217]/10"
       >
         Message
       </button>

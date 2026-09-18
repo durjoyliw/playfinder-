@@ -60,7 +60,7 @@ export function SearchHeader({ value, onChange, onSubmit }: SearchHeaderProps) {
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder="Search players, games, venues..."
-            className="h-12 w-full rounded-[14px] border border-[#2a2f2a] bg-[#131614] py-3.5 pl-11 pr-10 text-base text-[#f2f5ef] outline-none placeholder:text-[#5a635a] focus:border-[#c9f31d]"
+            className="h-12 w-full rounded-[14px] border border-[#2a2f2a] bg-[#131614] py-3.5 pl-11 pr-10 text-base text-[#f2f5ef] outline-none placeholder:text-[#5a635a] focus:border-[#a1c217]"
           />
           {value.length > 0 && (
             <button

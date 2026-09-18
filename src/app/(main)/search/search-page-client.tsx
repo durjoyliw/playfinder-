@@ -239,7 +239,7 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
                     className={cn(
                       "shrink-0 whitespace-nowrap rounded-[20px] border px-4 py-2 text-sm transition-colors",
                       isActive
-                        ? "border-[#c9f31d] bg-[#c9f31d] font-bold text-[#0a0b0a]"
+                        ? "border-[#a1c217] bg-[#a1c217] font-bold text-[#0a0b0a]"
                         : "border-[#2a2f2a] bg-[#131614] font-medium text-[#7e8a7e]",
                     )}
                   >
@@ -252,13 +252,13 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
 
           {isLoading && resultsCount === 0 && (
             <div className="flex justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-[#C9F31D]" />
+              <Loader2 className="h-8 w-8 animate-spin text-[#A1C217]" />
             </div>
           )}
 
           {!isLoading && (
             <p className="flex items-center gap-2 px-4 pb-2 text-sm text-[#666666]">
-              <span className="h-2 w-2 flex-shrink-0 rounded-full bg-[#C9F31D]" />
+              <span className="h-2 w-2 flex-shrink-0 rounded-full bg-[#A1C217]" />
               {resultsLabel}
             </p>
           )}
@@ -312,7 +312,7 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
                   ))}
                   {postsQuery.isFetchingNextPage && (
                     <div className="flex justify-center py-4">
-                      <Loader2 className="h-6 w-6 animate-spin text-[#C9F31D]" />
+                      <Loader2 className="h-6 w-6 animate-spin text-[#A1C217]" />
                     </div>
                   )}
                 </InfiniteScrollContainer>
@@ -347,7 +347,7 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
                   ))}
                   {arenaQuery.isFetchingNextPage && (
                     <div className="flex justify-center py-4">
-                      <Loader2 className="h-6 w-6 animate-spin text-[#C9F31D]" />
+                      <Loader2 className="h-6 w-6 animate-spin text-[#A1C217]" />
                     </div>
                   )}
                 </InfiniteScrollContainer>

@@ -79,7 +79,7 @@ export function SearchEmptyState({ onSearch }: SearchEmptyStateProps) {
               key={sport.id}
               type="button"
               onClick={() => handleSportClick(sport.label)}
-              className="rounded-[10px] border border-[#2a2f2a] bg-[#131614] px-3 py-2 text-sm text-[#f2f5ef] transition-colors hover:border-[#c9f31d]"
+              className="rounded-[10px] border border-[#2a2f2a] bg-[#131614] px-3 py-2 text-sm text-[#f2f5ef] transition-colors hover:border-[#a1c217]"
             >
               {sport.emoji} {sport.label}
             </button>

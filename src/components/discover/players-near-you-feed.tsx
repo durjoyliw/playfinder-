@@ -49,9 +49,9 @@ export function PlayersNearYouFeed({ selectedSport }: PlayersNearYouFeedProps) {
           <p className="text-[10px] text-[#666666]">Registered on PlayFinder</p>
         </div>
         {lfgCount > 0 && (
-          <div className="flex items-center gap-1 rounded-full border border-[#C9F31D]/20 bg-[#C9F31D]/10 px-2 py-1">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#C9F31D]" />
-            <span className="text-[10px] font-semibold text-[#C9F31D]">
+          <div className="flex items-center gap-1 rounded-full border border-[#A1C217]/20 bg-[#A1C217]/10 px-2 py-1">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#A1C217]" />
+            <span className="text-[10px] font-semibold text-[#A1C217]">
               {lfgCount} LFG Today
             </span>
           </div>
@@ -60,7 +60,7 @@ export function PlayersNearYouFeed({ selectedSport }: PlayersNearYouFeedProps) {
 
       {status === "pending" && (
         <div className="flex justify-center py-8">
-          <Loader2 className="h-8 w-8 animate-spin text-[#C9F31D]" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#A1C217]" />
         </div>
       )}
 
@@ -104,7 +104,7 @@ function PlayerCard({
   return (
     <article className="flex cursor-pointer items-center gap-3 rounded-xl border border-[#2a2a2a] bg-[#161616] p-3 transition-transform active:scale-[0.99]">
       <Link href={`/users/${player.username}`} className="shrink-0">
-        <div className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-[#2a2a2a] bg-[#C9F31D] text-sm font-bold text-black">
+        <div className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-[#2a2a2a] bg-[#A1C217] text-sm font-bold text-black">
           {getInitials(player.displayName)}
         </div>
       </Link>
@@ -132,14 +132,14 @@ function PlayerCard({
         {primarySport && (
           <p className="mt-0.5 text-[11px] text-[#666666]">
             Interest:{" "}
-            <span className="font-medium text-[#C9F31D]">
+            <span className="font-medium text-[#A1C217]">
               {getSportLabel(primarySport.sport)}
             </span>
             {player.sports[0] && (
               <>
                 {" "}
                 · Skill:{" "}
-                <span className="font-medium capitalize text-[#C9F31D]">
+                <span className="font-medium capitalize text-[#A1C217]">
                   {primarySport.skillLevel.toLowerCase()}
                 </span>
               </>
@@ -152,7 +152,7 @@ function PlayerCard({
             {player.sports.slice(0, 3).map(({ sport }) => (
               <span
                 key={sport}
-                className="rounded-full border border-[#C9F31D]/40 px-1.5 py-0.5 text-[9px] font-medium text-[#C9F31D]"
+                className="rounded-full border border-[#A1C217]/40 px-1.5 py-0.5 text-[9px] font-medium text-[#A1C217]"
               >
                 {getSportLabel(sport)}
               </span>
@@ -174,7 +174,7 @@ function PlayerCard({
             e.stopPropagation();
             onMessage();
           }}
-          className="rounded-md border border-[#C9F31D]/30 bg-[#C9F31D]/10 px-2 py-1 text-[9px] font-bold uppercase text-[#C9F31D]"
+          className="rounded-md border border-[#A1C217]/30 bg-[#A1C217]/10 px-2 py-1 text-[9px] font-bold uppercase text-[#A1C217]"
         >
           Message
         </button>

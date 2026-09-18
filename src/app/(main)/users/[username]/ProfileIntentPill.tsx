@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const INTENT_COLOURS: Record<ProfileIntent, string> = {
-  [ProfileIntent.LOOKING_TO_PLAY]: "#c9f31d",
+  [ProfileIntent.LOOKING_TO_PLAY]: "#a1c217",
   [ProfileIntent.JOIN_A_TEAM]: "#56ccf2",
   [ProfileIntent.JUST_VIBES]: "#eab308",
 };

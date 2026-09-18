@@ -18,7 +18,7 @@ export function SearchPostRow({ post }: SearchPostRowProps) {
       className="block border-b border-[#111] px-4 py-3 transition-colors hover:bg-[#111111]"
     >
       <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#C9F31D] text-xs font-bold text-black">
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-xs font-bold text-black">
           {post.user.avatarUrl ? (
             <img
               src={post.user.avatarUrl}
@@ -37,7 +37,7 @@ export function SearchPostRow({ post }: SearchPostRowProps) {
           </p>
           <div className="mt-2 flex flex-wrap items-center gap-2">
             {sportLabel && (
-              <span className="rounded-full bg-[#1f2d00] px-2 py-0.5 text-[10px] font-medium text-[#C9F31D]">
+              <span className="rounded-full bg-[#1f2d00] px-2 py-0.5 text-[10px] font-medium text-[#A1C217]">
                 {sportLabel}
               </span>
             )}

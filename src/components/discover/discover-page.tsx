@@ -81,7 +81,7 @@ export function DiscoverPage({ userSports }: DiscoverPageProps) {
       <div className="hidden h-full w-[420px] shrink-0 flex-col border-r border-[#2a2f2a] lg:flex">
         <div className="shrink-0 border-b border-[#2a2f2a] px-5 pb-4 pt-5">
           <div className="mb-3 inline-flex items-center gap-1.5 rounded-[10px] border border-[#2a2f2a] bg-[rgba(19,22,20,0.6)] px-3 py-2 font-dm-mono text-[10px] font-semibold tracking-[0.1em] text-[#b4bcaf]">
-            <span className="h-[7px] w-[7px] animate-pf-status-pulse rounded-full bg-[#c9f31d]" />
+            <span className="h-[7px] w-[7px] animate-pf-status-pulse rounded-full bg-[#a1c217]" />
             GLASGOW LIVE
           </div>
           <DiscoverSportPills
@@ -119,7 +119,7 @@ export function DiscoverPage({ userSports }: DiscoverPageProps) {
         <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 px-3 pt-3 lg:hidden">
           <div className="pointer-events-auto">
             <div className="mb-2.5 inline-flex items-center gap-1.5 rounded-[10px] border border-[#2a2f2a] bg-[rgba(13,15,13,0.85)] px-3 py-2 font-dm-mono text-[10px] font-semibold tracking-[0.1em] text-[#b4bcaf] backdrop-blur-[10px]">
-              <span className="h-[7px] w-[7px] animate-pf-status-pulse rounded-full bg-[#c9f31d]" />
+              <span className="h-[7px] w-[7px] animate-pf-status-pulse rounded-full bg-[#a1c217]" />
               GLASGOW LIVE
             </div>
             <DiscoverSportPills
@@ -170,7 +170,7 @@ function DiscoverSportPills({
         const isActive = sport.id === activeSportId;
         const SportIcon = getSportIcon(sport.id);
         const chipColour =
-          sport.id === "all" ? "#c9f31d" : getSportColour(sport.id);
+          sport.id === "all" ? "#a1c217" : getSportColour(sport.id);
         return (
           <button
             key={sport.id}

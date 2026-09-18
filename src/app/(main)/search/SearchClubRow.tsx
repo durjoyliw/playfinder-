@@ -25,7 +25,7 @@ export function SearchClubRow({ club }: SearchClubRowProps) {
         href={visitHref}
         target="_blank"
         rel="noopener noreferrer"
-        className="shrink-0 text-xs font-semibold text-[#C9F31D] hover:underline"
+        className="shrink-0 text-xs font-semibold text-[#A1C217] hover:underline"
       >
         Visit →
       </a>

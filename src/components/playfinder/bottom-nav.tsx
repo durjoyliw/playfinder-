@@ -57,7 +57,7 @@ export function BottomNav() {
   const linkClass = (active: boolean) =>
     cn(
       "flex min-h-12 flex-1 flex-col items-center justify-center gap-1 font-dm-mono text-[10px] font-medium uppercase tracking-[0.04em] transition-colors active:scale-90",
-      active ? "text-[#c9f31d]" : "text-[#7e8a7e]",
+      active ? "text-[#a1c217]" : "text-[#7e8a7e]",
     );
 
   return (
@@ -76,7 +76,7 @@ export function BottomNav() {
         <button
           type="button"
           onClick={() => openComposer()}
-          className="-mt-[30px] grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[#C8FF00] text-black transition-transform active:scale-90"
+          className="-mt-[30px] grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[#A0CC00] text-black transition-transform active:scale-90"
           style={{ boxShadow: "0 0 16px rgba(200,255,0,0.5)" }}
           aria-label="Create post"
         >

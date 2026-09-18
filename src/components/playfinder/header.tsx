@@ -89,7 +89,7 @@ export function Header({ initialUnreadNotificationCount }: HeaderProps) {
         aria-label="PlayFinder home"
       >
         <span
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-[11px] bg-[#c9f31d] text-[#0a0b0a]"
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-[11px] bg-[#a1c217] text-[#0a0b0a]"
           aria-hidden
         >
           <Zap className="h-5 w-5" fill="currentColor" />
@@ -134,7 +134,7 @@ export function Header({ initialUnreadNotificationCount }: HeaderProps) {
               onChange={setLocationDraft}
               onPlaceSelect={handlePlaceSelect}
               placeholder="Search city or area..."
-              inputClassName="w-full rounded-[14px] border border-[#2a2f2a] bg-[#1a1e1b] px-3 py-2.5 text-sm text-[#f2f5ef] placeholder:text-[#5a635a] focus:border-[#c9f31d] focus:outline-none"
+              inputClassName="w-full rounded-[14px] border border-[#2a2f2a] bg-[#1a1e1b] px-3 py-2.5 text-sm text-[#f2f5ef] placeholder:text-[#5a635a] focus:border-[#a1c217] focus:outline-none"
             />
             {locationMutation.isPending && (
               <p className="mt-2 text-xs text-[#7e8a7e]">Saving…</p>
@@ -154,7 +154,7 @@ export function Header({ initialUnreadNotificationCount }: HeaderProps) {
       >
         <Bell className="h-5 w-5" />
         {data.unreadCount > 0 && (
-          <span className="absolute right-1 top-1 flex h-4 min-w-4 animate-[pf-badge-in_500ms_cubic-bezier(0.34,1.36,0.64,1)_backwards] items-center justify-center rounded-full border-2 border-[#08090a] bg-[#c9f31d] px-1 font-dm-mono text-[9px] font-bold text-[#0a0b0a]">
+          <span className="absolute right-1 top-1 flex h-4 min-w-4 animate-[pf-badge-in_500ms_cubic-bezier(0.34,1.36,0.64,1)_backwards] items-center justify-center rounded-full border-2 border-[#08090a] bg-[#a1c217] px-1 font-dm-mono text-[9px] font-bold text-[#0a0b0a]">
             {data.unreadCount > 9 ? "9+" : data.unreadCount}
           </span>
         )}

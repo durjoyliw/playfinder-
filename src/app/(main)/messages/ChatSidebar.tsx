@@ -53,7 +53,7 @@ function ConversationPreview({
       }}
       className="flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-[#161616] active:bg-[#1f1f1f]"
     >
-      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#C9F31D] text-sm font-bold text-black">
+      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-sm font-bold text-black">
         {other?.image ? (
           <img
             src={other.image}
@@ -76,7 +76,7 @@ function ConversationPreview({
               </span>
             )}
             {unread > 0 && (
-              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#C9F31D] px-1 text-[10px] font-bold text-white">
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#A1C217] px-1 text-[10px] font-bold text-white">
                 {unread > 9 ? "9+" : unread}
               </span>
             )}
@@ -249,7 +249,7 @@ function TabButton({
       href={href}
       className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
         active
-          ? "bg-[#C9F31D] text-black"
+          ? "bg-[#A1C217] text-black"
           : "bg-[#1a1a1a] text-[#888888] hover:text-white"
       }`}
     >

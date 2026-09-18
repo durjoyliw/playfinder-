@@ -79,7 +79,7 @@ export function SettingsHub() {
     <div className="min-h-full bg-[#0d0d0d] pb-8">
       <PageBackHeader title="Settings" />
       <div className="px-4 pb-2 pt-6 text-center">
-        <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-[#C9F31D] text-2xl font-bold text-black">
+        <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-[#A1C217] text-2xl font-bold text-black">
           {getInitials(data.displayName)}
         </div>
         <h1 className="text-2xl font-bold text-white">{data.displayName}</h1>
@@ -87,7 +87,7 @@ export function SettingsHub() {
         <button
           type="button"
           onClick={handleShareProfile}
-          className="mt-4 rounded-full border border-[#C9F31D] px-6 py-2 text-sm font-medium text-[#C9F31D] transition-colors hover:bg-[#C9F31D]/10"
+          className="mt-4 rounded-full border border-[#A1C217] px-6 py-2 text-sm font-medium text-[#A1C217] transition-colors hover:bg-[#A1C217]/10"
         >
           Share profile
         </button>

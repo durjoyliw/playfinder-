@@ -58,7 +58,7 @@ html {
 
 .pf-map-popup .mapboxgl-popup-close-button:hover {
   background: transparent;
-  color: #c9f31d;
+  color: #a1c217;
 }
 
 .pf-venue-popup {
@@ -78,12 +78,12 @@ html {
 .pf-venue-popup__badge {
   display: inline-block;
   margin-bottom: 8px;
-  border: 1px solid #c9f31d;
+  border: 1px solid #a1c217;
   border-radius: 9999px;
   padding: 2px 8px;
   font-size: 10px;
   font-weight: 600;
-  color: #c9f31d;
+  color: #a1c217;
 }
 
 .pf-venue-popup__address {
@@ -98,7 +98,7 @@ html {
   width: 100%;
   border: none;
   border-radius: 8px;
-  background: #c9f31d;
+  background: #a1c217;
   padding: 8px 12px;
   font-size: 12px;
   font-weight: 700;
@@ -108,7 +108,7 @@ html {
 }
 
 .pf-venue-popup__cta:hover {
-  background: #d4f73a;
+  background: #aac62e;
 }
 
 @layer base {
@@ -124,9 +124,9 @@ html {
     --pf-text-2: #b4bcaf;
     --pf-text-3: #7e8a7e;
     --pf-text-4: #5a635a;
-    --pf-volt: #c9f31d;
-    --pf-volt-dim: #94b813;
-    --pf-volt-glow: rgba(201, 243, 29, 0.35);
+    --pf-volt: #a1c217;
+    --pf-volt-dim: #76930f;
+    --pf-volt-glow: rgba(161, 194, 23, 0.35);
     --pf-blue: #56ccf2;
     --background: 0 0% 5.1%;
     --foreground: 0 0% 95%;

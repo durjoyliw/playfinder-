@@ -37,7 +37,7 @@ export function PlayFinderFeed({ sportFilter, feedTypeTab }: PlayFinderFeedProps
   if (status === "pending") {
     return (
       <div className="flex justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-[#c9f31d]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#a1c217]" />
       </div>
     );
   }
@@ -73,7 +73,7 @@ export function PlayFinderFeed({ sportFilter, feedTypeTab }: PlayFinderFeedProps
     >
       {isFetching && (
         <div className="flex justify-center py-2">
-          <Loader2 className="h-4 w-4 animate-spin text-[#c9f31d]" />
+          <Loader2 className="h-4 w-4 animate-spin text-[#a1c217]" />
         </div>
       )}
       {posts.map((post, index) => (

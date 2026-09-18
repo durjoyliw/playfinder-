@@ -126,7 +126,7 @@ export function ComposerDateTimePicker({
                   className={cn(
                     "rounded-[10px] border px-3 py-1.5 text-xs font-semibold",
                     active
-                      ? "border-[#C8FF00] bg-[#C8FF00] text-black"
+                      ? "border-[#A0CC00] bg-[#A0CC00] text-black"
                       : "border-[#2a2f2a] text-[#b4bcaf]",
                   )}
                 >
@@ -147,7 +147,7 @@ export function ComposerDateTimePicker({
                   className={cn(
                     "flex h-[58px] w-11 shrink-0 flex-col items-center justify-center rounded-[12px] border",
                     active
-                      ? "border-[#C8FF00] bg-[#C8FF00] text-black"
+                      ? "border-[#A0CC00] bg-[#A0CC00] text-black"
                       : "border-[#2a2f2a] text-[#b4bcaf]",
                   )}
                 >
@@ -177,7 +177,7 @@ export function ComposerDateTimePicker({
                   className={cn(
                     "shrink-0 whitespace-nowrap rounded-[10px] border px-3 py-2 text-xs font-semibold",
                     active
-                      ? "border-[#C8FF00] bg-[#C8FF00] text-black"
+                      ? "border-[#A0CC00] bg-[#A0CC00] text-black"
                       : "border-[#2a2f2a] text-[#b4bcaf]",
                   )}
                 >

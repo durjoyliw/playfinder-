@@ -27,7 +27,7 @@ export function SettingsSubpageLayout({
 export function SettingsLoading() {
   return (
     <div className="flex min-h-[40vh] items-center justify-center">
-      <Loader2 className="h-8 w-8 animate-spin text-[#C9F31D]" />
+      <Loader2 className="h-8 w-8 animate-spin text-[#A1C217]" />
     </div>
   );
 }
@@ -69,7 +69,7 @@ export function SettingsRow({ href, icon, label, value }: SettingsRowProps) {
       href={href}
       className="flex w-full items-center gap-3 border-b border-[#2a2a2a] px-4 py-3.5 transition-colors last:border-b-0 hover:bg-[#1f1f1f]"
     >
-      <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center text-[#C9F31D]">
+      <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center text-[#A1C217]">
         {icon}
       </span>
       <span className="flex-1 text-sm font-medium text-white">{label}</span>
@@ -102,7 +102,7 @@ export function SettingsPlaceholder({
 }
 
 export const settingsInputClassName =
-  "w-full rounded-lg border border-[#2a2a2a] bg-[#0d0d0d] px-3 py-2.5 text-sm text-white focus:border-[#C9F31D] focus:outline-none";
+  "w-full rounded-lg border border-[#2a2a2a] bg-[#0d0d0d] px-3 py-2.5 text-sm text-white focus:border-[#A1C217] focus:outline-none";
 
 export const settingsSaveButtonClassName =
-  "w-full rounded-lg bg-[#C9F31D] py-2.5 text-sm font-semibold text-black transition-colors hover:bg-[#d4f73a] disabled:opacity-60";
+  "w-full rounded-lg bg-[#A1C217] py-2.5 text-sm font-semibold text-black transition-colors hover:bg-[#aac62e] disabled:opacity-60";

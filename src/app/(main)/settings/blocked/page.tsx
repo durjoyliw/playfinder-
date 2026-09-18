@@ -79,7 +79,7 @@ export default function Page() {
                 className="flex items-center justify-between gap-3 rounded-2xl border border-[#1f1f1f] bg-[#121212] px-4 py-3"
               >
                 <div className="flex min-w-0 items-center gap-3">
-                  <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#C9F31D] text-sm font-bold text-black">
+                  <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-sm font-bold text-black">
                     {b.blocked.avatarUrl ? (
                       <img
                         src={b.blocked.avatarUrl}

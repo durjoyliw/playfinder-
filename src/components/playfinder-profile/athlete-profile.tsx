@@ -108,14 +108,14 @@ export default function AthleteProfile({
                   className="h-full w-full max-h-none max-w-none border-0"
                 />
               ) : (
-                <span className="text-2xl font-bold text-[#c9f31d]">
+                <span className="text-2xl font-bold text-[#a1c217]">
                   {profile.initials}
                 </span>
               )}
             </div>
             {profile.isOnline && (
               <span className="absolute bottom-2 -right-1 grid h-5 w-5 place-items-center rounded-full border-2 border-[#08090a] bg-[#08090a]">
-                <span className="h-2.5 w-2.5 rounded-full bg-[#c9f31d] shadow-[0_0_8px_#c9f31d]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#a1c217] shadow-[0_0_8px_#a1c217]" />
               </span>
             )}
           </div>
@@ -235,7 +235,7 @@ export default function AthleteProfile({
             {profile.isOwnProfile && (
               <Link
                 href="/settings/sports"
-                className="grid min-h-[130px] place-items-center gap-1.5 rounded-[18px] border-[1.5px] border-dashed border-[#353c34] p-[18px] text-center text-[13px] font-semibold text-[#7e8a7e] active:scale-[0.97] active:border-[#c9f31d] active:text-[#c9f31d]"
+                className="grid min-h-[130px] place-items-center gap-1.5 rounded-[18px] border-[1.5px] border-dashed border-[#353c34] p-[18px] text-center text-[13px] font-semibold text-[#7e8a7e] active:scale-[0.97] active:border-[#a1c217] active:text-[#a1c217]"
               >
                 <span className="text-[26px] leading-none">+</span>
                 Add a sport

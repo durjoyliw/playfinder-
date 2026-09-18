@@ -5,8 +5,8 @@ export const PROFILE_INTENT_OPTIONS = [
   {
     value: ProfileIntent.LOOKING_TO_PLAY,
     label: "Looking to Play",
-    className: "border-[#C9F31D] bg-[#C9F31D]/15 text-[#C9F31D]",
-    activeClassName: "bg-[#C9F31D] text-black",
+    className: "border-[#A1C217] bg-[#A1C217]/15 text-[#A1C217]",
+    activeClassName: "bg-[#A1C217] text-black",
   },
   {
     value: ProfileIntent.JOIN_A_TEAM,
@@ -29,8 +29,8 @@ export const PROFILE_INTENT_PROFILE_OPTIONS = [
     label: "Looking to Play",
     description: "find casual games and partners",
     pillClassName:
-      "border-[#C9F31D]/30 bg-[#C9F31D]/10 text-[#C9F31D] hover:bg-[#C9F31D]/20",
-    dotClassName: "bg-[#C9F31D]",
+      "border-[#A1C217]/30 bg-[#A1C217]/10 text-[#A1C217] hover:bg-[#A1C217]/20",
+    dotClassName: "bg-[#A1C217]",
   },
   {
     value: ProfileIntent.JOIN_A_TEAM,

@@ -65,7 +65,7 @@ export default function MessageRequestActions() {
           type="button"
           disabled={isLoading !== null}
           onClick={() => void handleAction("ACCEPT")}
-          className="flex-1 rounded-[20px] bg-[#C9F31D] px-5 py-1.5 text-sm font-bold text-[#0d0d0d] disabled:opacity-50"
+          className="flex-1 rounded-[20px] bg-[#A1C217] px-5 py-1.5 text-sm font-bold text-[#0d0d0d] disabled:opacity-50"
         >
           {isLoading === "ACCEPT" ? "Accepting..." : "Accept"}
         </button>

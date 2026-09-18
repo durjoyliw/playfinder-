@@ -19,7 +19,7 @@ export function NoActiveChatState() {
       <button
         type="button"
         onClick={() => setShowNewChatDialog(true)}
-        className="mt-1.5 rounded-full bg-[#C9F31D] px-[22px] py-[11px] text-sm font-bold text-black transition-colors hover:bg-[#d4f73a]"
+        className="mt-1.5 rounded-full bg-[#A1C217] px-[22px] py-[11px] text-sm font-bold text-black transition-colors hover:bg-[#aac62e]"
       >
         New message
       </button>

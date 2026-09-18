@@ -23,7 +23,7 @@ export const POST_INTENTS = [
     value: PostIntent.LOOKING_TO_PLAY,
     label: "Looking to Play",
     cardType: "looking" as const,
-    className: "bg-[#C9F31D] text-black border-[#C9F31D]",
+    className: "bg-[#A1C217] text-black border-[#A1C217]",
   },
   {
     value: PostIntent.RECRUITING,
@@ -63,11 +63,11 @@ export function getPostTypeBadge(postType: string | null) {
   return {
     label: isArena ? "Arena" : "Social",
     style: {
-      background: isArena ? "rgba(201,243,29,0.1)" : "rgba(55,138,221,0.12)",
+      background: isArena ? "rgba(161,194,23,0.1)" : "rgba(55,138,221,0.12)",
       border: isArena
-        ? "1px solid rgba(201,243,29,0.25)"
+        ? "1px solid rgba(161,194,23,0.25)"
         : "1px solid rgba(55,138,221,0.25)",
-      color: isArena ? "#C9F31D" : "#378ADD",
+      color: isArena ? "#A1C217" : "#378ADD",
       fontSize: "11px",
       fontWeight: 700,
       borderRadius: "5px",

@@ -126,7 +126,7 @@ export default function ChannelHeader() {
           <ArrowLeft className="h-5 w-5" />
         </Link>
 
-        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#C9F31D] text-sm font-bold text-black">
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-sm font-bold text-black">
           {other?.image ? (
             <img
               src={other.image as string}
@@ -234,7 +234,7 @@ export default function ChannelHeader() {
         <div className="px-4 pb-2">
           <span
             className={cn(
-              "inline-block rounded-full bg-[#C9F31D] px-3 py-1 text-xs font-semibold text-black",
+              "inline-block rounded-full bg-[#A1C217] px-3 py-1 text-xs font-semibold text-black",
             )}
           >
             {postContext.label}

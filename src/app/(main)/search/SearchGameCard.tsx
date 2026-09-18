@@ -77,7 +77,7 @@ export function SearchGameCard({ post }: SearchGameCardProps) {
       </div>
 
       <div className="mt-3 flex items-center gap-2">
-        <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#C9F31D] text-[10px] font-bold text-black">
+        <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-[10px] font-bold text-black">
           {post.user.avatarUrl ? (
             <img
               src={post.user.avatarUrl}
@@ -99,7 +99,7 @@ export function SearchGameCard({ post }: SearchGameCardProps) {
           <button
             type="button"
             onClick={handleImIn}
-            className="flex flex-1 items-center justify-center rounded-full bg-[#C9F31D] py-2.5 text-sm font-bold text-black transition-colors hover:bg-[#d4f73a]"
+            className="flex flex-1 items-center justify-center rounded-full bg-[#A1C217] py-2.5 text-sm font-bold text-black transition-colors hover:bg-[#aac62e]"
           >
             I&apos;m in 👋
           </button>

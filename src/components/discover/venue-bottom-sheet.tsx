@@ -70,7 +70,7 @@ export function DiscoverVenueClubTabs({
               className={cn(
                 "relative pb-1.5 text-sm font-semibold transition-colors",
                 isActive
-                  ? "text-[#f2f5ef] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-sm after:bg-[#c9f31d]"
+                  ? "text-[#f2f5ef] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-sm after:bg-[#a1c217]"
                   : "text-[#7e8a7e]",
               )}
             >
@@ -263,7 +263,7 @@ export function VenueMarkerBottomSheet({
             {sports.map((sport) => (
               <span
                 key={sport}
-                className="rounded-full border border-[#C9F31D] px-2 py-0.5 text-[11px] font-medium text-[#C9F31D]"
+                className="rounded-full border border-[#A1C217] px-2 py-0.5 text-[11px] font-medium text-[#A1C217]"
               >
                 {sport}
               </span>
@@ -272,7 +272,7 @@ export function VenueMarkerBottomSheet({
           <button
             type="button"
             onClick={onBook}
-            className="mt-4 w-full rounded-[10px] bg-[#C9F31D] py-3 text-sm font-bold text-black"
+            className="mt-4 w-full rounded-[10px] bg-[#A1C217] py-3 text-sm font-bold text-black"
           >
             Book / Info →
           </button>

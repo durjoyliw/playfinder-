@@ -39,7 +39,7 @@ export default function ProfilePostsGrid({ userId }: ProfilePostsGridProps) {
   if (status === "pending") {
     return (
       <div className="flex justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-[#C9F31D]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#A1C217]" />
       </div>
     );
   }
@@ -101,7 +101,7 @@ export default function ProfilePostsGrid({ userId }: ProfilePostsGridProps) {
       })}
       {isFetchingNextPage && (
         <div className="col-span-2 flex justify-center py-4">
-          <Loader2 className="h-6 w-6 animate-spin text-[#C9F31D]" />
+          <Loader2 className="h-6 w-6 animate-spin text-[#A1C217]" />
         </div>
       )}
     </InfiniteScrollContainer>

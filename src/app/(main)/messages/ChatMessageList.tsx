@@ -143,7 +143,7 @@ export default function ChatMessageList() {
               {!isMe && (
                 <div className="mr-2 w-8 flex-shrink-0">
                   {showAvatar && (
-                    <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#C9F31D] text-xs font-bold text-black">
+                    <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-xs font-bold text-black">
                       {other?.image ? (
                         <img
                           src={other.image}
@@ -169,7 +169,7 @@ export default function ChatMessageList() {
                   className={cn(
                     "block w-full text-left",
                     isMe
-                      ? "rounded-2xl rounded-tr-sm bg-[#C9F31D] px-4 py-2.5 text-black"
+                      ? "rounded-2xl rounded-tr-sm bg-[#A1C217] px-4 py-2.5 text-black"
                       : "rounded-2xl rounded-tl-sm bg-[#2a2a2a] px-4 py-2.5 text-white",
                   )}
                   onClick={() =>

@@ -81,7 +81,7 @@ export function ProfileDesktopRightRail() {
                       className="h-9 w-9 shrink-0 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#232824] text-xs font-bold text-[#c9f31d]">
+                    <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#232824] text-xs font-bold text-[#a1c217]">
                       {getInitials(player.displayName)}
                     </div>
                   )}

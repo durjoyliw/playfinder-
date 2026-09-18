@@ -21,7 +21,7 @@ interface MapboxLocationAutocompleteProps {
 }
 
 const DEFAULT_INPUT_CLASS =
-  "w-full rounded-xl border border-[#333] bg-[#1a1a1a] px-4 py-3.5 text-base text-white placeholder:text-[#6b6b6b] focus:border-[#C9F31D] focus:outline-none";
+  "w-full rounded-xl border border-[#333] bg-[#1a1a1a] px-4 py-3.5 text-base text-white placeholder:text-[#6b6b6b] focus:border-[#A1C217] focus:outline-none";
 
 export function MapboxLocationAutocomplete({
   value,

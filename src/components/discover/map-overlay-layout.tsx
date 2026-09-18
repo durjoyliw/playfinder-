@@ -62,7 +62,7 @@ function addVenueLayers(map: mapboxgl.Map) {
     source: VENUES_SOURCE_ID,
     paint: {
       "circle-radius": 7,
-      "circle-color": "#C9F31D",
+      "circle-color": "#A1C217",
       "circle-stroke-width": 2,
       "circle-stroke-color": "#0d0d0d",
     },
@@ -75,7 +75,7 @@ function addVenueLayers(map: mapboxgl.Map) {
     filter: ["==", ["get", "id"], ""],
     paint: {
       "circle-radius": 10,
-      "circle-color": "#C9F31D",
+      "circle-color": "#A1C217",
       "circle-stroke-width": 2,
       "circle-stroke-color": "#0d0d0d",
     },
@@ -242,7 +242,7 @@ export function MapOverlayLayout({
 
       <div className="pointer-events-none absolute bottom-4 left-4 z-10">
         <div className="flex items-center gap-1.5 rounded-full border border-[#2a2a2a]/50 bg-[#161616]/90 px-2.5 py-1 backdrop-blur-md">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#C9F31D]" />
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#A1C217]" />
           <span className="text-[10px] font-medium uppercase tracking-wide text-[#666666]">
             {markers.length} venues
           </span>
@@ -252,7 +252,7 @@ export function MapOverlayLayout({
       {!hasToken && (
         <div className="absolute inset-0 z-20 flex items-center justify-center bg-[#161616]/50 backdrop-blur-sm">
           <div className="mx-4 rounded-xl border border-[#2a2a2a] bg-[#161616]/90 p-4 text-center backdrop-blur-md">
-            <MapPin className="mx-auto mb-2 h-10 w-10 text-[#C9F31D]" />
+            <MapPin className="mx-auto mb-2 h-10 w-10 text-[#A1C217]" />
             <p className="text-xs text-[#666666]">
               Add NEXT_PUBLIC_MAPBOX_TOKEN to .env.local
             </p>

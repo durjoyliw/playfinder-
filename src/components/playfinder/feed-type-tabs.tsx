@@ -26,7 +26,7 @@ export function FeedTypeTabs({ activeTab, onTabChange }: FeedTypeTabsProps) {
       <div
         className={cn(
           "pointer-events-none absolute bottom-2 top-2.5 w-[calc(50%-20px)] rounded-[10px] transition-[left,background] duration-300 ease-[cubic-bezier(.2,.8,.2,1)]",
-          isArena ? "bg-[#56ccf2]" : "bg-[#c9f31d]",
+          isArena ? "bg-[#56ccf2]" : "bg-[#a1c217]",
         )}
         style={{ left: isArena ? "auto" : 16, right: isArena ? 16 : "auto" }}
         aria-hidden

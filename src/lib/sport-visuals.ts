@@ -6,7 +6,7 @@ const SPORT_COLOURS: Record<string, string> = {
   football: "#4ee0a0",
   gym: "#ff6b6b",
   polo: "#b08aff",
-  tennis: "#dcef5a",
+  tennis: "#b0bf48",
   running: "#56ccf2",
   swimming: "#56ccf2",
   rugby: "#4ee0a0",
@@ -15,8 +15,8 @@ const SPORT_COLOURS: Record<string, string> = {
   cycling: "#56ccf2",
   volleyball: "#ff8a4c",
   golf: "#4ee0a0",
-  squash: "#dcef5a",
-  badminton: "#dcef5a",
+  squash: "#b0bf48",
+  badminton: "#b0bf48",
 };
 
 const DEFAULT_SPORT_COLOUR = "#56ccf2";

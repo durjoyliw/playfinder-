@@ -225,7 +225,7 @@ export default function ChatInput() {
             type="button"
             onClick={sendText}
             disabled={isSending}
-            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#C9F31D] text-black transition-colors hover:bg-[#d4f73a] disabled:opacity-50"
+            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#A1C217] text-black transition-colors hover:bg-[#aac62e] disabled:opacity-50"
             aria-label="Send message"
           >
             {isSending ? (
@@ -239,7 +239,7 @@ export default function ChatInput() {
             type="button"
             onClick={sendFistBump}
             disabled={isSending}
-            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#C9F31D] text-xl transition-colors hover:bg-[#d4f73a] disabled:opacity-50"
+            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#A1C217] text-xl transition-colors hover:bg-[#aac62e] disabled:opacity-50"
             aria-label="Send fist bump"
           >
             {isSending ? (

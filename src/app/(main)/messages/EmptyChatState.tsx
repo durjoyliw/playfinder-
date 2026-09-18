@@ -15,7 +15,7 @@ export default function EmptyChatState() {
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
-      <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-[#C9F31D] text-xl font-bold text-black">
+      <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-xl font-bold text-black">
         {other?.image ? (
           <img
             src={other.image}
@@ -30,7 +30,7 @@ export default function EmptyChatState() {
       <p
         className="mt-1 text-sm"
         style={{
-          color: isTeammate ? "rgba(201,243,29,0.55)" : "#555555",
+          color: isTeammate ? "rgba(161,194,23,0.55)" : "#555555",
         }}
       >
         {isTeammate ? "Teammates ⚡" : "Not teammates yet"}

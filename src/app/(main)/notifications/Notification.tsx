@@ -21,7 +21,7 @@ export default function Notification({ notification }: NotificationProps) {
     },
     TEAMMATE: {
       message: `You and ${notification.issuer.displayName} are now Teammates ⚡`,
-      icon: <User2 className="size-7 text-[#C9F31D]" />,
+      icon: <User2 className="size-7 text-[#A1C217]" />,
       href: `/users/${notification.issuer.username}`,
     },
     COMMENT: {
@@ -48,7 +48,7 @@ export default function Notification({ notification }: NotificationProps) {
             notification.post?.userId === notification.recipientId
               ? `${notification.issuer.displayName} is interested in joining your game`
               : `${notification.issuer.displayName} accepted you for the game`,
-          icon: <MessageCircle className="size-7 text-[#C9F31D]" />,
+          icon: <MessageCircle className="size-7 text-[#A1C217]" />,
           href: notification.postId ? `/posts/${notification.postId}` : "/",
         }
       : notificationTypeMap[notification.type];

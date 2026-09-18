@@ -28,7 +28,7 @@ interface PostDetailViewProps {
 }
 
 const accentColors = {
-  looking: "#C9F31D",
+  looking: "#A1C217",
   recruiting: "#3B82F6",
   banter: "#EAB308",
 } as const;
@@ -182,14 +182,14 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
                       width: 28,
                       height: 28,
                       borderRadius: "50%",
-                      border: "2px solid #C9F31D",
+                      border: "2px solid #A1C217",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       background: "transparent",
                     }}
                   >
-                    <IconCheck size={14} color="#C9F31D" stroke={2.5} />
+                    <IconCheck size={14} color="#A1C217" stroke={2.5} />
                   </div>
                   {isOwnPost && (
                     <button
@@ -231,7 +231,7 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
                 />
               ))}
               <span
-                style={{ fontSize: 13, color: "#C9F31D", fontWeight: 600 }}
+                style={{ fontSize: 13, color: "#A1C217", fontWeight: 600 }}
               >
                 {slotsRemaining > 0
                   ? `${slotsRemaining} spot${slotsRemaining > 1 ? "s" : ""} left`

@@ -1,7 +1,7 @@
 import type { Channel, FormatMessageResponse, UserResponse } from "stream-chat";
 import { format, formatDistanceToNowStrict, isToday, isYesterday } from "date-fns";
 
-export const VOLT_GREEN = "#C9F31D";
+export const VOLT_GREEN = "#A1C217";
 
 export const REACTION_EMOJIS = ["👍", "❤️", "🔥", "😂", "😮"] as const;
 

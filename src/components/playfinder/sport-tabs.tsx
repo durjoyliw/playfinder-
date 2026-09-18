@@ -25,13 +25,13 @@ export function SportTabs({ tabs, activeTab, onTabChange }: SportTabsProps) {
         role="tablist"
         aria-label="Filter by sport"
         onMouseDown={onMouseDown}
-        className="flex select-none gap-[7px] overflow-x-auto px-4 pb-1.5 pt-2.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden cursor-grab active:cursor-grabbing"
+        className="flex select-none gap-[7px] overflow-x-auto px-4 pb-3.5 pt-2.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden cursor-grab active:cursor-grabbing"
       >
         {tabs.map((sport) => {
           const isActive = activeTab === sport.id;
           const SportIcon = getSportIcon(sport.id);
           const chipColour =
-            sport.id === "all" ? "#c9f31d" : getSportColour(sport.id);
+            sport.id === "all" ? "#a1c217" : getSportColour(sport.id);
 
           return (
             <button

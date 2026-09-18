@@ -63,7 +63,7 @@ export function LocationForm() {
             value={location}
             onChange={setLocation}
             placeholder="e.g. Glasgow"
-            inputClassName="w-full rounded-xl border border-[#333] bg-[#1a1a1a] px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-[#C9F31D] focus:outline-none"
+            inputClassName="w-full rounded-xl border border-[#333] bg-[#1a1a1a] px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-[#A1C217] focus:outline-none"
           />
         </div>
 

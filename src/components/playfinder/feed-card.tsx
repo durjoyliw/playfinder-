@@ -10,9 +10,11 @@ import {
   Clock,
   MapPin,
   BadgeCheck,
+  MessageCircle,
 } from "lucide-react";
 import { getPostTypeBadge, isLookingToPlayIntent } from "@/lib/playfinder";
 import Link from "next/link";
+import { useState } from "react";
 
 type CardType = "looking" | "recruiting" | "banter";
 
@@ -56,7 +58,7 @@ export interface FeedCardProps {
 }
 
 const cardAccentColors: Record<CardType, string> = {
-  looking: "#C9F31D",
+  looking: "#A1C217",
   recruiting: "#3B82F6",
   banter: "#EAB308",
 };
@@ -93,6 +95,7 @@ export function FeedCard({
   compact = false,
 }: FeedCardProps) {
   const likeState = { likes, isLikedByUser };
+  const [commentsOpen, setCommentsOpen] = useState(false);
   const profileHref = `/users/${username}`;
   const isLooking =
     isLookingToPlayIntent(intent) || (intent == null && type === "looking");
@@ -178,14 +181,14 @@ export function FeedCard({
                   width: 28,
                   height: 28,
                   borderRadius: "50%",
-                  border: "2px solid #C9F31D",
+                  border: "2px solid #A1C217",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   background: "transparent",
                 }}
               >
-                <IconCheck size={14} color="#C9F31D" stroke={2.5} />
+                <IconCheck size={14} color="#A1C217" stroke={2.5} />
               </div>
             ))}
             {Array.from({ length: slotsRemaining }).map((_, i) => (
@@ -201,7 +204,7 @@ export function FeedCard({
               />
             ))}
             <span
-              style={{ fontSize: 13, color: "#C9F31D", fontWeight: 600 }}
+              style={{ fontSize: 13, color: "#A1C217", fontWeight: 600 }}
             >
               {slotsRemaining > 0
                 ? `${slotsRemaining} spot${slotsRemaining > 1 ? "s" : ""} left`
@@ -264,7 +267,7 @@ export function FeedCard({
             </div>
             <div className="h-1 overflow-hidden rounded-full bg-[#2a2a2a]">
               <div
-                className="h-full rounded-full bg-[#C9F31D] transition-all"
+                className="h-full rounded-full bg-[#A1C217] transition-all"
                 style={{ width: `${expiryPercent}%` }}
               />
             </div>
@@ -282,13 +285,33 @@ export function FeedCard({
                 />
               )}
 
-              <div className="flex items-center gap-4">
-                <FeedCardLikeButton postId={postId} initialState={likeState} />
-                <FeedCardShareButton postId={postId} />
+              <div className="flex items-center justify-between gap-4">
+                <span className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
+                  <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
+                  <span className="truncate">{location}</span>
+                </span>
+
+                <div className="flex flex-shrink-0 items-center gap-4">
+                  <FeedCardLikeButton postId={postId} initialState={likeState} />
+                  <button
+                    type="button"
+                    onClick={() => setCommentsOpen((open) => !open)}
+                    className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-white"
+                    aria-label={commentsOpen ? "Hide replies" : "Show replies"}
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                    {replies > 0 && <span className="text-sm">{replies}</span>}
+                  </button>
+                  <FeedCardShareButton postId={postId} />
+                </div>
               </div>
             </div>
 
-            <FeedCardComments postId={postId} initialReplyCount={replies} />
+            <FeedCardComments
+              postId={postId}
+              initialReplyCount={replies}
+              isOpen={commentsOpen}
+            />
           </>
         )}
       </div>

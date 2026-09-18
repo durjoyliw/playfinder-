@@ -70,7 +70,7 @@ export function HomeFeedCard({
           className={cn(
             "grid h-11 w-11 place-items-center rounded-full text-sm font-bold",
             voltAvatar
-              ? "bg-[#c9f31d] text-[#0a0b0a]"
+              ? "bg-[#a1c217] text-[#0a0b0a]"
               : "bg-[#232824] text-[#b4bcaf]",
           )}
         >
@@ -87,7 +87,7 @@ export function HomeFeedCard({
           <span className="text-[#5a635a]" aria-hidden>
             ·
           </span>
-          <span className="inline-flex items-center gap-0.5 font-medium text-[#c9f31d]/70">
+          <span className="inline-flex items-center gap-0.5 font-medium text-[#a1c217]/70">
             <IconBolt className="h-3 w-3" stroke={2} aria-hidden />
             Teammate
           </span>
@@ -145,7 +145,7 @@ export function HomeFeedCard({
     <div className="mb-4 flex items-center gap-3 rounded-[14px] bg-black/20 p-3.5">
       <div className="min-w-0 flex-1">
         <div className="mb-1.5 text-xs text-[#7e8a7e]">
-          <b className="text-[15px] font-bold text-[#c9f31d]">{spotsLeft}</b>{" "}
+          <b className="text-[15px] font-bold text-[#a1c217]">{spotsLeft}</b>{" "}
           {spotsLeft === 1 ? "spot" : "spots"} available
         </div>
         <div className="h-[5px] overflow-hidden rounded-[3px] bg-white/[0.08]">
@@ -163,11 +163,11 @@ export function HomeFeedCard({
           <div
             key={`filled-${i}`}
             className={cn(
-              "grid h-8 w-8 place-items-center rounded-full border-2 border-[#1a1e1b] bg-[#c9f31d]/10",
+              "grid h-8 w-8 place-items-center rounded-full border-2 border-[#1a1e1b] bg-[#a1c217]/10",
               i > 0 && "-ml-2.5",
             )}
           >
-            <IconCheck size={14} color="#C9F31D" stroke={2.5} />
+            <IconCheck size={14} color="#A1C217" stroke={2.5} />
           </div>
         ))}
         {Array.from({ length: Math.min(spotsLeft, 3) }).map((_, i) => (
@@ -197,7 +197,7 @@ export function HomeFeedCard({
       >
         <div className="h-[3px] w-full" style={{ background: sportColour }} />
         {isHotTake && (
-          <div className="absolute right-3.5 top-3.5 z-10 inline-flex items-center gap-1 rounded-md border border-[#c9f31d]/20 bg-[#c9f31d]/10 px-[9px] py-1.5 font-dm-mono text-[9px] font-semibold tracking-[0.1em] text-[#c9f31d]">
+          <div className="absolute right-3.5 top-3.5 z-10 inline-flex items-center gap-1 rounded-md border border-[#a1c217]/20 bg-[#a1c217]/10 px-[9px] py-1.5 font-dm-mono text-[9px] font-semibold tracking-[0.1em] text-[#a1c217]">
             <IconFlame className="h-3 w-3" stroke={2} aria-hidden />
             LIVE SOON
           </div>
@@ -267,7 +267,7 @@ export function HomeFeedCard({
                     <MapPin className="h-3 w-3" />
                     Where
                   </div>
-                  <div className="text-sm font-semibold text-[#c9f31d]">
+                  <div className="text-sm font-semibold text-[#a1c217]">
                     {location}
                   </div>
                 </div>

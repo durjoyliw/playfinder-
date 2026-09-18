@@ -108,7 +108,7 @@ export function PostInterestedPanel({
           style={{
             background: "#161616",
             border: "1px solid #2a2a2a",
-            color: "#C9F31D",
+            color: "#A1C217",
             borderRadius: 20,
             padding: "8px 16px",
             fontSize: 13,
@@ -171,7 +171,7 @@ export function PostInterestedPanel({
                 <div className="flex flex-shrink-0 items-center gap-2">
                   {interest.status === "ACCEPTED" ? (
                     <>
-                      <span className="text-xs font-medium text-[#C9F31D]">
+                      <span className="text-xs font-medium text-[#A1C217]">
                         Accepted ✓
                       </span>
                       {interest.userId !== authorId && (
@@ -199,7 +199,7 @@ export function PostInterestedPanel({
                             action: "ACCEPT",
                           })
                         }
-                        className="rounded-lg bg-[#C9F31D] px-3 py-1.5 text-xs font-bold text-black"
+                        className="rounded-lg bg-[#A1C217] px-3 py-1.5 text-xs font-bold text-black"
                       >
                         Accept
                       </button>

@@ -52,7 +52,7 @@ export function VenueMap({ onSelectVenue, selectedVenue }: VenueMapProps) {
       el.style.width = "12px";
       el.style.height = "12px";
       el.style.borderRadius = "50%";
-      el.style.backgroundColor = "#C9F31D";
+      el.style.backgroundColor = "#A1C217";
       el.style.border = "2px solid #0d0d0d";
       el.style.cursor = "pointer";
       el.style.padding = "0";
@@ -117,7 +117,7 @@ function VenueCard({
           {venue.sports.map((sport) => (
             <span
               key={sport}
-              className="rounded-full border border-[#C9F31D] px-2 py-0.5 text-[10px] font-medium text-[#C9F31D]"
+              className="rounded-full border border-[#A1C217] px-2 py-0.5 text-[10px] font-medium text-[#A1C217]"
             >
               {sport}
             </span>
@@ -128,7 +128,7 @@ function VenueCard({
           href={venue.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-4 flex w-full items-center justify-center rounded-lg bg-[#C9F31D] py-2.5 text-sm font-semibold text-black transition-colors hover:bg-[#d4f73a]"
+          className="mt-4 flex w-full items-center justify-center rounded-lg bg-[#A1C217] py-2.5 text-sm font-semibold text-black transition-colors hover:bg-[#aac62e]"
         >
           Book / Info →
         </a>

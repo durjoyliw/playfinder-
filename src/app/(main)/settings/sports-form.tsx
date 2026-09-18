@@ -144,7 +144,7 @@ const levelPillBaseClass =
 const levelPillInactiveClass =
   "border-[#2a2a2a] bg-[#161616] text-[#888] hover:border-[#3a3a3a]";
 const levelPillActiveClass =
-  "border-[#C9F31D] bg-[#C9F31D] font-bold text-[#0d0d0d]";
+  "border-[#A1C217] bg-[#A1C217] font-bold text-[#0d0d0d]";
 
 export function SportsForm() {
   const { toast } = useToast();
@@ -268,7 +268,7 @@ export function SportsForm() {
               if (search.trim().length > 0) setDropdownOpen(true);
             }}
             placeholder="Search sports..."
-            className="w-full rounded-[20px] border border-[#2a2a2a] bg-[#161616] py-2 pl-10 pr-4 text-[#f0f0f0] placeholder:text-[#666666] focus:border-[#C9F31D] focus:outline-none"
+            className="w-full rounded-[20px] border border-[#2a2a2a] bg-[#161616] py-2 pl-10 pr-4 text-[#f0f0f0] placeholder:text-[#666666] focus:border-[#A1C217] focus:outline-none"
           />
 
           {showDropdown && (
@@ -292,7 +292,7 @@ export function SportsForm() {
                         <span className="min-w-0 flex-1">{sport.label}</span>
                         {isSelected && (
                           <IconCheck
-                            className="h-4 w-4 flex-shrink-0 text-[#C9F31D]"
+                            className="h-4 w-4 flex-shrink-0 text-[#A1C217]"
                             stroke={2.5}
                           />
                         )}
@@ -356,7 +356,7 @@ export function SportsForm() {
           type="button"
           onClick={() => mutation.mutate()}
           disabled={mutation.isPending}
-          className="mt-4 w-full rounded-xl bg-[#C9F31D] py-[14px] text-[15px] font-bold text-[#0d0d0d] transition-colors hover:bg-[#b8e019] disabled:opacity-60"
+          className="mt-4 w-full rounded-xl bg-[#A1C217] py-[14px] text-[15px] font-bold text-[#0d0d0d] transition-colors hover:bg-[#93b314] disabled:opacity-60"
         >
           {mutation.isPending ? "Saving..." : "Save"}
         </button>

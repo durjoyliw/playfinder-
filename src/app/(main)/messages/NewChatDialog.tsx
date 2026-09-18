@@ -114,7 +114,7 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
           )}
           {isFetching && (
             <div className="flex justify-center py-8">
-              <Loader2 className="h-6 w-6 animate-spin text-[#C9F31D]" />
+              <Loader2 className="h-6 w-6 animate-spin text-[#A1C217]" />
             </div>
           )}
           {isError && (
@@ -130,7 +130,7 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
               onClick={() => startChatMutation.mutate(player)}
               className="flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-left transition-colors hover:bg-[#1a1a1a] disabled:opacity-50"
             >
-              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#C9F31D] text-xs font-bold text-black">
+              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-xs font-bold text-black">
                 {player.avatarUrl ? (
                   <img
                     src={player.avatarUrl}

@@ -19,7 +19,7 @@ import { ArrowLeft, MapPin, MessageCircle, Trophy, Users, Zap } from "lucide-rea
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
-const VOLT = "#C9F31D";
+const VOLT = "#A1C217";
 const TOTAL_STEPS = 6;
 
 const INTENT_CARDS = [
@@ -28,9 +28,9 @@ const INTENT_CARDS = [
     label: "Looking to Play",
     description: "Find casual games and playing partners",
     borderColor: VOLT,
-    bgClass: "bg-[#C9F31D]/10",
+    bgClass: "bg-[#A1C217]/10",
     icon: Zap,
-    iconClass: "text-[#C9F31D]",
+    iconClass: "text-[#A1C217]",
   },
   {
     value: ProfileIntent.JOIN_A_TEAM,
@@ -186,7 +186,7 @@ function PrimaryButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`w-full rounded-xl bg-[#C9F31D] py-3.5 text-base font-bold text-black transition-colors hover:bg-[#d4f73a] disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      className={`w-full rounded-xl bg-[#A1C217] py-3.5 text-base font-bold text-black transition-colors hover:bg-[#aac62e] disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
     >
       {children}
     </button>
@@ -195,7 +195,7 @@ function PrimaryButton({
 
 function getIntentPillClass(intent: ProfileIntent): string {
   const option = PROFILE_INTENT_PROFILE_OPTIONS.find((o) => o.value === intent);
-  return option?.pillClassName ?? "bg-[#C9F31D]/15 text-[#C9F31D]";
+  return option?.pillClassName ?? "bg-[#A1C217]/15 text-[#A1C217]";
 }
 
 export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
@@ -349,7 +349,7 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
                           onClick={() => setSportSkill(sportKey, option.value)}
                           className={`ob-lift rounded-full border px-3 py-1.5 text-xs font-medium ${
                             level === option.value
-                              ? "border-[#C9F31D] bg-[#C9F31D] text-black"
+                              ? "border-[#A1C217] bg-[#A1C217] text-black"
                               : "border-[#2a2a2a] bg-[#0d0d0d] text-[#a3a3a3] hover:text-white"
                           }`}
                         >
@@ -439,7 +439,7 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
         return (
           <div className="flex flex-1 flex-col px-6 pb-8 pt-4">
             <div className="flex flex-col items-center text-center">
-              <div className="ob-success-badge mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[#C9F31D]">
+              <div className="ob-success-badge mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[#A1C217]">
                 <Trophy className="h-8 w-8 text-black" />
               </div>
               <h1 className="ob-reveal text-2xl font-bold text-white">You&apos;re all set!</h1>
@@ -450,11 +450,11 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
 
             <div className="mt-8 grid grid-cols-2 gap-3">
               <div className="rounded-xl bg-[#161616] p-4 text-center">
-                <p className="text-2xl font-bold text-[#C9F31D]">247</p>
+                <p className="text-2xl font-bold text-[#A1C217]">247</p>
                 <p className="mt-1 text-xs text-gray-500">Players near you</p>
               </div>
               <div className="rounded-xl bg-[#161616] p-4 text-center">
-                <p className="text-2xl font-bold text-[#C9F31D]">12</p>
+                <p className="text-2xl font-bold text-[#A1C217]">12</p>
                 <p className="mt-1 text-xs text-gray-500">Active games today</p>
               </div>
             </div>
@@ -472,7 +472,7 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
                   return (
                     <span
                       key={sportKey}
-                      className="rounded-full bg-[#C9F31D] px-3 py-1.5 text-xs font-medium text-black"
+                      className="rounded-full bg-[#A1C217] px-3 py-1.5 text-xs font-medium text-black"
                     >
                       {getOnboardingSportEmoji(sportKey)}{" "}
                       {getOnboardingSportLabel(sportKey)} {levelLabel}
@@ -536,7 +536,7 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(180deg, rgba(13,13,13,0.25) 0%, rgba(13,13,13,0.95) 78%), radial-gradient(90% 60% at 15% 0%, rgba(201,243,29,0.16) 0%, rgba(13,13,13,0) 55%)",
+              "linear-gradient(180deg, rgba(13,13,13,0.25) 0%, rgba(13,13,13,0.95) 78%), radial-gradient(90% 60% at 15% 0%, rgba(161,194,23,0.16) 0%, rgba(13,13,13,0) 55%)",
           }}
         />
         <span

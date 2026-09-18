@@ -1,7 +1,7 @@
 import { MapPin, MessageCircle, Radio, Trophy } from "lucide-react";
 import Link from "next/link";
 
-const VOLT = "#C9F31D";
+const VOLT = "#A1C217";
 const BG = "#0d0d0d";
 const CARD = "#161616";
 const MUTED = "#a3a3a3";
@@ -604,7 +604,7 @@ export function PlayFinderLanding() {
             style={{
               padding: "64px 72px",
               borderRadius: 24,
-              background: `radial-gradient(120% 140% at 20% 0%, rgba(201,243,29,0.12) 0%, rgba(22,22,22,0) 60%), ${CARD}`,
+              background: `radial-gradient(120% 140% at 20% 0%, rgba(161,194,23,0.12) 0%, rgba(22,22,22,0) 60%), ${CARD}`,
               border: `1px solid ${BORDER}`,
             }}
           >

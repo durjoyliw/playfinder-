@@ -43,7 +43,7 @@ export function SportsSearchPicker({ selected, onChange }: SportsSearchPickerPro
           onFocus={() => setFocused(true)}
           onBlur={() => setTimeout(() => setFocused(false), 150)}
           placeholder="Search sports..."
-          className="w-full rounded-xl border border-[#333] bg-[#1a1a1a] px-4 py-3.5 text-base text-white placeholder:text-[#6b6b6b] focus:border-[#C9F31D] focus:outline-none"
+          className="w-full rounded-xl border border-[#333] bg-[#1a1a1a] px-4 py-3.5 text-base text-white placeholder:text-[#6b6b6b] focus:border-[#A1C217] focus:outline-none"
         />
         {showDropdown && (
           <ul className="ob-dropdown-in absolute z-20 mt-1 max-h-52 w-full overflow-auto rounded-xl border border-[#333] bg-[#1a1a1a] py-1 shadow-lg">
@@ -67,7 +67,7 @@ export function SportsSearchPicker({ selected, onChange }: SportsSearchPickerPro
                         {sport.emoji} {sport.name}
                       </span>
                       {isSelected ? (
-                        <Check className="h-5 w-5 text-[#C9F31D]" />
+                        <Check className="h-5 w-5 text-[#A1C217]" />
                       ) : (
                         <Plus className="h-5 w-5 text-gray-500" />
                       )}
@@ -98,7 +98,7 @@ export function SportsSearchPicker({ selected, onChange }: SportsSearchPickerPro
                   className={cn(
                     "ob-lift rounded-full border px-3 py-1.5 text-sm font-medium",
                     isSelected
-                      ? "border-[#C9F31D] bg-[#C9F31D] text-black"
+                      ? "border-[#A1C217] bg-[#A1C217] text-black"
                       : "border-[#333] bg-[#161616] text-white hover:border-[#444]",
                   )}
                 >
@@ -124,7 +124,7 @@ export function SportsSearchPicker({ selected, onChange }: SportsSearchPickerPro
               return (
                 <span
                   key={id}
-                  className="ob-lift inline-flex items-center gap-1.5 rounded-full bg-[#C9F31D] px-3 py-1.5 text-sm font-medium text-black"
+                  className="ob-lift inline-flex items-center gap-1.5 rounded-full bg-[#A1C217] px-3 py-1.5 text-sm font-medium text-black"
                 >
                   {sport.emoji} {sport.name}
                   <button
