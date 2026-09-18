@@ -30,10 +30,19 @@ interface NavItem {
 
 interface DesktopSidebarProps {
   initialUnreadNotificationCount: number;
+  /**
+   * X-style collapsed rail: logo + icons only, no labels. Used on routes
+   * whose own content already fills the middle+right area (Discover,
+   * Messages), so that extra width goes to that content instead of sitting
+   * empty -- while the sidebar's own items/hrefs/badges stay identical, so
+   * nothing about what it can do changes, only how it's drawn.
+   */
+  collapsed?: boolean;
 }
 
 export function DesktopSidebar({
   initialUnreadNotificationCount,
+  collapsed = false,
 }: DesktopSidebarProps) {
   const pathname = usePathname();
   const { user } = useSession();
@@ -89,6 +98,74 @@ export function DesktopSidebar({
       isActive: (p) => p.startsWith("/settings"),
     },
   ];
+
+  if (collapsed) {
+    return (
+      <div className="sticky top-0 hidden h-screen w-[88px] shrink-0 flex-col items-center py-3 font-grotesk lg:flex">
+        <Link
+          href="/home"
+          className="mb-2 flex items-center justify-center rounded-full p-2.5 transition-colors hover:bg-[#131614]"
+          aria-label="PlayFinder home"
+        >
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[11px] bg-[#a1c217] text-[#0a0b0a]">
+            <Zap className="h-5 w-5" fill="currentColor" />
+          </span>
+        </Link>
+
+        <nav className="flex flex-col items-center gap-1">
+          {navItems.map((item) => {
+            const active = item.isActive(pathname);
+            return (
+              <Link
+                key={item.id}
+                href={item.href}
+                title={item.label}
+                aria-label={item.label}
+                className={cn(
+                  "grid h-12 w-12 place-items-center rounded-full transition-colors hover:bg-[#131614]",
+                  active ? "text-[#f2f5ef]" : "text-[#b4bcaf]",
+                )}
+              >
+                <span className="relative">
+                  <item.icon className="h-6 w-6" />
+                  {!!item.badge && item.badge > 0 && (
+                    <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full border-2 border-[#08090a] bg-[#a1c217] px-1 font-dm-mono text-[9px] font-bold text-[#0a0b0a]">
+                      {item.badge > 9 ? "9+" : item.badge}
+                    </span>
+                  )}
+                </span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        <button
+          type="button"
+          onClick={() => openComposer()}
+          aria-label="Broadcast"
+          title="Broadcast"
+          className="mt-4 grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[#a1c217] text-[#0a0b0a] transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.97]"
+        >
+          <Zap className="h-6 w-6" fill="currentColor" />
+        </button>
+
+        <Link
+          href={profileHref}
+          title={user.displayName}
+          aria-label={user.displayName}
+          className="mt-auto flex items-center justify-center rounded-full p-2.5 transition-colors hover:bg-[#131614]"
+        >
+          <div className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full bg-[#a1c217] text-[13px] font-bold text-[#0a0b0a]">
+            {user.avatarUrl ? (
+              <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" />
+            ) : (
+              getInitials(user.displayName).slice(0, 1)
+            )}
+          </div>
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="sticky top-0 hidden h-screen w-[275px] shrink-0 flex-col py-3 pl-6 pr-3 font-grotesk lg:flex">
