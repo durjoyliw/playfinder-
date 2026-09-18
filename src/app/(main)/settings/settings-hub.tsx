@@ -3,14 +3,12 @@
 import { logout } from "@/app/(auth)/actions";
 import { useSession } from "@/app/(main)/SessionProvider";
 import { useToast } from "@/components/ui/use-toast";
-import {
-  getInitials,
-  getProfileIntentLabel,
-} from "@/lib/settings";
+import { getInitials, getProfileIntentLabel } from "@/lib/settings";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   BarChart3,
   Ban,
+  Bell,
   FileText,
   MessageCircle,
   Info,
@@ -124,6 +122,11 @@ export function SettingsHub() {
             icon={<Zap className="h-5 w-5" />}
             label="Intent Status"
             value={intentLabel}
+          />
+          <SettingsRow
+            href="/settings/notifications"
+            icon={<Bell className="h-5 w-5" />}
+            label="Notifications"
           />
         </SettingsSection>
 

@@ -2,17 +2,72 @@ import UserAvatar from "@/components/UserAvatar";
 import { NotificationData } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { NotificationType } from "@prisma/client";
-import { Heart, MessageCircle, User2 } from "lucide-react";
+import {
+  Bell,
+  Calendar,
+  Flame,
+  Heart,
+  MessageCircle,
+  User2,
+} from "lucide-react";
 import Link from "next/link";
 
 interface NotificationProps {
   notification: NotificationData;
 }
 
+const SYSTEM_TYPES: readonly NotificationType[] = [
+  "NEARBY_GAMES",
+  "INACTIVITY_NUDGE",
+  "TRENDING_POST",
+];
+
 export default function Notification({ notification }: NotificationProps) {
-  const notificationTypeMap: Record<
-    Exclude<NotificationType, "GAME_INTEREST">,
-    { message: string; icon: JSX.Element; href: string }
+  // System-generated notifications (nearby games, inactivity nudges,
+  // trending) have no issuer -- they render from `body` with a generic
+  // icon instead of a person's avatar and name.
+  if (SYSTEM_TYPES.includes(notification.type)) {
+    const systemIconMap: Record<string, JSX.Element> = {
+      NEARBY_GAMES: <Calendar className="size-7 text-[#A1C217]" />,
+      INACTIVITY_NUDGE: <Bell className="size-7 text-[#A1C217]" />,
+      TRENDING_POST: <Flame className="size-7 text-[#EF9F27]" />,
+    };
+    const href =
+      notification.type === "TRENDING_POST"
+        ? "/discover"
+        : notification.type === "NEARBY_GAMES"
+          ? "/discover"
+          : "/home";
+
+    return (
+      <Link href={href} className="block">
+        <article
+          className={cn(
+            "flex gap-3 rounded-2xl bg-card p-5 shadow-sm transition-colors hover:bg-card/70",
+            !notification.read && "bg-primary/10",
+          )}
+        >
+          <div className="my-1">{systemIconMap[notification.type]}</div>
+          <div className="space-y-1">
+            <div className="grid h-9 w-9 place-items-center rounded-full bg-[#A1C217]/15 text-xs font-bold text-[#A1C217]">
+              PF
+            </div>
+            <div>{notification.body ?? "You have a new notification"}</div>
+          </div>
+        </article>
+      </Link>
+    );
+  }
+
+  if (!notification.issuer) {
+    return null;
+  }
+
+  const notificationTypeMap: Partial<
+    Record<
+      NotificationType,
+      { message: string; icon: JSX.Element; href: string }
+    >
   > = {
     FOLLOW: {
       message: `${notification.issuer.displayName} followed you`,

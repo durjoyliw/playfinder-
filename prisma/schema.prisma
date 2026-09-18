@@ -39,6 +39,7 @@ model User {
   blockedBy             Block[]        @relation("Blocking")
   muting                Mute[]         @relation("MutedBy")
   mutedBy               Mute[]         @relation("Muting")
+  pushSubscriptions     PushSubscription[]
   likes                 Like[]
   bookmarks             Bookmark[]
   comments              Comment[]
@@ -313,15 +314,18 @@ model Notification {
   id          String           @id @default(cuid())
   recipientId String
   recipient   User             @relation("Recipient", fields: [recipientId], references: [id], onDelete: Cascade)
-  issuerId    String
-  issuer      User             @relation("Issuer", fields: [issuerId], references: [id], onDelete: Cascade)
+  issuerId    String?
+  issuer      User?            @relation("Issuer", fields: [issuerId], references: [id], onDelete: Cascade)
   postId      String?
   post        Post?            @relation(fields: [postId], references: [id], onDelete: Cascade)
   type        NotificationType
+  /** Freeform text for system-generated notifications (nearby games, inactivity nudges, trending) that have no issuer. */
+  body        String?
   read        Boolean          @default(false)
 
   createdAt DateTime @default(now())
 
+  @@index([recipientId, type, createdAt])
   @@map("notifications")
 }
 
@@ -346,6 +350,9 @@ enum NotificationType {
   TEAMMATE
   MESSAGE_REQUEST
   GAME_INTEREST
+  NEARBY_GAMES
+  INACTIVITY_NUDGE
+  TRENDING_POST
 }
 
 model PostInterest {
@@ -359,6 +366,19 @@ model PostInterest {
 
   @@unique([postId, userId])
   @@map("post_interests")
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("push_subscriptions")
 }
 
 model Block {
