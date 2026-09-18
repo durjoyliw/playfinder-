@@ -27,6 +27,8 @@ model User {
   location              String?
   profileIntent         ProfileIntent?
   completedOnboarding   Boolean                @default(false)
+  role                  UserRole               @default(USER)
+  status                UserStatus             @default(ACTIVE)
   sessions              Session[]
   posts                 Post[]
   sports                UserSport[]
@@ -44,10 +46,23 @@ model User {
   sentMessageRequests     MessageRequest[] @relation("MessageRequestsSent")
   receivedMessageRequests MessageRequest[] @relation("MessageRequestsReceived")
   interests               PostInterest[]
+  reports                 Report[]
 
   createdAt DateTime @default(now())
 
   @@map("users")
+}
+
+enum UserRole {
+  USER
+  MODERATOR
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  BANNED
 }
 
 model UserSport {
@@ -356,4 +371,32 @@ model Mute {
   muter     User     @relation("MutedBy", fields: [muterId], references: [id], onDelete: Cascade)
   muted     User     @relation("Muting", fields: [mutedId], references: [id], onDelete: Cascade)
   @@unique([muterId, mutedId])
+}
+
+model Report {
+  id         String   @id @default(cuid())
+  reporterId String
+  reporter   User     @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  targetType String
+  targetId   String
+  reason     String
+  status     String   @default("OPEN")
+  createdAt  DateTime @default(now())
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("reports")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  adminId    String
+  action     String
+  targetType String
+  targetId   String
+  reason     String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@map("audit_logs")
 }
