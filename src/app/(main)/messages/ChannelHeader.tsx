@@ -3,20 +3,20 @@
 import { useToast } from "@/components/ui/use-toast";
 import kyInstance from "@/lib/ky";
 import { cn } from "@/lib/utils";
-import { ArrowLeft, MoreVertical } from "lucide-react";
+import { ArrowLeft, MoreVertical, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  useChannelStateContext,
-  useChatContext,
-} from "stream-chat-react";
+import { useChannelStateContext, useChatContext } from "stream-chat-react";
 import { useSession } from "../SessionProvider";
 import {
   formatLastSeen,
+  getGroupDisplayName,
   getInitials,
   getOtherMember,
+  getOtherMembers,
   getPostContext,
+  isGroupChannel,
 } from "./messages-utils";
 
 export default function ChannelHeader() {
@@ -29,10 +29,16 @@ export default function ChannelHeader() {
   const [isMuted, setIsMuted] = useState(false);
   const [blockConfirmOpen, setBlockConfirmOpen] = useState(false);
   const [blockPending, setBlockPending] = useState(false);
+  const [groupInfoOpen, setGroupInfoOpen] = useState(false);
+  const [leavePending, setLeavePending] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  const isGroup = isGroupChannel(channel);
   const other = getOtherMember(channel, sessionUser.id);
-  const displayName = other?.name ?? "Chat";
+  const otherMembers = getOtherMembers(channel, sessionUser.id);
+  const displayName = isGroup
+    ? getGroupDisplayName(channel, sessionUser.id)
+    : other?.name ?? "Chat";
   const postContext = getPostContext(channel);
 
   useEffect(() => {
@@ -88,6 +94,25 @@ export default function ChannelHeader() {
     setMenuOpen(false);
   }, [channel, router, setActiveChannel, toast]);
 
+  const leaveGroup = useCallback(async () => {
+    setLeavePending(true);
+    try {
+      await channel.removeMembers([sessionUser.id]);
+      setActiveChannel(undefined);
+      router.push("/messages");
+      toast({ description: "You left the group" });
+    } catch (error) {
+      console.error("Leave group failed", error);
+      toast({
+        variant: "destructive",
+        description: "Could not leave the group",
+      });
+    } finally {
+      setLeavePending(false);
+      setMenuOpen(false);
+    }
+  }, [channel, router, sessionUser.id, setActiveChannel, toast]);
+
   const confirmBlockUser = useCallback(async () => {
     const otherId = other?.id;
     if (!otherId) return;
@@ -111,9 +136,7 @@ export default function ChannelHeader() {
     }
   }, [displayName, other?.id, router, setActiveChannel, toast]);
 
-  const profileHref = other?.username
-    ? `/users/${other.username}`
-    : undefined;
+  const profileHref = other?.username ? `/users/${other.username}` : undefined;
 
   return (
     <div className="flex-shrink-0 border-b border-[#262626] bg-[#0d0d0d]">
@@ -127,7 +150,9 @@ export default function ChannelHeader() {
         </Link>
 
         <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-sm font-bold text-black">
-          {other?.image ? (
+          {isGroup ? (
+            getInitials(displayName)
+          ) : other?.image ? (
             <img
               src={other.image as string}
               alt=""
@@ -141,7 +166,9 @@ export default function ChannelHeader() {
         <div className="min-w-0 flex-1">
           <p className="truncate font-bold text-white">{displayName}</p>
           <p className="text-xs text-[#888888]">
-            {formatLastSeen(other?.last_active, other?.online)}
+            {isGroup
+              ? `${otherMembers.length + 1} members`
+              : formatLastSeen(other?.last_active, other?.online)}
           </p>
         </div>
 
@@ -157,7 +184,18 @@ export default function ChannelHeader() {
 
           {menuOpen && (
             <div className="absolute right-0 top-10 z-50 min-w-[180px] overflow-hidden rounded-xl border border-[#333] bg-[#1a1a1a] py-1 shadow-lg">
-              {profileHref ? (
+              {isGroup ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setGroupInfoOpen(true);
+                    setMenuOpen(false);
+                  }}
+                  className="block w-full px-4 py-2.5 text-left text-sm text-white transition-colors hover:bg-[#2a2a2a]"
+                >
+                  Group info
+                </button>
+              ) : profileHref ? (
                 <Link
                   href={profileHref}
                   className="block w-full px-4 py-2.5 text-left text-sm text-white transition-colors hover:bg-[#2a2a2a]"
@@ -181,20 +219,33 @@ export default function ChannelHeader() {
               >
                 {isMuted ? "Unmute notifications" : "Mute notifications"}
               </button>
-              <button
-                type="button"
-                onClick={deleteConversation}
-                className="block w-full px-4 py-2.5 text-left text-sm text-white transition-colors hover:bg-[#2a2a2a]"
-              >
-                Delete conversation
-              </button>
-              <button
-                type="button"
-                onClick={() => setBlockConfirmOpen(true)}
-                className="block w-full px-4 py-2.5 text-left text-sm text-red-400 transition-colors hover:bg-[#2a2a2a]"
-              >
-                Block {displayName}
-              </button>
+              {isGroup ? (
+                <button
+                  type="button"
+                  disabled={leavePending}
+                  onClick={() => void leaveGroup()}
+                  className="block w-full px-4 py-2.5 text-left text-sm text-red-400 transition-colors hover:bg-[#2a2a2a] disabled:opacity-60"
+                >
+                  Leave group
+                </button>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={deleteConversation}
+                    className="block w-full px-4 py-2.5 text-left text-sm text-white transition-colors hover:bg-[#2a2a2a]"
+                  >
+                    Delete conversation
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setBlockConfirmOpen(true)}
+                    className="block w-full px-4 py-2.5 text-left text-sm text-red-400 transition-colors hover:bg-[#2a2a2a]"
+                  >
+                    Block {displayName}
+                  </button>
+                </>
+              )}
             </div>
           )}
         </div>
@@ -239,6 +290,72 @@ export default function ChannelHeader() {
           >
             {postContext.label}
           </span>
+        </div>
+      )}
+
+      {groupInfoOpen && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 px-6"
+          onClick={() => setGroupInfoOpen(false)}
+        >
+          <div
+            className="w-full max-w-sm rounded-2xl border border-[#2a2a2a] bg-[#161616] p-5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <p className="text-lg font-bold text-white">{displayName}</p>
+              <button
+                type="button"
+                onClick={() => setGroupInfoOpen(false)}
+                className="rounded-full p-1 text-[#888888] hover:bg-[#1a1a1a] hover:text-white"
+                aria-label="Close"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[#888888]">
+              {otherMembers.length + 1} members
+            </p>
+            <div className="max-h-72 space-y-1 overflow-y-auto">
+              <div className="flex items-center gap-3 rounded-xl px-2 py-2">
+                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-xs font-bold text-black">
+                  {sessionUser.avatarUrl ? (
+                    <img
+                      src={sessionUser.avatarUrl}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    getInitials(sessionUser.displayName)
+                  )}
+                </div>
+                <p className="truncate text-sm font-semibold text-white">You</p>
+              </div>
+              {otherMembers.map((member) => (
+                <Link
+                  key={member.id}
+                  href={member.username ? `/users/${member.username}` : "#"}
+                  onClick={() => setGroupInfoOpen(false)}
+                  className="flex items-center gap-3 rounded-xl px-2 py-2 transition-colors hover:bg-[#1f1f1f]"
+                >
+                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-xs font-bold text-black">
+                    {member.image ? (
+                      <img
+                        src={member.image as string}
+                        alt=""
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      getInitials(member.name ?? member.id)
+                    )}
+                  </div>
+                  <p className="truncate text-sm font-semibold text-white">
+                    {member.name ?? member.id}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -1,5 +1,10 @@
 import type { Channel, FormatMessageResponse, UserResponse } from "stream-chat";
-import { format, formatDistanceToNowStrict, isToday, isYesterday } from "date-fns";
+import {
+  format,
+  formatDistanceToNowStrict,
+  isToday,
+  isYesterday,
+} from "date-fns";
 
 export const VOLT_GREEN = "#A1C217";
 
@@ -33,7 +38,9 @@ export function getInitials(name: string): string {
     .toUpperCase();
 }
 
-export function formatConversationTime(date: Date | string | undefined): string {
+export function formatConversationTime(
+  date: Date | string | undefined,
+): string {
   if (!date) return "";
   const d = typeof date === "string" ? new Date(date) : date;
   const now = Date.now();
@@ -68,8 +75,7 @@ export function formatLastSeen(
 ): string {
   if (online) return "Online";
   if (!lastActive) return "Offline";
-  const d =
-    typeof lastActive === "string" ? new Date(lastActive) : lastActive;
+  const d = typeof lastActive === "string" ? new Date(lastActive) : lastActive;
   return `Last seen ${formatDistanceToNowStrict(d, { addSuffix: true })}`;
 }
 
@@ -79,6 +85,71 @@ export function getOtherMember(
 ): UserResponse | undefined {
   const members = Object.values(channel.state.members ?? {});
   return members.find((m) => m.user?.id && m.user.id !== currentUserId)?.user;
+}
+
+export function getOtherMembers(
+  channel: Channel,
+  currentUserId: string,
+): UserResponse[] {
+  const members = Object.values(channel.state.members ?? {});
+  return members
+    .filter((m) => m.user?.id && m.user.id !== currentUserId)
+    .map((m) => m.user!)
+    .filter(Boolean);
+}
+
+/** A channel counts as a group once it has more than one other member. */
+export function isGroupChannel(channel: Channel): boolean {
+  return Object.keys(channel.state.members ?? {}).length > 2;
+}
+
+export function getGroupDisplayName(
+  channel: Channel,
+  currentUserId: string,
+): string {
+  const explicitName = (channel.data as { name?: string } | undefined)?.name;
+  if (explicitName?.trim()) return explicitName.trim();
+
+  const others = getOtherMembers(channel, currentUserId);
+  const names = others.map((u) => u.name ?? u.username ?? u.id);
+  if (names.length <= 3) return names.join(", ");
+  return `${names.slice(0, 2).join(", ")} +${names.length - 2} more`;
+}
+
+export type MessageTickStatus = "sent" | "delivered" | "seen";
+
+/**
+ * WhatsApp-style read state for a message the current user sent:
+ * - "seen": every other member's last_read is at/after the message time
+ *   (double tick, rendered in the app's accent green)
+ * - "delivered": nobody has read it yet, but at least one other member is
+ *   currently online (double tick, neutral colour)
+ * - "sent": nobody online has read it (single tick)
+ */
+export function getMessageTickStatus(
+  channel: Channel,
+  message: { created_at?: string | Date },
+  currentUserId: string,
+): MessageTickStatus {
+  const others = getOtherMembers(channel, currentUserId);
+  if (others.length === 0) return "sent";
+
+  const messageTime = message.created_at
+    ? new Date(message.created_at).getTime()
+    : 0;
+
+  const readState = channel.state.read ?? {};
+
+  const allSeen = others.every((other) => {
+    const read = readState[other.id];
+    if (!read?.last_read) return false;
+    return new Date(read.last_read).getTime() >= messageTime;
+  });
+
+  if (allSeen && messageTime > 0) return "seen";
+
+  const anyOnline = others.some((other) => other.online === true);
+  return anyOnline ? "delivered" : "sent";
 }
 
 export function channelMatchesSearch(
@@ -94,8 +165,7 @@ export function channelMatchesSearch(
   const username = (other?.username ?? "").toLowerCase();
   const lastMessage = channel.state.messages?.at(-1);
   const preview = (
-    lastMessage?.text ??
-    (lastMessage?.attachments?.length ? "attachment" : "")
+    lastMessage?.text ?? (lastMessage?.attachments?.length ? "attachment" : "")
   ).toLowerCase();
 
   return name.includes(q) || username.includes(q) || preview.includes(q);

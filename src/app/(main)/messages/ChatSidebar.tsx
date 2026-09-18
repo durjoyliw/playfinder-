@@ -15,8 +15,10 @@ import {
   channelMatchesSearch,
   formatConversationTime,
   getChannelRequestData,
+  getGroupDisplayName,
   getInitials,
   getOtherMember,
+  isGroupChannel,
 } from "./messages-utils";
 import NewChatDialog from "./NewChatDialog";
 
@@ -27,17 +29,27 @@ function isIncomingRequest(channel: Channel, currentUserId: string) {
   return pending && requestedBy !== currentUserId;
 }
 
-function ConversationPreview({
-  channel,
-}: ChannelPreviewUIComponentProps) {
+function ConversationPreview({ channel }: ChannelPreviewUIComponentProps) {
   const router = useRouter();
   const { user } = useSession();
+  const isGroup = isGroupChannel(channel);
   const other = getOtherMember(channel, user.id);
-  const displayName = other?.name ?? other?.id ?? "Conversation";
+  const displayName = isGroup
+    ? getGroupDisplayName(channel, user.id)
+    : other?.name ?? other?.id ?? "Conversation";
   const lastMessage = channel.state.messages?.at(-1);
-  const previewText =
+  const lastSenderName =
+    isGroup && lastMessage?.user?.id
+      ? lastMessage.user.id === user.id
+        ? "You"
+        : lastMessage.user.name ?? lastMessage.user.id
+      : null;
+  const previewBody =
     lastMessage?.text ??
     (lastMessage?.attachments?.length ? "Attachment" : "No messages yet");
+  const previewText = lastSenderName
+    ? `${lastSenderName}: ${previewBody}`
+    : previewBody;
   const unread = channel.countUnread() ?? 0;
   const lastAt =
     channel.state.last_message_at ??
@@ -54,7 +66,9 @@ function ConversationPreview({
       className="flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-[#161616] active:bg-[#1f1f1f]"
     >
       <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-sm font-bold text-black">
-        {other?.image ? (
+        {isGroup ? (
+          <span className="text-[13px]">{getInitials(displayName)}</span>
+        ) : other?.image ? (
           <img
             src={other.image}
             alt=""
@@ -140,10 +154,12 @@ export default function ConversationsList() {
           return false;
         }
 
-        const other = getOtherMember(ch, user.id);
-        const otherId = other?.id;
-        if (otherId && blockedUserIdsMemo.has(otherId)) {
-          return false;
+        if (!isGroupChannel(ch)) {
+          const other = getOtherMember(ch, user.id);
+          const otherId = other?.id;
+          if (otherId && blockedUserIdsMemo.has(otherId)) {
+            return false;
+          }
         }
 
         return channelMatchesSearch(ch, searchQuery, user.id);
@@ -157,7 +173,7 @@ export default function ConversationsList() {
   };
 
   return (
-    <div className="flex h-full min-h-0 flex-1 w-full flex-col bg-[#0d0d0d]">
+    <div className="flex h-full min-h-0 w-full flex-1 flex-col bg-[#0d0d0d]">
       <div className="flex items-center justify-between px-4 pb-2 pt-4">
         <h1 className="text-2xl font-bold text-white">Messages</h1>
         <div className="flex items-center gap-1">

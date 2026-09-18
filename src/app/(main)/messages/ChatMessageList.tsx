@@ -1,24 +1,25 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { Check, CheckCheck } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { FormatMessageResponse } from "stream-chat";
-import {
-  useChannelStateContext,
-  useChatContext,
-} from "stream-chat-react";
+import { useChannelStateContext, useChatContext } from "stream-chat-react";
 import { useSession } from "../SessionProvider";
 import { useChatComposer } from "./chat-composer-context";
 import EmptyChatState from "./EmptyChatState";
 import MessageContextMenu from "./MessageContextMenu";
+import PostShareCard from "./PostShareCard";
 import ReactionPicker from "./ReactionPicker";
 import {
   emojiForReactionType,
   formatDateSeparator,
   formatMessageTime,
   getInitials,
+  getMessageTickStatus,
   getOtherMember,
   isConsecutiveMessage,
+  isGroupChannel,
   isSameDay,
   streamTypeForEmoji,
 } from "./messages-utils";
@@ -31,9 +32,7 @@ export default function ChatMessageList() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
-  const [reactionTargetId, setReactionTargetId] = useState<string | null>(
-    null,
-  );
+  const [reactionTargetId, setReactionTargetId] = useState<string | null>(null);
   const [contextMenu, setContextMenu] = useState<{
     message: FormatMessageResponse;
     x: number;
@@ -41,11 +40,27 @@ export default function ChatMessageList() {
   } | null>(null);
 
   const other = getOtherMember(channel, user.id);
+  const isGroup = isGroupChannel(channel);
   const typingUsers = Object.values(channel.state.typing ?? {}).filter(
     (t) => t.user?.id && t.user.id !== user.id,
   );
   const typingName =
     typingUsers[0]?.user?.name ?? typingUsers[0]?.user?.id ?? "Someone";
+
+  const [, setReadRevision] = useState(0);
+  useEffect(() => {
+    const bump = () => setReadRevision((r) => r + 1);
+    channel.on("message.read", bump);
+    channel.on("user.presence.changed", bump);
+    channel.on("user.watching.start", bump);
+    channel.on("user.watching.stop", bump);
+    return () => {
+      channel.off("message.read", bump);
+      channel.off("user.presence.changed", bump);
+      channel.off("user.watching.start", bump);
+      channel.off("user.watching.stop", bump);
+    };
+  }, [channel]);
 
   const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
     bottomRef.current?.scrollIntoView({ behavior });
@@ -119,8 +134,7 @@ export default function ChatMessageList() {
       {messages.map((message, index) => {
         const prev = messages[index - 1];
         const showDate =
-          !prev ||
-          !isSameDay(prev.created_at ?? "", message.created_at ?? "");
+          !prev || !isSameDay(prev.created_at ?? "", message.created_at ?? "");
         const isMe = message.user?.id === user.id;
         const grouped = isConsecutiveMessage(prev, message);
         const showAvatar = !isMe && !grouped;
@@ -144,14 +158,20 @@ export default function ChatMessageList() {
                 <div className="mr-2 w-8 flex-shrink-0">
                   {showAvatar && (
                     <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-xs font-bold text-black">
-                      {other?.image ? (
+                      {(isGroup ? message.user?.image : other?.image) ? (
                         <img
-                          src={other.image}
+                          src={
+                            (isGroup
+                              ? message.user?.image
+                              : other?.image) as string
+                          }
                           alt=""
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        getInitials(other?.name ?? "?")
+                        getInitials(
+                          (isGroup ? message.user?.name : other?.name) ?? "?",
+                        )
                       )}
                     </div>
                   )}
@@ -164,43 +184,58 @@ export default function ChatMessageList() {
                   isMe ? "items-end" : "items-start",
                 )}
               >
-                <button
-                  type="button"
-                  className={cn(
-                    "block w-full text-left",
-                    isMe
-                      ? "rounded-2xl rounded-tr-sm bg-[#A1C217] px-4 py-2.5 text-black"
-                      : "rounded-2xl rounded-tl-sm bg-[#2a2a2a] px-4 py-2.5 text-white",
-                  )}
-                  onClick={() =>
-                    setReactionTargetId((id) =>
-                      id === message.id ? null : message.id,
-                    )
-                  }
-                  {...bindLongPress(message)}
-                >
-                  {message.attachments?.map((att, i) =>
-                    att.type === "image" && att.image_url ? (
-                      <img
-                        key={i}
-                        src={att.image_url}
-                        alt=""
-                        className="mb-1 max-h-48 rounded-lg object-cover"
-                      />
-                    ) : null,
-                  )}
-                  {message.text ? (
-                    <span className="whitespace-pre-wrap break-words text-sm">
-                      {message.text}
-                    </span>
-                  ) : null}
-                </button>
+                {isGroup && !isMe && showAvatar && message.user?.name && (
+                  <p className="mb-0.5 ml-1 text-[11px] font-semibold text-[#888888]">
+                    {message.user.name}
+                  </p>
+                )}
+
+                {message.attachments?.some((a) => a.type === "post_share") ? (
+                  <PostShareCard
+                    attachment={
+                      message.attachments.find((a) => a.type === "post_share")!
+                    }
+                    isMe={isMe}
+                  />
+                ) : (
+                  <button
+                    type="button"
+                    className={cn(
+                      "block w-full text-left",
+                      isMe
+                        ? "rounded-2xl rounded-tr-sm bg-[#A1C217] px-4 py-2.5 text-black"
+                        : "rounded-2xl rounded-tl-sm bg-[#2a2a2a] px-4 py-2.5 text-white",
+                    )}
+                    onClick={() =>
+                      setReactionTargetId((id) =>
+                        id === message.id ? null : message.id,
+                      )
+                    }
+                    {...bindLongPress(message)}
+                  >
+                    {message.attachments?.map((att, i) =>
+                      att.type === "image" && att.image_url ? (
+                        <img
+                          key={i}
+                          src={att.image_url}
+                          alt=""
+                          className="mb-1 max-h-48 rounded-lg object-cover"
+                        />
+                      ) : null,
+                    )}
+                    {message.text ? (
+                      <span className="whitespace-pre-wrap break-words text-sm">
+                        {message.text}
+                      </span>
+                    ) : null}
+                  </button>
+                )}
 
                 {reactionTargetId === message.id && (
                   <div
                     className={cn(
                       "absolute z-30",
-                      isMe ? "right-0 -top-10" : "left-0 -top-10",
+                      isMe ? "-top-10 right-0" : "-top-10 left-0",
                     )}
                   >
                     <ReactionPicker
@@ -233,13 +268,14 @@ export default function ChatMessageList() {
 
                 <p
                   className={cn(
-                    "mt-0.5 text-[10px] text-[#888888]",
-                    isMe ? "text-right" : "text-left",
+                    "mt-0.5 flex items-center gap-1 text-[10px] text-[#888888]",
+                    isMe ? "justify-end" : "justify-start",
                   )}
                 >
                   {message.created_at
                     ? formatMessageTime(message.created_at)
                     : ""}
+                  {isMe && <MessageTick channel={channel} message={message} />}
                 </p>
               </div>
             </div>
@@ -282,4 +318,23 @@ export default function ChatMessageList() {
       )}
     </div>
   );
+}
+
+function MessageTick({
+  channel,
+  message,
+}: {
+  channel: ReturnType<typeof useChannelStateContext>["channel"];
+  message: FormatMessageResponse;
+}) {
+  const { user } = useSession();
+  const status = getMessageTickStatus(channel, message, user.id);
+
+  if (status === "seen") {
+    return <CheckCheck className="h-3.5 w-3.5 text-[#A1C217]" />;
+  }
+  if (status === "delivered") {
+    return <CheckCheck className="h-3.5 w-3.5 text-[#888888]" />;
+  }
+  return <Check className="h-3.5 w-3.5 text-[#888888]" />;
 }

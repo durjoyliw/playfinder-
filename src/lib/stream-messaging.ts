@@ -44,23 +44,44 @@ export async function ensureDirectMessageChannel(
   return channel;
 }
 
+export async function upsertStreamUsersMany(users: StreamChatUser[]) {
+  await streamServerClient.upsertUsers(
+    users.map((u) => ({
+      id: u.id,
+      name: u.displayName,
+      username: u.username,
+    })),
+  );
+}
+
+export async function createGroupChannel(
+  creatorId: string,
+  memberIds: string[],
+  name: string | undefined,
+) {
+  const channel = streamServerClient.channel("messaging", {
+    members: Array.from(new Set([creatorId, ...memberIds])),
+    created_by_id: creatorId,
+    name: name?.trim() || undefined,
+  });
+
+  await channel.create();
+  return channel;
+}
+
 export async function createPendingMessageRequestChannel(
   fromUserId: string,
   toUserId: string,
   messageRequestId: string,
 ) {
-  const channel = streamServerClient.channel(
-    "messaging",
+  const channel = streamServerClient.channel("messaging", messageRequestId, {
+    members: [fromUserId, toUserId],
+    created_by_id: fromUserId,
+    pending: true,
+    requestedBy: fromUserId,
     messageRequestId,
-    {
-      members: [fromUserId, toUserId],
-      created_by_id: fromUserId,
-      pending: true,
-      requestedBy: fromUserId,
-      messageRequestId,
-      messageLocked: false,
-    },
-  );
+    messageLocked: false,
+  });
 
   await channel.create();
   return channel;
