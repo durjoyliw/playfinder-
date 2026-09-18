@@ -107,37 +107,45 @@ export function HomeFeedCard({
     </>
   );
 
+  const imInRow = showImInButton && isLookingToPlay && !isOwnPost && (
+    <div className="mb-3">
+      <FeedCardImInButton
+        postId={postId}
+        authorId={authorId}
+        isFull={isFull}
+        userInterestStatus={userInterestStatus}
+        fullWidth
+      />
+    </div>
+  );
+
   const actionRow = (
-    <div className="flex items-center gap-5">
-      {showImInButton && isLookingToPlay && !isOwnPost && !isArenaLayout && (
-        <div className="min-w-0 flex-1">
-          <FeedCardImInButton
-            postId={postId}
-            authorId={authorId}
-            isFull={isFull}
-            userInterestStatus={userInterestStatus}
-            fullWidth
-          />
-        </div>
-      )}
-      <FeedCardLikeButton
-        postId={postId}
-        initialState={{ likes, isLikedByUser }}
-        className="min-h-9 gap-[7px] text-[13px] font-medium"
-      />
-      <Link
-        href={postHref}
-        className="flex min-h-9 items-center gap-1.5 text-[13px] font-medium text-[#7e8a7e] transition-transform hover:text-[#f2f5ef] active:scale-90"
-        aria-label="View comments"
-      >
-        <MessageCircle className="h-5 w-5" />
-        {replies}
-      </Link>
-      <FeedCardShareButton
-        postId={postId}
-        iconOnly
-        className="ml-auto min-h-9 text-[#7e8a7e] hover:text-[#f2f5ef] active:scale-90"
-      />
+    <div className="flex items-center justify-between gap-4">
+      <span className="flex min-w-0 items-center gap-1.5 text-[13px] text-[#7e8a7e]">
+        <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
+        <span className="truncate">{location}</span>
+      </span>
+
+      <div className="flex flex-shrink-0 items-center gap-4">
+        <FeedCardLikeButton
+          postId={postId}
+          initialState={{ likes, isLikedByUser }}
+          className="min-h-9 gap-[7px] text-[13px] font-medium"
+        />
+        <Link
+          href={postHref}
+          className="flex min-h-9 items-center gap-1.5 text-[13px] font-medium text-[#7e8a7e] transition-transform hover:text-[#f2f5ef] active:scale-90"
+          aria-label="View comments"
+        >
+          <MessageCircle className="h-5 w-5" />
+          {replies}
+        </Link>
+        <FeedCardShareButton
+          postId={postId}
+          iconOnly
+          className="min-h-9 text-[#7e8a7e] hover:text-[#f2f5ef] active:scale-90"
+        />
+      </div>
     </div>
   );
 
@@ -354,6 +362,8 @@ export function HomeFeedCard({
           <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 to-transparent to-50%" />
         </Link>
       )}
+
+      {imInRow}
 
       {actionRow}
 
