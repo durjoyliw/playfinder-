@@ -33,7 +33,7 @@ const PAGE_ROLE_RANK: Record<PageRole, number> = {
   [PageRole.OWNER]: 3,
 };
 
-function hasAtLeastPageRole(role: PageRole, min: PageRole) {
+export function hasAtLeastPageRole(role: PageRole, min: PageRole) {
   return PAGE_ROLE_RANK[role] >= PAGE_ROLE_RANK[min];
 }
 

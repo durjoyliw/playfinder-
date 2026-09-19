@@ -1,5 +1,6 @@
 "use client";
 
+import { pageViewRightRailSlotId } from "@/app/(main)/pages/[handle]/page-desktop-right-rail";
 import { BottomNav } from "@/components/playfinder/bottom-nav";
 import { DesktopRightRail } from "@/components/playfinder/desktop-right-rail";
 import { DesktopSidebar } from "@/components/playfinder/desktop-sidebar";
@@ -30,6 +31,10 @@ export function MainAppShell({
   const isMessagesRoute = pathname.startsWith("/messages");
   const isDiscoverRoute = pathname.startsWith("/discover");
   const isProfileRoute = pathname.startsWith("/users/");
+  const isPageViewRoute =
+    pathname.startsWith("/pages/") &&
+    pathname !== "/pages/new" &&
+    !pathname.startsWith("/pages/new/");
 
   const isFullBleedRoute = isMessagesRoute || isDiscoverRoute;
   // Every non-full-bleed route shares the same 600px content column, so the
@@ -39,7 +44,12 @@ export function MainAppShell({
   // panels were shrinking as you navigated.
   const isWideColumnRoute = !isFullBleedRoute;
 
-  const rightRail = isFullBleedRoute ? null : isProfileRoute ? (
+  const rightRail = isFullBleedRoute ? null : isPageViewRoute ? (
+    <div
+      id={pageViewRightRailSlotId()}
+      className="sticky top-0 hidden h-screen w-[350px] shrink-0 xl:block"
+    />
+  ) : isProfileRoute ? (
     <ProfileDesktopRightRail />
   ) : (
     <DesktopRightRail />
