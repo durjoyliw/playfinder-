@@ -1,81 +1,21 @@
 "use client";
 
-import { MapboxLocationAutocomplete } from "@/components/mapbox-location-autocomplete";
 import { MobileNavDrawer } from "@/components/playfinder/mobile-nav-drawer";
-import { useUserSettings } from "@/hooks/use-user-settings";
-import kyInstance from "@/lib/ky";
-import { NotificationCountInfo } from "@/lib/types";
-import type { UserSettingsData } from "@/lib/settings";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Bell, MapPin, Search, Settings, Zap } from "lucide-react";
+import { Search, Zap } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
 
 interface HeaderProps {
+  /** Kept for shell API stability; unread badge lives outside the header now. */
   initialUnreadNotificationCount: number;
 }
 
-export function Header({ initialUnreadNotificationCount }: HeaderProps) {
+export function Header({
+  initialUnreadNotificationCount: _initialUnreadNotificationCount,
+}: HeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
   const urlSearchParams = useSearchParams();
-  const queryClient = useQueryClient();
-  const locationRef = useRef<HTMLDivElement>(null);
-  const [locationOpen, setLocationOpen] = useState(false);
-  const [locationDraft, setLocationDraft] = useState("");
-
-  const { data: userSettings } = useUserSettings();
-
-  const { data } = useQuery({
-    queryKey: ["unread-notification-count"],
-    queryFn: () =>
-      kyInstance
-        .get("/api/notifications/unread-count")
-        .json<NotificationCountInfo>(),
-    initialData: { unreadCount: initialUnreadNotificationCount },
-    refetchInterval: 60 * 1000,
-  });
-
-  const locationMutation = useMutation({
-    mutationFn: (location: string) =>
-      kyInstance
-        .patch("/api/users/profile", {
-          json: { location: location.trim() },
-        })
-        .json<UserSettingsData>(),
-    onSuccess: (updated) => {
-      queryClient.setQueryData(["user-settings"], updated);
-      setLocationOpen(false);
-    },
-  });
-
-  useEffect(() => {
-    if (locationOpen) {
-      setLocationDraft(userSettings?.location ?? "");
-    }
-  }, [locationOpen, userSettings?.location]);
-
-  useEffect(() => {
-    if (!locationOpen) return;
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        locationRef.current &&
-        !locationRef.current.contains(event.target as Node)
-      ) {
-        setLocationOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [locationOpen]);
-
-  const handlePlaceSelect = (placeName: string) => {
-    setLocationDraft(placeName);
-    locationMutation.mutate(placeName);
-  };
 
   const handleSearchClick = () => {
     const q = urlSearchParams.get("q")?.trim();
@@ -83,12 +23,12 @@ export function Header({ initialUnreadNotificationCount }: HeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-50 flex shrink-0 items-center gap-2.5 border-b border-white/[0.04] bg-[rgba(8,9,10,0.92)] px-4 py-3 pt-[calc(12px+env(safe-area-inset-top,0px))] font-grotesk backdrop-blur-[20px] lg:hidden">
+    <header className="sticky top-0 z-50 flex shrink-0 items-center gap-2 border-b border-white/[0.04] bg-[rgba(8,9,10,0.92)] px-4 py-3 pt-[calc(12px+env(safe-area-inset-top,0px))] font-grotesk backdrop-blur-[20px] lg:hidden">
       <MobileNavDrawer />
 
       <Link
         href="/home"
-        className="flex min-w-0 items-center gap-2.5 lg:hidden"
+        className="flex min-w-0 flex-1 items-center gap-2.5"
         aria-label="PlayFinder home"
       >
         <span
@@ -102,8 +42,6 @@ export function Header({ initialUnreadNotificationCount }: HeaderProps) {
         </span>
       </Link>
 
-      <div className="min-w-0 flex-1" />
-
       <button
         type="button"
         onClick={handleSearchClick}
@@ -113,63 +51,6 @@ export function Header({ initialUnreadNotificationCount }: HeaderProps) {
       >
         <Search className="h-5 w-5" />
       </button>
-
-      <div ref={locationRef} className="relative shrink-0">
-        <button
-          type="button"
-          onClick={() => setLocationOpen((open) => !open)}
-          className="relative grid h-10 w-10 place-items-center rounded-xl text-[#7e8a7e] transition-all active:scale-90 active:bg-[#131614]"
-          aria-expanded={locationOpen}
-          aria-haspopup="dialog"
-          aria-label="Update your area"
-        >
-          <MapPin className="h-5 w-5" />
-        </button>
-
-        {locationOpen && (
-          <div className="absolute right-0 top-full z-50 mt-2 w-72 rounded-xl border border-[#2a2f2a] bg-[#131614] p-3 shadow-lg">
-            <p className="mb-2 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#7e8a7e]">
-              Update your area
-            </p>
-            <MapboxLocationAutocomplete
-              id="header-location"
-              value={locationDraft}
-              onChange={setLocationDraft}
-              onPlaceSelect={handlePlaceSelect}
-              placeholder="Search city or area..."
-              inputClassName="w-full rounded-[14px] border border-[#2a2f2a] bg-[#1a1e1b] px-3 py-2.5 text-sm text-[#f2f5ef] placeholder:text-[#5a635a] focus:border-[#a1c217] focus:outline-none"
-            />
-            {locationMutation.isPending && (
-              <p className="mt-2 text-xs text-[#7e8a7e]">Saving…</p>
-            )}
-          </div>
-        )}
-      </div>
-
-      <Link
-        href="/notifications"
-        className="relative grid h-10 w-10 shrink-0 place-items-center rounded-xl text-[#7e8a7e] transition-all active:scale-90 active:bg-[#131614]"
-        aria-label={
-          data.unreadCount > 0
-            ? `Notifications, ${data.unreadCount} unread`
-            : "Notifications"
-        }
-      >
-        <Bell className="h-5 w-5" />
-        {data.unreadCount > 0 && (
-          <span className="absolute right-1 top-1 flex h-4 min-w-4 animate-[pf-badge-in_500ms_cubic-bezier(0.34,1.36,0.64,1)_backwards] items-center justify-center rounded-full border-2 border-[#08090a] bg-[#a1c217] px-1 font-dm-mono text-[9px] font-bold text-[#0a0b0a]">
-            {data.unreadCount > 9 ? "9+" : data.unreadCount}
-          </span>
-        )}
-      </Link>
-
-      <Link
-        href="/settings"
-        className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-[#7e8a7e] transition-all active:scale-90 active:bg-[#131614]"
-        aria-label="Settings"
-      >
-        <Settings className="h-5 w-5" />
-      </Link>
     </header>
   );
 }
