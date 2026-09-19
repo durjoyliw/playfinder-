@@ -86,3 +86,41 @@ export async function createPendingMessageRequestChannel(
   await channel.create();
   return channel;
 }
+
+/** Deterministic Stream channel id for a Page (`page_<cuid>`). */
+export function pageChannelId(pageId: string) {
+  return `page_${pageId}`;
+}
+
+/**
+ * Ensure a messaging channel exists for a Page. Idempotent: if the channel
+ * already exists (409 / code 4), continues and still assigns the owner role.
+ */
+export async function ensurePageChannel(opts: {
+  pageId: string;
+  ownerUserId: string;
+  name: string;
+}) {
+  const id = pageChannelId(opts.pageId);
+  const channel = streamServerClient.channel("messaging", id, {
+    members: [opts.ownerUserId],
+    created_by_id: opts.ownerUserId,
+    name: opts.name,
+    pageId: opts.pageId,
+  });
+
+  try {
+    await channel.create();
+  } catch (error) {
+    const streamError = error as { code?: number; status?: number };
+    if (streamError.code !== 4 && streamError.status !== 409) {
+      throw error;
+    }
+  }
+
+  await channel.assignRoles([
+    { user_id: opts.ownerUserId, channel_role: "channel_moderator" },
+  ]);
+
+  return channel.id ?? id;
+}

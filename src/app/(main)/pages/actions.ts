@@ -9,6 +9,7 @@ import {
   type ActingIdentity,
 } from "@/lib/pages/access";
 import prisma from "@/lib/prisma";
+import { ensurePageChannel } from "@/lib/stream-messaging";
 import {
   createPageSchema,
   PAGE_HANDLE_REGEX,
@@ -211,6 +212,24 @@ export async function createPage(
 
     return created;
   });
+
+  // Stream channel is best-effort — never fail page creation if Stream is down.
+  try {
+    const chatChannelId = await ensurePageChannel({
+      pageId: page.id,
+      ownerUserId: user.id,
+      name: page.name,
+    });
+    await prisma.page.update({
+      where: { id: page.id },
+      data: { chatChannelId },
+    });
+  } catch (error) {
+    console.error(
+      `Failed to provision Stream channel for page ${page.id}:`,
+      error,
+    );
+  }
 
   return { handle: page.handle };
 }
