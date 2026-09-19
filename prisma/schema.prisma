@@ -50,6 +50,9 @@ model User {
   interests               PostInterest[]
   reports                 Report[]
   appeals                 Appeal[]
+  createdPages            Page[]           @relation("PageCreator")
+  pageMemberships         PageMembership[]
+  pageFollows             PageFollow[]
 
   createdAt DateTime @default(now())
 
@@ -120,6 +123,8 @@ model Post {
   type                String         @default("ARENA")
   userId              String
   user                User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  authorPageId        String?
+  authorPage          Page?          @relation(fields: [authorPageId], references: [id], onDelete: SetNull)
   attachments         Media[]
   likes               Like[]
   bookmarks           Bookmark[]
@@ -455,4 +460,82 @@ model Appeal {
 
   @@index([status])
   @@map("appeals")
+}
+
+enum PageType {
+  VENUE
+  CLUB
+  LEAGUE
+  COACH
+  BRAND
+  COMMUNITY
+}
+
+enum PageRole {
+  OWNER
+  MANAGER
+  ANALYST
+}
+
+enum PageStatus {
+  UNCLAIMED
+  ACTIVE
+  SUSPENDED
+}
+
+enum VerifyLevel {
+  NONE
+  VERIFIED
+}
+
+model Page {
+  id            String      @id @default(cuid())
+  handle        String      @unique
+  name          String
+  type          PageType
+  status        PageStatus  @default(ACTIVE)
+  verify        VerifyLevel @default(NONE)
+  bio           String?
+  avatarUrl     String?
+  bannerUrl     String?
+  lat           Float?
+  lng           Float?
+  city          String?
+  profileData   Json?
+  chatChannelId String?
+  createdById   String?
+  createdBy     User?       @relation("PageCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt     DateTime    @default(now())
+  memberships   PageMembership[]
+  followers     PageFollow[]
+  posts         Post[]
+
+  @@index([type, city])
+  @@index([lat, lng])
+  @@map("pages")
+}
+
+model PageMembership {
+  id        String   @id @default(cuid())
+  pageId    String
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      PageRole
+  createdAt DateTime @default(now())
+
+  @@unique([pageId, userId])
+  @@index([userId])
+  @@map("page_memberships")
+}
+
+model PageFollow {
+  pageId    String
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([pageId, userId])
+  @@map("page_follows")
 }
