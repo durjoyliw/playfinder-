@@ -1,9 +1,7 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
-import {
-  countAcceptedInterests,
-  syncPostIsFull,
-} from "@/lib/post-interest";
+import { countAcceptedInterests } from "@/lib/post-interest";
+import { syncPostIsFull } from "@/lib/post-interest-sync";
 import { NotificationType } from "@prisma/client";
 import { z } from "zod";
 

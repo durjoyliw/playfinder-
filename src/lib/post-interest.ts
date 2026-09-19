@@ -34,23 +34,3 @@ export function computeInterestFields(
     userInterestStatus: userInterest?.status ?? null,
   };
 }
-
-import prisma from "@/lib/prisma";
-
-export async function syncPostIsFull(
-  postId: string,
-  slotsNeeded: number | null,
-  acceptedCount: number,
-) {
-  const isFull =
-    slotsNeeded != null &&
-    slotsNeeded > 0 &&
-    acceptedCount >= slotsNeeded;
-
-  await prisma.post.update({
-    where: { id: postId },
-    data: { isFull },
-  });
-
-  return isFull;
-}
