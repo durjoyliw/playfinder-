@@ -319,7 +319,7 @@ model Notification {
   postId      String?
   post        Post?            @relation(fields: [postId], references: [id], onDelete: Cascade)
   type        NotificationType
-  /** Freeform text for system-generated notifications (nearby games, inactivity nudges, trending) that have no issuer. */
+  /// Freeform text for system-generated notifications (nearby games, inactivity nudges, trending) that have no issuer.
   body        String?
   read        Boolean          @default(false)
 
