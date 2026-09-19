@@ -6,7 +6,6 @@ import { LiveActivityBar } from "@/components/playfinder/live-activity-bar";
 import { PlayFinderFeed } from "@/components/playfinder/playfinder-feed";
 import { usePlayFinder } from "@/components/playfinder/playfinder-provider";
 import { SportTabs } from "@/components/playfinder/sport-tabs";
-import { TrendingWidget } from "@/components/playfinder/trending-widget";
 import type { FeedSportTab } from "@/lib/feed-sport-tabs";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
@@ -47,13 +46,6 @@ export function PlayFinderHome({ feedSportTabs }: PlayFinderHomeProps) {
         <FeedTypeTabs activeTab={feedTypeTab} onTabChange={setFeedTypeTab} />
       </div>
       {feedTypeTab === "players" && <LiveActivityBar />}
-      {/* The right rail (search, live count, trending) is xl-and-up only
-          (see DesktopRightRail) -- below that breakpoint trending has no
-          other home, so it gets a compact inline card here instead of
-          silently disappearing on mobile/tablet. */}
-      <div className="mx-4 mb-1 mt-3 xl:hidden">
-        <TrendingWidget />
-      </div>
       <PlayFinderFeed sportFilter={sportFilter} feedTypeTab={feedTypeTab} />
     </div>
   );

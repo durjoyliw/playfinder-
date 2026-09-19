@@ -1,6 +1,11 @@
 "use client";
 
-import { addRecentSearch, getRecentSearches, removeRecentSearch } from "@/lib/recent-searches";
+import {
+  addRecentSearch,
+  getRecentSearches,
+  removeRecentSearch,
+} from "@/lib/recent-searches";
+import { TrendingWidget } from "@/components/playfinder/trending-widget";
 import { Clock, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { BROWSE_SPORTS } from "./search-constants";
@@ -36,6 +41,13 @@ export function SearchEmptyState({ onSearch }: SearchEmptyStateProps) {
 
   return (
     <div className="px-4 py-4">
+      {/* DesktopRightRail already shows this at xl and up, so this is the
+          mobile/tablet home for it -- matches X, where trending lives on
+          the Explore/Search tab rather than in the feed itself. */}
+      <div className="mb-6 xl:hidden">
+        <TrendingWidget />
+      </div>
+
       {recent.length > 0 && (
         <section className="mb-6">
           <h2 className="mb-3 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#7e8a7e]">
