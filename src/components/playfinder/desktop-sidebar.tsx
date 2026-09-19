@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "@/app/(main)/SessionProvider";
-import { usePlayFinder } from "@/components/playfinder/playfinder-provider";
+import { CreateMenu } from "@/components/playfinder/create-menu";
 import kyInstance from "@/lib/ky";
 import { getInitials } from "@/lib/settings";
 import { NotificationCountInfo } from "@/lib/types";
@@ -11,6 +11,7 @@ import {
   Bell,
   Compass,
   Home,
+  LayoutGrid,
   MessageCircle,
   Settings,
   User,
@@ -46,7 +47,6 @@ export function DesktopSidebar({
 }: DesktopSidebarProps) {
   const pathname = usePathname();
   const { user } = useSession();
-  const { openComposer } = usePlayFinder();
   const profileHref = `/users/${user.username}`;
 
   const { data } = useQuery({
@@ -67,6 +67,13 @@ export function DesktopSidebar({
       icon: Compass,
       href: "/discover",
       isActive: (p) => p.startsWith("/discover"),
+    },
+    {
+      id: "pages",
+      label: "Pages",
+      icon: LayoutGrid,
+      href: "/pages",
+      isActive: (p) => p === "/pages" || p.startsWith("/pages/"),
     },
     {
       id: "messages",
@@ -139,15 +146,16 @@ export function DesktopSidebar({
           })}
         </nav>
 
-        <button
-          type="button"
-          onClick={() => openComposer()}
-          aria-label="Broadcast"
-          title="Broadcast"
-          className="mt-4 grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[#a1c217] text-[#0a0b0a] transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.97]"
-        >
-          <Zap className="h-6 w-6" fill="currentColor" />
-        </button>
+        <CreateMenu>
+          <button
+            type="button"
+            aria-label="Create"
+            title="Create"
+            className="mt-4 grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[#a1c217] text-[#0a0b0a] transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.97]"
+          >
+            <Zap className="h-6 w-6" fill="currentColor" />
+          </button>
+        </CreateMenu>
 
         <Link
           href={profileHref}
@@ -205,13 +213,14 @@ export function DesktopSidebar({
         })}
       </nav>
 
-      <button
-        type="button"
-        onClick={() => openComposer()}
-        className="mt-4 w-full rounded-full bg-[#a1c217] py-3.5 text-[15px] font-bold text-[#0a0b0a] transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.97]"
-      >
-        Broadcast
-      </button>
+      <CreateMenu>
+        <button
+          type="button"
+          className="mt-4 w-full rounded-full bg-[#a1c217] py-3.5 text-[15px] font-bold text-[#0a0b0a] transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.97]"
+        >
+          Create
+        </button>
+      </CreateMenu>
 
       <Link
         href={profileHref}
