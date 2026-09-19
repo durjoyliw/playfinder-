@@ -125,11 +125,6 @@ export function HomeFeedCard({
 
   const actionRow = (
     <div className="flex items-center justify-between gap-4">
-      <span className="flex min-w-0 items-center gap-1.5 text-[13px] text-[#7e8a7e]">
-        <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
-        <span className="truncate">{location}</span>
-      </span>
-
       <div className="flex flex-shrink-0 items-center gap-4">
         <FeedCardLikeButton
           postId={postId}
@@ -158,6 +153,13 @@ export function HomeFeedCard({
           <Send className="h-[18px] w-[18px]" />
         </button>
       </div>
+
+      {!isArenaLayout && location && (
+        <span className="flex min-w-0 items-center gap-1.5 text-[13px] text-[#7e8a7e]">
+          <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
+          <span className="truncate">{location}</span>
+        </span>
+      )}
     </div>
   );
 
@@ -397,20 +399,12 @@ export function HomeFeedCard({
 
       {actionRow}
 
-      {(timeLabel || location) && (
+      {timeLabel && (
         <div className="mt-2.5 flex flex-wrap items-center gap-3 text-xs text-[#7e8a7e]">
-          {timeLabel && (
-            <span className="inline-flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5 shrink-0" />
-              {timeLabel}
-            </span>
-          )}
-          {location && (
-            <span className="inline-flex items-center gap-1.5">
-              <MapPin className="h-3.5 w-3.5 shrink-0" />
-              {location}
-            </span>
-          )}
+          <span className="inline-flex items-center gap-1.5">
+            <Clock className="h-3.5 w-3.5 shrink-0" />
+            {timeLabel}
+          </span>
         </div>
       )}
 

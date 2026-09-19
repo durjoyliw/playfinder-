@@ -171,7 +171,7 @@ export function PostViewerMenu({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex h-7 w-7 items-center justify-center rounded-full text-[#7e8a7e] transition-colors hover:bg-[#1e211e] hover:text-[#f2f5ef]"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[#7e8a7e] transition-transform hover:bg-[#1e211e] hover:text-[#f2f5ef] active:scale-90"
         aria-label="Post options"
         aria-expanded={open}
         aria-haspopup="menu"
@@ -182,7 +182,7 @@ export function PostViewerMenu({
       {open && (
         <div
           role="menu"
-          className="absolute left-0 top-9 z-50 w-[220px] overflow-hidden rounded-xl border border-[#2a2f2a] bg-[#161816] py-1 shadow-lg"
+          className="absolute right-0 top-9 z-50 w-[220px] overflow-hidden rounded-xl border border-[#2a2f2a] bg-[#161816] py-1 shadow-lg"
         >
           <button
             type="button"

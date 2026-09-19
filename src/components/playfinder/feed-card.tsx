@@ -290,11 +290,6 @@ export function FeedCard({
               )}
 
               <div className="flex items-center justify-between gap-4">
-                <span className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
-                  <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
-                  <span className="truncate">{location}</span>
-                </span>
-
                 <div className="flex flex-shrink-0 items-center gap-4">
                   <FeedCardLikeButton
                     postId={postId}
@@ -319,6 +314,11 @@ export function FeedCard({
                     <Send className="h-4 w-4" />
                   </button>
                 </div>
+
+                <span className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
+                  <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
+                  <span className="truncate">{location}</span>
+                </span>
               </div>
             </div>
 
