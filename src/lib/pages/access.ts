@@ -131,3 +131,9 @@ export async function getActingIdentity(): Promise<ActingIdentity> {
 
   return stored;
 }
+
+/** When acting as a page (MANAGER+), return that page id for authorPageId stamping. */
+export async function getAuthorPageIdForPost(): Promise<string | null> {
+  const identity = await getActingIdentity();
+  return identity.kind === "page" ? identity.id : null;
+}

@@ -1,7 +1,7 @@
 import { formatSportLabel } from "@/lib/playfinder";
 import { getInitials } from "@/lib/settings";
 import { PlayfinderFeedPost } from "@/lib/types";
-import { MediaType } from "@prisma/client";
+import { MediaType, PageType } from "@prisma/client";
 import { formatRelativeDate } from "@/lib/utils";
 
 export interface HomeFeedCardProps {
@@ -34,6 +34,9 @@ export interface HomeFeedCardProps {
   spotsLeft?: number;
   isFull?: boolean;
   userInterestStatus?: string | null;
+  /** When set, author is a Page — link to /pages/[handle] */
+  authorPageHandle?: string | null;
+  authorPageType?: PageType | null;
 }
 
 export function mapPostToHomeFeedCard(
@@ -41,6 +44,38 @@ export function mapPostToHomeFeedCard(
   showImInButton: boolean,
 ): HomeFeedCardProps {
   const image = post.attachments.find((a) => a.type === MediaType.IMAGE);
+  const page = post.authorPage;
+
+  if (page) {
+    return {
+      postId: post.id,
+      authorId: post.user.id,
+      username: page.handle,
+      intent: String(post.intent),
+      avatar: page.avatarUrl ?? getInitials(page.name),
+      name: page.name,
+      timestamp: formatRelativeDate(post.createdAt),
+      location: post.location ?? "Glasgow",
+      sport: formatSportLabel(post.sport),
+      content: post.content,
+      timeLabel: post.timeLabel ?? undefined,
+      imageUrl: image?.url,
+      likes: post._count.likes,
+      isLikedByUser: post.likes.length > 0,
+      replies: post._count.comments,
+      showImInButton,
+      isTeammate: post.isTeammate,
+      isHotTake: post.isHighlight,
+      visibility: post.visibility,
+      postType: post.type ?? null,
+      acceptedCount: post.acceptedCount,
+      spotsLeft: post.spotsLeft,
+      isFull: post.isFull,
+      userInterestStatus: post.userInterestStatus,
+      authorPageHandle: page.handle,
+      authorPageType: page.type,
+    };
+  }
 
   return {
     postId: post.id,
@@ -67,5 +102,7 @@ export function mapPostToHomeFeedCard(
     spotsLeft: post.spotsLeft,
     isFull: post.isFull,
     userInterestStatus: post.userInterestStatus,
+    authorPageHandle: null,
+    authorPageType: null,
   };
 }

@@ -1,6 +1,7 @@
 "use server";
 
 import { validateRequest } from "@/auth";
+import { getAuthorPageIdForPost } from "@/lib/pages/access";
 import prisma from "@/lib/prisma";
 import { getPostDataInclude } from "@/lib/types";
 import { getListingExpiresAt } from "@/lib/playfinder";
@@ -16,10 +17,13 @@ export async function submitBroadcast(input: unknown) {
 
   const expiresAt = getListingExpiresAt(data.intent);
 
+  const authorPageId = await getAuthorPageIdForPost();
+
   const newPost = await prisma.post.create({
     data: {
       content: data.content,
       userId: user.id,
+      authorPageId,
       sport: data.sport,
       intent: data.intent,
       location: data.location,

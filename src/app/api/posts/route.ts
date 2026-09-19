@@ -1,4 +1,5 @@
 import { validateRequest } from "@/auth";
+import { getAuthorPageIdForPost } from "@/lib/pages/access";
 import prisma from "@/lib/prisma";
 import { sportTabToPostSport } from "@/lib/playfinder";
 import { getPostDataInclude } from "@/lib/types";
@@ -24,10 +25,14 @@ export async function POST(req: Request) {
     const firstSport = body.sportTags[0] ?? null;
     const mappedSport = firstSport ? sportTabToPostSport(firstSport) : undefined;
 
+    // When pf_acting_as is a page (MANAGER+), stamp authorPageId; userId stays the admin.
+    const authorPageId = await getAuthorPageIdForPost();
+
     const newPost = await prisma.post.create({
       data: {
         content: body.content,
         userId: user.id,
+        authorPageId,
         type: body.type,
         intent: PostIntent.BANTER,
         sport: mappedSport ?? null,
@@ -46,4 +51,3 @@ export async function POST(req: Request) {
     return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-

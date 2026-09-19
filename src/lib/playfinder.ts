@@ -200,15 +200,19 @@ export function mapPostToFeedCard(
   const showSpots =
     isArenaPost && post.slotsNeeded != null && post.slotsNeeded > 0;
 
+  const page = post.authorPage;
+
   return {
     postId: post.id,
     authorId: post.user.id,
-    username: post.user.username,
+    username: page?.handle ?? post.user.username,
     type: intentToCardType(post.intent),
     intent: String(post.intent),
     postType: post.type ?? null,
-    avatar: post.user.avatarUrl ?? getInitials(post.user.displayName),
-    name: post.user.displayName,
+    avatar: page
+      ? (page.avatarUrl ?? getInitials(page.name))
+      : (post.user.avatarUrl ?? getInitials(post.user.displayName)),
+    name: page?.name ?? post.user.displayName,
     timestamp: formatRelativeDate(post.createdAt),
     location: post.location ?? "Glasgow",
     sport: formatSportLabel(post.sport),
@@ -225,6 +229,9 @@ export function mapPostToFeedCard(
     acceptedCount: showSpots ? interestFields.acceptedCount : undefined,
     isFull: interestFields.isFull,
     userInterestStatus: interestFields.userInterestStatus,
+    authorPageHandle: page?.handle ?? null,
+    authorPageType: page?.type ?? null,
+    isVerified: page?.verify === "VERIFIED",
     playerSlots: [],
   };
 }

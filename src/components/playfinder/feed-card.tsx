@@ -10,9 +10,10 @@ import { SendPostDialog } from "@/components/playfinder/send-post-dialog";
 import { IconCheck } from "@tabler/icons-react";
 import { Clock, MapPin, BadgeCheck, MessageCircle, Send } from "lucide-react";
 import { getPostTypeBadge, isLookingToPlayIntent } from "@/lib/playfinder";
+import { PageType } from "@prisma/client";
 import Link from "next/link";
 import { useState } from "react";
-
+import { cn } from "@/lib/utils";
 type CardType = "looking" | "recruiting" | "banter";
 
 interface PlayerSlot {
@@ -52,6 +53,8 @@ export interface FeedCardProps {
   replies?: number;
   /** Hide actions and comments — used on profile post list */
   compact?: boolean;
+  authorPageHandle?: string | null;
+  authorPageType?: PageType | null;
 }
 
 const cardAccentColors: Record<CardType, string> = {
@@ -90,11 +93,17 @@ export function FeedCard({
   tags = [],
   replies = 0,
   compact = false,
+  authorPageHandle = null,
+  authorPageType = null,
 }: FeedCardProps) {
   const likeState = { likes, isLikedByUser };
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [sendDialogOpen, setSendDialogOpen] = useState(false);
-  const profileHref = `/users/${username}`;
+  const isPageAuthor = Boolean(authorPageHandle);
+  const profileHref = isPageAuthor
+    ? `/pages/${authorPageHandle}`
+    : `/users/${username}`;
+  const avatarRadius = isPageAuthor ? "rounded-[10px]" : "rounded-full";
   const isLooking =
     isLookingToPlayIntent(intent) || (intent == null && type === "looking");
   const isArenaPost = postType === "ARENA" || postType === "BROADCAST";
@@ -121,10 +130,18 @@ export function FeedCard({
                 <img
                   src={avatar}
                   alt=""
-                  className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
+                  className={cn(
+                    "h-10 w-10 flex-shrink-0 object-cover",
+                    avatarRadius,
+                  )}
                 />
               ) : (
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#2a2a2a] text-sm font-bold text-white">
+                <div
+                  className={cn(
+                    "flex h-10 w-10 flex-shrink-0 items-center justify-center bg-[#2a2a2a] text-sm font-bold text-white",
+                    avatarRadius,
+                  )}
+                >
                   {avatar}
                 </div>
               )}
@@ -134,6 +151,18 @@ export function FeedCard({
                   <span className="truncate font-semibold text-white">
                     {name}
                   </span>
+                  {authorPageType && (
+                    <span
+                      className={cn(
+                        "inline-flex h-[18px] shrink-0 items-center rounded-full border px-1.5 font-dm-mono text-[8px] font-medium uppercase tracking-[0.08em]",
+                        authorPageType === PageType.VENUE
+                          ? "border-[rgba(201,162,39,0.32)] bg-[rgba(201,162,39,0.1)] text-[#c9a227]"
+                          : "border-[rgba(86,204,242,0.28)] bg-[rgba(86,204,242,0.1)] text-[#56ccf2]",
+                      )}
+                    >
+                      {authorPageType === PageType.VENUE ? "Venue" : "Club"}
+                    </span>
+                  )}
                   {isVerified && (
                     <BadgeCheck className="h-4 w-4 flex-shrink-0 fill-[#3B82F6] text-[#3B82F6]" />
                   )}

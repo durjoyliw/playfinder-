@@ -107,6 +107,16 @@ export function getPlayfinderFeedPostInclude(loggedInUserId: string) {
     user: {
       select: getPlayfinderFeedUserSelect(loggedInUserId),
     },
+    authorPage: {
+      select: {
+        id: true,
+        handle: true,
+        name: true,
+        type: true,
+        avatarUrl: true,
+        verify: true,
+      },
+    },
     attachments: true,
     likes: {
       where: {
@@ -141,6 +151,16 @@ export function getPostDataInclude(loggedInUserId: string) {
   return {
     user: {
       select: getUserDataSelect(loggedInUserId),
+    },
+    authorPage: {
+      select: {
+        id: true,
+        handle: true,
+        name: true,
+        type: true,
+        avatarUrl: true,
+        verify: true,
+      },
     },
     attachments: true,
     likes: {

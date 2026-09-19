@@ -1,6 +1,10 @@
 "use client";
 
 import { PageDesktopRightRail } from "@/app/(main)/pages/[handle]/page-desktop-right-rail";
+import {
+  PageFollowButton,
+  usePageFollowInfo,
+} from "@/components/playfinder/page-follow-button";
 import { SlidingPillTabs } from "@/components/playfinder/sliding-pill-tabs";
 import UserAvatar from "@/components/UserAvatar";
 import type { PageViewData } from "@/lib/pages/get-page-view";
@@ -42,6 +46,10 @@ export function PageView({ page }: PageViewProps) {
   const isClub = page.type === PageType.CLUB;
   const [clubTab, setClubTab] = useState<ClubTab>("posts");
   const [venueTab, setVenueTab] = useState<VenueTab>("posts");
+  const { data: followInfo } = usePageFollowInfo(page.id, {
+    followers: page.followerCount,
+    isFollowedByUser: page.isFollowing,
+  });
 
   const activeModule = isClub ? clubTab : venueTab;
 
@@ -49,10 +57,10 @@ export function PageView({ page }: PageViewProps) {
     const parts = [
       page.categoryLabel,
       page.city?.trim() || null,
-      formatFollowerCount(page.followerCount),
+      formatFollowerCount(followInfo.followers),
     ].filter(Boolean);
     return parts.join(" · ");
-  }, [page.categoryLabel, page.city, page.followerCount]);
+  }, [page.categoryLabel, page.city, followInfo.followers]);
 
   return (
     <div className="w-full pb-10 font-grotesk text-[#f2f5ef]">
@@ -163,15 +171,35 @@ export function PageView({ page }: PageViewProps) {
                 Share
               </button>
             </>
+          ) : page.isLoggedIn ? (
+            <>
+              <PageFollowButton
+                pageId={page.id}
+                initialState={{
+                  followers: page.followerCount,
+                  isFollowedByUser: page.isFollowing,
+                }}
+              />
+              <button
+                type="button"
+                disabled
+                className="flex h-[42px] flex-1 items-center justify-center rounded-xl border border-[#2a2f2a] bg-[#131614] text-[14px] font-bold text-[#f2f5ef] opacity-90"
+                title="Coming in a later step"
+              >
+                {page.type === PageType.VENUE
+                  ? "Check availability"
+                  : "Ask to join"}
+              </button>
+            </>
           ) : (
             <>
               <button
                 type="button"
                 disabled
                 className="flex h-[42px] flex-1 items-center justify-center rounded-xl bg-[#a1c217] text-[14px] font-bold tracking-[-0.01em] text-[#0a0b0a] opacity-90"
-                title="Coming in a later step"
+                title="Sign in to follow"
               >
-                {page.isFollowing ? "Following" : "Follow"}
+                Follow
               </button>
               <button
                 type="button"

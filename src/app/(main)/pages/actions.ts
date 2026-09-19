@@ -4,6 +4,7 @@ import { validateRequest } from "@/auth";
 import {
   ACTING_AS_COOKIE_NAME,
   getActingAsCookieOptions,
+  getActingIdentity,
   requirePageRole,
   type ActingIdentity,
 } from "@/lib/pages/access";
@@ -39,6 +40,86 @@ export async function setActingIdentity(
   );
 
   return identity;
+}
+
+export type ActingIdentityOptionPage = {
+  id: string;
+  handle: string;
+  name: string;
+  type: PageType;
+  avatarUrl: string | null;
+};
+
+export type ActingIdentityState = {
+  identity: ActingIdentity;
+  user: {
+    id: string;
+    username: string;
+    displayName: string;
+    avatarUrl: string | null;
+  };
+  pages: ActingIdentityOptionPage[];
+};
+
+/** Current acting identity + switcher options (self + MANAGER+ pages). */
+export async function getActingIdentityState(): Promise<ActingIdentityState> {
+  const { user } = await validateRequest();
+  if (!user) throw new Error("Unauthorized");
+
+  const [identity, pages] = await Promise.all([
+    getActingIdentity(),
+    prisma.page.findMany({
+      where: {
+        memberships: {
+          some: {
+            userId: user.id,
+            role: { in: [PageRole.MANAGER, PageRole.OWNER] },
+          },
+        },
+      },
+      orderBy: { name: "asc" },
+      select: {
+        id: true,
+        handle: true,
+        name: true,
+        type: true,
+        avatarUrl: true,
+      },
+    }),
+  ]);
+
+  return {
+    identity,
+    user: {
+      id: user.id,
+      username: user.username,
+      displayName: user.displayName,
+      avatarUrl: user.avatarUrl,
+    },
+    pages,
+  };
+}
+
+export async function followPage(pageId: string): Promise<void> {
+  const { user } = await validateRequest();
+  if (!user) throw new Error("Unauthorized");
+
+  await prisma.pageFollow.upsert({
+    where: {
+      pageId_userId: { pageId, userId: user.id },
+    },
+    create: { pageId, userId: user.id },
+    update: {},
+  });
+}
+
+export async function unfollowPage(pageId: string): Promise<void> {
+  const { user } = await validateRequest();
+  if (!user) throw new Error("Unauthorized");
+
+  await prisma.pageFollow.deleteMany({
+    where: { pageId, userId: user.id },
+  });
 }
 
 function normalizeHandle(raw: string) {

@@ -12,10 +12,26 @@ import { getSportEmoji } from "@/lib/sports";
 import { getSportColour } from "@/lib/sport-visuals";
 import { cn } from "@/lib/utils";
 import { IconBolt, IconCheck, IconFlame, IconLock } from "@tabler/icons-react";
+import { PageType } from "@prisma/client";
 import { Clock, MapPin, MessageCircle, Send } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
+function PageTypeChip({ type }: { type: PageType }) {
+  const isVenue = type === PageType.VENUE;
+  return (
+    <span
+      className={cn(
+        "inline-flex h-[18px] shrink-0 items-center rounded-full border px-1.5 font-dm-mono text-[8px] font-medium uppercase tracking-[0.08em]",
+        isVenue
+          ? "border-[rgba(201,162,39,0.32)] bg-[rgba(201,162,39,0.1)] text-[#c9a227]"
+          : "border-[rgba(86,204,242,0.28)] bg-[rgba(86,204,242,0.1)] text-[#56ccf2]",
+      )}
+    >
+      {isVenue ? "Venue" : "Club"}
+    </span>
+  );
+}
 export function HomeFeedCard({
   postId,
   authorId,
@@ -43,10 +59,15 @@ export function HomeFeedCard({
   spotsLeft = 0,
   isFull = false,
   userInterestStatus = null,
+  authorPageHandle = null,
+  authorPageType = null,
 }: HomeFeedCardProps) {
   const { user } = useSession();
   const [sendDialogOpen, setSendDialogOpen] = useState(false);
-  const profileHref = `/users/${username}`;
+  const isPageAuthor = Boolean(authorPageHandle);
+  const profileHref = isPageAuthor
+    ? `/pages/${authorPageHandle}`
+    : `/users/${username}`;
   const hasPhoto = avatar.startsWith("http");
   const voltAvatar = cardIndex % 2 === 0;
   const isOwnPost = user.id === authorId;
@@ -60,6 +81,7 @@ export function HomeFeedCard({
   const sportEmoji = sport ? getSportEmoji(sport) : "";
   const spotsTotal = acceptedCount + spotsLeft;
   const fillPercent = spotsTotal > 0 ? (acceptedCount / spotsTotal) * 100 : 0;
+  const avatarRadius = isPageAuthor ? "rounded-[10px]" : "rounded-full";
 
   const avatarEl = (
     <Link href={profileHref} className="shrink-0">
@@ -67,12 +89,13 @@ export function HomeFeedCard({
         <img
           src={avatar}
           alt=""
-          className="h-11 w-11 rounded-full object-cover"
+          className={cn("h-11 w-11 object-cover", avatarRadius)}
         />
       ) : (
         <div
           className={cn(
-            "grid h-11 w-11 place-items-center rounded-full text-sm font-bold",
+            "grid h-11 w-11 place-items-center text-sm font-bold",
+            avatarRadius,
             voltAvatar
               ? "bg-[#a1c217] text-[#0a0b0a]"
               : "bg-[#232824] text-[#b4bcaf]",
@@ -243,9 +266,10 @@ export function HomeFeedCard({
                 by{" "}
                 <Link
                   href={profileHref}
-                  className="font-semibold text-[#b4bcaf] hover:underline"
+                  className="inline-flex items-center gap-1.5 font-semibold text-[#b4bcaf] hover:underline"
                 >
                   {name}
+                  {authorPageType && <PageTypeChip type={authorPageType} />}
                 </Link>
                 <span className="text-[#5a635a]" aria-hidden>
                   ·
@@ -342,9 +366,10 @@ export function HomeFeedCard({
         <div className="min-w-0 flex-1">
           <Link
             href={profileHref}
-            className="flex items-center gap-1 text-[15px] font-semibold text-[#f2f5ef] hover:underline"
+            className="flex items-center gap-1.5 text-[15px] font-semibold text-[#f2f5ef] hover:underline"
           >
             {name}
+            {authorPageType && <PageTypeChip type={authorPageType} />}
           </Link>
           <p className="mt-1 flex flex-wrap items-center gap-x-1.5 text-xs text-[#7e8a7e]">
             {sport && (

@@ -36,6 +36,10 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { ComposerDateTimePicker } from "./composer-datetime-picker";
 import { submitBroadcast } from "./actions";
+import {
+  IdentitySwitcher,
+  useActingIdentityState,
+} from "./identity-switcher";
 
 export type ComposerTab = "social" | "arena";
 
@@ -242,24 +246,6 @@ function FieldRow({
   );
 }
 
-function ComposerAvatar({
-  url,
-  initials,
-}: {
-  url: string | null | undefined;
-  initials: string;
-}) {
-  return (
-    <div className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full bg-[#a1c217] text-xs font-bold text-[#0a0b0a]">
-      {url ? (
-        <img src={url} alt="" className="h-full w-full object-cover" />
-      ) : (
-        initials
-      )}
-    </div>
-  );
-}
-
 export function ComposerSheet({
   open,
   onOpenChange,
@@ -327,8 +313,14 @@ export function ComposerSheet({
 
   const userSports = useMemo(() => profile?.sports ?? [], [profile?.sports]);
 
-  const avatarInitials = getInitials(profile?.displayName ?? user.displayName);
-  const postingAsName = profile?.displayName ?? user.displayName;
+  const { data: actingState } = useActingIdentityState();
+  const actingPage =
+    actingState?.identity.kind === "page"
+      ? actingState.pages.find((p) => p.id === actingState.identity.id)
+      : null;
+  const postingAsName = actingPage
+    ? actingPage.name
+    : (profile?.displayName ?? user.displayName);
   const areaChip = getDisplayArea(profile?.location);
 
   const resetArenaForm = () => {
@@ -667,9 +659,30 @@ export function ComposerSheet({
           </button>
         </div>
 
+        {actingPage && (
+          <div className="mb-3 flex items-center gap-2.5 rounded-xl border border-[rgba(161,194,23,0.35)] bg-[rgba(161,194,23,0.08)] px-3 py-2.5">
+            {actingPage.avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={actingPage.avatarUrl}
+                alt=""
+                className="h-8 w-8 rounded-lg object-cover"
+              />
+            ) : (
+              <div className="grid h-8 w-8 place-items-center rounded-lg bg-[#232824] text-[11px] font-bold text-[#a1c217]">
+                {getInitials(actingPage.name)}
+              </div>
+            )}
+            <p className="min-w-0 flex-1 text-[13px] font-semibold text-[#a1c217]">
+              Posting as{" "}
+              <span className="text-[#f2f5ef]">{actingPage.name}</span>
+            </p>
+          </div>
+        )}
+
         <div className="mb-3.5 flex items-center gap-2.5 text-[13px] text-[#7e8a7e]">
-          <ComposerAvatar url={user.avatarUrl} initials={avatarInitials} />
-          <span>
+          <IdentitySwitcher />
+          <span className="min-w-0 flex-1">
             Posting as <b className="text-white">{postingAsName}</b>
           </span>
         </div>
