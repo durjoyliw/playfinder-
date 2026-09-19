@@ -50,14 +50,29 @@ export function DiscoverVenueClubTabs({
   onTabChange,
   nearbyCount,
 }: DiscoverVenueClubTabsProps) {
+  // Same layout/spacing/pill as Home Social/Arena (`feed-type-tabs.tsx`).
+  // Styles duplicated here — FeedTypeTabs is wired to FeedTypeTab IDs.
   const tabs: { id: DiscoverTabType; label: string }[] = [
     { id: "venues", label: "Venues" },
     { id: "clubs", label: "Clubs" },
   ];
+  const isClubs = activeTab === "clubs";
 
   return (
-    <div className="flex shrink-0 items-center justify-between px-4 pb-3 pt-1">
-      <div className="flex gap-5" role="tablist">
+    <div className="shrink-0">
+      <div
+        className="relative flex gap-1 px-4 pb-2 pt-2.5"
+        role="tablist"
+        aria-label="Venues or clubs"
+      >
+        <div
+          className="pointer-events-none absolute bottom-2 top-2.5 w-[calc(50%-20px)] rounded-[10px] bg-[#a1c217] transition-[left,background] duration-300 ease-[cubic-bezier(.2,.8,.2,1)]"
+          style={{
+            left: isClubs ? "auto" : 16,
+            right: isClubs ? 16 : "auto",
+          }}
+          aria-hidden
+        />
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
           return (
@@ -68,10 +83,8 @@ export function DiscoverVenueClubTabs({
               aria-selected={isActive}
               onClick={() => onTabChange(tab.id)}
               className={cn(
-                "relative pb-1.5 text-sm font-semibold transition-colors",
-                isActive
-                  ? "text-[#f2f5ef] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-sm after:bg-[#a1c217]"
-                  : "text-[#7e8a7e]",
+                "relative z-[2] flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-[10px] py-2.5 text-sm font-bold transition-colors duration-200",
+                isActive ? "text-[#0a0b0a]" : "text-[#7e8a7e]",
               )}
             >
               {tab.label}
@@ -79,9 +92,9 @@ export function DiscoverVenueClubTabs({
           );
         })}
       </div>
-      <span className="font-dm-mono text-[11px] font-medium text-[#7e8a7e]">
+      <p className="px-4 pb-2 text-right font-dm-mono text-[11px] font-medium text-[#7e8a7e]">
         {nearbyCount} nearby
-      </span>
+      </p>
     </div>
   );
 }
