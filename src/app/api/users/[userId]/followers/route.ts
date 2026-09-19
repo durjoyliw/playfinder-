@@ -1,13 +1,10 @@
 import { validateRequest } from "@/auth";
-import { isTeammate } from "@/lib/teammate";
+import { isTeammate } from "@/lib/teammate-server";
 import prisma from "@/lib/prisma";
 import { FollowerInfo } from "@/lib/types";
 import { NotificationType } from "@prisma/client";
 
-async function createTeammateNotifications(
-  userAId: string,
-  userBId: string,
-) {
+async function createTeammateNotifications(userAId: string, userBId: string) {
   await prisma.$transaction([
     prisma.notification.create({
       data: {
@@ -97,7 +94,10 @@ export async function POST(
     }
 
     if (loggedInUser.id === userId) {
-      return Response.json({ error: "Cannot follow yourself" }, { status: 400 });
+      return Response.json(
+        { error: "Cannot follow yourself" },
+        { status: 400 },
+      );
     }
 
     const wasMutualBefore = await isTeammate(loggedInUser.id, userId);

@@ -4,7 +4,7 @@ import {
   sortPlayfinderPosts,
   sportTabToPostSport,
 } from "@/lib/playfinder";
-import { getTeammateIds } from "@/lib/teammate";
+import { getTeammateIds } from "@/lib/teammate-server";
 import prisma from "@/lib/prisma";
 import { computeInterestFields } from "@/lib/post-interest";
 import {

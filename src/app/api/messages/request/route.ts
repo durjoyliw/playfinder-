@@ -6,7 +6,7 @@ import {
   upsertStreamUsers,
 } from "@/lib/stream-messaging";
 import streamServerClient from "@/lib/stream";
-import { isTeammate } from "@/lib/teammate";
+import { isTeammate } from "@/lib/teammate-server";
 import { NotificationType } from "@prisma/client";
 import { z } from "zod";
 
@@ -187,7 +187,10 @@ export async function PATCH(req: Request) {
     }
 
     if (messageRequest.status !== "PENDING") {
-      return Response.json({ error: "Request already handled" }, { status: 400 });
+      return Response.json(
+        { error: "Request already handled" },
+        { status: 400 },
+      );
     }
 
     const channel = streamServerClient.channel(

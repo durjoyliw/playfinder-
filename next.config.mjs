@@ -17,6 +17,26 @@ const nextConfig = {
     },
   },
   serverExternalPackages: ["@node-rs/argon2"],
+  webpack: (config, { isServer }) => {
+    // web-push (used server-side for push notifications) pulls in
+    // https-proxy-agent, which references Node core modules that don't
+    // exist in the browser. That code is never reached from client-side
+    // execution, but if a server-only module ever gets transitively
+    // imported into a client bundle by mistake, this stops webpack from
+    // hard-failing the build over it -- it just stubs those modules out
+    // for the client bundle instead of erroring.
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        net: false,
+        tls: false,
+        dns: false,
+        fs: false,
+        child_process: false,
+      };
+    }
+    return config;
+  },
   images: {
     remotePatterns: [
       {

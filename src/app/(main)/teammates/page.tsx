@@ -1,7 +1,7 @@
 import { validateRequest } from "@/auth";
 import { PageBackHeader } from "@/components/playfinder/page-back-header";
 import { TeammatesList } from "@/components/teammates/teammates-list";
-import { getTeammates } from "@/lib/teammate";
+import { getTeammates } from "@/lib/teammate-server";
 import prisma from "@/lib/prisma";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";

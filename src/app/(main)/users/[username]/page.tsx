@@ -1,7 +1,7 @@
 import { validateRequest } from "@/auth";
 import AthleteProfile from "@/components/playfinder-profile/athlete-profile";
 import prisma from "@/lib/prisma";
-import { countTeammates } from "@/lib/teammate";
+import { countTeammates } from "@/lib/teammate-server";
 import { FollowerInfo, getUserProfileInclude } from "@/lib/types";
 import { PostIntent } from "@prisma/client";
 import { Metadata } from "next";
@@ -114,10 +114,6 @@ export default async function Page({ params: { username } }: PageProps) {
   };
 
   return (
-    <AthleteProfile
-      profile={profile}
-      user={user}
-      followerInfo={followerInfo}
-    />
+    <AthleteProfile profile={profile} user={user} followerInfo={followerInfo} />
   );
 }
