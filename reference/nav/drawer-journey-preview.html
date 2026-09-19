@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Drawer → Pages journey — design preview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --pf-bg: #08090a;
+        --pf-bg-2: #0d0f0d;
+        --pf-surface: #131614;
+        --pf-surface-2: #1a1e1b;
+        --pf-surface-3: #232824;
+        --pf-border: #2a2f2a;
+        --pf-border-light: #353c34;
+        --pf-text: #f2f5ef;
+        --pf-text-2: #b4bcaf;
+        --pf-text-3: #7e8a7e;
+        --pf-text-4: #5a635a;
+        --pf-volt: #a1c217;
+        --pf-volt-dim: #76930f;
+        --pf-volt-glow: rgba(161, 194, 23, 0.35);
+        --pf-blue: #56ccf2;
+        --pf-venue: #c9a227;
+        --verified: #3b82f6;
+        --font: "Space Grotesk", system-ui, sans-serif;
+        --mono: "DM Mono", ui-monospace, monospace;
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      html, body {
+        background: var(--pf-bg);
+        color: var(--pf-text);
+        font-family: var(--font);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      button { font: inherit; color: inherit; background: none; border: 0; cursor: default; }
+
+      /* ——— Preview chrome ——— */
+      .chrome {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 36px 24px 8px;
+      }
+      .eyebrow {
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--pf-text-3);
+        margin-bottom: 8px;
+      }
+      .chrome h1 {
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+      }
+      .lede {
+        margin-top: 10px;
+        font-size: 15px;
+        line-height: 1.55;
+        color: var(--pf-text-2);
+        max-width: 46rem;
+      }
+
+      .journey {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 22px;
+        align-items: center;
+      }
+      .journey a {
+        text-decoration: none;
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--pf-text-3);
+        border: 1px solid var(--pf-border);
+        border-radius: 999px;
+        padding: 8px 12px;
+        background: var(--pf-surface);
+      }
+      .journey a strong { color: var(--pf-volt); font-weight: 500; }
+      .journey .arrow {
+        color: var(--pf-text-4);
+        font-size: 14px;
+        padding: 0 2px;
+      }
+
+      .stack {
+        display: flex;
+        flex-direction: column;
+        gap: 72px;
+        padding: 36px 24px 96px;
+        max-width: 1280px;
+        margin: 0 auto;
+      }
+
+      .step { scroll-margin-top: 24px; }
+      .step-head { margin-bottom: 20px; max-width: 720px; }
+      .step-num {
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--pf-volt);
+        margin-bottom: 6px;
+      }
+      .step-head h2 {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+      }
+      .step-head p {
+        margin-top: 8px;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--pf-text-2);
+      }
+      .mock-badge {
+        display: inline-block;
+        margin-top: 10px;
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #f0c674;
+        border: 1px solid rgba(240, 198, 116, 0.35);
+        background: rgba(240, 198, 116, 0.08);
+        border-radius: 8px;
+        padding: 6px 10px;
+      }
+
+      .flow-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin: -28px 0 -20px;
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--pf-text-4);
+      }
+      .flow-link span {
+        height: 1px;
+        flex: 1;
+        max-width: 120px;
+        background: var(--pf-border);
+      }
+      .flow-link em {
+        font-style: normal;
+        color: var(--pf-volt-dim);
+      }
+
+      .pair-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 32px;
+        align-items: flex-start;
+      }
+      .frame-block {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        flex-shrink: 0;
+      }
+      .frame-label {
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--pf-text-3);
+      }
+      .frame-label span { color: var(--pf-text-4); letter-spacing: 0.08em; }
+
+      .subchoice {
+        margin: 28px 0 14px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(255,255,255,0.04);
+      }
+      .subchoice h3 {
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .subchoice p {
+        margin-top: 6px;
+        font-size: 13px;
+        color: var(--pf-text-2);
+        line-height: 1.45;
+      }
+
+      /* ——— Frames ——— */
+      .phone {
+        width: 380px;
+        min-width: 380px;
+        height: 760px;
+        background: var(--pf-bg);
+        border: 1px solid var(--pf-border);
+        border-radius: 24px;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 0 0 1px rgba(255,255,255,0.02);
+      }
+      .desk {
+        width: 600px;
+        min-width: 600px;
+        height: 760px;
+        background: var(--pf-bg);
+        border-left: 1px solid var(--pf-border);
+        border-right: 1px solid var(--pf-border);
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+      .desk-wide {
+        width: 1100px;
+        min-width: 1100px;
+        height: 760px;
+        background: var(--pf-bg);
+        border: 1px solid var(--pf-border);
+        border-radius: 16px;
+        overflow: hidden;
+        display: flex;
+      }
+      .sidebar-frame {
+        width: 275px;
+        min-width: 275px;
+        height: 760px;
+        background: var(--pf-bg);
+        border: 1px solid var(--pf-border);
+        border-radius: 16px;
+        overflow: hidden;
+        padding: 12px 12px 12px 24px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .status {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 16px 0;
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        color: var(--pf-text-3);
+        flex-shrink: 0;
+      }
+      .desk .status { display: none; }
+
+      .ghost {
+        flex: 1;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        opacity: 0.45;
+      }
+      .g-line { height: 10px; border-radius: 6px; background: var(--pf-surface-2); width: 58%; }
+      .g-line.s { width: 34%; }
+      .g-card { height: 96px; border-radius: 16px; background: var(--pf-surface); border: 1px solid rgba(255,255,255,0.03); }
+      .g-card.t { height: 140px; }
+
+      /* Top bar */
+      .topbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        background: rgba(8,9,10,0.92);
+        backdrop-filter: blur(20px);
+        flex-shrink: 0;
+      }
+      .icon-btn {
+        width: 40px; height: 40px; border-radius: 12px;
+        display: grid; place-items: center; color: var(--pf-text-3); flex-shrink: 0;
+      }
+      .icon-btn svg { width: 20px; height: 20px; }
+      .brand { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+      .brand-mark {
+        width: 36px; height: 36px; border-radius: 11px;
+        background: var(--pf-volt); color: #0a0b0a;
+        display: grid; place-items: center; flex-shrink: 0;
+      }
+      .brand-mark svg { width: 20px; height: 20px; }
+      .brand-name {
+        font-size: 22px; font-weight: 700; letter-spacing: -0.04em;
+        color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+
+      .shell-body { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+      .scrim { position: absolute; inset: 0; background: rgba(0,0,0,0.55); z-index: 20; }
+
+      /* Drawer (approved) */
+      .drawer {
+        position: absolute; top: 0; left: 0; bottom: 0;
+        width: 78%; max-width: 300px;
+        background: var(--pf-bg-2);
+        border-right: 1px solid var(--pf-border);
+        z-index: 30;
+        display: flex; flex-direction: column;
+        padding: 20px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+        box-shadow: 12px 0 40px rgba(0,0,0,0.45);
+      }
+      .desk .drawer { max-width: 280px; width: 46%; }
+      .drawer-profile { display: flex; flex-direction: column; gap: 10px; padding: 4px 4px 18px; }
+      .avatar-row { display: flex; align-items: center; gap: 12px; }
+      .avatar-person {
+        width: 64px; height: 64px; border-radius: 50%; overflow: hidden;
+        flex-shrink: 0; background: var(--pf-surface-3); border: 2px solid var(--pf-border);
+      }
+      .avatar-person img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .name-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
+      .display-name {
+        font-size: 18px; font-weight: 700; letter-spacing: -0.03em;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .verified { width: 18px; height: 18px; flex-shrink: 0; color: var(--verified); }
+      .username { font-size: 13px; color: var(--pf-text-3); margin-top: -4px; }
+      .bio {
+        font-size: 13px; line-height: 1.4; color: var(--pf-text-2);
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .tap-callout {
+        margin-top: 8px; padding: 10px 12px; border-radius: 12px;
+        border: 1px solid rgba(161,194,23,0.35);
+        background: rgba(161,194,23,0.08);
+        font-family: var(--mono); font-size: 10px; font-weight: 500;
+        letter-spacing: 0.08em; text-transform: uppercase; color: var(--pf-volt); line-height: 1.45;
+      }
+      .divider { height: 1px; background: var(--pf-border); margin: 4px 0 12px; }
+      .drawer-top { flex-shrink: 0; }
+      .drawer-spacer { flex: 1 1 auto; min-height: 24px; }
+      .drawer-foot { flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; }
+      .drawer-meta {
+        display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+        padding: 0 12px 2px;
+        font-family: var(--mono); font-size: 10px; font-weight: 500;
+        letter-spacing: 0.08em; text-transform: uppercase; color: var(--pf-text-4);
+      }
+      .drawer-meta .ver { letter-spacing: 0.04em; text-transform: none; }
+      .drawer-nav { display: flex; flex-direction: column; gap: 6px; }
+      .drawer-row {
+        display: flex; align-items: center; gap: 14px;
+        padding: 16px 14px; min-height: 52px; border-radius: 999px;
+        font-size: 16px; font-weight: 600; color: var(--pf-text-2);
+      }
+      .drawer-row svg { width: 22px; height: 22px; color: var(--pf-text-3); flex-shrink: 0; }
+      .drawer-row.danger { color: #f87171; }
+      .drawer-row.danger svg { color: #f87171; }
+      .drawer-row.hl { color: var(--pf-text); background: rgba(161,194,23,0.08); }
+      .drawer-row.hl svg { color: var(--pf-volt); }
+      .drawer-foot .divider { margin: 0 0 4px; }
+
+      /* Page list UI */
+      .pages-screen {
+        display: flex; flex-direction: column; height: 100%; min-height: 0;
+        background: var(--pf-bg);
+      }
+      .pages-header {
+        display: flex; align-items: center; gap: 10px;
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        background: rgba(8,9,10,0.92);
+        backdrop-filter: blur(20px);
+        flex-shrink: 0;
+      }
+      .pages-header h1 {
+        flex: 1; font-size: 20px; font-weight: 700; letter-spacing: -0.03em;
+      }
+      .pages-body {
+        flex: 1; overflow: auto; padding: 16px;
+        display: flex; flex-direction: column; gap: 14px;
+      }
+      .desk .pages-body { padding: 20px 24px; }
+
+      .btn-create {
+        display: flex; align-items: center; gap: 12px;
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 16px;
+        background: var(--pf-volt);
+        color: #0a0b0a;
+        font-size: 15px; font-weight: 700; letter-spacing: -0.02em;
+        text-align: left;
+      }
+      .btn-create .hint {
+        width: 40px; height: 40px; border-radius: 12px;
+        background: rgba(10,11,10,0.18);
+        display: grid; place-items: center; flex-shrink: 0;
+        border: 1.5px dashed rgba(10,11,10,0.35);
+      }
+      .btn-create .hint svg { width: 18px; height: 18px; }
+      .btn-create .sub {
+        display: block; margin-top: 2px;
+        font-family: var(--mono); font-size: 10px; font-weight: 500;
+        letter-spacing: 0.08em; text-transform: uppercase;
+        opacity: 0.7;
+      }
+
+      .page-list { display: flex; flex-direction: column; gap: 8px; }
+      .page-row {
+        display: flex; align-items: center; gap: 12px;
+        padding: 12px;
+        border-radius: 16px;
+        border: 1px solid var(--pf-border);
+        background: var(--pf-surface);
+      }
+      .page-av {
+        width: 48px; height: 48px; border-radius: 12px;
+        overflow: hidden; flex-shrink: 0;
+        background: var(--pf-surface-3);
+        display: grid; place-items: center;
+        font-size: 15px; font-weight: 700; color: var(--pf-volt);
+      }
+      .page-av img { width: 100%; height: 100%; object-fit: cover; }
+      .page-meta { min-width: 0; flex: 1; }
+      .page-name-row {
+        display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      }
+      .page-name {
+        font-size: 15px; font-weight: 700; letter-spacing: -0.02em;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .chip {
+        display: inline-flex; align-items: center; height: 20px;
+        padding: 0 8px; border-radius: 999px;
+        font-family: var(--mono); font-size: 9px; font-weight: 500;
+        letter-spacing: 0.1em; text-transform: uppercase;
+      }
+      .chip.club {
+        color: var(--pf-blue);
+        border: 1px solid rgba(86,204,242,0.28);
+        background: rgba(86,204,242,0.1);
+      }
+      .chip.venue {
+        color: var(--pf-venue);
+        border: 1px solid rgba(201,162,39,0.32);
+        background: rgba(201,162,39,0.1);
+      }
+      .page-handle { margin-top: 3px; font-size: 13px; color: var(--pf-text-3); }
+
+      .empty {
+        margin-top: 8px; padding: 36px 20px;
+        border-radius: 16px; border: 1px dashed var(--pf-border-light);
+        text-align: center;
+      }
+      .empty .ico {
+        width: 56px; height: 56px; margin: 0 auto 14px;
+        border-radius: 14px; background: var(--pf-surface);
+        border: 1px solid var(--pf-border);
+        display: grid; place-items: center; color: var(--pf-text-4);
+      }
+      .empty .ico svg { width: 24px; height: 24px; }
+      .empty h3 { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; }
+      .empty p { margin-top: 6px; font-size: 13px; color: var(--pf-text-3); line-height: 1.45; }
+
+      /* Slide-over panel */
+      .panel {
+        position: absolute; top: 0; right: 0; bottom: 0;
+        width: 86%; max-width: 340px;
+        background: var(--pf-bg-2);
+        border-left: 1px solid var(--pf-border);
+        z-index: 30;
+        display: flex; flex-direction: column;
+        box-shadow: -12px 0 40px rgba(0,0,0,0.45);
+      }
+      .desk .panel { width: 52%; max-width: 360px; }
+      .panel .pages-header { background: var(--pf-bg-2); }
+      .panel .pages-body { background: var(--pf-bg-2); }
+
+      /* Page view mock */
+      .page-view { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow: auto; }
+      .banner {
+        height: 140px; flex-shrink: 0;
+        background:
+          linear-gradient(160deg, rgba(8,9,10,0.15), rgba(8,9,10,0.55)),
+          url("https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&h=320&fit=crop") center/cover;
+        position: relative;
+      }
+      .desk .banner { height: 160px; }
+      .back-fab {
+        position: absolute; left: 14px; top: 14px; z-index: 2;
+        width: 40px; height: 40px; border-radius: 12px;
+        display: grid; place-items: center;
+        border: 1px solid rgba(255,255,255,0.06);
+        background: rgba(8,9,10,0.6); color: var(--pf-text-2);
+        backdrop-filter: blur(10px);
+        font-size: 18px; line-height: 1;
+      }
+      .pv-identity { position: relative; padding: 0 16px 12px; }
+      .desk .pv-identity { padding: 0 24px 16px; }
+      .page-av-lg {
+        width: 80px; height: 80px; border-radius: 16px;
+        border: 3px solid var(--pf-bg); background: var(--pf-surface-2);
+        overflow: hidden; margin-top: -40px; position: relative; z-index: 1;
+        display: grid; place-items: center;
+        font-size: 24px; font-weight: 700; color: var(--pf-volt);
+      }
+      .page-av-lg img { width: 100%; height: 100%; object-fit: cover; }
+      .pv-title-row {
+        margin-top: 12px;
+        display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      }
+      .pv-title { font-size: 22px; font-weight: 700; letter-spacing: -0.03em; }
+      .desk .pv-title { font-size: 26px; }
+      .pv-meta {
+        margin-top: 8px; font-size: 13px; color: var(--pf-text-2);
+        display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+      }
+      .pv-meta .sep { color: var(--pf-text-4); }
+
+      .actions {
+        display: flex; gap: 8px; padding: 0 16px 12px;
+      }
+      .desk .actions { padding: 0 24px 16px; }
+      .actions.sticky-m {
+        position: sticky; top: 0; z-index: 5;
+        background: rgba(8,9,10,0.92); backdrop-filter: blur(16px);
+        padding-top: 10px; padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+      }
+      .btn {
+        flex: 1; height: 42px; border-radius: 12px;
+        display: grid; place-items: center;
+        font-size: 14px; font-weight: 700; letter-spacing: -0.01em;
+      }
+      .btn.primary { background: var(--pf-volt); color: #0a0b0a; }
+      .btn.ghost {
+        background: var(--pf-surface); color: var(--pf-text);
+        border: 1px solid var(--pf-border);
+      }
+      .btn.secondary {
+        background: transparent; color: var(--pf-text-2);
+        border: 1px solid var(--pf-border);
+      }
+
+      .tabs {
+        display: flex; gap: 4px;
+        padding: 0 16px;
+        border-bottom: 1px solid var(--pf-border);
+        overflow-x: auto; flex-shrink: 0;
+      }
+      .desk .tabs { padding: 0 24px; }
+      .tab {
+        padding: 12px 14px;
+        font-size: 14px; font-weight: 600;
+        color: var(--pf-text-3);
+        border-bottom: 2px solid transparent;
+        white-space: nowrap;
+      }
+      .tab.on { color: var(--pf-text); border-bottom-color: var(--pf-volt); }
+
+      .posts { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+      .desk .posts { padding: 16px 24px; }
+      .post {
+        border-radius: 16px; border: 1px solid var(--pf-border);
+        background: var(--pf-surface); padding: 14px;
+      }
+      .post-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+      .post-av {
+        width: 36px; height: 36px; border-radius: 10px;
+        background: var(--pf-surface-3); overflow: hidden; flex-shrink: 0;
+      }
+      .post-av img { width: 100%; height: 100%; object-fit: cover; }
+      .post-who { font-size: 14px; font-weight: 700; }
+      .post-when { font-size: 12px; color: var(--pf-text-3); }
+      .post-body { font-size: 14px; line-height: 1.45; color: var(--pf-text-2); }
+
+      /* Desktop page view rails */
+      .rail-l, .rail-r {
+        flex-shrink: 0; padding: 16px;
+        display: flex; flex-direction: column; gap: 10px;
+        background: var(--pf-bg);
+      }
+      .rail-l {
+        width: 220px; border-right: 1px solid var(--pf-border);
+      }
+      .rail-r {
+        width: 260px; border-left: 1px solid var(--pf-border);
+      }
+      .rail-main {
+        flex: 1; min-width: 0; display: flex; flex-direction: column;
+        border-left: 1px solid var(--pf-border);
+        border-right: 1px solid var(--pf-border);
+      }
+      .rail-sec {
+        padding: 10px 12px; border-radius: 12px;
+        font-size: 14px; font-weight: 600; color: var(--pf-text-2);
+      }
+      .rail-sec.on {
+        background: var(--pf-surface); color: var(--pf-text);
+        border: 1px solid var(--pf-border);
+      }
+      .rail-eyebrow {
+        font-family: var(--mono); font-size: 10px; font-weight: 500;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        color: var(--pf-text-3); margin-bottom: 8px; padding: 0 4px;
+      }
+      .ctx-card {
+        border-radius: 14px; border: 1px solid var(--pf-border);
+        background: var(--pf-surface); padding: 14px;
+      }
+      .ctx-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+      .ctx-card p { font-size: 13px; color: var(--pf-text-3); line-height: 1.4; }
+      .ctx-stat {
+        display: flex; justify-content: space-between;
+        font-size: 13px; padding: 8px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+      }
+      .ctx-stat:last-child { border-bottom: 0; }
+      .ctx-stat b { font-weight: 700; }
+      .ctx-stat span { color: var(--pf-text-3); }
+
+      /* Desktop sidebar mock */
+      .sb-logo {
+        width: fit-content; margin-bottom: 8px;
+        display: flex; align-items: center; gap: 10px;
+        padding: 10px; border-radius: 999px;
+      }
+      .sb-logo .mark {
+        width: 36px; height: 36px; border-radius: 11px;
+        background: var(--pf-volt); color: #0a0b0a;
+        display: grid; place-items: center;
+      }
+      .sb-logo .mark svg { width: 20px; height: 20px; }
+      .sb-nav { display: flex; flex-direction: column; gap: 4px; }
+      .sb-item {
+        display: flex; align-items: center; gap: 16px;
+        padding: 12px; border-radius: 999px;
+        font-size: 17px; font-weight: 600; color: var(--pf-text-2);
+      }
+      .sb-item svg { width: 24px; height: 24px; flex-shrink: 0; }
+      .sb-item.on { color: var(--pf-text); background: var(--pf-surface); }
+      .sb-item.new {
+        outline: 1px dashed rgba(161,194,23,0.55);
+        outline-offset: 2px;
+        color: var(--pf-text);
+      }
+      .sb-item.new svg { color: var(--pf-volt); }
+      .sb-new-tag {
+        margin-left: auto;
+        font-family: var(--mono); font-size: 9px; font-weight: 500;
+        letter-spacing: 0.1em; text-transform: uppercase;
+        color: var(--pf-volt);
+        border: 1px solid rgba(161,194,23,0.35);
+        background: rgba(161,194,23,0.1);
+        border-radius: 6px; padding: 3px 6px;
+      }
+      .sb-create {
+        margin-top: 16px; width: 100%;
+        border-radius: 999px; background: var(--pf-volt);
+        color: #0a0b0a; font-size: 15px; font-weight: 700;
+        padding: 14px; text-align: center;
+      }
+      .sb-note {
+        margin-top: 18px; padding: 10px 12px; border-radius: 12px;
+        border: 1px solid rgba(161,194,23,0.35);
+        background: rgba(161,194,23,0.08);
+        font-family: var(--mono); font-size: 10px; font-weight: 500;
+        letter-spacing: 0.08em; text-transform: uppercase;
+        color: var(--pf-volt); line-height: 1.45;
+      }
+
+      .ico { width: 20px; height: 20px; }
+    </style>
+  </head>
+  <body>
+    <div class="chrome">
+      <p class="eyebrow">Reference · Nav · Journey</p>
+      <h1>Drawer → Your Pages → Page view</h1>
+      <p class="lede">
+        Static visual journey only. Starts from the approved left drawer,
+        then Your Pages (full-screen vs slide-over — pick one), then a
+        labelled 1.4 Page View mock, plus where Pages lands in the desktop
+        sidebar. Tokens from <code>DESIGN_SYSTEM.md</code>.
+      </p>
+      <nav class="journey" aria-label="Journey steps">
+        <a href="#step-1"><strong>1</strong> Drawer</a>
+        <span class="arrow">→</span>
+        <a href="#step-2"><strong>2</strong> Your Pages</a>
+        <span class="arrow">→</span>
+        <a href="#step-3"><strong>3</strong> Page view</a>
+        <span class="arrow">→</span>
+        <a href="#step-4"><strong>4</strong> Desktop sidebar</a>
+      </nav>
+    </div>
+
+    <div class="stack">
+      <!-- ========== 1. DRAWER ========== -->
+      <section class="step" id="step-1">
+        <div class="step-head">
+          <p class="step-num">Step 1 · Entry</p>
+          <h2>Drawer open</h2>
+          <p>
+            Approved mobile shell drawer. Tap <strong>Pages</strong> to continue
+            the journey. Shown at mobile and 600px centre-column widths.
+          </p>
+        </div>
+
+        <div class="pair-row">
+          <div class="frame-block">
+            <p class="frame-label">Mobile <span>· 380px</span></p>
+            <div class="phone">
+              <div class="status"><span>9:41</span><span>●●●</span></div>
+              <header class="topbar">
+                <button type="button" class="icon-btn" aria-label="Menu">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+                </button>
+                <div class="brand">
+                  <span class="brand-mark"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4.5 13.5h6L11 22l8.5-11.5h-6L13 2z"/></svg></span>
+                  <span class="brand-name">PlayFinder</span>
+                </div>
+                <button type="button" class="icon-btn" aria-label="Search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </button>
+              </header>
+              <div class="shell-body">
+                <div class="ghost" aria-hidden="true"><div class="g-line"></div><div class="g-line s"></div><div class="g-card"></div><div class="g-card t"></div></div>
+                <div class="scrim"></div>
+                <aside class="drawer">
+                  <div class="drawer-profile">
+                    <div class="avatar-row">
+                      <div class="avatar-person">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=128&h=128&fit=crop&crop=faces" alt="" width="64" height="64" />
+                      </div>
+                      <div style="min-width:0">
+                        <div class="name-row">
+                          <span class="display-name">Jordan Lee</span>
+                          <svg class="verified" viewBox="0 0 24 24" aria-label="Verified"><path fill="currentColor" stroke="currentColor" stroke-width="1.5" d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4"/></svg>
+                        </div>
+                        <p class="username">@jordanlee</p>
+                      </div>
+                    </div>
+                    <p class="bio">5-a-side midfielder · looking for games nearby</p>
+                    <p class="tap-callout">Tap avatar → profile · Tap Pages → step 2</p>
+                  </div>
+                  <div class="drawer-top">
+                    <div class="divider"></div>
+                    <nav class="drawer-nav">
+                      <div class="drawer-row hl">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+                        Pages
+                      </div>
+                      <div class="drawer-row">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                        Settings
+                      </div>
+                    </nav>
+                  </div>
+                  <div class="drawer-spacer"></div>
+                  <div class="drawer-foot">
+                    <div class="drawer-meta"><span>PlayFinder</span><span class="ver">v0.1</span></div>
+                    <div class="divider"></div>
+                    <div class="drawer-row danger">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                      Log out
+                    </div>
+                  </div>
+                </aside>
+              </div>
+            </div>
+          </div>
+
+          <div class="frame-block">
+            <p class="frame-label">Desktop centre <span>· 600px</span></p>
+            <div class="desk">
+              <header class="topbar">
+                <button type="button" class="icon-btn" aria-label="Menu">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+                </button>
+                <div class="brand">
+                  <span class="brand-mark"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4.5 13.5h6L11 22l8.5-11.5h-6L13 2z"/></svg></span>
+                  <span class="brand-name">PlayFinder</span>
+                </div>
+                <button type="button" class="icon-btn" aria-label="Search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </button>
+              </header>
+              <div class="shell-body">
+                <div class="ghost" aria-hidden="true"><div class="g-line"></div><div class="g-line s"></div><div class="g-card"></div><div class="g-card t"></div><div class="g-card"></div></div>
+                <div class="scrim"></div>
+                <aside class="drawer">
+                  <div class="drawer-profile">
+                    <div class="avatar-row">
+                      <div class="avatar-person">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=128&h=128&fit=crop&crop=faces" alt="" />
+                      </div>
+                      <div style="min-width:0">
+                        <div class="name-row">
+                          <span class="display-name">Jordan Lee</span>
+                          <svg class="verified" viewBox="0 0 24 24"><path fill="currentColor" stroke="currentColor" stroke-width="1.5" d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4"/></svg>
+                        </div>
+                        <p class="username">@jordanlee</p>
+                      </div>
+                    </div>
+                    <p class="bio">5-a-side midfielder · looking for games nearby</p>
+                  </div>
+                  <div class="drawer-top">
+                    <div class="divider"></div>
+                    <nav class="drawer-nav">
+                      <div class="drawer-row hl">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+                        Pages
+                      </div>
+                      <div class="drawer-row">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                        Settings
+                      </div>
+                    </nav>
+                  </div>
+                  <div class="drawer-spacer"></div>
+                  <div class="drawer-foot">
+                    <div class="drawer-meta"><span>PlayFinder</span><span class="ver">v0.1</span></div>
+                    <div class="divider"></div>
+                    <div class="drawer-row danger">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                      Log out
+                    </div>
+                  </div>
+                </aside>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <p class="flow-link"><span></span><em>Pages → Your Pages</em><span></span></p>
+
+      <!-- ========== 2. YOUR PAGES ========== -->
+      <section class="step" id="step-2">
+        <div class="step-head">
+          <p class="step-num">Step 2 · Choose presentation</p>
+          <h2>Your Pages</h2>
+          <p>
+            Same contents, two shells — pick (a) or (b). Header, volt
+            “Create a Page”, then page rows (rounded-square avatar · name ·
+            type chip · @handle). Empty state included under each option.
+          </p>
+        </div>
+
+        <!-- 2a FULL SCREEN -->
+        <div class="subchoice" id="step-2a">
+          <h3>(a) Full-screen page</h3>
+          <p>Replaces the current route. Back returns to feed / previous.</p>
+        </div>
+
+        <div class="pair-row">
+          <div class="frame-block">
+            <p class="frame-label">2a · Mobile full-screen <span>· with pages</span></p>
+            <div class="phone">
+              <div class="status"><span>9:41</span><span>●●●</span></div>
+              <div class="pages-screen">
+                <header class="pages-header">
+                  <button type="button" class="icon-btn" aria-label="Back">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+                  </button>
+                  <h1>Your Pages</h1>
+                </header>
+                <div class="pages-body">
+                  <button type="button" class="btn-create">
+                    <span class="hint" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </span>
+                    <span>
+                      Create a Page
+                      <span class="sub">Club or venue · rounded avatar</span>
+                    </span>
+                  </button>
+                  <div class="page-list">
+                    <div class="page-row">
+                      <div class="page-av"><img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=96&h=96&fit=crop" alt="" /></div>
+                      <div class="page-meta">
+                        <div class="page-name-row">
+                          <span class="page-name">Northside FC</span>
+                          <span class="chip club">Club</span>
+                        </div>
+                        <p class="page-handle">@northsidefc</p>
+                      </div>
+                    </div>
+                    <div class="page-row">
+                      <div class="page-av" style="color:#c9a227">PV</div>
+                      <div class="page-meta">
+                        <div class="page-name-row">
+                          <span class="page-name">Pitch &amp; Vale</span>
+                          <span class="chip venue">Venue</span>
+                        </div>
+                        <p class="page-handle">@pitchvale</p>
+                      </div>
+                    </div>
+                    <div class="page-row">
+                      <div class="page-av"><img src="https://images.unsplash.com/photo-1461896836934-ffe607ba6851?w=96&h=96&fit=crop" alt="" /></div>
+                      <div class="page-meta">
+                        <div class="page-name-row">
+                          <span class="page-name">Riverside 5s</span>
+                          <span class="chip club">Club</span>
+                        </div>
+                        <p class="page-handle">@riverside5s</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="frame-block">
+            <p class="frame-label">2a · Desktop full-screen <span>· 600px</span></p>
+            <div class="desk">
+              <div class="pages-screen">
+                <header class="pages-header">
+                  <button type="button" class="icon-btn" aria-label="Back">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                  </button>
+                  <h1>Your Pages</h1>
+                </header>
+                <div class="pages-body">
+                  <button type="button" class="btn-create">
+                    <span class="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+                    <span>Create a Page<span class="sub">Club or venue · rounded avatar</span></span>
+                  </button>
+                  <div class="page-list">
+                    <div class="page-row">
+                      <div class="page-av"><img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=96&h=96&fit=crop" alt="" /></div>
+                      <div class="page-meta">
+                        <div class="page-name-row"><span class="page-name">Northside FC</span><span class="chip club">Club</span></div>
+                        <p class="page-handle">@northsidefc</p>
+                      </div>
+                    </div>
+                    <div class="page-row">
+                      <div class="page-av" style="color:#c9a227">PV</div>
+                      <div class="page-meta">
+                        <div class="page-name-row"><span class="page-name">Pitch &amp; Vale</span><span class="chip venue">Venue</span></div>
+                        <p class="page-handle">@pitchvale</p>
+                      </div>
+                    </div>
+                    <div class="page-row">
+                      <div class="page-av"><img src="https://images.unsplash.com/photo-1461896836934-ffe607ba6851?w=96&h=96&fit=crop" alt="" /></div>
+                      <div class="page-meta">
+                        <div class="page-name-row"><span class="page-name">Riverside 5s</span><span class="chip club">Club</span></div>
+                        <p class="page-handle">@riverside5s</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pair-row" style="margin-top:28px">
+          <div class="frame-block">
+            <p class="frame-label">2a · Empty state <span>· mobile</span></p>
+            <div class="phone" style="height:520px">
+              <div class="status"><span>9:41</span><span>●●●</span></div>
+              <div class="pages-screen">
+                <header class="pages-header">
+                  <button type="button" class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+                  <h1>Your Pages</h1>
+                </header>
+                <div class="pages-body">
+                  <button type="button" class="btn-create">
+                    <span class="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+                    <span>Create a Page<span class="sub">Club or venue</span></span>
+                  </button>
+                  <div class="empty">
+                    <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+                    <h3>No pages yet</h3>
+                    <p>No pages yet — create your first</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="frame-block">
+            <p class="frame-label">2a · Empty state <span>· 600px</span></p>
+            <div class="desk" style="height:520px">
+              <div class="pages-screen">
+                <header class="pages-header">
+                  <button type="button" class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+                  <h1>Your Pages</h1>
+                </header>
+                <div class="pages-body">
+                  <button type="button" class="btn-create">
+                    <span class="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+                    <span>Create a Page<span class="sub">Club or venue</span></span>
+                  </button>
+                  <div class="empty">
+                    <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+                    <h3>No pages yet</h3>
+                    <p>No pages yet — create your first</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2b SLIDE OVER -->
+        <div class="subchoice" id="step-2b">
+          <h3>(b) Slide-over panel</h3>
+          <p>Sheet from the right over the dimmed feed — keeps context underneath.</p>
+        </div>
+
+        <div class="pair-row">
+          <div class="frame-block">
+            <p class="frame-label">2b · Mobile slide-over <span>· with pages</span></p>
+            <div class="phone">
+              <div class="status"><span>9:41</span><span>●●●</span></div>
+              <header class="topbar">
+                <button type="button" class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg></button>
+                <div class="brand">
+                  <span class="brand-mark"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4.5 13.5h6L11 22l8.5-11.5h-6L13 2z"/></svg></span>
+                  <span class="brand-name">PlayFinder</span>
+                </div>
+                <button type="button" class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+              </header>
+              <div class="shell-body">
+                <div class="ghost" aria-hidden="true"><div class="g-line"></div><div class="g-card"></div><div class="g-card t"></div></div>
+                <div class="scrim"></div>
+                <aside class="panel">
+                  <header class="pages-header">
+                    <button type="button" class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+                    <h1>Your Pages</h1>
+                  </header>
+                  <div class="pages-body">
+                    <button type="button" class="btn-create">
+                      <span class="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+                      <span>Create a Page<span class="sub">Club or venue</span></span>
+                    </button>
+                    <div class="page-list">
+                      <div class="page-row">
+                        <div class="page-av"><img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=96&h=96&fit=crop" alt="" /></div>
+                        <div class="page-meta">
+                          <div class="page-name-row"><span class="page-name">Northside FC</span><span class="chip club">Club</span></div>
+                          <p class="page-handle">@northsidefc</p>
+                        </div>
+                      </div>
+                      <div class="page-row">
+                        <div class="page-av" style="color:#c9a227">PV</div>
+                        <div class="page-meta">
+                          <div class="page-name-row"><span class="page-name">Pitch &amp; Vale</span><span class="chip venue">Venue</span></div>
+                          <p class="page-handle">@pitchvale</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </aside>
+              </div>
+            </div>
+          </div>
+
+          <div class="frame-block">
+            <p class="frame-label">2b · Desktop slide-over <span>· 600px</span></p>
+            <div class="desk">
+              <div class="shell-body" style="min-height:760px">
+                <div class="ghost" aria-hidden="true" style="padding-top:24px"><div class="g-line"></div><div class="g-card"></div><div class="g-card t"></div><div class="g-card"></div></div>
+                <div class="scrim"></div>
+                <aside class="panel">
+                  <header class="pages-header">
+                    <button type="button" class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+                    <h1>Your Pages</h1>
+                  </header>
+                  <div class="pages-body">
+                    <button type="button" class="btn-create">
+                      <span class="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+                      <span>Create a Page<span class="sub">Club or venue</span></span>
+                    </button>
+                    <div class="page-list">
+                      <div class="page-row">
+                        <div class="page-av"><img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=96&h=96&fit=crop" alt="" /></div>
+                        <div class="page-meta">
+                          <div class="page-name-row"><span class="page-name">Northside FC</span><span class="chip club">Club</span></div>
+                          <p class="page-handle">@northsidefc</p>
+                        </div>
+                      </div>
+                      <div class="page-row">
+                        <div class="page-av" style="color:#c9a227">PV</div>
+                        <div class="page-meta">
+                          <div class="page-name-row"><span class="page-name">Pitch &amp; Vale</span><span class="chip venue">Venue</span></div>
+                          <p class="page-handle">@pitchvale</p>
+                        </div>
+                      </div>
+                      <div class="page-row">
+                        <div class="page-av"><img src="https://images.unsplash.com/photo-1461896836934-ffe607ba6851?w=96&h=96&fit=crop" alt="" /></div>
+                        <div class="page-meta">
+                          <div class="page-name-row"><span class="page-name">Riverside 5s</span><span class="chip club">Club</span></div>
+                          <p class="page-handle">@riverside5s</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </aside>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pair-row" style="margin-top:28px">
+          <div class="frame-block">
+            <p class="frame-label">2b · Empty slide-over <span>· mobile</span></p>
+            <div class="phone" style="height:520px">
+              <div class="status"><span>9:41</span><span>●●●</span></div>
+              <header class="topbar">
+                <button type="button" class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg></button>
+                <div class="brand"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4.5 13.5h6L11 22l8.5-11.5h-6L13 2z"/></svg></span><span class="brand-name">PlayFinder</span></div>
+                <button type="button" class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+              </header>
+              <div class="shell-body">
+                <div class="ghost" aria-hidden="true"><div class="g-card"></div></div>
+                <div class="scrim"></div>
+                <aside class="panel">
+                  <header class="pages-header">
+                    <button type="button" class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+                    <h1>Your Pages</h1>
+                  </header>
+                  <div class="pages-body">
+                    <button type="button" class="btn-create">
+                      <span class="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+                      <span>Create a Page<span class="sub">Get started</span></span>
+                    </button>
+                    <div class="empty">
+                      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+                      <h3>No pages yet</h3>
+                      <p>No pages yet — create your first</p>
+                    </div>
+                  </div>
+                </aside>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <p class="flow-link"><span></span><em>Tap a page row → Page view</em><span></span></p>
+
+      <!-- ========== 3. PAGE VIEW ========== -->
+      <section class="step" id="step-3">
+        <div class="step-head">
+          <p class="step-num">Step 3 · Destination</p>
+          <h2>Page view</h2>
+          <p>
+            Landing after tapping a page in the list. Club example with
+            Roster / Fixtures / Posts modules. Admin sees Manage; visitor
+            sees Follow + type CTA.
+          </p>
+          <span class="mock-badge">Page view — 1.4 mock, not final</span>
+        </div>
+
+        <div class="pair-row">
+          <div class="frame-block">
+            <p class="frame-label">Mobile <span>· sticky actions · swipeable tabs</span></p>
+            <div class="phone">
+              <div class="status"><span>9:41</span><span>●●●</span></div>
+              <div class="page-view">
+                <div class="banner">
+                  <button type="button" class="back-fab" aria-label="Back">‹</button>
+                </div>
+                <div class="pv-identity">
+                  <div class="page-av-lg"><img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=160&h=160&fit=crop" alt="" /></div>
+                  <div class="pv-title-row">
+                    <h1 class="pv-title">Northside FC</h1>
+                    <span class="chip club">Club</span>
+                    <svg class="verified" viewBox="0 0 24 24"><path fill="currentColor" stroke="currentColor" stroke-width="1.5" d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4"/></svg>
+                  </div>
+                  <div class="pv-meta">
+                    <span>Football</span><span class="sep">·</span>
+                    <span>Manchester</span><span class="sep">·</span>
+                    <span>1.2k followers</span>
+                  </div>
+                </div>
+                <div class="actions sticky-m">
+                  <button type="button" class="btn primary">Manage</button>
+                  <button type="button" class="btn ghost">Share</button>
+                </div>
+                <div class="tabs" aria-label="Modules">
+                  <div class="tab">Roster</div>
+                  <div class="tab">Fixtures</div>
+                  <div class="tab on">Posts</div>
+                </div>
+                <div class="posts">
+                  <article class="post">
+                    <div class="post-top">
+                      <div class="post-av"><img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=72&h=72&fit=crop" alt="" /></div>
+                      <div>
+                        <div class="post-who">Northside FC</div>
+                        <div class="post-when">2h · Club update</div>
+                      </div>
+                    </div>
+                    <p class="post-body">Trials open Thursday — bring boots. DM the page if you’re in.</p>
+                  </article>
+                  <article class="post">
+                    <div class="post-top">
+                      <div class="post-av"><img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=72&h=72&fit=crop" alt="" /></div>
+                      <div>
+                        <div class="post-who">Northside FC</div>
+                        <div class="post-when">Yesterday</div>
+                      </div>
+                    </div>
+                    <p class="post-body">Full-time: Northside 4–2 Riverside. Motm: A. Okonkwo.</p>
+                  </article>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="frame-block">
+            <p class="frame-label">Mobile visitor <span>· Follow + Join club</span></p>
+            <div class="phone" style="height:420px">
+              <div class="status"><span>9:41</span><span>●●●</span></div>
+              <div class="page-view">
+                <div class="banner" style="height:100px"><button type="button" class="back-fab">‹</button></div>
+                <div class="pv-identity">
+                  <div class="page-av-lg" style="width:64px;height:64px;margin-top:-32px;border-radius:14px"><img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=128&h=128&fit=crop" alt="" /></div>
+                  <div class="pv-title-row">
+                    <h1 class="pv-title" style="font-size:20px">Northside FC</h1>
+                    <span class="chip club">Club</span>
+                  </div>
+                  <div class="pv-meta"><span>Football · Manchester · 1.2k</span></div>
+                </div>
+                <div class="actions">
+                  <button type="button" class="btn primary">Follow</button>
+                  <button type="button" class="btn ghost">Join club</button>
+                </div>
+                <p style="padding:8px 16px 0;font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--pf-text-4)">Visitor action row (not admin)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subchoice">
+          <h3>Desktop page view</h3>
+          <p>Left module rail · main column · right context. Wider than the 600px centre alone.</p>
+        </div>
+
+        <div class="frame-block">
+          <p class="frame-label">Desktop <span>· left rail + main + right · 1.4 mock</span></p>
+          <div class="desk-wide">
+            <aside class="rail-l">
+              <p class="rail-eyebrow">Modules</p>
+              <div class="rail-sec">Roster</div>
+              <div class="rail-sec">Fixtures</div>
+              <div class="rail-sec on">Posts</div>
+              <div class="rail-sec">About</div>
+            </aside>
+            <div class="rail-main">
+              <div class="page-view">
+                <div class="banner"><button type="button" class="back-fab">‹</button></div>
+                <div class="pv-identity">
+                  <div class="page-av-lg"><img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=160&h=160&fit=crop" alt="" /></div>
+                  <div class="pv-title-row">
+                    <h1 class="pv-title">Northside FC</h1>
+                    <span class="chip club">Club</span>
+                    <svg class="verified" viewBox="0 0 24 24"><path fill="currentColor" stroke="currentColor" stroke-width="1.5" d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4"/></svg>
+                  </div>
+                  <div class="pv-meta">
+                    <span>Football</span><span class="sep">·</span>
+                    <span>Manchester</span><span class="sep">·</span>
+                    <span>1.2k followers</span>
+                  </div>
+                </div>
+                <div class="actions">
+                  <button type="button" class="btn primary" style="flex:0 0 140px">Manage</button>
+                  <button type="button" class="btn ghost" style="flex:0 0 120px">Share</button>
+                  <button type="button" class="btn secondary" style="flex:0 0 120px">Invite</button>
+                </div>
+                <div class="posts">
+                  <article class="post">
+                    <div class="post-top">
+                      <div class="post-av"><img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=72&h=72&fit=crop" alt="" /></div>
+                      <div><div class="post-who">Northside FC</div><div class="post-when">2h</div></div>
+                    </div>
+                    <p class="post-body">Trials open Thursday — bring boots. DM the page if you’re in.</p>
+                  </article>
+                  <article class="post">
+                    <div class="post-top">
+                      <div class="post-av"><img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=72&h=72&fit=crop" alt="" /></div>
+                      <div><div class="post-who">Northside FC</div><div class="post-when">Yesterday</div></div>
+                    </div>
+                    <p class="post-body">Full-time: Northside 4–2 Riverside. Motm: A. Okonkwo.</p>
+                  </article>
+                </div>
+              </div>
+            </div>
+            <aside class="rail-r">
+              <p class="rail-eyebrow">Context</p>
+              <div class="ctx-card">
+                <h4>About</h4>
+                <p>Community 5-a-side club. Open trials weekly. Home pitch: Pitch &amp; Vale.</p>
+              </div>
+              <div class="ctx-card">
+                <div class="ctx-stat"><span>Followers</span><b>1,248</b></div>
+                <div class="ctx-stat"><span>Roster</span><b>18</b></div>
+                <div class="ctx-stat"><span>Next fixture</span><b>Sat 18:00</b></div>
+              </div>
+              <div class="ctx-card">
+                <h4>Home venue</h4>
+                <p>Pitch &amp; Vale · @pitchvale</p>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <p class="flow-link"><span></span><em>Desktop entry (parallel to drawer)</em><span></span></p>
+
+      <!-- ========== 4. DESKTOP SIDEBAR ========== -->
+      <section class="step" id="step-4">
+        <div class="step-head">
+          <p class="step-num">Step 4 · Desktop chrome</p>
+          <h2>Left sidebar + Pages</h2>
+          <p>
+            Existing desktop sidebar with a new <strong>Pages</strong> item
+            (grid / rounded-square icon), placed after Discover and before
+            Messages — logical with product surfaces. Mock only; not wired.
+          </p>
+        </div>
+
+        <div class="frame-block">
+          <p class="frame-label">Desktop sidebar <span>· 275px · Pages entry highlighted</span></p>
+          <div class="sidebar-frame">
+            <div class="sb-logo">
+              <span class="mark"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4.5 13.5h6L11 22l8.5-11.5h-6L13 2z"/></svg></span>
+            </div>
+            <nav class="sb-nav">
+              <div class="sb-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+                Home
+              </div>
+              <div class="sb-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polygon points="16.2 7.8 14 14 7.8 16.2 10 10" fill="currentColor" stroke="none"/></svg>
+                Discover
+              </div>
+              <div class="sb-item new">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+                Pages
+                <span class="sb-new-tag">New</span>
+              </div>
+              <div class="sb-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5z"/></svg>
+                Messages
+              </div>
+              <div class="sb-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.7 1.7 0 0 0 3.4 0"/></svg>
+                Notifications
+              </div>
+              <div class="sb-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/></svg>
+                Profile
+              </div>
+              <div class="sb-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                Settings
+              </div>
+            </nav>
+            <div class="sb-create">Create</div>
+            <p class="sb-note">New: Pages · after Discover · opens Your Pages</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>
