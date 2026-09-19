@@ -5,10 +5,22 @@ import ProfileBioEditor from "@/app/(main)/users/[username]/ProfileBioEditor";
 import ProfileIntentPill from "@/app/(main)/users/[username]/ProfileIntentPill";
 import ProfilePostsSection from "@/app/(main)/users/[username]/profile-posts-section";
 import UserAvatar from "@/components/UserAvatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
 import { getSportColour } from "@/lib/sport-visuals";
 import { FollowerInfo, UserProfileData } from "@/lib/types";
-import { CalendarDays, MapPin, Pencil, Share2 } from "lucide-react";
+import {
+  CalendarDays,
+  MapPin,
+  MoreVertical,
+  Pencil,
+  Share2,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AthleteProfileData, SkillTier } from "./types";
@@ -69,22 +81,57 @@ export default function AthleteProfile({
         )}
         <div className="absolute inset-0 bg-gradient-to-b from-[rgba(8,9,10,0.2)] via-[rgba(8,9,10,0.1)] to-[#08090a]" />
         <div className="absolute right-3.5 top-3.5 z-[2] flex gap-2">
-          <button
-            type="button"
-            onClick={() => void handleShare()}
-            className="grid h-10 w-10 place-items-center rounded-xl border border-white/[0.06] bg-[rgba(8,9,10,0.6)] text-[#b4bcaf] backdrop-blur-[10px] active:scale-90"
-            aria-label="Share profile"
-          >
-            <Share2 className="h-[17px] w-[17px]" />
-          </button>
-          {profile.isOwnProfile && (
-            <Link
-              href="/settings/edit-profile"
+          {profile.isOwnProfile ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  className="grid h-10 w-10 place-items-center rounded-xl border border-white/[0.06] bg-[rgba(8,9,10,0.6)] text-[#b4bcaf] backdrop-blur-[10px] active:scale-90"
+                  aria-label="Profile options"
+                >
+                  <MoreVertical className="h-[17px] w-[17px]" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="z-[60] min-w-[180px] rounded-xl border-[#2a2f2a] bg-[#131614] p-1.5 text-[#f2f5ef]"
+              >
+                <DropdownMenuItem
+                  className="cursor-pointer gap-2.5 rounded-lg px-3 py-2.5 text-[14px] font-semibold text-[#f2f5ef] focus:bg-[#1a1e1b] focus:text-[#f2f5ef]"
+                  onSelect={() => void handleShare()}
+                >
+                  <Share2 className="h-4 w-4 text-[#7e8a7e]" />
+                  Share profile
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer gap-2.5 rounded-lg px-3 py-2.5 text-[14px] font-semibold text-[#f2f5ef] focus:bg-[#1a1e1b] focus:text-[#f2f5ef]"
+                  asChild
+                >
+                  <Link href="/settings/edit-profile">
+                    <Pencil className="h-4 w-4 text-[#7e8a7e]" />
+                    Edit profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer gap-2.5 rounded-lg px-3 py-2.5 text-[14px] font-semibold text-[#f2f5ef] focus:bg-[#1a1e1b] focus:text-[#f2f5ef]"
+                  asChild
+                >
+                  <Link href="/settings/location">
+                    <MapPin className="h-4 w-4 text-[#7e8a7e]" />
+                    Edit location
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <button
+              type="button"
+              onClick={() => void handleShare()}
               className="grid h-10 w-10 place-items-center rounded-xl border border-white/[0.06] bg-[rgba(8,9,10,0.6)] text-[#b4bcaf] backdrop-blur-[10px] active:scale-90"
-              aria-label="Edit profile"
+              aria-label="Share profile"
             >
-              <Pencil className="h-[17px] w-[17px]" />
-            </Link>
+              <Share2 className="h-[17px] w-[17px]" />
+            </button>
           )}
         </div>
         <button
