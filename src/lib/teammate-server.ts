@@ -84,3 +84,35 @@ export async function getTeammates(userId: string): Promise<TeammateUser[]> {
     orderBy: { displayName: "asc" },
   });
 }
+
+/**
+ * Teammates matching a search query -- used for things like the Send Post
+ * dialog, where only people you're already teammates with (mutual follows)
+ * should be selectable, not any user on the app.
+ */
+export async function searchTeammates(
+  userId: string,
+  query: string,
+): Promise<TeammateUser[]> {
+  const teammateIds = await getTeammateIds(userId);
+  if (!teammateIds.length) return [];
+
+  const q = query.trim();
+
+  return prisma.user.findMany({
+    where: {
+      id: { in: teammateIds },
+      ...(q
+        ? {
+            OR: [
+              { displayName: { contains: q, mode: "insensitive" } },
+              { username: { contains: q, mode: "insensitive" } },
+            ],
+          }
+        : {}),
+    },
+    select: teammateUserSelect,
+    orderBy: { displayName: "asc" },
+    take: 20,
+  });
+}

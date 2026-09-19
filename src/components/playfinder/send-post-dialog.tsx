@@ -1,6 +1,5 @@
 "use client";
 
-import { useToast } from "@/components/ui/use-toast";
 import { getInitials } from "@/app/(main)/messages/messages-utils";
 import useDebounce from "@/hooks/useDebounce";
 import kyInstance from "@/lib/ky";
@@ -21,16 +20,16 @@ interface SearchUser {
 }
 
 export function SendPostDialog({ postId, onOpenChange }: SendPostDialogProps) {
-  const { toast } = useToast();
   const [searchInput, setSearchInput] = useState("");
   const [sentTo, setSentTo] = useState<Set<string>>(new Set());
+  const [sendErrorFor, setSendErrorFor] = useState<string | null>(null);
   const searchDebounced = useDebounce(searchInput);
 
   const { data, isFetching, isError } = useQuery({
-    queryKey: ["users-search", searchDebounced],
+    queryKey: ["teammates-search", searchDebounced],
     queryFn: async () => {
       const res = await kyInstance
-        .get("/api/users/search", { searchParams: { q: searchDebounced } })
+        .get("/api/teammates/search", { searchParams: { q: searchDebounced } })
         .json<{ users: SearchUser[] }>();
       return res.users;
     },
@@ -44,15 +43,14 @@ export function SendPostDialog({ postId, onOpenChange }: SendPostDialogProps) {
       });
       return recipient;
     },
+    onMutate: () => {
+      setSendErrorFor(null);
+    },
     onSuccess: (recipient) => {
       setSentTo((prev) => new Set(prev).add(recipient.id));
-      toast({ description: `Sent to ${recipient.displayName}` });
     },
-    onError: () => {
-      toast({
-        variant: "destructive",
-        description: "Could not send. Please try again.",
-      });
+    onError: (_error, recipient) => {
+      setSendErrorFor(recipient.id);
     },
   });
 
@@ -89,7 +87,7 @@ export function SendPostDialog({ postId, onOpenChange }: SendPostDialogProps) {
           <input
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search players..."
+            placeholder="Search teammates..."
             className="w-full rounded-full bg-[#1e211e] py-2.5 pl-10 pr-4 text-sm text-[#f2f5ef] placeholder:text-[#7e8a7e] focus:outline-none"
             autoFocus
           />
@@ -98,7 +96,7 @@ export function SendPostDialog({ postId, onOpenChange }: SendPostDialogProps) {
         <div className="max-h-72 overflow-y-auto overflow-x-hidden">
           {!searchDebounced.trim() && (
             <p className="py-6 text-center text-sm text-[#7e8a7e]">
-              Type a name to find someone to send this post to
+              Type a name to find a teammate to send this post to
             </p>
           )}
           {isFetching && (
@@ -108,11 +106,12 @@ export function SendPostDialog({ postId, onOpenChange }: SendPostDialogProps) {
           )}
           {isError && (
             <p className="py-6 text-center text-sm text-red-400">
-              Could not load players.
+              Could not load teammates.
             </p>
           )}
           {data?.map((recipient) => {
             const alreadySent = sentTo.has(recipient.id);
+            const failedToSend = sendErrorFor === recipient.id;
             return (
               <button
                 key={recipient.id}
@@ -137,7 +136,9 @@ export function SendPostDialog({ postId, onOpenChange }: SendPostDialogProps) {
                     {recipient.displayName}
                   </p>
                   <p className="truncate text-sm text-[#7e8a7e]">
-                    @{recipient.username}
+                    {failedToSend
+                      ? "Could not send -- try again"
+                      : `@${recipient.username}`}
                   </p>
                 </div>
                 {alreadySent ? (
@@ -145,14 +146,16 @@ export function SendPostDialog({ postId, onOpenChange }: SendPostDialogProps) {
                     Sent
                   </span>
                 ) : (
-                  <Send className="h-4 w-4 flex-shrink-0 text-[#7e8a7e]" />
+                  <Send
+                    className={`h-4 w-4 flex-shrink-0 ${failedToSend ? "text-red-400" : "text-[#7e8a7e]"}`}
+                  />
                 )}
               </button>
             );
           })}
           {searchDebounced && !isFetching && data?.length === 0 && (
             <p className="py-6 text-center text-sm text-[#7e8a7e]">
-              No players found
+              No teammates found
             </p>
           )}
         </div>

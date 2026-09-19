@@ -5,6 +5,7 @@ import {
   ensureDirectMessageChannel,
   upsertStreamUsers,
 } from "@/lib/stream-messaging";
+import { isTeammate } from "@/lib/teammate-server";
 import { z } from "zod";
 
 const sendSchema = z.object({
@@ -31,7 +32,7 @@ export async function POST(
       );
     }
 
-    const [post, recipient, blocked] = await Promise.all([
+    const [post, recipient, blocked, isMutualTeammate] = await Promise.all([
       prisma.post.findUnique({
         where: { id: postId },
         select: {
@@ -54,6 +55,7 @@ export async function POST(
           ],
         },
       }),
+      isTeammate(currentUser.id, recipientId),
     ]);
 
     if (!post) {
@@ -65,6 +67,12 @@ export async function POST(
     if (blocked) {
       return Response.json(
         { error: "Can't message this user" },
+        { status: 403 },
+      );
+    }
+    if (!isMutualTeammate) {
+      return Response.json(
+        { error: "You can only send posts to teammates" },
         { status: 403 },
       );
     }
