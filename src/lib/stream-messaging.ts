@@ -92,19 +92,24 @@ export function pageChannelId(pageId: string) {
   return `page_${pageId}`;
 }
 
+/** Fallback Stream user id when a Page has no owner (e.g. seeded UNCLAIMED venues). */
+const PAGE_CHANNEL_SYSTEM_USER = "playfinder-system";
+
 /**
  * Ensure a messaging channel exists for a Page. Idempotent: if the channel
- * already exists (409 / code 4), continues and still assigns the owner role.
+ * already exists (409 / code 4), continues and still assigns the owner role
+ * when an owner is present. Tolerates ownerUserId = null (unclaimed venues).
  */
 export async function ensurePageChannel(opts: {
   pageId: string;
-  ownerUserId: string;
+  ownerUserId: string | null;
   name: string;
 }) {
   const id = pageChannelId(opts.pageId);
+  const createdById = opts.ownerUserId ?? PAGE_CHANNEL_SYSTEM_USER;
   const channel = streamServerClient.channel("messaging", id, {
-    members: [opts.ownerUserId],
-    created_by_id: opts.ownerUserId,
+    members: opts.ownerUserId ? [opts.ownerUserId] : [],
+    created_by_id: createdById,
     name: opts.name,
     pageId: opts.pageId,
   });
@@ -118,9 +123,11 @@ export async function ensurePageChannel(opts: {
     }
   }
 
-  await channel.assignRoles([
-    { user_id: opts.ownerUserId, channel_role: "channel_moderator" },
-  ]);
+  if (opts.ownerUserId) {
+    await channel.assignRoles([
+      { user_id: opts.ownerUserId, channel_role: "channel_moderator" },
+    ]);
+  }
 
   return channel.id ?? id;
 }

@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Powerleague Shawlands",
+    "lat": 55.8291,
+    "lng": -4.2684,
+    "city": "Glasgow",
+    "facilities": "5-a-side & 7-a-side pitches, changing rooms, parking"
+  },
+  {
+    "name": "Glasgow Green Football Centre",
+    "lat": 55.8547,
+    "lng": -4.2332,
+    "city": "Glasgow",
+    "facilities": "Full-size grass & synthetic pitches, floodlights"
+  },
+  {
+    "name": "Kelvin Hall",
+    "lat": 55.8686,
+    "lng": -4.2895,
+    "city": "Glasgow",
+    "facilities": "Indoor sports hall, fitness suite, athletics"
+  },
+  {
+    "name": "Scotstoun Sports Campus",
+    "lat": 55.8809,
+    "lng": -4.3518,
+    "city": "Glasgow",
+    "facilities": "Athletics track, tennis courts, gym, outdoor pitches"
+  },
+  {
+    "name": "Toryglen Regional Football Centre",
+    "lat": 55.8252,
+    "lng": -4.2296,
+    "city": "Glasgow",
+    "facilities": "11-a-side & 7-a-side pitches, indoor dome"
+  },
+  {
+    "name": "Emirates Arena",
+    "lat": 55.8472,
+    "lng": -4.2079,
+    "city": "Glasgow",
+    "facilities": "Velodrome, indoor arena, multi-sport courts"
+  },
+  {
+    "name": "Tollcross International Swimming Centre",
+    "lat": 55.8451,
+    "lng": -4.1748,
+    "city": "Glasgow",
+    "facilities": "Olympic pool, diving pool, fitness suite"
+  },
+  {
+    "name": "Bellahouston Leisure Centre",
+    "lat": 55.8458,
+    "lng": -4.3152,
+    "city": "Glasgow",
+    "facilities": "Swimming pool, sports halls, outdoor pitches nearby"
+  },
+  {
+    "name": "Goals Soccer Centre Glasgow",
+    "lat": 55.8938,
+    "lng": -4.2916,
+    "city": "Glasgow",
+    "facilities": "5-a-side pitches, floodlights, changing rooms"
+  },
+  {
+    "name": "Nethercraigs Sports Complex",
+    "lat": 55.8397,
+    "lng": -4.3294,
+    "city": "Glasgow",
+    "facilities": "Football pitches, rugby, hockey, athletics track"
+  }
+]
