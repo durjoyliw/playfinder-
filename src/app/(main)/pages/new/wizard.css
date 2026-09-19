@@ -1,0 +1,56 @@
+@keyframes pf-wizard-forward {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pf-wizard-back {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pf-tick-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.pf-wizard-step-forward {
+  animation: pf-wizard-forward 200ms ease-out;
+}
+
+.pf-wizard-step-back {
+  animation: pf-wizard-back 200ms ease-out;
+}
+
+.pf-handle-tick {
+  animation: pf-tick-in 180ms ease-out;
+}
+
+.field + .field {
+  margin-top: 2rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-wizard-step-forward,
+  .pf-wizard-step-back,
+  .pf-handle-tick {
+    animation: none;
+  }
+}

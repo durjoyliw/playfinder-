@@ -110,3 +110,45 @@ export type CompleteOnboardingValues = z.infer<typeof completeOnboardingSchema>;
 export const createCommentSchema = z.object({
   content: requiredString,
 });
+
+export const PAGE_HANDLE_REGEX = /^[a-z0-9][a-z0-9_-]{1,29}$/;
+
+export const RESERVED_PAGE_HANDLES = [
+  "new",
+  "create",
+  "edit",
+  "settings",
+  "invite",
+  "admin",
+] as const;
+
+export const createPageSchema = z.object({
+  type: z.enum(["VENUE", "CLUB"]),
+  name: requiredString.max(80, "Must be at most 80 characters"),
+  handle: requiredString
+    .transform((value) => value.trim().toLowerCase().replace(/^@/, ""))
+    .pipe(
+      z
+        .string()
+        .regex(
+          PAGE_HANDLE_REGEX,
+          "Only letters, numbers, - and _ allowed; 2–30 characters",
+        )
+        .refine(
+          (handle) =>
+            !RESERVED_PAGE_HANDLES.includes(
+              handle as (typeof RESERVED_PAGE_HANDLES)[number],
+            ),
+          "This handle is reserved",
+        ),
+    ),
+  city: requiredString.max(120, "Must be at most 120 characters"),
+  homeVenueId: z.string().min(1).optional().nullable(),
+  sport: z.string().trim().max(80).optional(),
+  facilities: z.string().trim().max(200).optional(),
+  bio: z.string().trim().max(80).optional(),
+  avatarUrl: z.string().url().optional().nullable(),
+  bannerUrl: z.string().url().optional().nullable(),
+});
+
+export type CreatePageValues = z.infer<typeof createPageSchema>;

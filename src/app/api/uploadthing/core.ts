@@ -65,6 +65,19 @@ export const fileRouter = {
 
       return { mediaId: media.id };
     }),
+  pageAsset: f({
+    image: { maxFileSize: "4MB", maxFileCount: 1 },
+  })
+    .middleware(async () => {
+      const { user } = await validateRequest();
+
+      if (!user) throw new UploadThingError("Unauthorized");
+
+      return { user };
+    })
+    .onUploadComplete(async ({ file }) => {
+      return { url: file.url };
+    }),
 } satisfies FileRouter;
 
 export type AppFileRouter = typeof fileRouter;

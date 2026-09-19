@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Create a Page — design preview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --pf-bg: #08090a;
+        --pf-bg-2: #0d0f0d;
+        --pf-surface: #131614;
+        --pf-surface-2: #1a1e1b;
+        --pf-surface-3: #232824;
+        --pf-border: #2a2f2a;
+        --pf-border-light: #353c34;
+        --pf-text: #f2f5ef;
+        --pf-text-2: #b4bcaf;
+        --pf-text-3: #7e8a7e;
+        --pf-text-4: #5a635a;
+        --pf-volt: #a1c217;
+        --pf-volt-dim: #76930f;
+        --pf-volt-glow: rgba(161, 194, 23, 0.35);
+        --pf-blue: #56ccf2;
+        --radius: 1rem;
+        --font: "Space Grotesk", system-ui, sans-serif;
+        --mono: "DM Mono", ui-monospace, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        background: var(--pf-bg);
+        color: var(--pf-text);
+        font-family: var(--font);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+        color: inherit;
+      }
+
+      button {
+        cursor: pointer;
+        background: none;
+        border: 0;
+      }
+
+      /* ——— Preview chrome (outside the product frames) ——— */
+
+      .chrome {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 32px 24px 16px;
+      }
+
+      .eyebrow {
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--pf-text-3);
+        margin-bottom: 8px;
+      }
+
+      .chrome h1 {
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.15;
+      }
+
+      .chrome p.lede {
+        margin-top: 10px;
+        font-size: 15px;
+        line-height: 1.5;
+        color: var(--pf-text-2);
+        max-width: 42rem;
+      }
+
+      .frames {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 24px 24px 64px;
+      }
+
+      .frame-block {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        flex-shrink: 0;
+      }
+
+      .frame-label {
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--pf-text-3);
+      }
+
+      .frame-label span {
+        color: var(--pf-text-4);
+        letter-spacing: 0.08em;
+      }
+
+      .phone {
+        width: 380px;
+        min-width: 380px;
+        min-height: 760px;
+        background: var(--pf-bg);
+        border: 1px solid var(--pf-border);
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.02);
+      }
+
+      .desktop {
+        width: 600px;
+        min-width: 600px;
+        min-height: 760px;
+        background: var(--pf-bg);
+        border-left: 1px solid var(--pf-border);
+        border-right: 1px solid var(--pf-border);
+        overflow: hidden;
+      }
+
+      .wizard {
+        display: flex;
+        flex-direction: column;
+        min-height: 760px;
+      }
+
+      .phone .pad {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .desktop .pad {
+        padding-left: 24px;
+        padding-right: 24px;
+      }
+
+      /* ——— Wizard chrome ——— */
+
+      .status {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 16px 4px;
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        color: var(--pf-text-3);
+      }
+
+      .desktop .status {
+        display: none;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        padding: 16px 16px 12px;
+        border-bottom: 1px solid var(--pf-border);
+      }
+
+      .desktop .topbar {
+        padding: 18px 24px 14px;
+      }
+
+      .back {
+        position: absolute;
+        left: 16px;
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        background: rgba(8, 9, 10, 0.6);
+        color: var(--pf-text-2);
+        font-size: 20px;
+        line-height: 1;
+      }
+
+      .desktop .back {
+        left: 24px;
+      }
+
+      .topbar h2 {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .progress {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        padding: 16px 16px 0;
+      }
+
+      .desktop .progress {
+        padding: 20px 24px 0;
+      }
+
+      .prog-step {
+        display: flex;
+        align-items: center;
+        flex: 1;
+      }
+
+      .prog-step:last-child {
+        flex: 0;
+      }
+
+      .prog-dot {
+        width: 26px;
+        height: 26px;
+        border-radius: 999px;
+        border: 1px solid var(--pf-border);
+        background: var(--pf-surface);
+        color: var(--pf-text-3);
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+      }
+
+      .prog-step.is-done .prog-dot,
+      .prog-step.is-current .prog-dot {
+        background: var(--pf-volt);
+        border-color: var(--pf-volt);
+        color: #08090a;
+      }
+
+      .prog-step.is-current .prog-dot {
+        box-shadow: 0 0 0 4px var(--pf-volt-glow);
+      }
+
+      .prog-line {
+        flex: 1;
+        height: 1px;
+        background: var(--pf-border);
+        margin: 0 6px;
+      }
+
+      .prog-step.is-done .prog-line {
+        background: var(--pf-volt-dim);
+      }
+
+      .body {
+        flex: 1;
+        padding-top: 22px;
+        padding-bottom: 16px;
+      }
+
+      .step-label {
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--pf-text-3);
+        margin-bottom: 8px;
+      }
+
+      .step-title {
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.15;
+        margin-bottom: 8px;
+      }
+
+      .step-copy {
+        font-size: 15px;
+        line-height: 1.5;
+        color: var(--pf-text-2);
+        margin-bottom: 28px;
+      }
+
+      /* ——— Type cards ——— */
+
+      .type-active {
+        display: grid;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+
+      .desktop .type-active {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .type-soon {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .type-card {
+        text-align: left;
+        border: 1px solid var(--pf-border);
+        background: var(--pf-surface);
+        border-radius: var(--radius);
+        padding: 16px;
+        min-height: 118px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition: border-color 0.15s ease, background 0.15s ease;
+      }
+
+      .type-card:not(.is-soon):hover {
+        border-color: var(--pf-border-light);
+        background: var(--pf-surface-2);
+      }
+
+      .type-card.is-selected {
+        border-color: var(--pf-blue);
+        background: var(--pf-surface-2);
+        box-shadow: inset 0 0 0 1px rgba(86, 204, 242, 0.25);
+      }
+
+      .type-card.is-soon {
+        opacity: 0.42;
+        cursor: default;
+        min-height: 96px;
+        pointer-events: none;
+      }
+
+      .type-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: var(--pf-surface-2);
+        border: 1px solid var(--pf-border);
+        display: grid;
+        place-items: center;
+        color: var(--pf-text-2);
+      }
+
+      .type-card.is-selected .type-icon {
+        border-color: rgba(86, 204, 242, 0.35);
+        color: var(--pf-blue);
+      }
+
+      .type-card h3 {
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      .type-card p {
+        font-size: 13px;
+        line-height: 1.4;
+        color: var(--pf-text-3);
+      }
+
+      .soon-pill {
+        font-family: var(--mono);
+        font-size: 9px;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--pf-text-4);
+      }
+
+      /* ——— Fields ——— */
+
+      .field {
+        display: block;
+        margin: 0;
+      }
+
+      .field + .field {
+        margin-top: 32px;
+      }
+
+      .field-label {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+
+      .field-label span:first-child {
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--pf-text-3);
+      }
+
+      .optional {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--pf-text-4);
+      }
+
+      .control,
+      .select {
+        width: 100%;
+        height: 40px;
+        border-radius: var(--radius);
+        border: 1px solid var(--pf-border);
+        background: var(--pf-surface);
+        padding: 0 14px;
+        font-size: 15px;
+        color: var(--pf-text);
+        outline: none;
+      }
+
+      .control:focus,
+      .select:focus,
+      .textarea:focus {
+        border-color: var(--pf-volt);
+      }
+
+      .control::placeholder,
+      .textarea::placeholder {
+        color: var(--pf-text-4);
+      }
+
+      .handle-wrap {
+        position: relative;
+      }
+
+      .handle-wrap .control {
+        padding-right: 42px;
+      }
+
+      .tick {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+        border-radius: 999px;
+        background: var(--pf-volt);
+        color: #08090a;
+        display: grid;
+        place-items: center;
+      }
+
+      .textarea {
+        width: 100%;
+        min-height: 72px;
+        border-radius: var(--radius);
+        border: 1px solid var(--pf-border);
+        background: var(--pf-surface);
+        padding: 12px 14px;
+        font-size: 15px;
+        line-height: 1.5;
+        color: var(--pf-text);
+        resize: none;
+        outline: none;
+      }
+
+      .select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' stroke='%237e8a7e' stroke-width='1.5'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        padding-right: 36px;
+      }
+
+      /* ——— Map ——— */
+
+      .map {
+        height: 168px;
+        border-radius: var(--radius);
+        border: 1px solid var(--pf-border);
+        background:
+          radial-gradient(circle at 58% 46%, rgba(86, 204, 242, 0.16), transparent 28%),
+          linear-gradient(180deg, #141916 0%, #0c0e0c 100%);
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 32px;
+      }
+
+      .map::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(42, 47, 42, 0.7) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(42, 47, 42, 0.7) 1px, transparent 1px);
+        background-size: 28px 28px;
+        mask-image: radial-gradient(circle at 50% 50%, #000 40%, transparent 80%);
+      }
+
+      .pin {
+        position: absolute;
+        left: 56%;
+        top: 42%;
+        transform: translate(-50%, -100%);
+        width: 18px;
+        height: 18px;
+        border-radius: 50% 50% 50% 0;
+        background: var(--pf-blue);
+        transform-origin: center;
+        rotate: -45deg;
+        box-shadow: 0 0 0 6px rgba(86, 204, 242, 0.15);
+      }
+
+      .map-caption {
+        position: absolute;
+        left: 12px;
+        bottom: 12px;
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--pf-text-3);
+        background: rgba(8, 9, 10, 0.72);
+        border: 1px solid var(--pf-border);
+        border-radius: 999px;
+        padding: 5px 10px;
+      }
+
+      .type-chip {
+        display: inline-flex;
+        align-items: center;
+        height: 22px;
+        padding: 0 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(86, 204, 242, 0.28);
+        background: rgba(86, 204, 242, 0.1);
+        color: var(--pf-blue);
+        font-family: var(--mono);
+        font-size: 9px;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      /* ——— Identity / success ——— */
+
+      .banner {
+        width: 100%;
+        height: 132px;
+        border-radius: var(--radius);
+        border: 1px dashed var(--pf-border-light);
+        background:
+          linear-gradient(180deg, rgba(26, 30, 27, 0.4), rgba(8, 9, 10, 0.2)),
+          repeating-linear-gradient(
+            135deg,
+            #131614 0 10px,
+            #161a17 10px 20px
+          );
+        display: grid;
+        place-items: center;
+        color: var(--pf-text-3);
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 0;
+      }
+
+      .identity {
+        position: relative;
+        margin-bottom: 32px;
+      }
+
+      .avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: var(--radius);
+        border: 3px solid var(--pf-bg);
+        background: var(--pf-surface-2);
+        display: grid;
+        place-items: center;
+        margin-top: -40px;
+        margin-left: 12px;
+        position: relative;
+        color: var(--pf-text-3);
+      }
+
+      .avatar svg {
+        width: 22px;
+        height: 22px;
+      }
+
+      .avatar-initials {
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        color: var(--pf-volt);
+      }
+
+      .name-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 16px;
+        padding-left: 12px;
+      }
+
+      .name-row h3 {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+      }
+
+      .handle-line {
+        margin-top: 4px;
+        font-size: 14px;
+        color: var(--pf-text-3);
+      }
+
+      .success {
+        text-align: center;
+        padding-top: 28px;
+      }
+
+      .success .avatar {
+        margin: 0 auto 18px;
+        width: 88px;
+        height: 88px;
+        border-width: 0;
+      }
+
+      .success h3 {
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        margin-bottom: 8px;
+      }
+
+      .success .name-row {
+        justify-content: center;
+        margin-top: 16px;
+      }
+
+      .success .handle-line {
+        margin-bottom: 28px;
+      }
+
+      /* ——— Footer ——— */
+
+      .footer {
+        padding: 12px 16px 20px;
+        border-top: 1px solid var(--pf-border);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .desktop .footer {
+        padding: 14px 24px 24px;
+      }
+
+      .btn {
+        height: 40px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 600;
+        width: 100%;
+      }
+
+      .btn-primary {
+        background: var(--pf-volt);
+        color: #08090a;
+      }
+
+      .btn-primary:disabled {
+        background: var(--pf-surface-2);
+        color: var(--pf-text-4);
+        cursor: default;
+      }
+
+      .btn-ghost {
+        background: transparent;
+        color: var(--pf-text-3);
+        height: 36px;
+      }
+
+      .btn-outline {
+        border: 1px solid var(--pf-border);
+        background: var(--pf-surface);
+        color: var(--pf-text);
+      }
+
+      .footer-row {
+        display: flex;
+        gap: 10px;
+      }
+
+      /* ——— Static step-4 variants (review chrome) ——— */
+
+      .variants {
+        max-width: 1120px;
+        margin: 0 auto 80px;
+        padding: 0 24px;
+      }
+
+      .variant-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+        margin-top: 16px;
+      }
+
+      .variant-card {
+        width: 380px;
+        background: var(--pf-bg);
+        border: 1px solid var(--pf-border);
+        border-radius: 24px;
+        padding: 22px 16px 28px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="chrome">
+      <p class="eyebrow">Visual review only · no database · no submit</p>
+      <h1>Create a Page</h1>
+      <p class="lede">
+        Category-first wizard, shown at both product widths. Same state in each
+        frame. Green is the CTA only; the type chip is blue; Page avatars are
+        rounded squares.
+      </p>
+    </header>
+
+    <div class="frames">
+      <section class="frame-block">
+        <p class="frame-label">Mobile <span>· 380px frame · 16px gutters</span></p>
+        <div class="phone">
+          <div class="wizard" data-wizard="mobile"></div>
+        </div>
+      </section>
+      <section class="frame-block">
+        <p class="frame-label">
+          Desktop <span>· 600px centre column · 24px gutters</span>
+        </p>
+        <div class="desktop">
+          <div class="wizard" data-wizard="desktop"></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="variants">
+      <p class="eyebrow">Step 4 · both types</p>
+      <h1 style="font-size:22px;font-weight:700;letter-spacing:-0.03em;margin-bottom:4px">
+        Type essentials
+      </h1>
+      <p class="lede" style="margin-bottom:0">
+        Fully optional. The interactive frames default to Club; Venue is the
+        other variant.
+      </p>
+      <div class="variant-grid">
+        <article>
+          <p class="frame-label">Club <span>· default in the wizard</span></p>
+          <div class="variant-card">
+            <p class="step-label">Step 4 of 5 · Essentials</p>
+            <h3 class="step-title">Club details</h3>
+            <p class="step-copy">Skip anything you do not know yet.</p>
+            <label class="field">
+              <div class="field-label"><span>Sport · Optional</span></div>
+              <input class="control" placeholder="e.g. Football" />
+            </label>
+          </div>
+        </article>
+        <article>
+          <p class="frame-label">Venue</p>
+          <div class="variant-card">
+            <p class="step-label">Step 4 of 5 · Essentials</p>
+            <h3 class="step-title">Venue details</h3>
+            <p class="step-copy">Skip anything you do not know yet.</p>
+            <label class="field">
+              <div class="field-label"><span>Facilities · Optional</span></div>
+              <input
+                class="control"
+                placeholder="e.g. 3G pitch, tennis courts"
+              />
+            </label>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <script>
+      const TYPES = {
+        venue: {
+          label: "Venue",
+          chip: "Venue",
+          name: "Powerleague Stratford",
+          handle: "powerleague-stfd",
+          city: "Stratford, London",
+          bio: "8 outdoor pitches. Walk-on and league nights.",
+        },
+        club: {
+          label: "Club",
+          chip: "Club",
+          name: "East London Athletic",
+          handle: "ela-fc",
+          city: "Hackney, London",
+          bio: "Sunday side. Training Wednesdays at London Fields.",
+        },
+      };
+
+      const SOON = ["League", "Coach", "Brand", "Community"];
+
+      const state = {
+        step: 1,
+        type: "club",
+        sport: "",
+        facilities: "",
+        homeVenue: "",
+      };
+
+      function currentType() {
+        return TYPES[state.type] || TYPES.club;
+      }
+
+      function icon(name) {
+        const paths = {
+          venue:
+            '<rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 20v-6h6v6"/><path d="M2 10l10-6 10 6"/>',
+          club:
+            '<path d="M12 3l7 3v5c0 5-3.2 8.2-7 10-3.8-1.8-7-5-7-10V6l7-3z"/>',
+          league:
+            '<path d="M8 4h8v4a4 4 0 01-8 0V4z"/><path d="M7 20h10M12 12v8M6 8H4v2a4 4 0 004 4M18 8h2v2a4 4 0 01-4 4"/>',
+          coach:
+            '<circle cx="12" cy="8" r="3"/><path d="M5 20v-1a5 5 0 015-5h4a5 5 0 015 5v1"/>',
+          brand:
+            '<path d="M12 3l2.2 6.6H21l-5.4 4 2.1 6.4L12 16.8 6.3 20l2.1-6.4L3 9.6h6.8z"/>',
+          community:
+            '<circle cx="9" cy="8" r="2.5"/><circle cx="16" cy="9" r="2"/><path d="M4 18c.4-3 2.4-4.5 5-4.5s4.6 1.5 5 4.5"/><path d="M14 18c.2-2 1.4-3.2 3.4-3.2 1.6 0 2.8.8 3.6 3.2"/>',
+          camera:
+            '<path d="M4 8h3l1.5-2h7L17 8h3v10H4V8z"/><circle cx="12" cy="13" r="3"/>',
+        };
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${paths[name]}</svg>`;
+      }
+
+      function progressHTML() {
+        if (state.step === "done") return "";
+        return `<div class="progress" role="list" aria-label="Wizard progress">
+          ${[1, 2, 3, 4, 5]
+            .map((n) => {
+              const cls =
+                state.step === n
+                  ? "is-current"
+                  : state.step > n
+                    ? "is-done"
+                    : "";
+              return `<div class="prog-step ${cls}" role="listitem">
+                <button type="button" class="prog-dot" data-action="goto" data-step="${n}" aria-label="Step ${n}">${n}</button>
+                ${n < 5 ? '<span class="prog-line"></span>' : ""}
+              </div>`;
+            })
+            .join("")}
+        </div>`;
+      }
+
+      function typeCard(key, title, copy, soon) {
+        const selected = state.type === key;
+        const tag = soon ? "div" : "button";
+        const attrs = soon
+          ? 'class="type-card is-soon"'
+          : `type="button" class="type-card ${selected ? "is-selected" : ""}" data-action="pick-type" data-type="${key}"`;
+        return `<${tag} ${attrs}>
+          <div class="type-icon">${icon(key)}</div>
+          <div>
+            <h3>${title}</h3>
+            <p>${soon ? '<span class="soon-pill">Coming soon</span>' : copy}</p>
+          </div>
+        </${tag}>`;
+      }
+
+      function step1() {
+        return `
+          <p class="step-label">Step 1 of 5 · Type</p>
+          <h3 class="step-title">What are you creating?</h3>
+          <p class="step-copy">Pick a type. You can fill in the rest in under a minute.</p>
+          <div class="type-active">
+            ${typeCard("venue", "Venue", "Pitches, courts, and the place people play.")}
+            ${typeCard("club", "Club", "A team or club with a home ground.")}
+          </div>
+          <div class="type-soon">
+            ${SOON.map((name) =>
+              typeCard(name.toLowerCase(), name, "", true),
+            ).join("")}
+          </div>`;
+      }
+
+      function step2() {
+        const t = currentType();
+        return `
+          <p class="step-label">Step 2 of 5 · Name</p>
+          <h3 class="step-title">Name it.</h3>
+          <p class="step-copy">This is how it appears across PlayFinder.</p>
+          <label class="field">
+            <div class="field-label"><span>Page name</span></div>
+            <input class="control" data-field="name" value="${t.name}" />
+          </label>
+          <label class="field">
+            <div class="field-label"><span>Handle</span></div>
+            <div class="handle-wrap">
+              <input class="control" data-field="handle" value="@${t.handle}" />
+              <span class="tick" title="Handle available" aria-label="Available">${iconTick()}</span>
+            </div>
+          </label>`;
+      }
+
+      function iconTick() {
+        return `<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2l2.4 2.4 4.6-5.2" stroke="#08090a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      }
+
+      function step3() {
+        const t = currentType();
+        const home =
+          state.type === "club"
+            ? `<label class="field">
+                <div class="field-label"><span>Home venue</span><span class="optional">Optional</span></div>
+                <select class="select" data-field="homeVenue">
+                  <option value="">Select a venue</option>
+                  <option ${state.homeVenue === "pl" ? "selected" : ""} value="pl">Powerleague Shoreditch</option>
+                  <option ${state.homeVenue === "goals" ? "selected" : ""} value="goals">Goals Wembley</option>
+                  <option ${state.homeVenue === "pfm" ? "selected" : ""} value="pfm">PlayFootball Millwall</option>
+                </select>
+              </label>`
+            : "";
+        return `
+          <p class="step-label">Step 3 of 5 · Location</p>
+          <h3 class="step-title">Where is it?</h3>
+          <p class="step-copy">${
+            state.type === "club"
+              ? "City first. Home venue can wait."
+              : "Drop a pin so players can find you."
+          }</p>
+          <div class="map" aria-hidden="true">
+            <span class="pin"></span>
+            <span class="map-caption">Map preview</span>
+          </div>
+          <label class="field">
+            <div class="field-label"><span>City</span></div>
+            <input class="control" data-field="city" value="${t.city}" />
+          </label>
+          ${home}`;
+      }
+
+      function step4() {
+        const isClub = state.type !== "venue";
+        if (isClub) {
+          return `
+            <p class="step-label">Step 4 of 5 · Essentials</p>
+            <h3 class="step-title">Club details</h3>
+            <p class="step-copy">Skip anything you do not know yet.</p>
+            <label class="field">
+              <div class="field-label"><span>Sport · Optional</span></div>
+              <input class="control" data-field="sport" value="${state.sport}" placeholder="e.g. Football" />
+            </label>`;
+        }
+        return `
+          <p class="step-label">Step 4 of 5 · Essentials</p>
+          <h3 class="step-title">Venue details</h3>
+          <p class="step-copy">Skip anything you do not know yet.</p>
+          <label class="field">
+            <div class="field-label"><span>Facilities · Optional</span></div>
+            <input class="control" data-field="facilities" value="${state.facilities}" placeholder="e.g. 3G pitch, tennis courts" />
+          </label>`;
+      }
+
+      function step5() {
+        const t = currentType();
+        const initials = t.name
+          .split(" ")
+          .slice(0, 2)
+          .map((w) => w[0])
+          .join("");
+        return `
+          <p class="step-label">Step 5 of 5 · Identity</p>
+          <h3 class="step-title">Make it look like you.</h3>
+          <p class="step-copy">Rounded-square avatar — that is how a Page reads as a Page.</p>
+          <div class="identity">
+            <button type="button" class="banner">Add banner</button>
+            <button type="button" class="avatar" aria-label="Upload page avatar">
+              <span class="avatar-initials">${initials}</span>
+            </button>
+            <div class="name-row">
+              <h3>${t.name}</h3>
+              <span class="type-chip">${t.chip}</span>
+            </div>
+            <p class="handle-line">@${t.handle}</p>
+          </div>
+          <label class="field">
+            <div class="field-label"><span>Bio</span><span class="optional">One line · optional</span></div>
+            <textarea class="textarea" data-field="bio" maxlength="80">${t.bio}</textarea>
+          </label>`;
+      }
+
+      function done() {
+        const t = currentType();
+        const initials = t.name
+          .split(" ")
+          .slice(0, 2)
+          .map((w) => w[0])
+          .join("");
+        return `
+          <div class="success">
+            <div class="avatar"><span class="avatar-initials">${initials}</span></div>
+            <h3>Your Page is live</h3>
+            <div class="name-row">
+              <h3 style="font-size:18px">${t.name}</h3>
+              <span class="type-chip">${t.chip}</span>
+            </div>
+            <p class="handle-line">@${t.handle} · anyone can find it now</p>
+            <div class="footer-row" style="max-width:360px;margin:0 auto">
+              <button type="button" class="btn btn-primary">Invite a co-admin</button>
+              <button type="button" class="btn btn-outline">Share</button>
+            </div>
+          </div>`;
+      }
+
+      function footerHTML() {
+        if (state.step === "done") return "";
+        const canContinue = state.step !== 1 || state.type;
+        const primary =
+          state.step === 5
+            ? "Create Page"
+            : "Continue";
+        const skip =
+          state.step >= 3
+            ? `<button type="button" class="btn btn-ghost" data-action="next">Skip for now</button>`
+            : "";
+        return `<div class="footer">
+          <button type="button" class="btn btn-primary" data-action="next" ${
+            canContinue ? "" : "disabled"
+          }>${primary}</button>
+          ${skip}
+        </div>`;
+      }
+
+      function bodyHTML() {
+        if (state.step === "done") return done();
+        if (state.step === 1) return step1();
+        if (state.step === 2) return step2();
+        if (state.step === 3) return step3();
+        if (state.step === 4) return step4();
+        return step5();
+      }
+
+      function wizardHTML() {
+        return `
+          <div class="status"><span>09:41</span><span>PF</span></div>
+          <div class="topbar">
+            <button type="button" class="back" data-action="back" aria-label="Back">‹</button>
+            <h2>Create a Page</h2>
+          </div>
+          ${progressHTML()}
+          <div class="body pad">${bodyHTML()}</div>
+          ${footerHTML()}
+        `;
+      }
+
+      function render() {
+        document.querySelectorAll("[data-wizard]").forEach((root) => {
+          root.innerHTML = wizardHTML();
+        });
+      }
+
+      document.addEventListener("click", (event) => {
+        const btn = event.target.closest("[data-action]");
+        if (!btn) return;
+        const action = btn.dataset.action;
+        if (action === "pick-type") {
+          state.type = btn.dataset.type;
+          render();
+          return;
+        }
+        if (action === "goto") {
+          const next = Number(btn.dataset.step);
+          if (!state.type && next > 1) return;
+          state.step = next;
+          render();
+          return;
+        }
+        if (action === "back") {
+          if (state.step === "done") {
+            state.step = 5;
+          } else if (state.step > 1) {
+            state.step -= 1;
+          }
+          render();
+          return;
+        }
+        if (action === "next") {
+          if (state.step === 1 && !state.type) return;
+          if (state.step === 5) state.step = "done";
+          else if (state.step !== "done") state.step += 1;
+          render();
+        }
+      });
+
+      document.addEventListener("input", (event) => {
+        const field = event.target.dataset.field;
+        if (!field || !state.type) return;
+        if (field === "handle") {
+          TYPES[state.type].handle = event.target.value.replace(/^@/, "");
+        } else if (field === "name" || field === "city" || field === "bio") {
+          TYPES[state.type][field] = event.target.value;
+        } else {
+          state[field] = event.target.value;
+        }
+      });
+
+      document.addEventListener("change", (event) => {
+        const field = event.target.dataset.field;
+        if (field) state[field] = event.target.value;
+      });
+
+      render();
+    </script>
+  </body>
+</html>
