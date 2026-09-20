@@ -1,20 +1,30 @@
 "use client";
 
+import { logout } from "@/app/(auth)/actions";
 import { useSession } from "@/app/(main)/SessionProvider";
 import { usePlayFinder } from "@/components/playfinder/playfinder-provider";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import kyInstance from "@/lib/ky";
 import { getInitials } from "@/lib/settings";
 import { NotificationCountInfo } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Bell,
   Compass,
   Home,
   LayoutGrid,
+  LogOut,
   MessageCircle,
+  MoreVertical,
   Settings,
   User,
+  Users,
   Zap,
 } from "lucide-react";
 import Link from "next/link";
@@ -48,6 +58,7 @@ export function DesktopSidebar({
   const pathname = usePathname();
   const { user } = useSession();
   const { openComposer } = usePlayFinder();
+  const queryClient = useQueryClient();
   const profileHref = `/users/${user.username}`;
 
   const { data } = useQuery({
@@ -59,6 +70,11 @@ export function DesktopSidebar({
     initialData: { unreadCount: initialUnreadNotificationCount },
     refetchInterval: 60 * 1000,
   });
+
+  const handleLogout = () => {
+    queryClient.clear();
+    logout();
+  };
 
   const navItems: NavItem[] = [
     { id: "home", label: "Home", icon: Home, href: "/home", isActive: (p) => p === "/home" },
@@ -221,24 +237,60 @@ export function DesktopSidebar({
         Broadcast
       </button>
 
-      <Link
-        href={profileHref}
-        className="mt-auto flex items-center gap-2.5 rounded-full p-2.5 transition-colors hover:bg-[#131614]"
-      >
-        <div className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full bg-[#a1c217] text-[13px] font-bold text-[#0a0b0a]">
-          {user.avatarUrl ? (
-            <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" />
-          ) : (
-            getInitials(user.displayName).slice(0, 1)
-          )}
-        </div>
-        <div className="min-w-0">
-          <div className="truncate text-sm font-bold text-[#f2f5ef]">
-            {user.displayName}
+      <div className="mt-auto flex items-center gap-1 rounded-full p-1.5 transition-colors hover:bg-[#131614]">
+        <Link
+          href={profileHref}
+          className="flex min-w-0 flex-1 items-center gap-2.5 rounded-full p-1"
+        >
+          <div className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full bg-[#a1c217] text-[13px] font-bold text-[#0a0b0a]">
+            {user.avatarUrl ? (
+              <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" />
+            ) : (
+              getInitials(user.displayName).slice(0, 1)
+            )}
           </div>
-          <div className="truncate text-xs text-[#7e8a7e]">@{user.username}</div>
-        </div>
-      </Link>
+          <div className="min-w-0">
+            <div className="truncate text-sm font-bold text-[#f2f5ef]">
+              {user.displayName}
+            </div>
+            <div className="truncate text-xs text-[#7e8a7e]">@{user.username}</div>
+          </div>
+        </Link>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              aria-label="Account options"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-[#7e8a7e] transition-colors hover:bg-[#1a1e1b] hover:text-[#f2f5ef]"
+            >
+              <MoreVertical className="h-4 w-4" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            side="top"
+            className="z-[60] min-w-[180px] rounded-xl border-[#2a2f2a] bg-[#131614] p-1.5 text-[#f2f5ef]"
+          >
+            <DropdownMenuItem
+              className="cursor-pointer gap-2.5 rounded-lg px-3 py-2.5 text-[14px] font-semibold text-[#f2f5ef] focus:bg-[#1a1e1b] focus:text-[#f2f5ef]"
+              onSelect={handleLogout}
+            >
+              <LogOut className="h-4 w-4 text-[#7e8a7e]" />
+              Log out
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer gap-2.5 rounded-lg px-3 py-2.5 text-[14px] font-semibold text-[#f2f5ef] focus:bg-[#1a1e1b] focus:text-[#f2f5ef]"
+              asChild
+            >
+              <Link href="/login">
+                <Users className="h-4 w-4 text-[#7e8a7e]" />
+                Switch account
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </div>
   );
 }
