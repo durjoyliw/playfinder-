@@ -127,7 +127,7 @@ export function PageLocationMap({ place, className }: PageLocationMapProps) {
     <div
       className={
         className ??
-        "relative mb-8 h-[168px] overflow-hidden rounded-[1rem] border border-[#2a2f2a] bg-[#0c0e0c]"
+        "relative mb-8 h-[336px] overflow-hidden rounded-[1rem] border border-[#2a2f2a] bg-[#0c0e0c]"
       }
     >
       {tokenPresent ? (
