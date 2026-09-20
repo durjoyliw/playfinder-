@@ -4,11 +4,18 @@
 
 @import "mapbox-gl/dist/mapbox-gl.css";
 
-/* Reserve the scrollbar's width at all times so toggling a page's vertical
-   scrollbar on/off (e.g. Search results growing/shrinking) never shifts the
-   100vw-based desktop layout math (sidebar/right-rail centering) sideways. */
+/* Keep scrollbar width reserved so content / 100vw shell math never shifts
+   when a scrollbar appears/disappears (search results, Radix overlays).
+   Overlay scrollbars (mobile/macOS) take no layout space — no extra gutter. */
 html {
   scrollbar-gutter: stable;
+}
+
+/* Zero Radix/react-remove-scroll's margin compensation — it double-shifts
+   when scrollbar-gutter already reserves the bar width. */
+html body[data-scroll-locked] {
+  --removed-body-scroll-bar-size: 0 !important;
+  margin-right: 0 !important;
 }
 
 /* Fill the map container only — never stretch the WebGL canvas.

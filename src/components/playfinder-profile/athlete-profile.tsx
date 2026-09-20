@@ -69,17 +69,19 @@ export default function AthleteProfile({
 
   return (
     <div className="w-full pb-10 font-grotesk text-[#f2f5ef]">
-      <div className="relative -mx-0 h-[180px] overflow-hidden">
-        {profile.avatarUrl ? (
-          <img
-            src={profile.avatarUrl}
-            alt=""
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <div className="h-full w-full bg-gradient-to-br from-[#1a1e1b] to-[#08090a]" />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-b from-[rgba(8,9,10,0.2)] via-[rgba(8,9,10,0.1)] to-[#08090a]" />
+      <div className="relative -mx-0 h-[180px]">
+        <div className="absolute inset-0 overflow-hidden">
+          {profile.avatarUrl ? (
+            <img
+              src={profile.avatarUrl}
+              alt=""
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <div className="h-full w-full bg-gradient-to-br from-[#1a1e1b] to-[#08090a]" />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-b from-[rgba(8,9,10,0.2)] via-[rgba(8,9,10,0.1)] to-[#08090a]" />
+        </div>
         <div className="absolute right-3.5 top-3.5 z-[2] flex gap-2">
           {profile.isOwnProfile ? (
             <DropdownMenu>
