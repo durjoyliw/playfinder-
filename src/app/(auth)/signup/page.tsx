@@ -21,6 +21,33 @@ export default function Page() {
           </div>
           <div className="space-y-5">
             <SignUpForm />
+            <p className="text-center text-xs leading-relaxed text-muted-foreground">
+              By signing up, you agree to our{" "}
+              <Link
+                href="/terms"
+                target="_blank"
+                className="text-foreground underline underline-offset-2"
+              >
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link
+                href="/privacy"
+                target="_blank"
+                className="text-foreground underline underline-offset-2"
+              >
+                Privacy Policy
+              </Link>
+              , and to our use of cookies as described in our{" "}
+              <Link
+                href="/cookies"
+                target="_blank"
+                className="text-foreground underline underline-offset-2"
+              >
+                Cookie Policy
+              </Link>
+              .
+            </p>
             <Link href="/login" className="block text-center hover:underline">
               Already have an account? Log in
             </Link>
