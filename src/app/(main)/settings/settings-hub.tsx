@@ -9,6 +9,7 @@ import {
   BarChart3,
   Ban,
   Bell,
+  Cookie,
   FileText,
   MessageCircle,
   Info,
@@ -153,14 +154,19 @@ export function SettingsHub() {
 
         <SettingsSection title="Legal">
           <SettingsRow
-            href="/settings/terms"
+            href="/terms"
             icon={<FileText className="h-5 w-5" />}
-            label="Terms of Use"
+            label="Terms of Service"
           />
           <SettingsRow
-            href="/settings/privacy"
+            href="/privacy"
             icon={<Shield className="h-5 w-5" />}
             label="Privacy Policy"
+          />
+          <SettingsRow
+            href="/cookies"
+            icon={<Cookie className="h-5 w-5" />}
+            label="Cookie Policy"
           />
         </SettingsSection>
       </div>

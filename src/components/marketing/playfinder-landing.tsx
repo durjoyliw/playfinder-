@@ -676,6 +676,9 @@ export function PlayFinderLanding() {
               <Link href="/terms" style={{ fontSize: 13, color: MUTED, textDecoration: "none" }}>
                 Terms
               </Link>
+              <Link href="/cookies" style={{ fontSize: 13, color: MUTED, textDecoration: "none" }}>
+                Cookies
+              </Link>
               <Link href="/contact" style={{ fontSize: 13, color: MUTED, textDecoration: "none" }}>
                 Contact
               </Link>
