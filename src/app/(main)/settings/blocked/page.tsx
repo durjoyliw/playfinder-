@@ -57,8 +57,8 @@ export default function Page() {
   }
 
   return (
-    <div className="min-h-full bg-[#0d0d0d] pb-8">
-      <PageBackHeader title="Blocked Accounts" />
+    <div className="min-h-full bg-[var(--pf-bg)] pb-8">
+      <PageBackHeader title="Blocked Accounts" backHref="/settings" />
 
       {blocks === null ? (
         <div className="px-4 pt-6">

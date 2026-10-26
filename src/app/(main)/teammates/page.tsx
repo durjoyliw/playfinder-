@@ -43,7 +43,7 @@ export default async function TeammatesPage({ searchParams }: PageProps) {
   const canRemove = profileUserId === loggedInUser.id;
 
   return (
-    <div className="min-h-full bg-[#0d0d0d] pb-28">
+    <div className="min-h-full bg-[var(--pf-bg)] pb-28">
       <PageBackHeader title="Teammates" />
       <TeammatesList initialTeammates={teammates} canRemove={canRemove} />
     </div>

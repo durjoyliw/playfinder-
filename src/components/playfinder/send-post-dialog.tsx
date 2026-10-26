@@ -88,7 +88,7 @@ export function SendPostDialog({ postId, onOpenChange }: SendPostDialogProps) {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Search teammates..."
-            className="w-full rounded-full bg-[#1e211e] py-2.5 pl-10 pr-4 text-sm text-[#f2f5ef] placeholder:text-[#7e8a7e] focus:outline-none"
+            className="w-full rounded-full bg-[#1e211e] py-2.5 pl-10 pr-4 text-base text-[#f2f5ef] lg:text-sm placeholder:text-[#7e8a7e] focus:outline-none"
             autoFocus
           />
         </div>

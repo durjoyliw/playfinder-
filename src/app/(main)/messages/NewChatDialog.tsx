@@ -192,7 +192,7 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="Search players..."
-                className="w-full rounded-full bg-[#1a1a1a] py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-[#888888] focus:outline-none"
+                className="w-full rounded-full bg-[#1a1a1a] py-2.5 pl-10 pr-4 text-base text-white lg:text-sm placeholder:text-[#888888] focus:outline-none"
                 autoFocus
               />
             </div>
@@ -326,7 +326,7 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
               value={groupName}
               onChange={(e) => setGroupName(e.target.value)}
               placeholder={selected.map((s) => s.displayName).join(", ")}
-              className="mb-4 w-full rounded-xl bg-[#1a1a1a] px-4 py-2.5 text-sm text-white placeholder:text-[#666] focus:outline-none"
+              className="mb-4 w-full rounded-xl bg-[#1a1a1a] px-4 py-2.5 text-base text-white lg:text-sm placeholder:text-[#666] focus:outline-none"
               autoFocus
             />
 

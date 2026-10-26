@@ -148,7 +148,7 @@ export default function ChatInput() {
 
   if (inputLocked) {
     return (
-      <div className="bg-[#0d0d0d] px-4 py-3">
+      <div className="bg-[var(--pf-bg)] px-4 py-3">
         <p className="w-full text-center text-sm text-[#888888]">
           Request sent — waiting for a reply
         </p>
@@ -159,7 +159,7 @@ export default function ChatInput() {
   const hasText = text.trim().length > 0;
 
   return (
-    <div className="bg-[#0d0d0d] px-3 py-2.5">
+    <div className="bg-[var(--pf-bg)] px-3 py-2.5">
       <div className="flex items-end gap-2">
         <input
           ref={cameraInputRef}
@@ -217,7 +217,7 @@ export default function ChatInput() {
           onKeyDown={handleKeyDown}
           onBlur={() => channel.stopTyping().catch(() => {})}
           placeholder="Message..."
-          className="max-h-[108px] min-w-0 flex-1 resize-none rounded-full border-none bg-[#1a1a1a] px-4 py-2.5 text-sm leading-[22px] text-white outline-none placeholder:text-[#888888] focus:ring-0"
+          className="max-h-[108px] min-w-0 flex-1 resize-none rounded-full border-none bg-[#1a1a1a] px-4 py-2.5 text-base leading-[22px] lg:text-sm text-white outline-none placeholder:text-[#888888] focus:ring-0"
         />
 
         {hasText ? (

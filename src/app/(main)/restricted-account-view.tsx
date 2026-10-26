@@ -62,7 +62,7 @@ export function RestrictedAccountView({
                 name="reason"
                 required
                 rows={5}
-                className="w-full rounded-md border border-[#2a2f2a] bg-[#08090a] px-3 py-2 text-sm outline-none focus:border-[#dcef5a]"
+                className="w-full rounded-md border border-[#2a2f2a] bg-[#08090a] px-3 py-2 text-base outline-none lg:text-sm focus:border-[#dcef5a]"
               />
             </label>
             <button

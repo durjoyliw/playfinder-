@@ -17,8 +17,8 @@ export function SettingsSubpageLayout({
   children,
 }: SettingsSubpageLayoutProps) {
   return (
-    <div className="min-h-full bg-[#0d0d0d] pb-8">
-      <PageBackHeader title={title} />
+    <div className="min-h-full bg-[var(--pf-bg)] pb-8">
+      <PageBackHeader title={title} backHref="/settings" />
       <div className="px-4 py-6">{children}</div>
     </div>
   );
@@ -102,7 +102,7 @@ export function SettingsPlaceholder({
 }
 
 export const settingsInputClassName =
-  "w-full rounded-lg border border-[#2a2a2a] bg-[#0d0d0d] px-3 py-2.5 text-sm text-white focus:border-[#A1C217] focus:outline-none";
+  "w-full rounded-lg border border-[#2a2a2a] bg-[#0d0d0d] px-3 py-2.5 text-base text-white lg:text-sm focus:border-[#A1C217] focus:outline-none";
 
 export const settingsSaveButtonClassName =
   "w-full rounded-lg bg-[#A1C217] py-2.5 text-sm font-semibold text-black transition-colors hover:bg-[#aac62e] disabled:opacity-60";

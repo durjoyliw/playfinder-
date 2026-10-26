@@ -54,7 +54,7 @@ export function SettingsHub() {
 
   if (status === "pending") {
     return (
-      <div className="min-h-full bg-[#0d0d0d]">
+      <div className="min-h-full bg-[var(--pf-bg)]">
         <PageBackHeader title="Settings" />
         <SettingsLoading />
       </div>
@@ -63,7 +63,7 @@ export function SettingsHub() {
 
   if (status === "error" || !data) {
     return (
-      <div className="min-h-full bg-[#0d0d0d]">
+      <div className="min-h-full bg-[var(--pf-bg)]">
         <PageBackHeader title="Settings" />
         <SettingsError />
       </div>
@@ -74,7 +74,7 @@ export function SettingsHub() {
   const intentLabel = getProfileIntentLabel(data.profileIntent);
 
   return (
-    <div className="min-h-full bg-[#0d0d0d] pb-8">
+    <div className="min-h-full bg-[var(--pf-bg)] pb-8">
       <PageBackHeader title="Settings" />
       <div className="px-4 pb-2 pt-6 text-center">
         <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-[#A1C217] text-2xl font-bold text-black">

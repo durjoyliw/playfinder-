@@ -22,7 +22,7 @@ import {
 const labelClassName =
   "mb-1.5 block text-xs tracking-[0.5px] text-[#888888] uppercase";
 const inputClassName =
-  "w-full rounded-[10px] border border-[#2a2a2a] bg-[#161616] p-3 text-[15px] text-[#f0f0f0] focus:border-[#A1C217] focus:outline-none";
+  "w-full rounded-[10px] border border-[#2a2a2a] bg-[#161616] p-3 text-base text-[#f0f0f0] lg:text-[15px] focus:border-[#A1C217] focus:outline-none";
 
 export function EditProfileForm() {
   const { toast } = useToast();

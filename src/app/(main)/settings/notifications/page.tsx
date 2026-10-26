@@ -108,8 +108,8 @@ export default function NotificationsSettingsPage() {
   };
 
   return (
-    <div className="min-h-full bg-[#0d0d0d] pb-8">
-      <PageBackHeader title="Notifications" />
+    <div className="min-h-full bg-[var(--pf-bg)] pb-8">
+      <PageBackHeader title="Notifications" backHref="/settings" />
       <div className="px-4 py-6">
         <div className="overflow-hidden rounded-xl bg-[#161616] p-4">
           <div className="flex items-start gap-3">

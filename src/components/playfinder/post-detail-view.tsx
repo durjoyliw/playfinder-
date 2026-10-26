@@ -86,8 +86,8 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
   }
 
   return (
-    <div className="mx-auto min-h-screen w-full max-w-lg bg-[#0d0d0d] pb-8">
-      <header className="sticky top-0 z-40 flex items-center border-b border-[#262626] bg-[#0d0d0d] px-4 py-3">
+    <div className="mx-auto min-h-full w-full max-w-lg bg-[var(--pf-bg)] pb-8">
+      <header className="sticky top-0 z-40 flex items-center border-b border-[#262626] bg-[var(--pf-bg)] px-4 py-3">
         <button
           type="button"
           onClick={() => {

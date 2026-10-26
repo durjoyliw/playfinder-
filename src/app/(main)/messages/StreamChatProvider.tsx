@@ -15,7 +15,7 @@ export default function StreamChatProvider({
 
   if (initState.status === "loading") {
     return (
-      <div className="flex h-full min-h-[320px] items-center justify-center bg-[#0d0d0d]">
+      <div className="flex h-full min-h-[320px] items-center justify-center bg-[var(--pf-bg)]">
         <Loader2 className="h-8 w-8 animate-spin text-[#A1C217]" />
       </div>
     );
@@ -23,7 +23,7 @@ export default function StreamChatProvider({
 
   if (initState.status === "error") {
     return (
-      <div className="flex h-full min-h-[320px] items-center justify-center bg-[#0d0d0d] p-6 text-center">
+      <div className="flex h-full min-h-[320px] items-center justify-center bg-[var(--pf-bg)] p-6 text-center">
         <p className="text-sm text-gray-500">{initState.message}</p>
       </div>
     );

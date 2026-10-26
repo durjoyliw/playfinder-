@@ -22,7 +22,7 @@ import {
   Share2,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useSafeBack } from "@/hooks/use-safe-back";
 import { AthleteProfileData, SkillTier } from "./types";
 
 interface AthleteProfileProps {
@@ -48,7 +48,7 @@ export default function AthleteProfile({
   user,
   followerInfo,
 }: AthleteProfileProps) {
-  const router = useRouter();
+  const goBack = useSafeBack("/home");
   const { toast } = useToast();
 
   const handleShare = async () => {
@@ -138,7 +138,7 @@ export default function AthleteProfile({
         </div>
         <button
           type="button"
-          onClick={() => router.back()}
+          onClick={goBack}
           className="absolute left-3.5 top-3.5 z-[2] grid h-10 w-10 place-items-center rounded-xl border border-white/[0.06] bg-[rgba(8,9,10,0.6)] text-[#b4bcaf] backdrop-blur-[10px] active:scale-90"
           aria-label="Go back"
         >

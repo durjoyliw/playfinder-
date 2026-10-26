@@ -1,8 +1,8 @@
 /* PlayFinder messages — Stream Chat shell overrides */
 
 .playfinder-messages.str-chat {
-  --str-chat__background-color: #0d0d0d;
-  --str-chat__secondary-background-color: #0d0d0d;
+  --str-chat__background-color: var(--pf-bg);
+  --str-chat__secondary-background-color: var(--pf-bg);
   --str-chat__primary-color: #a1c217;
   --str-chat__active-primary-color: #93b314;
   font-family:
@@ -17,7 +17,7 @@
   height: 100%;
   min-height: 0;
   flex: 1;
-  background: #0d0d0d;
+  background: var(--pf-bg);
   color: #fff;
 }
 
@@ -47,7 +47,7 @@
 }
 
 .playfinder-messages .str-chat__channel-list {
-  background: #0d0d0d;
+  background: var(--pf-bg);
   border: none;
   height: 100%;
 }

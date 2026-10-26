@@ -72,8 +72,8 @@ export function BottomNav() {
     );
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-[100] flex h-[calc(64px+env(safe-area-inset-bottom,0px))] shrink-0 items-stretch border-t border-white/[0.05] bg-[rgba(8,9,10,0.95)] pb-[env(safe-area-inset-bottom,0px)] font-grotesk backdrop-blur-[24px]">
-      <div className="flex h-full w-full items-stretch">
+    <nav className="fixed bottom-0 left-0 right-0 z-[var(--pf-z-nav)] flex h-[calc(64px+env(safe-area-inset-bottom,0px))] shrink-0 items-stretch border-t border-white/[0.05] bg-[rgba(8,9,10,0.95)] pb-[env(safe-area-inset-bottom,0px)] font-grotesk backdrop-blur-[24px]">
+      <div className="mx-auto flex h-full w-full max-w-md items-stretch">
         {navItems.slice(0, 2).map((item) => {
           const active = item.isActive(pathname);
           return (

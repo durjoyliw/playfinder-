@@ -135,6 +135,21 @@ html body[data-scroll-locked] {
     --pf-volt-dim: #76930f;
     --pf-volt-glow: rgba(161, 194, 23, 0.35);
     --pf-blue: #56ccf2;
+
+    /* Z-index scale. Page content stacks locally below 40.
+       nav < header < overlays (sheets, dialogs, confirms) < popovers
+       (menus that can open from an overlay) < full-screen composer < toasts. */
+    --pf-z-nav: 40;
+    --pf-z-header: 50;
+    --pf-z-overlay: 60;
+    --pf-z-popover: 120;
+    --pf-z-fullscreen: 200;
+    --pf-z-toast: 300;
+
+    /* Mobile app header height (header.tsx: 12px + 40px + 12px + 1px border,
+       plus the top safe area). Sticky bars below it use this as their top. */
+    --pf-header-h: calc(65px + env(safe-area-inset-top, 0px));
+
     --background: 0 0% 5.1%;
     --foreground: 0 0% 95%;
 
@@ -398,5 +413,28 @@ html body[data-scroll-locked] {
   [class*="animate-[pf-card-in"],
   [class*="animate-[pf-badge-in"] {
     animation: none !important;
+  }
+}
+
+/* Mobile nav drawer (mobile-nav-drawer.tsx): an iOS-style deceleration
+   curve, slower in than out, with the backdrop fading on the same timing.
+   Plain CSS because Tailwind can't generate arbitrary ease-[cubic-bezier()]
+   classes in this project (they're flagged as ambiguous). */
+.pf-drawer[data-state="open"],
+.pf-drawer-overlay[data-state="open"] {
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.pf-drawer[data-state="closed"],
+.pf-drawer-overlay[data-state="closed"] {
+  animation-duration: 260ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-drawer,
+  .pf-drawer-overlay {
+    animation-duration: 1ms !important;
   }
 }

@@ -53,7 +53,7 @@ const textareaClassName =
   "mb-3.5 w-full min-h-[110px] resize-none rounded-[14px] border border-[#2a2f2a] bg-[#131614] p-4 text-base text-white outline-none placeholder:text-[#888888] focus:border-[#A0CC00]";
 
 const fieldInputClassName =
-  "min-h-6 w-full border-0 bg-transparent text-[15px] text-white outline-none placeholder:text-[#888888] [color-scheme:dark]";
+  "min-h-6 w-full border-0 bg-transparent text-base text-white outline-none lg:text-[15px] placeholder:text-[#888888] [color-scheme:dark]";
 
 const ARENA_INTENTS = POST_INTENTS.filter(
   (o) =>
@@ -570,7 +570,7 @@ export function ComposerSheet({
   );
 
   return createPortal(
-    <div className="fixed inset-0 z-[200] flex items-end justify-center">
+    <div className="fixed inset-0 z-[var(--pf-z-fullscreen)] flex items-end justify-center">
       <button
         type="button"
         className="absolute inset-0 bg-black/70 backdrop-blur-[6px]"

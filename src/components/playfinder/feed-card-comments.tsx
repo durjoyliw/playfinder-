@@ -195,7 +195,7 @@ export function FeedCardComments({
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Write a reply..."
-              className="flex-1 rounded-lg border border-[#2a2a2a] bg-[#161616] px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:border-[#A1C217] focus:outline-none"
+              className="flex-1 rounded-lg border border-[#2a2a2a] bg-[#161616] px-3 py-2 text-base text-white lg:text-sm placeholder:text-muted-foreground focus:border-[#A1C217] focus:outline-none"
             />
             <button
               type="submit"

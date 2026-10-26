@@ -1,6 +1,6 @@
 import { Toaster } from "@/components/ui/toaster";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { ThemeProvider } from "next-themes";
 import { DM_Mono, Space_Grotesk } from "next/font/google";
 import localFont from "next/font/local";
@@ -33,6 +33,14 @@ export const metadata: Metadata = {
     default: "PlayFinder",
   },
   description: "Find players and games near you",
+};
+
+// `viewport-fit=cover` lets iOS report real safe-area insets, so the
+// env(safe-area-inset-*) padding on the header, bottom nav and drawer works.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

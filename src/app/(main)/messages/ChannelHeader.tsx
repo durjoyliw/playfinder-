@@ -139,7 +139,7 @@ export default function ChannelHeader() {
   const profileHref = other?.username ? `/users/${other.username}` : undefined;
 
   return (
-    <div className="flex-shrink-0 border-b border-[#262626] bg-[#0d0d0d]">
+    <div className="flex-shrink-0 border-b border-[#262626] bg-[var(--pf-bg)]">
       <header className="relative flex items-center gap-3 px-3 py-3">
         <Link
           href="/messages"

@@ -129,7 +129,7 @@ export default function ChatMessageList() {
   return (
     <div
       ref={listRef}
-      className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-3 py-4"
+      className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain px-3 py-4"
     >
       {messages.map((message, index) => {
         const prev = messages[index - 1];

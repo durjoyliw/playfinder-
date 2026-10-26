@@ -84,7 +84,7 @@ export default function ProfileBioEditor({
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               rows={5}
-              className="w-full resize-none rounded-[14px] border border-[#2a2f2a] bg-[#0d0f0d] px-3 py-2.5 text-[15px] leading-relaxed text-[#f2f5ef] outline-none focus:border-[#a1c217]"
+              className="w-full resize-none rounded-[14px] border border-[#2a2f2a] bg-[#0d0f0d] px-3 py-2.5 text-base leading-relaxed lg:text-[15px] text-[#f2f5ef] outline-none focus:border-[#a1c217]"
               placeholder="Tell others about your sports background..."
               autoFocus
             />

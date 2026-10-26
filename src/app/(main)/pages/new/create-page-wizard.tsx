@@ -37,6 +37,7 @@ import {
   Users,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useSafeBack } from "@/hooks/use-safe-back";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import "./wizard.css";
 
@@ -60,7 +61,7 @@ const COMING_SOON = [
 ] as const;
 
 const fieldInputClass =
-  "h-10 rounded-[1rem] border-[#2a2f2a] bg-[#131614] px-3.5 text-[15px] text-[#f2f5ef] placeholder:text-[#5a635a] focus-visible:border-[#a1c217] focus-visible:ring-0 focus-visible:ring-offset-0";
+  "h-10 rounded-[1rem] border-[#2a2f2a] bg-[#131614] px-3.5 text-base text-[#f2f5ef] lg:text-[15px] placeholder:text-[#5a635a] focus-visible:border-[#a1c217] focus-visible:ring-0 focus-visible:ring-offset-0";
 
 const fieldLabelClass =
   "mb-2 block font-dm-mono text-[10px] font-medium uppercase tracking-[0.12em] text-[#7e8a7e]";
@@ -80,6 +81,7 @@ function Field({
 
 export function CreatePageWizard({ venues }: CreatePageWizardProps) {
   const router = useRouter();
+  const goBack = useSafeBack("/pages");
   const { toast } = useToast();
   const avatarInputId = useId();
   const bannerInputId = useId();
@@ -219,7 +221,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
       <div className="relative flex items-center justify-center border-b border-[#2a2f2a] px-4 py-4 lg:px-6">
         <button
           type="button"
-          onClick={() => (step > 1 ? goTo(step - 1) : router.back())}
+          onClick={() => (step > 1 ? goTo(step - 1) : goBack())}
           className="absolute left-4 grid h-10 w-10 place-items-center rounded-xl border border-white/[0.06] bg-[rgba(8,9,10,0.6)] text-[#b4bcaf] lg:left-6"
           aria-label="Back"
         >

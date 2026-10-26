@@ -173,7 +173,7 @@ export default function ConversationsList() {
   };
 
   return (
-    <div className="flex h-full min-h-0 w-full flex-1 flex-col bg-[#0d0d0d]">
+    <div className="flex h-full min-h-0 w-full flex-1 flex-col bg-[var(--pf-bg)]">
       <div className="flex items-center justify-between px-4 pb-2 pt-4">
         <h1 className="text-2xl font-bold text-white">Messages</h1>
         <div className="flex items-center gap-1">
@@ -218,13 +218,13 @@ export default function ConversationsList() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search conversations..."
-            className="w-full rounded-full bg-[#1a1a1a] py-2.5 pl-11 pr-4 text-sm text-white placeholder:text-[#888888] focus:outline-none focus:ring-1 focus:ring-[#333]"
+            className="w-full rounded-full bg-[#1a1a1a] py-2.5 pl-11 pr-4 text-base text-white lg:text-sm placeholder:text-[#888888] focus:outline-none focus:ring-1 focus:ring-[#333]"
             aria-label="Search conversations"
           />
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
+      <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain">
         <ChannelList
           filters={listFilters}
           options={{ state: true, presence: true, limit: 30 }}

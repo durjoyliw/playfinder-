@@ -56,7 +56,7 @@ export default function MessageRequestActions() {
   };
 
   return (
-    <div className="flex flex-shrink-0 flex-col gap-2 border-t border-[#262626] bg-[#0d0d0d] px-4 py-3">
+    <div className="flex flex-shrink-0 flex-col gap-2 border-t border-[#262626] bg-[var(--pf-bg)] px-4 py-3">
       <p className="text-center text-sm text-[#888888]">
         {displayName} wants to message you
       </p>

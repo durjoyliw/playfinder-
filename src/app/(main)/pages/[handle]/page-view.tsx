@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { PageType, VerifyLevel } from "@prisma/client";
 import { formatDistanceToNow } from "date-fns";
 import { BadgeCheck } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useSafeBack } from "@/hooks/use-safe-back";
 import { useMemo, useState } from "react";
 
 type ClubTab = "roster" | "fixtures" | "posts";
@@ -42,7 +42,7 @@ interface PageViewProps {
 }
 
 export function PageView({ page }: PageViewProps) {
-  const router = useRouter();
+  const goBack = useSafeBack("/home");
   const isClub = page.type === PageType.CLUB;
   const [clubTab, setClubTab] = useState<ClubTab>("posts");
   const [venueTab, setVenueTab] = useState<VenueTab>("posts");
@@ -88,7 +88,7 @@ export function PageView({ page }: PageViewProps) {
           <div className="absolute inset-0 bg-gradient-to-b from-[rgba(8,9,10,0.15)] via-transparent to-[#08090a]" />
           <button
             type="button"
-            onClick={() => router.back()}
+            onClick={goBack}
             className="absolute left-3.5 top-3.5 z-[2] grid h-10 w-10 place-items-center rounded-xl border border-white/[0.06] bg-[rgba(8,9,10,0.6)] text-[#b4bcaf] backdrop-blur-[10px] active:scale-90"
             aria-label="Go back"
           >
@@ -150,7 +150,7 @@ export function PageView({ page }: PageViewProps) {
       </div>
 
       {/* Action row — stubs for 1.5; sticky on mobile */}
-      <div className="sticky top-0 z-10 border-b border-white/[0.04] bg-[rgba(8,9,10,0.92)] px-4 py-2.5 backdrop-blur-[16px] lg:static lg:border-0 lg:bg-transparent lg:px-6 lg:py-4 lg:backdrop-blur-none">
+      <div className="sticky top-[var(--pf-header-h)] z-10 border-b border-white/[0.04] bg-[rgba(8,9,10,0.92)] px-4 py-2.5 backdrop-blur-[16px] lg:static lg:top-0 lg:border-0 lg:bg-transparent lg:px-6 lg:py-4 lg:backdrop-blur-none">
         <div className="flex gap-2">
           {page.isAdmin ? (
             <>

@@ -8,7 +8,7 @@ export function NoActiveChatState() {
   const [showNewChatDialog, setShowNewChatDialog] = useState(false);
 
   return (
-    <div className="flex h-full min-h-0 flex-1 flex-col items-center justify-center gap-3.5 bg-[#0d0d0d] p-10 text-center">
+    <div className="flex h-full min-h-0 flex-1 flex-col items-center justify-center gap-3.5 bg-[var(--pf-bg)] p-10 text-center">
       <div className="grid h-16 w-16 place-items-center rounded-full bg-[#1a1a1a] text-[#888888]">
         <MessageCircle className="h-[30px] w-[30px]" strokeWidth={1.75} />
       </div>

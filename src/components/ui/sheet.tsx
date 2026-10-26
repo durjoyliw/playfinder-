@@ -18,7 +18,7 @@ const SheetOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Overlay
     className={cn(
-      "fixed inset-0 z-[60] bg-black/55 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      "fixed inset-0 z-[var(--pf-z-overlay)] bg-black/55 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
       className,
     )}
     {...props}
@@ -28,7 +28,7 @@ const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 const sheetVariants = cva(
-  "fixed z-[60] gap-4 bg-[#0d0f0d] shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:duration-300",
+  "fixed z-[var(--pf-z-overlay)] gap-4 bg-[#0d0f0d] shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:duration-300",
   {
     variants: {
       side: {
@@ -50,6 +50,8 @@ interface SheetContentProps
   extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>,
     VariantProps<typeof sheetVariants> {
   showClose?: boolean;
+  /** Extra classes for the dimmed backdrop behind the sheet. */
+  overlayClassName?: string;
 }
 
 const SheetContent = React.forwardRef<
@@ -57,11 +59,18 @@ const SheetContent = React.forwardRef<
   SheetContentProps
 >(
   (
-    { side = "left", className, children, showClose = false, ...props },
+    {
+      side = "left",
+      className,
+      children,
+      showClose = false,
+      overlayClassName,
+      ...props
+    },
     ref,
   ) => (
     <SheetPortal>
-      <SheetOverlay />
+      <SheetOverlay className={overlayClassName} />
       <DialogPrimitive.Content
         ref={ref}
         className={cn(sheetVariants({ side }), className)}

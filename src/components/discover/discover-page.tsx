@@ -18,7 +18,7 @@ import kyInstance from "@/lib/ky";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Zap } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export interface DiscoverUserSport {
   id: string;
@@ -34,6 +34,7 @@ export function DiscoverPage({ userSports }: DiscoverPageProps) {
     () => userSports[0]?.id ?? "running",
   );
   const [activeTab, setActiveTab] = useState<DiscoverTabType>("venues");
+  const mapAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (userSports.length === 0) return;
@@ -76,7 +77,10 @@ export function DiscoverPage({ userSports }: DiscoverPageProps) {
   }
 
   return (
-    <div className="relative flex h-full w-full overflow-hidden bg-[#08090a]">
+    <div
+      ref={mapAreaRef}
+      className="relative flex h-full w-full overflow-hidden bg-[#08090a]"
+    >
       {/* Desktop: results list column */}
       <div className="hidden h-full w-[420px] shrink-0 flex-col border-r border-[#2a2f2a] lg:flex">
         <div className="shrink-0 border-b border-[#2a2f2a] px-5 pb-4 pt-5">
@@ -95,7 +99,7 @@ export function DiscoverPage({ userSports }: DiscoverPageProps) {
           onTabChange={setActiveTab}
           nearbyCount={places.length}
         />
-        <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain">
           <DiscoverPlaceList
             places={places}
             tabType={activeTab}
@@ -134,6 +138,7 @@ export function DiscoverPage({ userSports }: DiscoverPageProps) {
       {/* Mobile: draggable bottom sheet */}
       <div className="lg:hidden">
         <VenueBottomSheet
+          boundsRef={mapAreaRef}
           places={places}
           activeTab={activeTab}
           onTabChange={setActiveTab}
