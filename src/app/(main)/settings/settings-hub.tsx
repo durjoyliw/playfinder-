@@ -3,6 +3,7 @@
 import { logout } from "@/app/(auth)/actions";
 import { useSession } from "@/app/(main)/SessionProvider";
 import { useToast } from "@/components/ui/use-toast";
+import { openCookieSettings } from "@/lib/consent";
 import { getInitials, getProfileIntentLabel } from "@/lib/settings";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -16,6 +17,7 @@ import {
   MapPin,
   Power,
   Shield,
+  SlidersHorizontal,
   Trophy,
   User,
   Zap,
@@ -167,6 +169,11 @@ export function SettingsHub() {
             href="/cookies"
             icon={<Cookie className="h-5 w-5" />}
             label="Cookie Policy"
+          />
+          <SettingsRow
+            onClick={openCookieSettings}
+            icon={<SlidersHorizontal className="h-5 w-5" />}
+            label="Cookie settings"
           />
         </SettingsSection>
       </div>

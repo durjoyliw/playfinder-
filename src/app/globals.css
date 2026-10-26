@@ -141,6 +141,7 @@ html body[data-scroll-locked] {
        (menus that can open from an overlay) < full-screen composer < toasts. */
     --pf-z-nav: 40;
     --pf-z-header: 50;
+    --pf-z-banner: 55; /* cookie consent: over nav + header, under overlays */
     --pf-z-overlay: 60;
     --pf-z-popover: 120;
     --pf-z-fullscreen: 200;
@@ -413,6 +414,30 @@ html body[data-scroll-locked] {
   [class*="animate-[pf-card-in"],
   [class*="animate-[pf-badge-in"] {
     animation: none !important;
+  }
+}
+
+/* Cookie consent banner (cookie-consent-banner.tsx). Clear of the notch /
+   home indicator everywhere; on mobile, lifted above the bottom nav and its
+   raised "+" (30px above the bar) whenever that nav is on screen. */
+.pf-consent {
+  left: calc(12px + env(safe-area-inset-left, 0px));
+  right: calc(12px + env(safe-area-inset-right, 0px));
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+}
+
+@media (max-width: 1023.98px) {
+  html:has([data-pf-bottom-nav]) .pf-consent {
+    bottom: calc(64px + 30px + 12px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (min-width: 1024px) {
+  .pf-consent {
+    left: 24px;
+    right: auto;
+    bottom: 24px;
+    width: 400px;
   }
 }
 

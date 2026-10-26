@@ -11,13 +11,23 @@ type LegalHref = (typeof LEGAL_LINKS)[number]["href"];
 
 interface LegalPageProps {
   title: string;
-  updated: string;
-  current: LegalHref;
+  /** "Last updated" date; omit on pages that aren't policies (e.g. /contact). */
+  updated?: string;
+  /** Which policy link to highlight in the footer nav, if any. */
+  current?: LegalHref;
+  /** Small label above the title. */
+  eyebrow?: string;
   children: React.ReactNode;
 }
 
-/** Shared shell for the public legal pages (/privacy, /terms, /cookies). */
-export function LegalPage({ title, updated, current, children }: LegalPageProps) {
+/** Shared shell for the public legal + support pages (/privacy, /terms, /cookies, /contact). */
+export function LegalPage({
+  title,
+  updated,
+  current,
+  eyebrow = "Legal",
+  children,
+}: LegalPageProps) {
   return (
     <div className="min-h-screen bg-[var(--pf-bg)] font-grotesk text-[var(--pf-text)]">
       <header className="border-b border-[var(--pf-border)]">
@@ -33,14 +43,16 @@ export function LegalPage({ title, updated, current, children }: LegalPageProps)
 
       <main className="mx-auto w-full max-w-[480px] px-4 pb-20 pt-10 lg:max-w-[600px]">
         <p className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-text-3)]">
-          Legal
+          {eyebrow}
         </p>
         <h1 className="mt-2 text-[30px] font-bold leading-tight tracking-[-0.03em] text-white">
           {title}
         </h1>
-        <p className="mt-2 text-[13px] text-[var(--pf-text-3)]">
-          Last updated: {updated}
-        </p>
+        {updated && (
+          <p className="mt-2 text-[13px] text-[var(--pf-text-3)]">
+            Last updated: {updated}
+          </p>
+        )}
 
         <div className="mt-10 space-y-10 text-[15px] leading-[1.7] text-[var(--pf-text-2)]">
           {children}

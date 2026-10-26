@@ -56,19 +56,22 @@ export function SettingsSection({ title, children }: SettingsSectionProps) {
   );
 }
 
-interface SettingsRowProps {
-  href: string;
+type SettingsRowProps = {
   icon: React.ReactNode;
   label: string;
   value?: string;
-}
+} & (
+  | { href: string; onClick?: never }
+  // Rows that open something in place (e.g. cookie settings) instead of navigating.
+  | { onClick: () => void; href?: never }
+);
 
-export function SettingsRow({ href, icon, label, value }: SettingsRowProps) {
-  return (
-    <Link
-      href={href}
-      className="flex w-full items-center gap-3 border-b border-[#2a2a2a] px-4 py-3.5 transition-colors last:border-b-0 hover:bg-[#1f1f1f]"
-    >
+const settingsRowClassName =
+  "flex w-full items-center gap-3 border-b border-[#2a2a2a] px-4 py-3.5 text-left transition-colors last:border-b-0 hover:bg-[#1f1f1f]";
+
+export function SettingsRow({ href, onClick, icon, label, value }: SettingsRowProps) {
+  const content = (
+    <>
       <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center text-[#A1C217]">
         {icon}
       </span>
@@ -79,6 +82,20 @@ export function SettingsRow({ href, icon, label, value }: SettingsRowProps) {
         </span>
       )}
       <ChevronRight className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
+    </>
+  );
+
+  if (href === undefined) {
+    return (
+      <button type="button" onClick={onClick} className={settingsRowClassName}>
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <Link href={href} className={settingsRowClassName}>
+      {content}
     </Link>
   );
 }

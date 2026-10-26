@@ -1,3 +1,4 @@
+import { CookieConsentBanner } from "@/components/cookie-consent-banner";
 import { Toaster } from "@/components/ui/toaster";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import type { Metadata, Viewport } from "next";
@@ -65,6 +66,7 @@ export default function RootLayout({
           </ThemeProvider>
         </ReactQueryProvider>
         <Toaster />
+        <CookieConsentBanner />
       </body>
     </html>
   );

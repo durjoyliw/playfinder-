@@ -14,6 +14,7 @@ import { useSession } from "@/app/(main)/SessionProvider";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SearchClubRow } from "./SearchClubRow";
 import { SearchEmptyState } from "./SearchEmptyState";
+import { SearchFilterBar } from "./SearchFilterBar";
 import { SearchGameCard } from "./SearchGameCard";
 import { SearchHeader } from "./SearchHeader";
 import { SearchLivePreview } from "./SearchLivePreview";
@@ -22,15 +23,19 @@ import { SearchPostRow } from "./SearchPostRow";
 import { searchClubsLocal, searchVenuesLocal } from "./search-local-data";
 import { SearchVenueRow } from "./SearchVenueRow";
 
-type SearchFilter = "profiles" | "posts" | "arena" | "venues" | "clubs";
+type SearchFilter = "all" | "profiles" | "posts" | "arena" | "venues" | "clubs";
 
 const FILTER_PILLS: { id: SearchFilter; label: string }[] = [
+  { id: "all", label: "All" },
   { id: "profiles", label: "Profiles" },
   { id: "posts", label: "Posts" },
   { id: "arena", label: "Arena" },
   { id: "venues", label: "Venues" },
   { id: "clubs", label: "Clubs" },
 ];
+
+/** How many of each type the "All" tab previews before "See all". */
+const ALL_PREVIEW_COUNT = 3;
 
 interface SearchPageClientProps {
   initialQuery: string;
@@ -42,7 +47,7 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
   useSession();
   const { data: userSettings } = useUserSettings();
   const urlQuery = searchParams.get("q")?.trim() ?? initialQuery;
-  const [filter, setFilter] = useState<SearchFilter>("profiles");
+  const [filter, setFilter] = useState<SearchFilter>("all");
   const [draftQuery, setDraftQuery] = useState(urlQuery);
   const [debouncedDraftQuery, setDebouncedDraftQuery] = useState(urlQuery);
 
@@ -162,12 +167,25 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
   );
 
   const isLoading =
+    (filter === "all" &&
+      (playersQuery.isFetching ||
+        postsQuery.isFetching ||
+        arenaQuery.isFetching)) ||
     (filter === "profiles" && playersQuery.isFetching) ||
     (filter === "posts" && postsQuery.isFetching) ||
     (filter === "arena" && arenaQuery.isFetching);
 
+  const allCount =
+    players.length +
+    socialPosts.length +
+    arenaPosts.length +
+    venues.length +
+    clubs.length;
+
   const resultsCount =
-    filter === "profiles"
+    filter === "all"
+      ? allCount
+      : filter === "profiles"
       ? players.length
       : filter === "posts"
         ? socialPosts.length
@@ -179,6 +197,8 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
 
   const resultsLabel = (() => {
     switch (filter) {
+      case "all":
+        return `Top results near ${areaLabel}`;
       case "profiles":
         return `${resultsCount} profile${resultsCount === 1 ? "" : "s"} near ${areaLabel}`;
       case "posts":
@@ -194,6 +214,8 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
 
   const emptyMessage = (() => {
     switch (filter) {
+      case "all":
+        return "No results found";
       case "profiles":
         return "No profiles found";
       case "posts":
@@ -227,28 +249,11 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
         </div>
       ) : (
         <>
-          <div className="flex items-center gap-2 px-4 py-3">
-            <div className="flex min-w-0 flex-1 gap-2 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {FILTER_PILLS.map((pill) => {
-                const isActive = filter === pill.id;
-                return (
-                  <button
-                    key={pill.id}
-                    type="button"
-                    onClick={() => setFilter(pill.id)}
-                    className={cn(
-                      "shrink-0 whitespace-nowrap rounded-[20px] border px-4 py-2 text-sm transition-colors",
-                      isActive
-                        ? "border-[#a1c217] bg-[#a1c217] font-bold text-[#0a0b0a]"
-                        : "border-[#2a2f2a] bg-[#131614] font-medium text-[#7e8a7e]",
-                    )}
-                  >
-                    {pill.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          <SearchFilterBar
+            pills={FILTER_PILLS}
+            active={filter}
+            onChange={setFilter}
+          />
 
           {isLoading && resultsCount === 0 && (
             <div className="flex justify-center py-12">
@@ -261,6 +266,65 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
               <span className="h-2 w-2 flex-shrink-0 rounded-full bg-[#A1C217]" />
               {resultsLabel}
             </p>
+          )}
+
+          {filter === "all" && (
+            <div className="flex-1 overflow-y-auto pb-4">
+              {!isLoading && allCount === 0 && (
+                <p className="px-4 py-8 text-center text-sm text-[#666666]">
+                  {emptyMessage}
+                </p>
+              )}
+              <AllResultsSection
+                title="Profiles"
+                total={players.length}
+                onSeeAll={() => setFilter("profiles")}
+              >
+                {players.slice(0, ALL_PREVIEW_COUNT).map((player) => (
+                  <SearchPlayerRow
+                    key={player.id}
+                    player={player}
+                    query={urlQuery}
+                  />
+                ))}
+              </AllResultsSection>
+              <AllResultsSection
+                title="Posts"
+                total={socialPosts.length}
+                onSeeAll={() => setFilter("posts")}
+              >
+                {socialPosts.slice(0, ALL_PREVIEW_COUNT).map((post) => (
+                  <SearchPostRow key={post.id} post={post} />
+                ))}
+              </AllResultsSection>
+              <AllResultsSection
+                title="Arena"
+                total={arenaPosts.length}
+                onSeeAll={() => setFilter("arena")}
+              >
+                {arenaPosts.slice(0, ALL_PREVIEW_COUNT).map((post) => (
+                  <SearchGameCard key={post.id} post={post} />
+                ))}
+              </AllResultsSection>
+              <AllResultsSection
+                title="Venues"
+                total={venues.length}
+                onSeeAll={() => setFilter("venues")}
+              >
+                {venues.slice(0, ALL_PREVIEW_COUNT).map((venue) => (
+                  <SearchVenueRow key={venue.id} venue={venue} />
+                ))}
+              </AllResultsSection>
+              <AllResultsSection
+                title="Clubs"
+                total={clubs.length}
+                onSeeAll={() => setFilter("clubs")}
+              >
+                {clubs.slice(0, ALL_PREVIEW_COUNT).map((club) => (
+                  <SearchClubRow key={club.id} club={club} />
+                ))}
+              </AllResultsSection>
+            </div>
           )}
 
           {filter === "profiles" && (
@@ -383,5 +447,37 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
         </>
       )}
     </div>
+  );
+}
+
+/** One result type on the "All" tab; hidden when it has no results. */
+function AllResultsSection({
+  title,
+  total,
+  onSeeAll,
+  children,
+}: {
+  title: string;
+  total: number;
+  onSeeAll: () => void;
+  children: React.ReactNode;
+}) {
+  if (total === 0) return null;
+  return (
+    <section className="border-b border-[var(--pf-border)] pb-1 pt-3 last:border-b-0">
+      <div className="flex items-baseline justify-between px-4 pb-1.5">
+        <h2 className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-text-3)]">
+          {title}
+        </h2>
+        <button
+          type="button"
+          onClick={onSeeAll}
+          className="rounded-md text-[13px] font-semibold text-[var(--pf-volt)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--pf-volt)]"
+        >
+          See all{total > ALL_PREVIEW_COUNT ? ` (${total})` : ""}
+        </button>
+      </div>
+      {children}
+    </section>
   );
 }

@@ -61,6 +61,8 @@ export function MainAppShell({
     !pathname.startsWith("/pages/new/");
 
   const isFullBleedRoute = isMessagesRoute || isDiscoverRoute;
+  // Desktop-only: a wider column with no widgets rail (create-page wizard).
+  const isWideRoute = pathname.startsWith("/pages/new");
   // A chat thread is a focused screen on mobile: its own channel header and
   // composer replace the app header and bottom nav.
   const showMobileHeader =
@@ -75,7 +77,7 @@ export function MainAppShell({
     if (pathname !== initialPathname.current) markInAppNavigation();
   }, [pathname]);
 
-  const rightRail = isFullBleedRoute ? null : isPageViewRoute ? (
+  const rightRail = isFullBleedRoute || isWideRoute ? null : isPageViewRoute ? (
     <div
       id={pageViewRightRailSlotId()}
       className="sticky top-0 hidden h-screen w-[350px] shrink-0 xl:block"
@@ -98,7 +100,10 @@ export function MainAppShell({
           "relative mx-auto flex w-full max-w-[480px] flex-col lg:mx-0",
           isFullBleedRoute
             ? "h-[100dvh] overflow-hidden lg:min-w-0 lg:max-w-none lg:flex-1"
-            : "min-h-[100dvh] lg:max-w-[600px] lg:border-x lg:border-[#2a2f2a]",
+            : cn(
+                "min-h-[100dvh] lg:border-x lg:border-[#2a2f2a]",
+                isWideRoute ? "lg:max-w-[920px]" : "lg:max-w-[600px]",
+              ),
           // Mobile chat thread: pin the column to the visible area so the
           // composer stays just above the keyboard (see useVisualViewportVars).
           isMessageThreadRoute &&

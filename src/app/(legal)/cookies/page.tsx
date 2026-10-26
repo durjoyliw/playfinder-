@@ -5,6 +5,7 @@ import {
   LegalSection,
   LegalTerm,
 } from "@/components/legal/legal-page";
+import { CookieSettingsButton } from "@/components/legal/cookie-settings-button";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -45,6 +46,7 @@ export default function Page() {
           non-essential cookies. You can accept or reject, and change your mind
           later.
         </p>
+        <CookieSettingsButton />
       </LegalSection>
     </LegalPage>
   );
