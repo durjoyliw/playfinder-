@@ -195,12 +195,12 @@ export function FeedCardComments({
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Write a reply..."
-              className="flex-1 rounded-lg border border-[#2a2a2a] bg-[#161616] px-3 py-2 text-base text-white lg:text-sm placeholder:text-muted-foreground focus:border-[#A1C217] focus:outline-none"
+              className="flex-1 rounded-lg border border-[#2a2a2a] bg-[#161616] px-3 py-2 text-base text-white lg:text-sm placeholder:text-muted-foreground focus:border-[var(--pf-volt)] focus:outline-none"
             />
             <button
               type="submit"
               disabled={!input.trim() || submitMutation.isPending}
-              className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-[#A1C217] text-black transition-colors hover:bg-[#aac62e] disabled:opacity-50"
+              className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-[var(--pf-volt)] text-[var(--pf-on-accent)] transition-colors hover:bg-[var(--pf-volt-hover)] disabled:opacity-50"
               aria-label="Send reply"
             >
               {submitMutation.isPending ? (
@@ -216,7 +216,7 @@ export function FeedCardComments({
               type="button"
               onClick={() => fetchNextPage()}
               disabled={isFetching}
-              className="text-xs text-[#A1C217] hover:underline disabled:opacity-50"
+              className="text-xs text-[var(--pf-volt)] hover:underline disabled:opacity-50"
             >
               Load earlier replies
             </button>
@@ -224,7 +224,7 @@ export function FeedCardComments({
 
           {status === "pending" && (
             <div className="flex justify-center py-2">
-              <Loader2 className="h-5 w-5 animate-spin text-[#A1C217]" />
+              <Loader2 className="h-5 w-5 animate-spin text-[var(--pf-volt)]" />
             </div>
           )}
 

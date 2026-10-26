@@ -27,7 +27,7 @@ export function SettingsSubpageLayout({
 export function SettingsLoading() {
   return (
     <div className="flex min-h-[40vh] items-center justify-center">
-      <Loader2 className="h-8 w-8 animate-spin text-[#A1C217]" />
+      <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt)]" />
     </div>
   );
 }
@@ -72,7 +72,7 @@ const settingsRowClassName =
 export function SettingsRow({ href, onClick, icon, label, value }: SettingsRowProps) {
   const content = (
     <>
-      <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center text-[#A1C217]">
+      <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center text-[var(--pf-volt)]">
         {icon}
       </span>
       <span className="flex-1 text-sm font-medium text-white">{label}</span>
@@ -119,7 +119,7 @@ export function SettingsPlaceholder({
 }
 
 export const settingsInputClassName =
-  "w-full rounded-lg border border-[#2a2a2a] bg-[#0d0d0d] px-3 py-2.5 text-base text-white lg:text-sm focus:border-[#A1C217] focus:outline-none";
+  "w-full rounded-lg border border-[#2a2a2a] bg-[#0d0d0d] px-3 py-2.5 text-base text-white lg:text-sm focus:border-[var(--pf-volt)] focus:outline-none";
 
 export const settingsSaveButtonClassName =
-  "w-full rounded-lg bg-[#A1C217] py-2.5 text-sm font-semibold text-black transition-colors hover:bg-[#aac62e] disabled:opacity-60";
+  "w-full rounded-lg bg-[var(--pf-volt)] py-2.5 text-sm font-semibold text-[var(--pf-on-accent)] transition-colors hover:bg-[var(--pf-volt-hover)] disabled:opacity-60";

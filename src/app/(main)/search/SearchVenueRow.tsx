@@ -25,7 +25,7 @@ export function SearchVenueRow({ venue }: SearchVenueRowProps) {
         href={visitHref}
         target="_blank"
         rel="noopener noreferrer"
-        className="shrink-0 text-xs font-semibold text-[#A1C217] hover:underline"
+        className="shrink-0 text-xs font-semibold text-[var(--pf-volt)] hover:underline"
       >
         Visit →
       </a>

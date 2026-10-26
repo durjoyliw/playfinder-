@@ -34,7 +34,7 @@ export default function PostShareCard({
       className={cn(
         "block w-full max-w-[260px] overflow-hidden rounded-2xl border transition-opacity hover:opacity-90",
         isMe
-          ? "rounded-tr-sm border-[#A1C217]/30 bg-[#161c0f]"
+          ? "rounded-tr-sm border-[rgb(var(--pf-volt-rgb)/0.3)] bg-[#161c0f]"
           : "rounded-tl-sm border-[#2a2a2a] bg-[#1a1a1a]",
       )}
     >
@@ -42,7 +42,7 @@ export default function PostShareCard({
         <img src={imageUrl} alt="" className="h-32 w-full object-cover" />
       )}
       <div className="flex items-start gap-2.5 p-3">
-        <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-[10px] font-bold text-black">
+        <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-[10px] font-bold text-[var(--pf-on-accent)]">
           {attachment.author_avatar ? (
             <img
               src={attachment.author_avatar}
@@ -63,7 +63,7 @@ export default function PostShareCard({
               {snippet}
             </p>
           )}
-          <p className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-[#A1C217]">
+          <p className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--pf-volt)]">
             View post
           </p>
         </div>

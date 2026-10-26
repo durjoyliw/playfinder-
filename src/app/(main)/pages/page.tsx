@@ -35,7 +35,7 @@ export default async function YourPagesPage() {
       <div className="flex flex-col gap-3.5 px-4 py-4 lg:px-6">
         <Link
           href="/pages/new"
-          className="flex w-full items-center gap-3 rounded-2xl bg-[#a1c217] px-4 py-3.5 text-left text-[15px] font-bold tracking-[-0.02em] text-[#0a0b0a] transition-[filter] hover:brightness-110 active:scale-[0.99]"
+          className="flex w-full items-center gap-3 rounded-2xl bg-[var(--pf-volt)] px-4 py-3.5 text-left text-[15px] font-bold tracking-[-0.02em] text-[var(--pf-on-accent)] transition-[filter] hover:brightness-110 active:scale-[0.99]"
         >
           <span
             className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-dashed border-[rgba(10,11,10,0.35)] bg-[rgba(10,11,10,0.18)]"
@@ -64,7 +64,7 @@ export default async function YourPagesPage() {
             </p>
             <Link
               href="/pages/new"
-              className="mt-5 inline-flex h-10 items-center justify-center rounded-xl bg-[#a1c217] px-5 text-[14px] font-bold text-[#0a0b0a] transition-[filter] hover:brightness-110"
+              className="mt-5 inline-flex h-10 items-center justify-center rounded-xl bg-[var(--pf-volt)] px-5 text-[14px] font-bold text-[var(--pf-on-accent)] transition-[filter] hover:brightness-110"
             >
               Create a Page
             </Link>
@@ -90,7 +90,7 @@ export default async function YourPagesPage() {
                       <div
                         className={cn(
                           "grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#232824] text-[15px] font-bold",
-                          isVenue ? "text-[#c9a227]" : "text-[#a1c217]",
+                          isVenue ? "text-[#c9a227]" : "text-[var(--pf-volt)]",
                         )}
                       >
                         {initials}

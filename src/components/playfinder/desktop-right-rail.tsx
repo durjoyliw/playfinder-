@@ -55,7 +55,7 @@ export function DesktopRightRail() {
           Live{area !== "your area" ? ` in ${area}` : " near you"}
         </p>
         <div className="relative flex items-center gap-3.5">
-          <div className="text-[28px] font-bold leading-none text-[#a1c217]">
+          <div className="text-[28px] font-bold leading-none text-[var(--pf-volt)]">
             {count}
           </div>
           <div className="text-[13px] leading-snug text-[#b4bcaf]">

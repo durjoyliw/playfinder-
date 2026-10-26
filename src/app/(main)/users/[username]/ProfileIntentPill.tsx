@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const INTENT_COLOURS: Record<ProfileIntent, string> = {
-  [ProfileIntent.LOOKING_TO_PLAY]: "#a1c217",
+  [ProfileIntent.LOOKING_TO_PLAY]: "var(--pf-volt)",
   [ProfileIntent.JOIN_A_TEAM]: "#56ccf2",
   [ProfileIntent.JUST_VIBES]: "#eab308",
 };
@@ -99,7 +99,7 @@ export default function ProfileIntentPill({
         <div
           className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border px-3.5 py-2.5 text-[13px] font-semibold text-[#f2f5ef]"
           style={{
-            borderColor: `${INTENT_COLOURS[intent]}44`,
+            borderColor: `color-mix(in srgb, ${INTENT_COLOURS[intent]} 27%, transparent)`,
             background: `color-mix(in srgb, ${INTENT_COLOURS[intent]} 8%, #131614)`,
           }}
         >

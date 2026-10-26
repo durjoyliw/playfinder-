@@ -73,7 +73,7 @@ export default function ProfileBioEditor({
 
       <div className="relative overflow-hidden rounded-[18px] border border-[#2a2f2a] bg-[#131614] p-[22px]">
         <div
-          className="pointer-events-none absolute right-4 top-2 font-serif text-[52px] leading-none text-[#a1c217] opacity-10"
+          className="pointer-events-none absolute right-4 top-2 font-serif text-[52px] leading-none text-[var(--pf-volt)] opacity-10"
           aria-hidden
         >
           "
@@ -84,7 +84,7 @@ export default function ProfileBioEditor({
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               rows={5}
-              className="w-full resize-none rounded-[14px] border border-[#2a2f2a] bg-[#0d0f0d] px-3 py-2.5 text-base leading-relaxed lg:text-[15px] text-[#f2f5ef] outline-none focus:border-[#a1c217]"
+              className="w-full resize-none rounded-[14px] border border-[#2a2f2a] bg-[#0d0f0d] px-3 py-2.5 text-base leading-relaxed lg:text-[15px] text-[#f2f5ef] outline-none focus:border-[var(--pf-volt)]"
               placeholder="Tell others about your sports background..."
               autoFocus
             />
@@ -93,7 +93,7 @@ export default function ProfileBioEditor({
                 type="button"
                 onClick={() => mutation.mutate(draft.trim())}
                 disabled={mutation.isPending}
-                className="rounded-xl bg-[#a1c217] px-4 py-2 text-sm font-semibold text-[#0a0b0a] disabled:opacity-60"
+                className="rounded-xl bg-[var(--pf-volt)] px-4 py-2 text-sm font-semibold text-[var(--pf-on-accent)] disabled:opacity-60"
               >
                 {mutation.isPending ? "Saving..." : "Save"}
               </button>

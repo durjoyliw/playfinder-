@@ -38,7 +38,7 @@ export function CreateMenu({
           className="cursor-pointer gap-2.5 rounded-lg px-3 py-2.5 text-[14px] font-semibold text-[#f2f5ef] focus:bg-[#1a1e1b] focus:text-[#f2f5ef]"
           onSelect={() => openComposer()}
         >
-          <Zap className="h-4 w-4 text-[#a1c217]" />
+          <Zap className="h-4 w-4 text-[var(--pf-volt)]" />
           Broadcast
         </DropdownMenuItem>
         <DropdownMenuItem

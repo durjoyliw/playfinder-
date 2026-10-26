@@ -47,7 +47,7 @@ const panelStyle: CSSProperties = {
 };
 
 const fieldClassName =
-  "w-full rounded-xl border border-[#333] bg-[#1a1a1a] px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-[#A1C217] focus:outline-none [color-scheme:dark]";
+  "w-full rounded-xl border border-[#333] bg-[#1a1a1a] px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-[var(--pf-volt)] focus:outline-none [color-scheme:dark]";
 
 function initFromPost(post: PostData) {
   const sport = post.sport ?? Sport.FOOTBALL;
@@ -185,7 +185,7 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
                   className={cn(
                     "rounded-full px-3 py-1.5 text-sm font-medium",
                     sport === s.enum
-                      ? "bg-[#A1C217] text-black"
+                      ? "bg-[var(--pf-volt)] text-[var(--pf-on-accent)]"
                       : "bg-[#1f1f1f] text-white",
                   )}
                 >
@@ -286,7 +286,7 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
           <LoadingButton
             type="submit"
             loading={mutation.isPending}
-            className="w-full rounded-xl bg-[#A1C217] py-6 text-base font-bold text-black hover:bg-[#93b314]"
+            className="w-full rounded-xl bg-[var(--pf-volt)] py-6 text-base font-bold text-[var(--pf-on-accent)] hover:bg-[var(--pf-volt-active)]"
           >
             Save changes
           </LoadingButton>

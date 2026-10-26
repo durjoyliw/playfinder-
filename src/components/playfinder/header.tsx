@@ -32,7 +32,7 @@ export function Header({
         aria-label="PlayFinder home"
       >
         <span
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-[11px] bg-[#a1c217] text-[#0a0b0a]"
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-[11px] bg-[var(--pf-volt)] text-[var(--pf-on-accent)]"
           aria-hidden
         >
           <Zap className="h-5 w-5" fill="currentColor" />

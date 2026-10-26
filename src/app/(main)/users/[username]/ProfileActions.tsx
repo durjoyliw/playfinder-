@@ -307,10 +307,10 @@ export default function ProfileActions({
             type="button"
             disabled={isPending}
             className={cn(
-              "flex-1 rounded-xl border border-[rgba(161,194,23,0.4)] bg-[#1e1e1e] py-6 font-semibold",
+              "flex-1 rounded-xl border border-[rgb(var(--pf-volt-rgb)/0.4)] bg-[#1e1e1e] py-6 font-semibold",
               removeTeammateConfirmActive
                 ? "text-[#e05555] hover:bg-[#1e1e1e]"
-                : "text-[#A1C217] hover:bg-[rgba(161,194,23,0.08)]",
+                : "text-[var(--pf-volt)] hover:bg-[rgb(var(--pf-volt-rgb)/0.08)]",
             )}
             onClick={handleTeammateClick}
           >
@@ -342,7 +342,7 @@ export default function ProfileActions({
           <Button
             type="button"
             disabled={isPending}
-            className="flex-1 rounded-xl bg-[#A1C217] py-6 font-semibold text-black hover:bg-[#93b314]"
+            className="flex-1 rounded-xl bg-[var(--pf-volt)] py-6 font-semibold text-[var(--pf-on-accent)] hover:bg-[var(--pf-volt-active)]"
             onClick={() => follow()}
           >
             Confirm
@@ -365,7 +365,7 @@ export default function ProfileActions({
         disabled={isPending}
         className={cn(
           "flex-1 rounded-xl py-6 font-semibold",
-          "bg-[#A1C217] text-black hover:bg-[#93b314]",
+          "bg-[var(--pf-volt)] text-[var(--pf-on-accent)] hover:bg-[var(--pf-volt-active)]",
         )}
         onClick={() => follow()}
       >

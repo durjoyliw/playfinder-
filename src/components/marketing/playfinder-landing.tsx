@@ -1,7 +1,7 @@
 import { MapPin, MessageCircle, Radio, Trophy } from "lucide-react";
 import Link from "next/link";
 
-const VOLT = "#A1C217";
+const VOLT = "var(--pf-volt)";
 const BG = "#0d0d0d";
 const CARD = "#161616";
 const MUTED = "#a3a3a3";
@@ -273,7 +273,7 @@ export function PlayFinderLanding() {
                     padding: "15px 30px",
                     borderRadius: 9999,
                     backgroundColor: VOLT,
-                    color: "#000000",
+                    color: "var(--pf-on-accent)",
                     fontSize: 16,
                     fontWeight: 700,
                     textDecoration: "none",
@@ -356,7 +356,7 @@ export function PlayFinderLanding() {
                       padding: "8px 16px",
                       borderRadius: 9999,
                       backgroundColor: VOLT,
-                      color: "#000000",
+                      color: "var(--pf-on-accent)",
                       fontSize: 12,
                       fontWeight: 700,
                       border: "none",
@@ -452,9 +452,10 @@ export function PlayFinderLanding() {
                 )}
                 <Icon
                   size={22}
-                  color={VOLT}
+                  // SVG stroke attributes can't take var(); colour via CSS instead.
+                  color="currentColor"
                   strokeWidth={2}
-                  style={{ marginBottom: 14, position: "relative", zIndex: 1 }}
+                  style={{ marginBottom: 14, position: "relative", zIndex: 1, color: VOLT }}
                 />
                 <h3
                   style={{
@@ -509,7 +510,7 @@ export function PlayFinderLanding() {
                     height: 46,
                     borderRadius: "50%",
                     backgroundColor: VOLT,
-                    color: "#000000",
+                    color: "var(--pf-on-accent)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -604,7 +605,7 @@ export function PlayFinderLanding() {
             style={{
               padding: "64px 72px",
               borderRadius: 24,
-              background: `radial-gradient(120% 140% at 20% 0%, rgba(161,194,23,0.12) 0%, rgba(22,22,22,0) 60%), ${CARD}`,
+              background: `radial-gradient(120% 140% at 20% 0%, rgb(var(--pf-volt-rgb)/0.12) 0%, rgba(22,22,22,0) 60%), ${CARD}`,
               border: `1px solid ${BORDER}`,
             }}
           >
@@ -639,7 +640,7 @@ export function PlayFinderLanding() {
                 padding: "15px 30px",
                 borderRadius: 9999,
                 backgroundColor: VOLT,
-                color: "#000000",
+                color: "var(--pf-on-accent)",
                 fontSize: 16,
                 fontWeight: 700,
                 textDecoration: "none",

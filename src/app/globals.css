@@ -65,7 +65,7 @@ html body[data-scroll-locked] {
 
 .pf-map-popup .mapboxgl-popup-close-button:hover {
   background: transparent;
-  color: #a1c217;
+  color: var(--pf-volt);
 }
 
 .pf-venue-popup {
@@ -85,12 +85,12 @@ html body[data-scroll-locked] {
 .pf-venue-popup__badge {
   display: inline-block;
   margin-bottom: 8px;
-  border: 1px solid #a1c217;
+  border: 1px solid var(--pf-volt);
   border-radius: 9999px;
   padding: 2px 8px;
   font-size: 10px;
   font-weight: 600;
-  color: #a1c217;
+  color: var(--pf-volt);
 }
 
 .pf-venue-popup__address {
@@ -105,17 +105,17 @@ html body[data-scroll-locked] {
   width: 100%;
   border: none;
   border-radius: 8px;
-  background: #a1c217;
+  background: var(--pf-volt);
   padding: 8px 12px;
   font-size: 12px;
   font-weight: 700;
-  color: #000000;
+  color: var(--pf-on-accent);
   cursor: pointer;
   transition: background-color 0.15s ease;
 }
 
 .pf-venue-popup__cta:hover {
-  background: #aac62e;
+  background: var(--pf-volt-hover);
 }
 
 @layer base {
@@ -133,7 +133,20 @@ html body[data-scroll-locked] {
     --pf-text-4: #5a635a;
     --pf-volt: #a1c217;
     --pf-volt-dim: #76930f;
-    --pf-volt-glow: rgba(161, 194, 23, 0.35);
+    /* Accent helpers: RGB channels for alpha variants
+       (rgb(var(--pf-volt-rgb) / 0.35)), a hover shade, and the text colour
+       that sits on top of the accent (button labels, active pills). */
+    --pf-volt-rgb: 161 194 23;
+    --pf-volt-hover: #aac62e;
+    --pf-volt-active: #93b314; /* darker hover/pressed shade */
+    /* Legacy near-volt shades kept exact for Noir + Volt: the bottom-nav
+       "+" and composer CTAs (#a0cc00) and their neon glow/tints (#c8ff00).
+       Every other accent sets these to the accent itself. */
+    --pf-volt-cta: #a0cc00;
+    --pf-volt-cta-rgb: 160 204 0;
+    --pf-volt-neon-rgb: 200 255 0;
+    --pf-on-accent: #0a0b0a;
+    --pf-volt-glow: rgb(var(--pf-volt-rgb) / 0.35);
     --pf-blue: #56ccf2;
 
     /* Z-index scale. Page content stacks locally below 40.
@@ -210,6 +223,202 @@ html body[data-scroll-locked] {
     --border: 0 0% 15%;
     --input: 0 0% 15%;
     --ring: 72 90% 53%;
+  }
+}
+
+/* ------------------------------------------------------------------------
+   Appearance presets (Settings -> Appearance). Two independent dials on
+   <html>, set server-side from cookies (src/lib/appearance.ts):
+     data-theme  = background base  (noir | slate | offwhite | white)
+     data-accent = accent colour    (volt | optic | emerald | crimson |
+                                     coral | cyan | orange)
+   :root above IS Noir + Volt, so with no attribute (or the defaults) the
+   app looks exactly as before. Each base sets the --pf-* surface/text
+   tokens AND the shadcn HSL tokens so bg-background, text-foreground etc.
+   follow too. Components with hardcoded hex colours won't follow a base
+   change yet -- see the light-mode polish list.
+   ------------------------------------------------------------------------ */
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  :root[data-theme="slate"] {
+    --pf-bg: #2f353b;
+    --pf-bg-2: #282d32;
+    --pf-surface: #363d44;
+    --pf-surface-2: #3e464e;
+    --pf-surface-3: #475059;
+    --pf-border: #4a535c;
+    --pf-border-light: #58626c;
+    --pf-text: #f1f3f5;
+    --pf-text-2: #c3cad1;
+    --pf-text-3: #9aa4ae;
+    --pf-text-4: #76808a;
+
+    --background: 210 11% 21%;
+    --foreground: 210 17% 95%;
+    --card: 210 11% 24%;
+    --card-foreground: 210 17% 95%;
+    --popover: 210 11% 24%;
+    --popover-foreground: 210 17% 95%;
+    --secondary: 210 11% 27%;
+    --secondary-foreground: 210 17% 95%;
+    --muted: 210 11% 27%;
+    --muted-foreground: 210 11% 64%;
+    --accent: 210 11% 27%;
+    --accent-foreground: 210 17% 95%;
+    --border: 210 11% 33%;
+    --input: 210 11% 33%;
+  }
+
+  /* Light bases: real light palettes (dark text, soft grey surfaces and
+     borders), not an inversion of Noir. Muted text keeps >= 4.5:1. */
+  :root[data-theme="offwhite"],
+  :root[data-theme="white"] {
+    color-scheme: light;
+    --pf-text: #14171a;
+    --pf-text-2: #3d454d;
+    --pf-text-3: #5f6872;
+    --pf-text-4: #868e96;
+    --pf-border-light: #ced4da;
+
+    --foreground: 210 13% 9%;
+    --card-foreground: 210 13% 9%;
+    --popover-foreground: 210 13% 9%;
+    --secondary-foreground: 210 13% 9%;
+    --muted-foreground: 212 9% 41%;
+    --accent-foreground: 210 13% 9%;
+    --destructive: 0 72% 51%;
+  }
+
+  :root[data-theme="offwhite"] {
+    --pf-bg: #f8f9fa;
+    --pf-bg-2: #f1f3f5;
+    --pf-surface: #ffffff;
+    --pf-surface-2: #f1f3f5;
+    --pf-surface-3: #e9ecef;
+    --pf-border: #dee2e6;
+
+    --background: 210 17% 98%;
+    --card: 0 0% 100%;
+    --popover: 0 0% 100%;
+    --secondary: 210 17% 95%;
+    --muted: 210 17% 95%;
+    --accent: 210 17% 95%;
+    --border: 210 14% 89%;
+    --input: 210 14% 89%;
+  }
+
+  :root[data-theme="white"] {
+    --pf-bg: #ffffff;
+    --pf-bg-2: #f8f9fa;
+    --pf-surface: #f8f9fa;
+    --pf-surface-2: #f1f3f5;
+    --pf-surface-3: #e9ecef;
+    --pf-border: #e3e6ea;
+    --pf-border-light: #d0d5da;
+
+    --background: 0 0% 100%;
+    --card: 210 17% 98%;
+    --popover: 0 0% 100%;
+    --secondary: 210 17% 95%;
+    --muted: 210 17% 95%;
+    --accent: 210 17% 95%;
+    --border: 214 14% 90%;
+    --input: 214 14% 90%;
+  }
+
+  /* Accents. --pf-on-accent is chosen by contrast: dark on every accent
+     except Crimson, where white reads better (5.0:1 vs 4.0:1). */
+  :root[data-accent="optic"] {
+    --pf-volt: #e5f33d;
+    --pf-volt-cta: #e5f33d;
+    --pf-volt-cta-rgb: 229 243 61;
+    --pf-volt-neon-rgb: 229 243 61;
+    --pf-volt-active: #d0dd38;
+    --pf-volt-rgb: 229 243 61;
+    --pf-volt-hover: #e7f44d;
+    --pf-volt-dim: #a7b12d;
+    --pf-on-accent: #0a0b0a;
+    --primary: 65 88% 60%;
+    --primary-foreground: 0 0% 5.1%;
+    --ring: 65 88% 60%;
+  }
+
+  :root[data-accent="emerald"] {
+    --pf-volt: #009b77;
+    --pf-volt-cta: #009b77;
+    --pf-volt-cta-rgb: 0 155 119;
+    --pf-volt-neon-rgb: 0 155 119;
+    --pf-volt-active: #008d6c;
+    --pf-volt-rgb: 0 155 119;
+    --pf-volt-hover: #14a382;
+    --pf-volt-dim: #007157;
+    --pf-on-accent: #0a0b0a;
+    --primary: 166 100% 30%;
+    --primary-foreground: 0 0% 5.1%;
+    --ring: 166 100% 30%;
+  }
+
+  :root[data-accent="crimson"] {
+    --pf-volt: #dc143c;
+    --pf-volt-cta: #dc143c;
+    --pf-volt-cta-rgb: 220 20 60;
+    --pf-volt-neon-rgb: 220 20 60;
+    --pf-volt-active: #c81237;
+    --pf-volt-rgb: 220 20 60;
+    --pf-volt-hover: #df274c;
+    --pf-volt-dim: #a10f2c;
+    --pf-on-accent: #ffffff;
+    --primary: 348 83% 47%;
+    --primary-foreground: 0 0% 100%;
+    --ring: 348 83% 47%;
+  }
+
+  :root[data-accent="coral"] {
+    --pf-volt: #ff6f61;
+    --pf-volt-cta: #ff6f61;
+    --pf-volt-cta-rgb: 255 111 97;
+    --pf-volt-neon-rgb: 255 111 97;
+    --pf-volt-active: #e86558;
+    --pf-volt-rgb: 255 111 97;
+    --pf-volt-hover: #ff7b6e;
+    --pf-volt-dim: #ba5147;
+    --pf-on-accent: #0a0b0a;
+    --primary: 5 100% 69%;
+    --primary-foreground: 0 0% 5.1%;
+    --ring: 5 100% 69%;
+  }
+
+  :root[data-accent="cyan"] {
+    --pf-volt: #00e5ff;
+    --pf-volt-cta: #00e5ff;
+    --pf-volt-cta-rgb: 0 229 255;
+    --pf-volt-neon-rgb: 0 229 255;
+    --pf-volt-active: #00d0e8;
+    --pf-volt-rgb: 0 229 255;
+    --pf-volt-hover: #14e7ff;
+    --pf-volt-dim: #00a7ba;
+    --pf-on-accent: #0a0b0a;
+    --primary: 186 100% 50%;
+    --primary-foreground: 0 0% 5.1%;
+    --ring: 186 100% 50%;
+  }
+
+  :root[data-accent="orange"] {
+    --pf-volt: #ff7a00;
+    --pf-volt-cta: #ff7a00;
+    --pf-volt-cta-rgb: 255 122 0;
+    --pf-volt-neon-rgb: 255 122 0;
+    --pf-volt-active: #e86f00;
+    --pf-volt-rgb: 255 122 0;
+    --pf-volt-hover: #ff8514;
+    --pf-volt-dim: #ba5900;
+    --pf-on-accent: #0a0b0a;
+    --primary: 29 100% 50%;
+    --primary-foreground: 0 0% 5.1%;
+    --ring: 29 100% 50%;
   }
 }
 

@@ -50,7 +50,7 @@ interface ComposerSheetProps {
 }
 
 const textareaClassName =
-  "mb-3.5 w-full min-h-[110px] resize-none rounded-[14px] border border-[#2a2f2a] bg-[#131614] p-4 text-base text-white outline-none placeholder:text-[#888888] focus:border-[#A0CC00]";
+  "mb-3.5 w-full min-h-[110px] resize-none rounded-[14px] border border-[#2a2f2a] bg-[#131614] p-4 text-base text-white outline-none placeholder:text-[#888888] focus:border-[var(--pf-volt-cta)]";
 
 const fieldInputClassName =
   "min-h-6 w-full border-0 bg-transparent text-base text-white outline-none lg:text-[15px] placeholder:text-[#888888] [color-scheme:dark]";
@@ -160,15 +160,15 @@ function getComposerSportDisplay(raw: string): { name: string; emoji: string } {
 }
 
 const visibilityActiveClass =
-  "rounded-[10px] border border-[#A0CC00] bg-[#A0CC00] px-3 py-2 text-xs font-bold text-black";
+  "rounded-[10px] border border-[var(--pf-volt-cta)] bg-[var(--pf-volt-cta)] px-3 py-2 text-xs font-bold text-[var(--pf-on-accent)]";
 const visibilityInactiveClass =
   "rounded-[10px] border border-[#2a2f2a] bg-[#131614] px-3 py-2 text-xs font-semibold text-[#888888]";
 
 const composerSubmitButtonClassName =
-  "ml-auto h-12 min-h-12 shrink-0 rounded-full bg-[#A0CC00] px-[22px] py-3 text-[15px] font-bold text-black hover:bg-[#A0CC00]/90";
+  "ml-auto h-12 min-h-12 shrink-0 rounded-full bg-[var(--pf-volt-cta)] px-[22px] py-3 text-[15px] font-bold text-[var(--pf-on-accent)] hover:bg-[rgb(var(--pf-volt-cta-rgb)/0.9)]";
 
 const sportChipSelectedClass =
-  "flex min-h-9 items-center gap-1 rounded-[10px] border border-[#A0CC00] bg-[#A0CC00] px-3 py-2 text-xs font-semibold text-black transition-colors";
+  "flex min-h-9 items-center gap-1 rounded-[10px] border border-[var(--pf-volt-cta)] bg-[var(--pf-volt-cta)] px-3 py-2 text-xs font-semibold text-[var(--pf-on-accent)] transition-colors";
 const sportChipIdleClass =
   "flex min-h-9 items-center gap-1 rounded-[10px] border border-[#2a2f2a] bg-[#131614] px-3 py-2 text-xs font-semibold text-[#b4bcaf] transition-colors";
 
@@ -176,7 +176,7 @@ const footerChipClass =
   "flex min-h-9 items-center gap-1.5 rounded-[10px] border border-[#2a2f2a] bg-[#131614] px-3 py-2 text-xs text-[#b4bcaf]";
 
 const mediaBtnClass =
-  "grid h-9 w-9 place-items-center rounded-[10px] border border-[#2a2f2a] bg-[#131614] text-[#b4bcaf] hover:border-[#A0CC00] hover:text-[#A0CC00]";
+  "grid h-9 w-9 place-items-center rounded-[10px] border border-[#2a2f2a] bg-[#131614] text-[#b4bcaf] hover:border-[var(--pf-volt-cta)] hover:text-[var(--pf-volt-cta)]";
 
 function VisibilityToggle({
   visibility,
@@ -479,7 +479,7 @@ export function ComposerSheet({
   const sportsEmptyState = !userSports.length ? (
     <Link
       href="/settings/sports"
-      className="text-sm text-[#A0CC00] hover:underline"
+      className="text-sm text-[var(--pf-volt-cta)] hover:underline"
     >
       Add sports in Settings
     </Link>
@@ -617,14 +617,14 @@ export function ComposerSheet({
             className={cn(
               "min-h-14 rounded-2xl border p-4 text-left transition-all active:scale-[0.97]",
               activeTab === "social"
-                ? "border-[#A0CC00] bg-[rgba(200,255,0,0.05)]"
+                ? "border-[var(--pf-volt-cta)] bg-[rgb(var(--pf-volt-neon-rgb)/0.05)]"
                 : "border-[#2a2f2a] bg-[#131614]",
             )}
           >
             <div
               className={cn(
                 "mb-1 text-[15px] font-bold",
-                activeTab === "social" ? "text-[#A0CC00]" : "text-white",
+                activeTab === "social" ? "text-[var(--pf-volt-cta)]" : "text-white",
               )}
             >
               Social
@@ -641,14 +641,14 @@ export function ComposerSheet({
             className={cn(
               "min-h-14 rounded-2xl border p-4 text-left transition-all active:scale-[0.97]",
               activeTab === "arena"
-                ? "border-[#A0CC00] bg-[rgba(200,255,0,0.05)]"
+                ? "border-[var(--pf-volt-cta)] bg-[rgb(var(--pf-volt-neon-rgb)/0.05)]"
                 : "border-[#2a2f2a] bg-[#131614]",
             )}
           >
             <div
               className={cn(
                 "mb-1 text-[15px] font-bold",
-                activeTab === "arena" ? "text-[#A0CC00]" : "text-white",
+                activeTab === "arena" ? "text-[var(--pf-volt-cta)]" : "text-white",
               )}
             >
               Arena
@@ -660,7 +660,7 @@ export function ComposerSheet({
         </div>
 
         {actingPage && (
-          <div className="mb-3 flex items-center gap-2.5 rounded-xl border border-[rgba(161,194,23,0.35)] bg-[rgba(161,194,23,0.08)] px-3 py-2.5">
+          <div className="mb-3 flex items-center gap-2.5 rounded-xl border border-[rgb(var(--pf-volt-rgb)/0.35)] bg-[rgb(var(--pf-volt-rgb)/0.08)] px-3 py-2.5">
             {actingPage.avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -669,11 +669,11 @@ export function ComposerSheet({
                 className="h-8 w-8 rounded-lg object-cover"
               />
             ) : (
-              <div className="grid h-8 w-8 place-items-center rounded-lg bg-[#232824] text-[11px] font-bold text-[#a1c217]">
+              <div className="grid h-8 w-8 place-items-center rounded-lg bg-[#232824] text-[11px] font-bold text-[var(--pf-volt)]">
                 {getInitials(actingPage.name)}
               </div>
             )}
-            <p className="min-w-0 flex-1 text-[13px] font-semibold text-[#a1c217]">
+            <p className="min-w-0 flex-1 text-[13px] font-semibold text-[var(--pf-volt)]">
               Posting as{" "}
               <span className="text-[#f2f5ef]">{actingPage.name}</span>
             </p>
@@ -811,7 +811,7 @@ export function ComposerSheet({
                   <button
                     type="button"
                     onClick={() => setSlotsNeeded((n) => Math.max(1, n - 1))}
-                    className="grid h-8 w-8 place-items-center rounded-[10px] border border-[#2a2f2a] text-white hover:border-[#A0CC00] hover:text-[#A0CC00]"
+                    className="grid h-8 w-8 place-items-center rounded-[10px] border border-[#2a2f2a] text-white hover:border-[var(--pf-volt-cta)] hover:text-[var(--pf-volt-cta)]"
                     aria-label="Decrease players"
                   >
                     <Minus className="h-4 w-4" />
@@ -822,7 +822,7 @@ export function ComposerSheet({
                   <button
                     type="button"
                     onClick={() => setSlotsNeeded((n) => Math.min(10, n + 1))}
-                    className="grid h-8 w-8 place-items-center rounded-[10px] border border-[#2a2f2a] text-white hover:border-[#A0CC00] hover:text-[#A0CC00]"
+                    className="grid h-8 w-8 place-items-center rounded-[10px] border border-[#2a2f2a] text-white hover:border-[var(--pf-volt-cta)] hover:text-[var(--pf-volt-cta)]"
                     aria-label="Increase players"
                   >
                     <Plus className="h-4 w-4" />

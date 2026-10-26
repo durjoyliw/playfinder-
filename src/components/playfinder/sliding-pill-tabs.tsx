@@ -12,8 +12,10 @@ interface SlidingPillTabsProps<T extends string> {
   activeId: T;
   onTabChange: (id: T) => void;
   ariaLabel: string;
-  /** Sliding pill fill. Default volt (#a1c217). */
+  /** Sliding pill fill. Default: the accent. */
   activePillClassName?: string;
+  /** Label colour on the active pill. Default: the accent's on-accent text. */
+  activeTextClassName?: string;
   className?: string;
 }
 
@@ -26,7 +28,8 @@ export function SlidingPillTabs<T extends string>({
   activeId,
   onTabChange,
   ariaLabel,
-  activePillClassName = "bg-[#a1c217]",
+  activePillClassName = "bg-[var(--pf-volt)]",
+  activeTextClassName = "text-[var(--pf-on-accent)]",
   className,
 }: SlidingPillTabsProps<T>) {
   const count = Math.max(tabs.length, 1);
@@ -64,7 +67,7 @@ export function SlidingPillTabs<T extends string>({
             onClick={() => onTabChange(tab.id)}
             className={cn(
               "relative z-[2] flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-[10px] py-2.5 text-sm font-bold transition-colors duration-200",
-              isActive ? "text-[#0a0b0a]" : "text-[#7e8a7e]",
+              isActive ? activeTextClassName : "text-[#7e8a7e]",
             )}
           >
             {tab.label}

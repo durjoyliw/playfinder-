@@ -3,8 +3,8 @@
 .playfinder-messages.str-chat {
   --str-chat__background-color: var(--pf-bg);
   --str-chat__secondary-background-color: var(--pf-bg);
-  --str-chat__primary-color: #a1c217;
-  --str-chat__active-primary-color: #93b314;
+  --str-chat__primary-color: var(--pf-volt);
+  --str-chat__active-primary-color: var(--pf-volt-active);
   font-family:
     system-ui,
     Inter,

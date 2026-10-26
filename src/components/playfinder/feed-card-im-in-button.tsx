@@ -111,7 +111,7 @@ export function FeedCardImInButton({
         className={baseClass}
         style={{
           background: "#1a2a1a",
-          color: "#A1C217",
+          color: "var(--pf-volt)",
           cursor: "pointer",
         }}
       >
@@ -128,7 +128,7 @@ export function FeedCardImInButton({
         className={baseClass}
         style={{
           background: "#1a2a1a",
-          color: "#A1C217",
+          color: "var(--pf-volt)",
           cursor: "default",
         }}
       >
@@ -142,7 +142,7 @@ export function FeedCardImInButton({
       type="button"
       onClick={() => expressMutation.mutate()}
       disabled={expressMutation.isPending}
-      className={`${baseClass} bg-[#A1C217] text-black hover:bg-[#aac62e] disabled:opacity-70`}
+      className={`${baseClass} bg-[var(--pf-volt)] text-[var(--pf-on-accent)] hover:bg-[var(--pf-volt-hover)] disabled:opacity-70`}
     >
       {expressMutation.isPending ? "..." : "I'm in 🤙"}
     </button>

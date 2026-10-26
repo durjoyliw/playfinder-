@@ -157,7 +157,7 @@ export default function ChatMessageList() {
               {!isMe && (
                 <div className="mr-2 w-8 flex-shrink-0">
                   {showAvatar && (
-                    <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-xs font-bold text-black">
+                    <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-xs font-bold text-[var(--pf-on-accent)]">
                       {(isGroup ? message.user?.image : other?.image) ? (
                         <img
                           src={
@@ -203,7 +203,7 @@ export default function ChatMessageList() {
                     className={cn(
                       "block w-full text-left",
                       isMe
-                        ? "rounded-2xl rounded-tr-sm bg-[#A1C217] px-4 py-2.5 text-black"
+                        ? "rounded-2xl rounded-tr-sm bg-[var(--pf-volt)] px-4 py-2.5 text-[var(--pf-on-accent)]"
                         : "rounded-2xl rounded-tl-sm bg-[#2a2a2a] px-4 py-2.5 text-white",
                     )}
                     onClick={() =>
@@ -331,7 +331,7 @@ function MessageTick({
   const status = getMessageTickStatus(channel, message, user.id);
 
   if (status === "seen") {
-    return <CheckCheck className="h-3.5 w-3.5 text-[#A1C217]" />;
+    return <CheckCheck className="h-3.5 w-3.5 text-[var(--pf-volt)]" />;
   }
   if (status === "delivered") {
     return <CheckCheck className="h-3.5 w-3.5 text-[#888888]" />;

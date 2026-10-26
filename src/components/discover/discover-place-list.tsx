@@ -178,7 +178,7 @@ export function DiscoverPlaceList({
                   </p>
                 )}
                 <div className="mt-auto flex flex-wrap items-center gap-2.5 pt-2">
-                  <span className="font-dm-mono text-xs font-medium text-[#a1c217]">
+                  <span className="font-dm-mono text-xs font-medium text-[var(--pf-volt)]">
                     {formatDistanceMiles(place.distanceMiles)}
                   </span>
                   {place.openStatus != null && place.openStatus !== "" && (
@@ -198,7 +198,7 @@ export function DiscoverPlaceList({
                 href={place.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="self-center shrink-0 text-xs font-semibold text-[#a1c217] hover:underline"
+                className="self-center shrink-0 text-xs font-semibold text-[var(--pf-volt)] hover:underline"
                 onClick={(e) => e.stopPropagation()}
               >
                 Visit →

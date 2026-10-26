@@ -257,13 +257,13 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
 
           {isLoading && resultsCount === 0 && (
             <div className="flex justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-[#A1C217]" />
+              <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt)]" />
             </div>
           )}
 
           {!isLoading && (
             <p className="flex items-center gap-2 px-4 pb-2 text-sm text-[#666666]">
-              <span className="h-2 w-2 flex-shrink-0 rounded-full bg-[#A1C217]" />
+              <span className="h-2 w-2 flex-shrink-0 rounded-full bg-[var(--pf-volt)]" />
               {resultsLabel}
             </p>
           )}
@@ -376,7 +376,7 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
                   ))}
                   {postsQuery.isFetchingNextPage && (
                     <div className="flex justify-center py-4">
-                      <Loader2 className="h-6 w-6 animate-spin text-[#A1C217]" />
+                      <Loader2 className="h-6 w-6 animate-spin text-[var(--pf-volt)]" />
                     </div>
                   )}
                 </InfiniteScrollContainer>
@@ -411,7 +411,7 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
                   ))}
                   {arenaQuery.isFetchingNextPage && (
                     <div className="flex justify-center py-4">
-                      <Loader2 className="h-6 w-6 animate-spin text-[#A1C217]" />
+                      <Loader2 className="h-6 w-6 animate-spin text-[var(--pf-volt)]" />
                     </div>
                   )}
                 </InfiniteScrollContainer>

@@ -112,7 +112,7 @@ export function IdentitySwitcher({
             ) : (
               <div
                 className={cn(
-                  "grid place-items-center bg-[#232824] text-[11px] font-bold text-[#a1c217]",
+                  "grid place-items-center bg-[#232824] text-[11px] font-bold text-[var(--pf-volt)]",
                   compact ? "h-9 w-9 rounded-[10px]" : "h-8 w-8 rounded-lg",
                 )}
               >
@@ -156,7 +156,7 @@ export function IdentitySwitcher({
             <p className="truncate text-[11px] text-[#7e8a7e]">You</p>
           </div>
           {data.identity.kind === "user" && (
-            <Check className="h-4 w-4 shrink-0 text-[#a1c217]" />
+            <Check className="h-4 w-4 shrink-0 text-[var(--pf-volt)]" />
           )}
         </DropdownMenuItem>
 
@@ -176,7 +176,7 @@ export function IdentitySwitcher({
                   className="h-8 w-8 rounded-lg border-0"
                 />
               ) : (
-                <div className="grid h-8 w-8 place-items-center rounded-lg bg-[#232824] text-[11px] font-bold text-[#a1c217]">
+                <div className="grid h-8 w-8 place-items-center rounded-lg bg-[#232824] text-[11px] font-bold text-[var(--pf-volt)]">
                   {getInitials(page.name)}
                 </div>
               )}
@@ -188,7 +188,7 @@ export function IdentitySwitcher({
                 </p>
               </div>
               {selected && (
-                <Check className="h-4 w-4 shrink-0 text-[#a1c217]" />
+                <Check className="h-4 w-4 shrink-0 text-[var(--pf-volt)]" />
               )}
             </DropdownMenuItem>
           );

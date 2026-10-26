@@ -22,7 +22,7 @@ import {
 const labelClassName =
   "mb-1.5 block text-xs tracking-[0.5px] text-[#888888] uppercase";
 const inputClassName =
-  "w-full rounded-[10px] border border-[#2a2a2a] bg-[#161616] p-3 text-base text-[#f0f0f0] lg:text-[15px] focus:border-[#A1C217] focus:outline-none";
+  "w-full rounded-[10px] border border-[#2a2a2a] bg-[#161616] p-3 text-base text-[#f0f0f0] lg:text-[15px] focus:border-[var(--pf-volt)] focus:outline-none";
 
 export function EditProfileForm() {
   const { toast } = useToast();
@@ -112,7 +112,7 @@ export function EditProfileForm() {
                 className="h-full w-full max-h-none max-w-none border-0"
               />
             ) : (
-              <span className="text-lg font-semibold text-[#A1C217]">
+              <span className="text-lg font-semibold text-[var(--pf-volt)]">
                 {initials}
               </span>
             )}
@@ -127,7 +127,7 @@ export function EditProfileForm() {
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="rounded-[20px] border border-[#2a2a2a] bg-[#161616] px-5 py-2 text-[13px] text-[#A1C217] transition-colors hover:bg-[#1f1f1f]"
+            className="rounded-[20px] border border-[#2a2a2a] bg-[#161616] px-5 py-2 text-[13px] text-[var(--pf-volt)] transition-colors hover:bg-[#1f1f1f]"
           >
             Change photo
           </button>
@@ -176,7 +176,7 @@ export function EditProfileForm() {
           type="button"
           onClick={() => mutation.mutate()}
           disabled={mutation.isPending || !displayName.trim()}
-          className="w-full rounded-xl bg-[#A1C217] py-3.5 text-[15px] font-bold text-[#0d0d0d] transition-opacity disabled:opacity-50"
+          className="w-full rounded-xl bg-[var(--pf-volt)] py-3.5 text-[15px] font-bold text-[var(--pf-on-accent)] transition-opacity disabled:opacity-50"
         >
           {mutation.isPending ? "Saving..." : "Save"}
         </button>

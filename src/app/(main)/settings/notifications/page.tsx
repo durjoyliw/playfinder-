@@ -113,7 +113,7 @@ export default function NotificationsSettingsPage() {
       <div className="px-4 py-6">
         <div className="overflow-hidden rounded-xl bg-[#161616] p-4">
           <div className="flex items-start gap-3">
-            <span className="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[#A1C217]/15 text-[#A1C217]">
+            <span className="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[rgb(var(--pf-volt-rgb)/0.15)] text-[var(--pf-volt)]">
               <Bell className="h-5 w-5" />
             </span>
             <div className="min-w-0 flex-1">
@@ -157,7 +157,7 @@ export default function NotificationsSettingsPage() {
                       className={
                         subscribed
                           ? "mt-3 rounded-full border border-[#2a2a2a] bg-[#1a1a1a] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#232323] disabled:opacity-60"
-                          : "mt-3 rounded-full bg-[#A1C217] px-4 py-2 text-sm font-semibold text-black transition-colors hover:bg-[#93b314] disabled:opacity-60"
+                          : "mt-3 rounded-full bg-[var(--pf-volt)] px-4 py-2 text-sm font-semibold text-[var(--pf-on-accent)] transition-colors hover:bg-[var(--pf-volt-active)] disabled:opacity-60"
                       }
                     >
                       {busy ? (

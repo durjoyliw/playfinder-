@@ -16,7 +16,7 @@ export function ComposeRow({ onBroadcast }: ComposeRowProps) {
       onClick={onBroadcast}
       className="mx-4 mb-2 flex w-[calc(100%-32px)] items-center gap-4 rounded-[20px] border border-[#2a2f2a] bg-[#131614] px-5 py-5 transition-[border-color,transform] hover:border-[#353c34] active:scale-[0.98] active:border-[#353c34]"
     >
-      <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-full bg-[#a1c217] text-base font-bold text-[#0a0b0a]">
+      <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-base font-bold text-[var(--pf-on-accent)]">
         {user.avatarUrl ? (
           <img
             src={user.avatarUrl}
@@ -33,8 +33,8 @@ export function ComposeRow({ onBroadcast }: ComposeRowProps) {
       </span>
 
       <span
-        className="shrink-0 rounded-full px-5 py-2.5 text-sm font-bold text-[#a1c217]"
-        style={{ background: "rgba(161,194,23,0.12)" }}
+        className="shrink-0 rounded-full px-5 py-2.5 text-sm font-bold text-[var(--pf-volt)]"
+        style={{ background: "rgb(var(--pf-volt-rgb)/0.12)" }}
       >
         Broadcast
       </span>

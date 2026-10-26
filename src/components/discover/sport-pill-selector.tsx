@@ -37,7 +37,7 @@ export function SportPillSelector({
             className={cn(
               "flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2 text-xs font-semibold transition-all duration-200",
               selectedSport === sport.id
-                ? "bg-[#A1C217] text-black shadow-md shadow-[#A1C217]/30"
+                ? "bg-[var(--pf-volt)] text-[var(--pf-on-accent)] shadow-md shadow-[rgb(var(--pf-volt-rgb)/0.3)]"
                 : "border border-[#2a2a2a] bg-[#161616] text-[#f0f0f0] active:scale-95",
             )}
           >
@@ -45,7 +45,7 @@ export function SportPillSelector({
               <span
                 className={cn(
                   "h-1.5 w-1.5 rounded-full",
-                  selectedSport === sport.id ? "bg-black" : "bg-[#A1C217]",
+                  selectedSport === sport.id ? "bg-black" : "bg-[var(--pf-volt)]",
                 )}
               />
             )}

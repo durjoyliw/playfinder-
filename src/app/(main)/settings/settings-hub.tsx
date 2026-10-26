@@ -15,6 +15,7 @@ import {
   MessageCircle,
   Info,
   MapPin,
+  Palette,
   Power,
   Shield,
   SlidersHorizontal,
@@ -80,7 +81,7 @@ export function SettingsHub() {
     <div className="min-h-full bg-[var(--pf-bg)] pb-8">
       <PageBackHeader title="Settings" />
       <div className="px-4 pb-2 pt-6 text-center">
-        <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-[#A1C217] text-2xl font-bold text-black">
+        <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-[var(--pf-volt)] text-2xl font-bold text-[var(--pf-on-accent)]">
           {getInitials(data.displayName)}
         </div>
         <h1 className="text-2xl font-bold text-white">{data.displayName}</h1>
@@ -88,7 +89,7 @@ export function SettingsHub() {
         <button
           type="button"
           onClick={handleShareProfile}
-          className="mt-4 rounded-full border border-[#A1C217] px-6 py-2 text-sm font-medium text-[#A1C217] transition-colors hover:bg-[#A1C217]/10"
+          className="mt-4 rounded-full border border-[var(--pf-volt)] px-6 py-2 text-sm font-medium text-[var(--pf-volt)] transition-colors hover:bg-[rgb(var(--pf-volt-rgb)/0.1)]"
         >
           Share profile
         </button>
@@ -130,6 +131,14 @@ export function SettingsHub() {
             href="/settings/notifications"
             icon={<Bell className="h-5 w-5" />}
             label="Notifications"
+          />
+        </SettingsSection>
+
+        <SettingsSection title="Appearance">
+          <SettingsRow
+            href="/settings/appearance"
+            icon={<Palette className="h-5 w-5" />}
+            label="Background & accent"
           />
         </SettingsSection>
 

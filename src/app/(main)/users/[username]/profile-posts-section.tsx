@@ -61,7 +61,7 @@ export default function ProfilePostsSection({
             className={cn(
               "border-b-2 px-3 pb-2 text-sm font-medium capitalize transition-colors",
               tab === t
-                ? "border-[#a1c217] text-[#a1c217]"
+                ? "border-[var(--pf-volt)] text-[var(--pf-volt)]"
                 : "border-transparent text-[#7e8a7e] hover:text-white",
             )}
           >
@@ -72,7 +72,7 @@ export default function ProfilePostsSection({
 
       {status === "pending" && (
         <div className="flex justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-[#A1C217]" />
+          <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt)]" />
         </div>
       )}
 
@@ -135,7 +135,7 @@ export default function ProfilePostsSection({
           ))}
           {isFetchingNextPage && (
             <div className="flex justify-center py-4">
-              <Loader2 className="h-6 w-6 animate-spin text-[#A1C217]" />
+              <Loader2 className="h-6 w-6 animate-spin text-[var(--pf-volt)]" />
             </div>
           )}
         </InfiniteScrollContainer>

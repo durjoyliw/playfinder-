@@ -9,7 +9,7 @@ export function PageInviteButton() {
   return (
     <Button
       type="button"
-      className="h-10 flex-1 rounded-xl bg-[#a1c217] text-sm font-semibold text-[#08090a] hover:bg-[#a1c217]/90"
+      className="h-10 flex-1 rounded-xl bg-[var(--pf-volt)] text-sm font-semibold text-[var(--pf-on-accent)] hover:bg-[rgb(var(--pf-volt-rgb)/0.9)]"
       onClick={() =>
         toast({ description: "Co-admin invites are coming next." })
       }

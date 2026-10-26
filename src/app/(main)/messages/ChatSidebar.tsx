@@ -65,7 +65,7 @@ function ConversationPreview({ channel }: ChannelPreviewUIComponentProps) {
       }}
       className="flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-[#161616] active:bg-[#1f1f1f]"
     >
-      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-sm font-bold text-black">
+      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-sm font-bold text-[var(--pf-on-accent)]">
         {isGroup ? (
           <span className="text-[13px]">{getInitials(displayName)}</span>
         ) : other?.image ? (
@@ -90,7 +90,7 @@ function ConversationPreview({ channel }: ChannelPreviewUIComponentProps) {
               </span>
             )}
             {unread > 0 && (
-              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#A1C217] px-1 text-[10px] font-bold text-white">
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--pf-volt)] px-1 text-[10px] font-bold text-white">
                 {unread > 9 ? "9+" : unread}
               </span>
             )}
@@ -265,7 +265,7 @@ function TabButton({
       href={href}
       className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
         active
-          ? "bg-[#A1C217] text-black"
+          ? "bg-[var(--pf-volt)] text-[var(--pf-on-accent)]"
           : "bg-[#1a1a1a] text-[#888888] hover:text-white"
       }`}
     >

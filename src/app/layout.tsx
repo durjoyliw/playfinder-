@@ -1,7 +1,14 @@
 import { CookieConsentBanner } from "@/components/cookie-consent-banner";
 import { Toaster } from "@/components/ui/toaster";
+import {
+  ACCENT_COOKIE,
+  THEME_COOKIE,
+  parseAccent,
+  parseTheme,
+} from "@/lib/appearance";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import type { Metadata, Viewport } from "next";
+import { cookies } from "next/headers";
 import { ThemeProvider } from "next-themes";
 import { DM_Mono, Space_Grotesk } from "next/font/google";
 import localFont from "next/font/local";
@@ -49,8 +56,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Appearance is rendered server-side from cookies so the first paint is
+  // already in the chosen theme (no flash). Defaults = Noir + Volt.
+  const cookieStore = cookies();
+  const theme = parseTheme(cookieStore.get(THEME_COOKIE)?.value);
+  const accent = parseAccent(cookieStore.get(ACCENT_COOKIE)?.value);
+
   return (
-    <html lang="en">
+    <html lang="en" data-theme={theme} data-accent={accent}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${dmMono.variable} font-grotesk antialiased`}
       >

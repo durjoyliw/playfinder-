@@ -61,13 +61,13 @@ const COMING_SOON = [
 ] as const;
 
 const fieldInputClass =
-  "h-10 rounded-[1rem] border-[#2a2f2a] bg-[#131614] px-3.5 text-base text-[#f2f5ef] lg:text-[15px] placeholder:text-[#5a635a] focus-visible:border-[#a1c217] focus-visible:ring-0 focus-visible:ring-offset-0";
+  "h-10 rounded-[1rem] border-[#2a2f2a] bg-[#131614] px-3.5 text-base text-[#f2f5ef] lg:text-[15px] placeholder:text-[#5a635a] focus-visible:border-[var(--pf-volt)] focus-visible:ring-0 focus-visible:ring-offset-0";
 
 const fieldLabelClass =
   "mb-2 block font-dm-mono text-[10px] font-medium uppercase tracking-[0.12em] text-[#7e8a7e]";
 
 const primaryButtonClass =
-  "h-10 w-full rounded-xl bg-[#a1c217] text-sm font-semibold text-[#08090a] hover:bg-[#a1c217]/90";
+  "h-10 w-full rounded-xl bg-[var(--pf-volt)] text-sm font-semibold text-[var(--pf-on-accent)] hover:bg-[rgb(var(--pf-volt-rgb)/0.9)]";
 
 function Field({
   children,
@@ -251,9 +251,9 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                   className={cn(
                     "grid h-[26px] w-[26px] shrink-0 place-items-center rounded-full border font-dm-mono text-[10px] font-medium",
                     step === n
-                      ? "border-[#a1c217] bg-[#a1c217] text-[#08090a] shadow-[0_0_0_4px_rgba(161,194,23,0.35)]"
+                      ? "border-[var(--pf-volt)] bg-[var(--pf-volt)] text-[var(--pf-on-accent)] shadow-[0_0_0_4px_rgb(var(--pf-volt-rgb)/0.35)]"
                       : step > n
-                        ? "border-[#a1c217] bg-[#a1c217] text-[#08090a]"
+                        ? "border-[var(--pf-volt)] bg-[var(--pf-volt)] text-[var(--pf-on-accent)]"
                         : "border-[#2a2f2a] bg-[#131614] text-[#7e8a7e]",
                   )}
                   aria-label={`Step ${n}`}
@@ -264,7 +264,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                   <span
                     className={cn(
                       "mx-1.5 h-px flex-1",
-                      step > n ? "bg-[#76930f]" : "bg-[#2a2f2a]",
+                      step > n ? "bg-[var(--pf-volt-dim)]" : "bg-[#2a2f2a]",
                     )}
                   />
                 )}
@@ -359,7 +359,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                       />
                       {handleAvailable && (
                         <span
-                          className="pf-handle-tick absolute right-3 top-1/2 grid h-5 w-5 -translate-y-1/2 place-items-center rounded-full bg-[#a1c217] text-[#08090a]"
+                          className="pf-handle-tick absolute right-3 top-1/2 grid h-5 w-5 -translate-y-1/2 place-items-center rounded-full bg-[var(--pf-volt)] text-[var(--pf-on-accent)]"
                           aria-label="Handle available"
                         >
                           <svg
@@ -557,7 +557,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                             className="h-full w-full object-cover"
                           />
                         ) : (
-                          <span className="text-2xl font-bold tracking-[-0.03em] text-[#a1c217]">
+                          <span className="text-2xl font-bold tracking-[-0.03em] text-[var(--pf-volt)]">
                             {initials}
                           </span>
                         )}
@@ -591,7 +591,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                       value={bio}
                       onChange={(event) => setBio(event.target.value)}
                       maxLength={80}
-                      className="min-h-[72px] rounded-[1rem] border-[#2a2f2a] bg-[#131614] px-3.5 py-3 text-base leading-relaxed lg:text-[15px] text-[#f2f5ef] placeholder:text-[#5a635a] focus-visible:border-[#a1c217] focus-visible:ring-0 focus-visible:ring-offset-0"
+                      className="min-h-[72px] rounded-[1rem] border-[#2a2f2a] bg-[#131614] px-3.5 py-3 text-base leading-relaxed lg:text-[15px] text-[#f2f5ef] placeholder:text-[#5a635a] focus-visible:border-[var(--pf-volt)] focus-visible:ring-0 focus-visible:ring-offset-0"
                     />
                   </Field>
                 </StepShell>
@@ -700,7 +700,7 @@ function PagePreviewCard({
                 className="h-full w-full object-cover"
               />
             ) : (
-              <span className="text-lg font-bold tracking-[-0.03em] text-[#a1c217]">
+              <span className="text-lg font-bold tracking-[-0.03em] text-[var(--pf-volt)]">
                 {initials}
               </span>
             )}
@@ -835,7 +835,7 @@ function HomeVenueDropdown({
           onSelect={() => onChange("")}
         >
           <span className="flex-1">None</span>
-          {!value && <Check className="h-4 w-4 text-[#a1c217]" />}
+          {!value && <Check className="h-4 w-4 text-[var(--pf-volt)]" />}
         </DropdownMenuItem>
         {venues.length === 0 ? (
           <DropdownMenuItem
@@ -853,7 +853,7 @@ function HomeVenueDropdown({
             >
               <span className="min-w-0 flex-1 truncate">{venue.name}</span>
               {value === venue.id && (
-                <Check className="ml-2 h-4 w-4 shrink-0 text-[#a1c217]" />
+                <Check className="ml-2 h-4 w-4 shrink-0 text-[var(--pf-volt)]" />
               )}
             </DropdownMenuItem>
           ))

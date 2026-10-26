@@ -46,7 +46,7 @@ export function SearchFilterBar<T extends string>({
             className={cn(
               "shrink-0 whitespace-nowrap rounded-[20px] border px-4 py-2 text-sm outline-none transition-[background-color,border-color,color,transform] duration-150 active:scale-95 focus-visible:ring-2 focus-visible:ring-[var(--pf-volt)]",
               isActive
-                ? "border-[var(--pf-volt)] bg-[var(--pf-volt)] font-bold text-[#0a0b0a]"
+                ? "border-[var(--pf-volt)] bg-[var(--pf-volt)] font-bold text-[var(--pf-on-accent)]"
                 : "border-[var(--pf-border)] bg-[var(--pf-surface)] font-medium text-[var(--pf-text-3)]",
             )}
           >

@@ -58,7 +58,7 @@ export interface FeedCardProps {
 }
 
 const cardAccentColors: Record<CardType, string> = {
-  looking: "#A1C217",
+  looking: "var(--pf-volt)",
   recruiting: "#3B82F6",
   banter: "#EAB308",
 };
@@ -216,14 +216,14 @@ export function FeedCard({
                   width: 28,
                   height: 28,
                   borderRadius: "50%",
-                  border: "2px solid #A1C217",
+                  border: "2px solid var(--pf-volt)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   background: "transparent",
                 }}
               >
-                <IconCheck size={14} color="#A1C217" stroke={2.5} />
+                <IconCheck size={14} className="text-[var(--pf-volt)]" stroke={2.5} />
               </div>
             ))}
             {Array.from({ length: slotsRemaining }).map((_, i) => (
@@ -238,7 +238,7 @@ export function FeedCard({
                 }}
               />
             ))}
-            <span style={{ fontSize: 13, color: "#A1C217", fontWeight: 600 }}>
+            <span style={{ fontSize: 13, color: "var(--pf-volt)", fontWeight: 600 }}>
               {slotsRemaining > 0
                 ? `${slotsRemaining} spot${slotsRemaining > 1 ? "s" : ""} left`
                 : "Full"}
@@ -300,7 +300,7 @@ export function FeedCard({
             </div>
             <div className="h-1 overflow-hidden rounded-full bg-[#2a2a2a]">
               <div
-                className="h-full rounded-full bg-[#A1C217] transition-all"
+                className="h-full rounded-full bg-[var(--pf-volt)] transition-all"
                 style={{ width: `${expiryPercent}%` }}
               />
             </div>

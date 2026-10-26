@@ -28,8 +28,8 @@ export default function Notification({ notification }: NotificationProps) {
   // icon instead of a person's avatar and name.
   if (SYSTEM_TYPES.includes(notification.type)) {
     const systemIconMap: Record<string, JSX.Element> = {
-      NEARBY_GAMES: <Calendar className="size-7 text-[#A1C217]" />,
-      INACTIVITY_NUDGE: <Bell className="size-7 text-[#A1C217]" />,
+      NEARBY_GAMES: <Calendar className="size-7 text-[var(--pf-volt)]" />,
+      INACTIVITY_NUDGE: <Bell className="size-7 text-[var(--pf-volt)]" />,
       TRENDING_POST: <Flame className="size-7 text-[#EF9F27]" />,
     };
     const href =
@@ -49,7 +49,7 @@ export default function Notification({ notification }: NotificationProps) {
         >
           <div className="my-1">{systemIconMap[notification.type]}</div>
           <div className="space-y-1">
-            <div className="grid h-9 w-9 place-items-center rounded-full bg-[#A1C217]/15 text-xs font-bold text-[#A1C217]">
+            <div className="grid h-9 w-9 place-items-center rounded-full bg-[rgb(var(--pf-volt-rgb)/0.15)] text-xs font-bold text-[var(--pf-volt)]">
               PF
             </div>
             <div>{notification.body ?? "You have a new notification"}</div>
@@ -76,7 +76,7 @@ export default function Notification({ notification }: NotificationProps) {
     },
     TEAMMATE: {
       message: `You and ${notification.issuer.displayName} are now Teammates ⚡`,
-      icon: <User2 className="size-7 text-[#A1C217]" />,
+      icon: <User2 className="size-7 text-[var(--pf-volt)]" />,
       href: `/users/${notification.issuer.username}`,
     },
     COMMENT: {
@@ -103,7 +103,7 @@ export default function Notification({ notification }: NotificationProps) {
             notification.post?.userId === notification.recipientId
               ? `${notification.issuer.displayName} is interested in joining your game`
               : `${notification.issuer.displayName} accepted you for the game`,
-          icon: <MessageCircle className="size-7 text-[#A1C217]" />,
+          icon: <MessageCircle className="size-7 text-[var(--pf-volt)]" />,
           href: notification.postId ? `/posts/${notification.postId}` : "/",
         }
       : notificationTypeMap[notification.type];

@@ -106,7 +106,7 @@ export function DesktopSearchBox() {
                   onClick={() => setIsOpen(false)}
                   className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-[#1a1e1b]"
                 >
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#a1c217] text-xs font-bold text-[#0a0b0a]">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-xs font-bold text-[var(--pf-on-accent)]">
                     {player.avatarUrl ? (
                       <img
                         src={player.avatarUrl}
@@ -130,7 +130,7 @@ export function DesktopSearchBox() {
               <button
                 type="button"
                 onClick={() => goToResults(query)}
-                className="flex w-full items-center gap-3 border-t border-[#2a2f2a] px-4 py-3 text-left text-sm font-semibold text-[#a1c217] transition-colors hover:bg-[#1a1e1b]"
+                className="flex w-full items-center gap-3 border-t border-[#2a2f2a] px-4 py-3 text-left text-sm font-semibold text-[var(--pf-volt)] transition-colors hover:bg-[#1a1e1b]"
               >
                 Search for &ldquo;{query.trim()}&rdquo;
               </button>

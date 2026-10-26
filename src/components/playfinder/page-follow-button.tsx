@@ -76,7 +76,7 @@ export function PageFollowButton({
         "flex h-[42px] flex-1 items-center justify-center rounded-xl text-[14px] font-bold tracking-[-0.01em] transition-[filter,opacity] disabled:opacity-70",
         data.isFollowedByUser
           ? "border border-[#2a2f2a] bg-[#131614] text-[#f2f5ef]"
-          : "bg-[#a1c217] text-[#0a0b0a] hover:brightness-110",
+          : "bg-[var(--pf-volt)] text-[var(--pf-on-accent)] hover:brightness-110",
         className,
       )}
     >

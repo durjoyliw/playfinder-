@@ -101,7 +101,7 @@ export function SendPostDialog({ postId, onOpenChange }: SendPostDialogProps) {
           )}
           {isFetching && (
             <div className="flex justify-center py-8">
-              <Loader2 className="h-6 w-6 animate-spin text-[#A1C217]" />
+              <Loader2 className="h-6 w-6 animate-spin text-[var(--pf-volt)]" />
             </div>
           )}
           {isError && (
@@ -120,7 +120,7 @@ export function SendPostDialog({ postId, onOpenChange }: SendPostDialogProps) {
                 onClick={() => sendMutation.mutate(recipient)}
                 className="flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-left transition-colors hover:bg-[#1e211e] disabled:opacity-60"
               >
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-xs font-bold text-black">
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-xs font-bold text-[var(--pf-on-accent)]">
                   {recipient.avatarUrl ? (
                     <img
                       src={recipient.avatarUrl}
@@ -142,7 +142,7 @@ export function SendPostDialog({ postId, onOpenChange }: SendPostDialogProps) {
                   </p>
                 </div>
                 {alreadySent ? (
-                  <span className="flex-shrink-0 text-xs font-semibold text-[#A1C217]">
+                  <span className="flex-shrink-0 text-xs font-semibold text-[var(--pf-volt)]">
                     Sent
                   </span>
                 ) : (

@@ -110,7 +110,7 @@ export function PageView({ page }: PageViewProps) {
               />
             ) : (
               <div className="grid h-20 w-20 place-items-center overflow-hidden rounded-[1rem] border-[3px] border-[#08090a] bg-[#1a1e1b]">
-                <span className="text-2xl font-bold tracking-[-0.03em] text-[#a1c217]">
+                <span className="text-2xl font-bold tracking-[-0.03em] text-[var(--pf-volt)]">
                   {page.initials}
                 </span>
               </div>
@@ -157,7 +157,7 @@ export function PageView({ page }: PageViewProps) {
               <button
                 type="button"
                 disabled
-                className="flex h-[42px] flex-1 items-center justify-center rounded-xl bg-[#a1c217] text-[14px] font-bold tracking-[-0.01em] text-[#0a0b0a] opacity-90 lg:flex-none lg:px-8"
+                className="flex h-[42px] flex-1 items-center justify-center rounded-xl bg-[var(--pf-volt)] text-[14px] font-bold tracking-[-0.01em] text-[var(--pf-on-accent)] opacity-90 lg:flex-none lg:px-8"
                 title="Coming in a later step"
               >
                 Manage
@@ -196,7 +196,7 @@ export function PageView({ page }: PageViewProps) {
               <button
                 type="button"
                 disabled
-                className="flex h-[42px] flex-1 items-center justify-center rounded-xl bg-[#a1c217] text-[14px] font-bold tracking-[-0.01em] text-[#0a0b0a] opacity-90"
+                className="flex h-[42px] flex-1 items-center justify-center rounded-xl bg-[var(--pf-volt)] text-[14px] font-bold tracking-[-0.01em] text-[var(--pf-on-accent)] opacity-90"
                 title="Sign in to follow"
               >
                 Follow
@@ -355,7 +355,7 @@ function PagePostsList({
                 className="h-9 w-9 rounded-[10px] border-0"
               />
             ) : (
-              <div className="grid h-9 w-9 place-items-center rounded-[10px] bg-[#232824] text-xs font-bold text-[#a1c217]">
+              <div className="grid h-9 w-9 place-items-center rounded-[10px] bg-[#232824] text-xs font-bold text-[var(--pf-volt)]">
                 {initials}
               </div>
             )}

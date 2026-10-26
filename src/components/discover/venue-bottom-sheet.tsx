@@ -38,7 +38,7 @@ export function DiscoverVenueClubTabs({
         aria-label="Venues or clubs"
       >
         <div
-          className="pointer-events-none absolute bottom-2 top-2.5 w-[calc(50%-20px)] rounded-[10px] bg-[#a1c217] transition-[left,background] duration-300 ease-[cubic-bezier(.2,.8,.2,1)]"
+          className="pointer-events-none absolute bottom-2 top-2.5 w-[calc(50%-20px)] rounded-[10px] bg-[var(--pf-volt)] transition-[left,background] duration-300 ease-[cubic-bezier(.2,.8,.2,1)]"
           style={{
             left: isClubs ? "auto" : 16,
             right: isClubs ? 16 : "auto",
@@ -56,7 +56,7 @@ export function DiscoverVenueClubTabs({
               onClick={() => onTabChange(tab.id)}
               className={cn(
                 "relative z-[2] flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-[10px] py-2.5 text-sm font-bold transition-colors duration-200",
-                isActive ? "text-[#0a0b0a]" : "text-[#7e8a7e]",
+                isActive ? "text-[var(--pf-on-accent)]" : "text-[#7e8a7e]",
               )}
             >
               {tab.label}

@@ -149,7 +149,7 @@ export default function ChannelHeader() {
           <ArrowLeft className="h-5 w-5" />
         </Link>
 
-        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-sm font-bold text-black">
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-sm font-bold text-[var(--pf-on-accent)]">
           {isGroup ? (
             getInitials(displayName)
           ) : other?.image ? (
@@ -285,7 +285,7 @@ export default function ChannelHeader() {
         <div className="px-4 pb-2">
           <span
             className={cn(
-              "inline-block rounded-full bg-[#A1C217] px-3 py-1 text-xs font-semibold text-black",
+              "inline-block rounded-full bg-[var(--pf-volt)] px-3 py-1 text-xs font-semibold text-[var(--pf-on-accent)]",
             )}
           >
             {postContext.label}
@@ -318,7 +318,7 @@ export default function ChannelHeader() {
             </p>
             <div className="max-h-72 space-y-1 overflow-y-auto">
               <div className="flex items-center gap-3 rounded-xl px-2 py-2">
-                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-xs font-bold text-black">
+                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-xs font-bold text-[var(--pf-on-accent)]">
                   {sessionUser.avatarUrl ? (
                     <img
                       src={sessionUser.avatarUrl}
@@ -338,7 +338,7 @@ export default function ChannelHeader() {
                   onClick={() => setGroupInfoOpen(false)}
                   className="flex items-center gap-3 rounded-xl px-2 py-2 transition-colors hover:bg-[#1f1f1f]"
                 >
-                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-xs font-bold text-black">
+                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-xs font-bold text-[var(--pf-on-accent)]">
                     {member.image ? (
                       <img
                         src={member.image as string}

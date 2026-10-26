@@ -35,7 +35,7 @@ export function LiveActivityBar() {
         }}
       />
       <div className="relative">
-        <div className="text-[28px] font-bold leading-none text-[#a1c217]">
+        <div className="text-[28px] font-bold leading-none text-[var(--pf-volt)]">
           {count}
         </div>
         <div className="mt-1 text-[13px] leading-snug text-[#b4bcaf]">

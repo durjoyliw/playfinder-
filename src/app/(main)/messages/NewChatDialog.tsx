@@ -166,9 +166,9 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
                     key={s.id}
                     type="button"
                     onClick={() => toggleSelected(s)}
-                    className="flex items-center gap-1.5 rounded-full bg-[#A1C217]/15 py-1 pl-1 pr-2.5 text-xs font-semibold text-[#A1C217]"
+                    className="flex items-center gap-1.5 rounded-full bg-[rgb(var(--pf-volt-rgb)/0.15)] py-1 pl-1 pr-2.5 text-xs font-semibold text-[var(--pf-volt)]"
                   >
-                    <span className="flex h-5 w-5 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-[9px] font-bold text-black">
+                    <span className="flex h-5 w-5 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-[9px] font-bold text-[var(--pf-on-accent)]">
                       {s.avatarUrl ? (
                         <img
                           src={s.avatarUrl}
@@ -206,7 +206,7 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
               )}
               {isFetching && (
                 <div className="flex justify-center py-8">
-                  <Loader2 className="h-6 w-6 animate-spin text-[#A1C217]" />
+                  <Loader2 className="h-6 w-6 animate-spin text-[var(--pf-volt)]" />
                 </div>
               )}
               {isError && (
@@ -223,7 +223,7 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
                     onClick={() => toggleSelected(player)}
                     className="flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-left transition-colors hover:bg-[#1a1a1a]"
                   >
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-xs font-bold text-black">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-xs font-bold text-[var(--pf-on-accent)]">
                       {player.avatarUrl ? (
                         <img
                           src={player.avatarUrl}
@@ -245,11 +245,11 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
                     <span
                       className={`flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border-2 ${
                         isSelected
-                          ? "border-[#A1C217] bg-[#A1C217]"
+                          ? "border-[var(--pf-volt)] bg-[var(--pf-volt)]"
                           : "border-[#444]"
                       }`}
                     >
-                      {isSelected && <Check className="h-3 w-3 text-black" />}
+                      {isSelected && <Check className="h-3 w-3 text-[var(--pf-on-accent)]" />}
                     </span>
                   </button>
                 );
@@ -265,7 +265,7 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
               type="button"
               disabled={selected.length === 0 || isPending}
               onClick={handlePrimaryAction}
-              className="mt-4 w-full rounded-full bg-[#A1C217] py-3 text-sm font-bold text-black transition-opacity disabled:opacity-40"
+              className="mt-4 w-full rounded-full bg-[var(--pf-volt)] py-3 text-sm font-bold text-[var(--pf-on-accent)] transition-opacity disabled:opacity-40"
             >
               {isPending ? (
                 <Loader2 className="mx-auto h-4 w-4 animate-spin" />
@@ -299,7 +299,7 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
                   key={s.id}
                   className="flex items-center gap-1.5 rounded-full bg-[#1a1a1a] py-1 pl-1 pr-2.5 text-xs font-semibold text-white"
                 >
-                  <span className="flex h-5 w-5 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-[9px] font-bold text-black">
+                  <span className="flex h-5 w-5 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-[9px] font-bold text-[var(--pf-on-accent)]">
                     {s.avatarUrl ? (
                       <img
                         src={s.avatarUrl}
@@ -334,7 +334,7 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
               type="button"
               disabled={isPending}
               onClick={() => createGroupMutation.mutate()}
-              className="w-full rounded-full bg-[#A1C217] py-3 text-sm font-bold text-black transition-opacity disabled:opacity-40"
+              className="w-full rounded-full bg-[var(--pf-volt)] py-3 text-sm font-bold text-[var(--pf-on-accent)] transition-opacity disabled:opacity-40"
             >
               {isPending ? (
                 <Loader2 className="mx-auto h-4 w-4 animate-spin" />
