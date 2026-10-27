@@ -4,6 +4,7 @@ import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { getCommentDataInclude, PostData } from "@/lib/types";
 import { createCommentSchema } from "@/lib/validation";
+import { enforceRateLimit } from "@/lib/rate-limit";
 
 export async function submitComment({
   post,
@@ -15,6 +16,7 @@ export async function submitComment({
   const { user } = await validateRequest();
 
   if (!user) throw new Error("Unauthorized");
+  await enforceRateLimit("comment", user.id);
 
   const { content: contentValidated } = createCommentSchema.parse({ content });
 
@@ -48,6 +50,7 @@ export async function deleteComment(id: string) {
   const { user } = await validateRequest();
 
   if (!user) throw new Error("Unauthorized");
+  await enforceRateLimit("comment", user.id);
 
   const comment = await prisma.comment.findUnique({
     where: { id },

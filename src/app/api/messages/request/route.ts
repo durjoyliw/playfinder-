@@ -9,6 +9,7 @@ import streamServerClient from "@/lib/stream";
 import { isTeammate } from "@/lib/teammate-server";
 import { NotificationType } from "@prisma/client";
 import { z } from "zod";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 const createRequestSchema = z.object({
   toUserId: z.string().min(1),
@@ -26,6 +27,9 @@ export async function POST(req: Request) {
     if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("message-request", user.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     const { toUserId } = createRequestSchema.parse(await req.json());
 
@@ -171,6 +175,9 @@ export async function PATCH(req: Request) {
     if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("message-request", user.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     const { requestId, action } = patchRequestSchema.parse(await req.json());
 

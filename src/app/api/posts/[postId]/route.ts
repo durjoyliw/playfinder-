@@ -4,6 +4,7 @@ import { getPostDataInclude } from "@/lib/types";
 import { getListingExpiresAt } from "@/lib/playfinder";
 import { createBroadcastSchema } from "@/lib/validation";
 import { PostIntent } from "@prisma/client";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 export async function PATCH(
   req: Request,
@@ -15,6 +16,9 @@ export async function PATCH(
     if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("post-edit", user.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     const existing = await prisma.post.findUnique({
       where: { id: postId },

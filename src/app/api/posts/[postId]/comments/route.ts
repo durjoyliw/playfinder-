@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { CommentsPage, getCommentDataInclude } from "@/lib/types";
 import { createCommentSchema } from "@/lib/validation";
 import { NextRequest } from "next/server";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 export async function POST(
   req: NextRequest,
@@ -14,6 +15,9 @@ export async function POST(
     if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("comment", user.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     const { content } = createCommentSchema.parse(await req.json());
 

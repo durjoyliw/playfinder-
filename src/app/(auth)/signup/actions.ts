@@ -11,11 +11,17 @@ import { generateIdFromEntropySize } from "lucia";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { getClientIp, rateLimit, RATE_LIMIT_MESSAGE } from "@/lib/rate-limit";
 
 export async function signUp(
   credentials: SignUpValues,
 ): Promise<{ error: string }> {
   try {
+    const limit = await rateLimit("signup-ip", getClientIp());
+    if (!limit.ok) {
+      return { error: RATE_LIMIT_MESSAGE };
+    }
+
     const parsed = signUpSchema.safeParse(credentials);
     if (!parsed.success) {
       // Surface the real reason (e.g. the 18+ message), not a generic error.

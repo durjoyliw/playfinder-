@@ -8,6 +8,7 @@ import {
 } from "@/lib/validation";
 import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 const userProfileSelect = {
   username: true,
@@ -76,6 +77,9 @@ export async function PATCH(req: Request) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const limit = await rateLimit("profile", user.id);
+    if (!limit.ok) return tooManyRequests(limit);
+
     const body = patchUserProfileSchema.parse(await req.json());
 
     const updatedUser = await prisma.$transaction(async (tx) => {
@@ -134,6 +138,9 @@ export async function PUT(req: Request) {
     if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("profile", user.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     const { sports } = updateUserSportsSchema.parse(await req.json());
 

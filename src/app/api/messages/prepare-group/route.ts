@@ -5,6 +5,7 @@ import {
   upsertStreamUsersMany,
 } from "@/lib/stream-messaging";
 import { z } from "zod";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 const prepareGroupSchema = z.object({
   memberIds: z.array(z.string().min(1)).min(2).max(49),
@@ -18,6 +19,9 @@ export async function POST(req: Request) {
     if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("group-chat", user.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     const { memberIds, name } = prepareGroupSchema.parse(await req.json());
     const uniqueMemberIds = Array.from(

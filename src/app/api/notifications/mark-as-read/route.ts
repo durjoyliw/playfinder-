@@ -1,5 +1,6 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 export async function PATCH() {
   try {
@@ -8,6 +9,9 @@ export async function PATCH() {
     if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("mark-read", user.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     await prisma.notification.updateMany({
       where: {

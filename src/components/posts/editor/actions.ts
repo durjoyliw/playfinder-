@@ -4,6 +4,7 @@ import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { getPostDataInclude } from "@/lib/types";
 import { createPostSchema } from "@/lib/validation";
+import { enforceRateLimit } from "@/lib/rate-limit";
 
 export async function submitPost(input: {
   content: string;
@@ -12,6 +13,7 @@ export async function submitPost(input: {
   const { user } = await validateRequest();
 
   if (!user) throw new Error("Unauthorized");
+  await enforceRateLimit("post", user.id);
 
   const { content, mediaIds } = createPostSchema.parse(input);
 

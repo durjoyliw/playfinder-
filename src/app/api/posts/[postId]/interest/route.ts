@@ -1,6 +1,7 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { NotificationType } from "@prisma/client";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 export async function POST(
   _req: Request,
@@ -12,6 +13,9 @@ export async function POST(
     if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("interest", user.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     const post = await prisma.post.findUnique({
       where: { id: postId },
@@ -79,6 +83,9 @@ export async function DELETE(
     if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("interest", user.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     const interest = await prisma.postInterest.findUnique({
       where: {

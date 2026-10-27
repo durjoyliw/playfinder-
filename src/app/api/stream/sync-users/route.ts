@@ -1,6 +1,7 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import streamServerClient from "@/lib/stream";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 export async function POST() {
   try {
@@ -9,6 +10,9 @@ export async function POST() {
     if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("stream-sync", user.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     const users = await prisma.user.findMany({
       select: { id: true, displayName: true, username: true },

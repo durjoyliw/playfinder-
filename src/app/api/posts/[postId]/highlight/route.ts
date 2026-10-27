@@ -1,6 +1,7 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { getPostDataInclude } from "@/lib/types";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 export async function PATCH(
   _req: Request,
@@ -12,6 +13,9 @@ export async function PATCH(
     if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("post-edit", user.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     const post = await prisma.post.findUnique({
       where: { id: postId },

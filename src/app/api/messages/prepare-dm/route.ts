@@ -5,6 +5,7 @@ import {
   upsertStreamUsers,
 } from "@/lib/stream-messaging";
 import { z } from "zod";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 const prepareDmSchema = z.object({
   recipientId: z.string().min(1),
@@ -17,6 +18,9 @@ export async function POST(req: Request) {
     if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("dm", user.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     const { recipientId } = prepareDmSchema.parse(await req.json());
 

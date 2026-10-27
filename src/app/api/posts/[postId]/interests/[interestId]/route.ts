@@ -4,6 +4,7 @@ import { countAcceptedInterests } from "@/lib/post-interest";
 import { syncPostIsFull } from "@/lib/post-interest-sync";
 import { NotificationType } from "@prisma/client";
 import { z } from "zod";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 const bodySchema = z.object({
   action: z.enum(["ACCEPT", "IGNORE", "REMOVE", "MANUAL_FILL"]),
@@ -21,6 +22,9 @@ export async function PATCH(
     if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("interest-manage", user.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     const json = await req.json();
     const parsed = bodySchema.safeParse(json);

@@ -7,6 +7,7 @@ import { getUploadThingFileKey } from "@/lib/uploadthing-file-key";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { UTApi } from "uploadthing/server";
+import { rateLimit, RATE_LIMIT_MESSAGE } from "@/lib/rate-limit";
 
 export interface DeleteAccountResult {
   error: string;
@@ -42,6 +43,9 @@ export async function deleteAccount(
   if (!user || !session) {
     return { error: "You need to be signed in." };
   }
+
+  const limit = await rateLimit("account-delete", user.id);
+  if (!limit.ok) return { error: RATE_LIMIT_MESSAGE };
 
   // Server-side re-check of the typed confirmation.
   if (confirmation.trim().replace(/^@/, "").toLowerCase() !== user.username.toLowerCase()) {

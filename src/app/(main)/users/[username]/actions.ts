@@ -8,6 +8,7 @@ import {
   updateUserProfileSchema,
   UpdateUserProfileValues,
 } from "@/lib/validation";
+import { enforceRateLimit } from "@/lib/rate-limit";
 
 export async function updateUserProfile(values: UpdateUserProfileValues) {
   const validatedValues = updateUserProfileSchema.parse(values);
@@ -15,6 +16,7 @@ export async function updateUserProfile(values: UpdateUserProfileValues) {
   const { user } = await validateRequest();
 
   if (!user) throw new Error("Unauthorized");
+  await enforceRateLimit("profile", user.id);
 
   const updatedUser = await prisma.$transaction(async (tx) => {
     const updatedUser = await tx.user.update({

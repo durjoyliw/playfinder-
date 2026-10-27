@@ -5,6 +5,7 @@ import { sportTabToPostSport } from "@/lib/playfinder";
 import { getPostDataInclude } from "@/lib/types";
 import { z } from "zod";
 import { PostIntent } from "@prisma/client";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 const createSocialPostSchema = z.object({
   content: z.string().trim().min(1).max(280),
@@ -19,6 +20,9 @@ export async function POST(req: Request) {
     if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("post", user.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     const body = createSocialPostSchema.parse(await req.json());
 

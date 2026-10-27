@@ -3,6 +3,7 @@ import { isTeammate } from "@/lib/teammate-server";
 import prisma from "@/lib/prisma";
 import { FollowerInfo } from "@/lib/types";
 import { NotificationType } from "@prisma/client";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 async function createTeammateNotifications(userAId: string, userBId: string) {
   await prisma.$transaction([
@@ -93,6 +94,9 @@ export async function POST(
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const limit = await rateLimit("follow", loggedInUser.id);
+    if (!limit.ok) return tooManyRequests(limit);
+
     if (loggedInUser.id === userId) {
       return Response.json(
         { error: "Cannot follow yourself" },
@@ -149,6 +153,9 @@ export async function DELETE(
     if (!loggedInUser) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("follow", loggedInUser.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     await prisma.$transaction([
       prisma.follow.deleteMany({

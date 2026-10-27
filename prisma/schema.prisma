@@ -541,3 +541,15 @@ model PageFollow {
   @@unique([pageId, userId])
   @@map("page_follows")
 }
+
+/// Fixed-window rate-limit counters (src/lib/rate-limit.ts). One row per
+/// bucket + subject (e.g. "comment:<userId>", "login-ip:<ip>"). Not linked to
+/// any other model; stale rows are pruned opportunistically.
+model RateLimit {
+  key         String   @id
+  count       Int      @default(0)
+  windowStart DateTime @default(now())
+
+  @@index([windowStart])
+  @@map("rate_limits")
+}

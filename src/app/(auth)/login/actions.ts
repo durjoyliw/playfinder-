@@ -8,12 +8,22 @@ import { verify } from "@node-rs/argon2";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { getClientIp, rateLimit, RATE_LIMIT_MESSAGE } from "@/lib/rate-limit";
 
 export async function login(
   credentials: LoginValues,
 ): Promise<{ error: string }> {
   try {
     const { username, password } = loginSchema.parse(credentials);
+
+    // Throttle by IP and by account to slow down password guessing.
+    const [ipLimit, userLimit] = await Promise.all([
+      rateLimit("login-ip", getClientIp()),
+      rateLimit("login-user", username),
+    ]);
+    if (!ipLimit.ok || !userLimit.ok) {
+      return { error: RATE_LIMIT_MESSAGE };
+    }
 
     const existingUser = await prisma.user.findFirst({
       where: {

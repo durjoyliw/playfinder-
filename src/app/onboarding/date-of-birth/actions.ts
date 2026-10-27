@@ -6,6 +6,7 @@ import prisma from "@/lib/prisma";
 import streamServerClient from "@/lib/stream";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { rateLimit, RATE_LIMIT_MESSAGE } from "@/lib/rate-limit";
 
 export interface ConfirmBirthDateResult {
   message: string;
@@ -27,6 +28,9 @@ export async function confirmBirthDate(
 ): Promise<ConfirmBirthDateResult> {
   const { user } = await validateRequest();
   if (!user) redirect("/login");
+
+  const limit = await rateLimit("birth-date", user.id);
+  if (!limit.ok) return { message: RATE_LIMIT_MESSAGE };
 
   const account = await prisma.user.findUnique({
     where: { id: user.id },
