@@ -14,7 +14,7 @@ if (publicKey && privateKey) {
   configured = true;
 } else {
   console.warn(
-    "Web push is not configured: set VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY " +
+    "Web push is not configured: set NEXT_PUBLIC_VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY " +
       "to enable real device push notifications (in-app notifications still work).",
   );
 }

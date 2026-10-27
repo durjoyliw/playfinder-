@@ -7,6 +7,9 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   experimental: {
+    // Enables unstable_after() (src/lib/after-response.ts): notification
+    // pushes run after the response, once transactions have committed.
+    after: true,
     optimizePackageImports: [
       "stream-chat-react",
       "stream-chat",
