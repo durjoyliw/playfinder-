@@ -1,6 +1,10 @@
 import { getSportDisplay } from "@/lib/onboarding-sports";
 import prisma from "@/lib/prisma";
 import { getTrendingTopics } from "@/lib/trending";
+import {
+  isAuthorizedCronRequest,
+  unauthorizedCronResponse,
+} from "@/lib/cron-auth";
 
 // Batch caps so one run can't run away on a large table -- generous for
 // where this app is today, revisit if the user base outgrows a single
@@ -36,12 +40,8 @@ function endOfThisWeekend(): Date {
 
 export async function GET(req: Request) {
   try {
-    const authHeader = req.headers.get("Authorization");
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-      return Response.json(
-        { message: "Invalid authorization header" },
-        { status: 401 },
-      );
+    if (!isAuthorizedCronRequest(req)) {
+      return unauthorizedCronResponse();
     }
 
     const now = new Date();

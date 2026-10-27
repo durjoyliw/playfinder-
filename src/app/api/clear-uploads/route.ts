@@ -1,16 +1,15 @@
 import prisma from "@/lib/prisma";
 import { getUploadThingFileKey } from "@/lib/uploadthing-file-key";
 import { UTApi } from "uploadthing/server";
+import {
+  isAuthorizedCronRequest,
+  unauthorizedCronResponse,
+} from "@/lib/cron-auth";
 
 export async function GET(req: Request) {
   try {
-    const authHeader = req.headers.get("Authorization");
-
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-      return Response.json(
-        { message: "Invalid authorization header" },
-        { status: 401 },
-      );
+    if (!isAuthorizedCronRequest(req)) {
+      return unauthorizedCronResponse();
     }
 
     const unusedMedia = await prisma.media.findMany({
