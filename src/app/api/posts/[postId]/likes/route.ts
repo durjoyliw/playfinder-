@@ -1,6 +1,7 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { LikeInfo } from "@/lib/types";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 export async function GET(
   req: Request,
@@ -59,6 +60,9 @@ export async function POST(
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const limit = await rateLimit("like", loggedInUser.id);
+    if (!limit.ok) return tooManyRequests(limit);
+
     const post = await prisma.post.findUnique({
       where: { id: postId },
       select: {
@@ -70,8 +74,8 @@ export async function POST(
       return Response.json({ error: "Post not found" }, { status: 404 });
     }
 
-    await prisma.$transaction([
-      prisma.like.upsert({
+    await prisma.$transaction(async (tx) => {
+      await tx.like.upsert({
         where: {
           userId_postId: {
             userId: loggedInUser.id,
@@ -83,20 +87,32 @@ export async function POST(
           postId,
         },
         update: {},
-      }),
-      ...(loggedInUser.id !== post.userId
-        ? [
-            prisma.notification.create({
-              data: {
-                issuerId: loggedInUser.id,
-                recipientId: post.userId,
-                postId,
-                type: "LIKE",
-              },
-            }),
-          ]
-        : []),
-    ]);
+      });
+
+      if (loggedInUser.id === post.userId) return;
+
+      // One LIKE notification per (issuer, post): unlike -> like again must
+      // not create (and push) a fresh one each time.
+      const existing = await tx.notification.findFirst({
+        where: {
+          issuerId: loggedInUser.id,
+          recipientId: post.userId,
+          postId,
+          type: "LIKE",
+        },
+        select: { id: true },
+      });
+      if (existing) return;
+
+      await tx.notification.create({
+        data: {
+          issuerId: loggedInUser.id,
+          recipientId: post.userId,
+          postId,
+          type: "LIKE",
+        },
+      });
+    });
 
     return new Response();
   } catch (error) {
@@ -116,6 +132,9 @@ export async function DELETE(
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const limit = await rateLimit("like", loggedInUser.id);
+    if (!limit.ok) return tooManyRequests(limit);
+
     const post = await prisma.post.findUnique({
       where: { id: postId },
       select: {
@@ -134,13 +153,16 @@ export async function DELETE(
           postId,
         },
       }),
-      prisma.notification.deleteMany({
+      // Keep the LIKE notification (marked read) rather than deleting it, so
+      // re-liking finds it and doesn't notify/push again.
+      prisma.notification.updateMany({
         where: {
           issuerId: loggedInUser.id,
           recipientId: post.userId,
           postId,
           type: "LIKE",
         },
+        data: { read: true },
       }),
     ]);
 
