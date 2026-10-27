@@ -127,17 +127,17 @@ export function PageLocationMap({ place, className }: PageLocationMapProps) {
     <div
       className={
         className ??
-        "relative mb-8 h-[336px] overflow-hidden rounded-[1rem] border border-[#2a2f2a] bg-[#0c0e0c]"
+        "relative mb-8 h-[336px] overflow-hidden rounded-[1rem] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-0c0e0c)]"
       }
     >
       {tokenPresent ? (
         <div ref={containerRef} className="h-full w-full" />
       ) : (
-        <div className="flex h-full items-center justify-center px-4 text-center font-dm-mono text-[10px] uppercase tracking-[0.1em] text-[#7e8a7e]">
+        <div className="flex h-full items-center justify-center px-4 text-center font-dm-mono text-[10px] uppercase tracking-[0.1em] text-[var(--pf-c-ink-7e8a7e)]">
           Add NEXT_PUBLIC_MAPBOX_TOKEN to .env.local
         </div>
       )}
-      <span className="pointer-events-none absolute bottom-3 left-3 rounded-full border border-[#2a2f2a] bg-[rgba(8,9,10,0.72)] px-2.5 py-1 font-dm-mono text-[10px] uppercase tracking-[0.1em] text-[#7e8a7e]">
+      <span className="pointer-events-none absolute bottom-3 left-3 rounded-full border border-[var(--pf-c-line-2a2f2a)] bg-[rgb(var(--pf-c-fill-08090a-rgb)/0.72)] px-2.5 py-1 font-dm-mono text-[10px] uppercase tracking-[0.1em] text-[var(--pf-c-ink-7e8a7e)]">
         Map preview
       </span>
     </div>

@@ -61,10 +61,10 @@ const COMING_SOON = [
 ] as const;
 
 const fieldInputClass =
-  "h-10 rounded-[1rem] border-[#2a2f2a] bg-[#131614] px-3.5 text-base text-[#f2f5ef] lg:text-[15px] placeholder:text-[#5a635a] focus-visible:border-[var(--pf-volt)] focus-visible:ring-0 focus-visible:ring-offset-0";
+  "h-10 rounded-[1rem] border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] px-3.5 text-base text-[var(--pf-c-ink-f2f5ef)] lg:text-[15px] placeholder:text-[var(--pf-c-ink-5a635a)] focus-visible:border-[var(--pf-volt)] focus-visible:ring-0 focus-visible:ring-offset-0 pf-card";
 
 const fieldLabelClass =
-  "mb-2 block font-dm-mono text-[10px] font-medium uppercase tracking-[0.12em] text-[#7e8a7e]";
+  "mb-2 block font-dm-mono text-[10px] font-medium uppercase tracking-[0.12em] text-[var(--pf-c-ink-7e8a7e)]";
 
 const primaryButtonClass =
   "h-10 w-full rounded-xl bg-[var(--pf-volt)] text-sm font-semibold text-[var(--pf-on-accent)] hover:bg-[rgb(var(--pf-volt-rgb)/0.9)]";
@@ -217,12 +217,12 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
   const displayHandle = handle.trim().replace(/^@/, "");
 
   return (
-    <div className="flex min-h-full flex-col font-grotesk text-[#f2f5ef]">
-      <div className="relative flex items-center justify-center border-b border-[#2a2f2a] px-4 py-4 lg:px-10 lg:py-5">
+    <div className="flex min-h-full flex-col font-grotesk text-[var(--pf-c-ink-f2f5ef)]">
+      <div className="relative flex items-center justify-center border-b border-[var(--pf-c-line-2a2f2a)] px-4 py-4 lg:px-10 lg:py-5">
         <button
           type="button"
           onClick={() => (step > 1 ? goTo(step - 1) : goBack())}
-          className="absolute left-4 grid h-10 w-10 place-items-center rounded-xl border border-white/[0.06] bg-[rgba(8,9,10,0.6)] text-[#b4bcaf] lg:left-10"
+          className="absolute left-4 grid h-10 w-10 place-items-center rounded-xl border border-[rgb(var(--pf-contrast-rgb)/0.06)] bg-[rgb(var(--pf-c-fill-08090a-rgb)/0.6)] text-[var(--pf-c-ink-b4bcaf)] lg:left-10"
           aria-label="Back"
         >
           <span className="text-lg leading-none">‹</span>
@@ -254,7 +254,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                       ? "border-[var(--pf-volt)] bg-[var(--pf-volt)] text-[var(--pf-on-accent)] shadow-[0_0_0_4px_rgb(var(--pf-volt-rgb)/0.35)]"
                       : step > n
                         ? "border-[var(--pf-volt)] bg-[var(--pf-volt)] text-[var(--pf-on-accent)]"
-                        : "border-[#2a2f2a] bg-[#131614] text-[#7e8a7e]",
+                        : "border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-7e8a7e)]",
                   )}
                   aria-label={`Step ${n}`}
                 >
@@ -264,7 +264,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                   <span
                     className={cn(
                       "mx-1.5 h-px flex-1",
-                      step > n ? "bg-[var(--pf-volt-dim)]" : "bg-[#2a2f2a]",
+                      step > n ? "bg-[var(--pf-volt-dim)]" : "bg-[var(--pf-c-fill-2a2f2a)]",
                     )}
                   />
                 )}
@@ -308,16 +308,16 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                     {COMING_SOON.map((item) => (
                       <div
                         key={item.key}
-                        className="flex min-h-24 flex-col gap-2.5 rounded-[1rem] border border-[#2a2f2a] bg-[#131614] p-4 opacity-[0.42]"
+                        className="flex min-h-24 flex-col gap-2.5 rounded-[1rem] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-4 opacity-[0.42] pf-card"
                       >
-                        <div className="grid h-9 w-9 place-items-center rounded-[10px] border border-[#2a2f2a] bg-[#1a1e1b] text-[#b4bcaf]">
+                        <div className="grid h-9 w-9 place-items-center rounded-[10px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-1a1e1b)] text-[var(--pf-c-ink-b4bcaf)]">
                           <item.icon className="h-5 w-5" />
                         </div>
                         <div>
                           <p className="text-[16px] font-bold tracking-[-0.02em]">
                             {item.title}
                           </p>
-                          <p className="mt-1 font-dm-mono text-[9px] font-medium uppercase tracking-[0.1em] text-[#5a635a]">
+                          <p className="mt-1 font-dm-mono text-[9px] font-medium uppercase tracking-[0.1em] text-[var(--pf-c-ink-5a635a)]">
                             Coming soon
                           </p>
                         </div>
@@ -382,7 +382,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                     {handle.trim() &&
                       !checkingHandle &&
                       handleAvailable === false && (
-                        <p className="mt-2 text-[13px] text-[#7e8a7e]">
+                        <p className="mt-2 text-[13px] text-[var(--pf-c-ink-7e8a7e)]">
                           That handle is taken or invalid.
                         </p>
                       )}
@@ -422,7 +422,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                     <Field>
                       <div className="mb-2 flex items-baseline justify-between">
                         <Label className={fieldLabelClass}>Home venue</Label>
-                        <span className="font-dm-mono text-[10px] uppercase tracking-[0.08em] text-[#5a635a]">
+                        <span className="font-dm-mono text-[10px] uppercase tracking-[0.08em] text-[var(--pf-c-ink-5a635a)]">
                           Optional
                         </span>
                       </div>
@@ -520,11 +520,11 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                       <button
                         type="button"
                         onClick={() => bannerInputRef.current?.click()}
-                        className="relative flex h-[132px] w-full items-center justify-center overflow-hidden rounded-[1rem] border border-dashed border-[#353c34] font-dm-mono text-[10px] uppercase tracking-[0.12em] text-[#7e8a7e]"
+                        className="relative flex h-[132px] w-full items-center justify-center overflow-hidden rounded-[1rem] border border-dashed border-[var(--pf-c-line-353c34)] font-dm-mono text-[10px] uppercase tracking-[0.12em] text-[var(--pf-c-ink-7e8a7e)]"
                         style={{
                           background: bannerPreview
                             ? undefined
-                            : "repeating-linear-gradient(135deg, #131614 0 10px, #161a17 10px 20px)",
+                            : "repeating-linear-gradient(135deg, var(--pf-c-fill-131614) 0 10px, var(--pf-c-fill-161a17) 10px 20px)",
                         }}
                       >
                         {bannerPreview ? (
@@ -545,7 +545,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                       <button
                         type="button"
                         onClick={() => avatarInputRef.current?.click()}
-                        className="absolute left-3 top-full z-[1] grid h-20 w-20 -translate-y-1/2 place-items-center overflow-hidden rounded-[1rem] border-[3px] border-[#08090a] bg-[#1a1e1b]"
+                        className="absolute left-3 top-full z-[1] grid h-20 w-20 -translate-y-1/2 place-items-center overflow-hidden rounded-[1rem] border-[3px] border-[var(--pf-c-line-08090a)] bg-[var(--pf-c-fill-1a1e1b)]"
                         aria-label="Upload page avatar"
                       >
                         {avatarPreview ? (
@@ -557,7 +557,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                             className="h-full w-full object-cover"
                           />
                         ) : (
-                          <span className="text-2xl font-bold tracking-[-0.03em] text-[var(--pf-volt)]">
+                          <span className="text-2xl font-bold tracking-[-0.03em] text-[var(--pf-volt-text)]">
                             {initials}
                           </span>
                         )}
@@ -572,7 +572,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                       </span>
                     </div>
                     {displayHandle && (
-                      <p className="mt-1 pl-3 text-sm text-[#7e8a7e]">
+                      <p className="mt-1 pl-3 text-sm text-[var(--pf-c-ink-7e8a7e)]">
                         @{displayHandle}
                       </p>
                     )}
@@ -582,7 +582,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                       <Label htmlFor="page-bio" className={fieldLabelClass}>
                         Bio
                       </Label>
-                      <span className="font-dm-mono text-[10px] uppercase tracking-[0.08em] text-[#5a635a]">
+                      <span className="font-dm-mono text-[10px] uppercase tracking-[0.08em] text-[var(--pf-c-ink-5a635a)]">
                         One line · optional
                       </span>
                     </div>
@@ -591,14 +591,14 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                       value={bio}
                       onChange={(event) => setBio(event.target.value)}
                       maxLength={80}
-                      className="min-h-[72px] rounded-[1rem] border-[#2a2f2a] bg-[#131614] px-3.5 py-3 text-base leading-relaxed lg:text-[15px] text-[#f2f5ef] placeholder:text-[#5a635a] focus-visible:border-[var(--pf-volt)] focus-visible:ring-0 focus-visible:ring-offset-0"
+                      className="min-h-[72px] rounded-[1rem] border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] px-3.5 py-3 text-base leading-relaxed lg:text-[15px] text-[var(--pf-c-ink-f2f5ef)] placeholder:text-[var(--pf-c-ink-5a635a)] focus-visible:border-[var(--pf-volt)] focus-visible:ring-0 focus-visible:ring-offset-0 pf-card"
                     />
                   </Field>
                 </StepShell>
               )}
             </div>
 
-            <div className="mt-6 border-t border-[#2a2f2a] pt-3 lg:mt-10 lg:flex lg:flex-row-reverse lg:items-center lg:gap-3 lg:pt-5">
+            <div className="mt-6 border-t border-[var(--pf-c-line-2a2f2a)] pt-3 lg:mt-10 lg:flex lg:flex-row-reverse lg:items-center lg:gap-3 lg:pt-5">
               <LoadingButton
                 type="button"
                 loading={submitting}
@@ -615,7 +615,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                 <Button
                   type="button"
                   variant="ghost"
-                  className="mt-2 h-9 w-full text-[#7e8a7e] hover:bg-transparent hover:text-[#b4bcaf] lg:mt-0 lg:h-10 lg:w-auto"
+                  className="mt-2 h-9 w-full text-[var(--pf-c-ink-7e8a7e)] hover:bg-transparent hover:text-[var(--pf-c-ink-b4bcaf)] lg:mt-0 lg:h-10 lg:w-auto"
                   onClick={onSkip}
                   disabled={submitting || (step === 3 && !city.trim())}
                 >
@@ -668,16 +668,16 @@ function PagePreviewCard({
 }) {
   return (
     <div>
-      <p className="mb-3 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#7e8a7e]">
+      <p className="mb-3 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-c-ink-7e8a7e)]">
         Live preview
       </p>
-      <div className="overflow-hidden rounded-[1.25rem] border border-[#2a2f2a] bg-[#131614]">
+      <div className="overflow-hidden rounded-[1.25rem] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] pf-card">
         <div
           className="h-[92px] w-full"
           style={{
             background: bannerPreview
               ? undefined
-              : "repeating-linear-gradient(135deg, #131614 0 10px, #161a17 10px 20px)",
+              : "repeating-linear-gradient(135deg, var(--pf-c-fill-131614) 0 10px, var(--pf-c-fill-161a17) 10px 20px)",
           }}
         >
           {bannerPreview && (
@@ -691,7 +691,7 @@ function PagePreviewCard({
           )}
         </div>
         <div className="px-4 pb-5">
-          <div className="-mt-7 grid h-14 w-14 place-items-center overflow-hidden rounded-[14px] border-[3px] border-[#131614] bg-[#1a1e1b]">
+          <div className="-mt-7 grid h-14 w-14 place-items-center overflow-hidden rounded-[14px] border-[3px] border-[var(--pf-c-line-131614)] bg-[var(--pf-c-fill-1a1e1b)]">
             {avatarPreview ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -700,7 +700,7 @@ function PagePreviewCard({
                 className="h-full w-full object-cover"
               />
             ) : (
-              <span className="text-lg font-bold tracking-[-0.03em] text-[var(--pf-volt)]">
+              <span className="text-lg font-bold tracking-[-0.03em] text-[var(--pf-volt-text)]">
                 {initials}
               </span>
             )}
@@ -713,18 +713,18 @@ function PagePreviewCard({
               {type === "VENUE" ? "Venue" : "Club"}
             </span>
           </div>
-          <p className="mt-1 text-[13px] text-[#7e8a7e]">
+          <p className="mt-1 text-[13px] text-[var(--pf-c-ink-7e8a7e)]">
             {handle ? `@${handle}` : "@handle"}
             {city.trim() && ` · ${city.trim()}`}
           </p>
           {bio.trim() && (
-            <p className="mt-2.5 text-[13px] leading-snug text-[#b4bcaf]">
+            <p className="mt-2.5 text-[13px] leading-snug text-[var(--pf-c-ink-b4bcaf)]">
               {bio.trim()}
             </p>
           )}
         </div>
       </div>
-      <p className="mt-3 text-xs leading-relaxed text-[#5a635a]">
+      <p className="mt-3 text-xs leading-relaxed text-[var(--pf-c-ink-5a635a)]">
         Pages use a rounded-square avatar; people are circles.
       </p>
     </div>
@@ -744,13 +744,13 @@ function StepShell({
 }) {
   return (
     <div>
-      <p className="mb-2 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#7e8a7e]">
+      <p className="mb-2 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-c-ink-7e8a7e)]">
         {label}
       </p>
       <h2 className="mb-2 text-[24px] font-bold leading-tight tracking-[-0.03em] lg:text-[28px]">
         {title}
       </h2>
-      <p className="mb-7 text-[15px] leading-relaxed text-[#b4bcaf]">{copy}</p>
+      <p className="mb-7 text-[15px] leading-relaxed text-[var(--pf-c-ink-b4bcaf)]">{copy}</p>
       {children}
     </div>
   );
@@ -776,23 +776,23 @@ function TypeCard({
       className={cn(
         "flex min-h-[118px] flex-col gap-2.5 rounded-[1rem] border p-4 text-left transition-[transform,border-color,background-color] duration-150 motion-safe:active:scale-[0.97]",
         selected
-          ? "border-[#56ccf2] bg-[#1a1e1b] shadow-[inset_0_0_0_1px_rgba(86,204,242,0.25)]"
-          : "border-[#2a2f2a] bg-[#131614] hover:border-[#353c34] hover:bg-[#1a1e1b]",
+          ? "border-[#56ccf2] bg-[var(--pf-c-fill-1a1e1b)] shadow-[inset_0_0_0_1px_rgba(86,204,242,0.25)]"
+          : "border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] hover:border-[var(--pf-c-line-353c34)] hover:bg-[var(--pf-c-fill-1a1e1b)]",
       )}
     >
       <div
         className={cn(
-          "grid h-9 w-9 place-items-center rounded-[10px] border bg-[#1a1e1b]",
+          "grid h-9 w-9 place-items-center rounded-[10px] border bg-[var(--pf-c-fill-1a1e1b)]",
           selected
             ? "border-[rgba(86,204,242,0.35)] text-[#56ccf2]"
-            : "border-[#2a2f2a] text-[#b4bcaf]",
+            : "border-[var(--pf-c-line-2a2f2a)] text-[var(--pf-c-ink-b4bcaf)]",
         )}
       >
         {icon}
       </div>
       <div>
         <p className="text-[16px] font-bold tracking-[-0.02em]">{title}</p>
-        <p className="mt-1 text-[13px] leading-snug text-[#7e8a7e]">{copy}</p>
+        <p className="mt-1 text-[13px] leading-snug text-[var(--pf-c-ink-7e8a7e)]">{copy}</p>
       </div>
     </button>
   );
@@ -817,30 +817,30 @@ function HomeVenueDropdown({
           className={cn(
             fieldInputClass,
             "flex w-full items-center justify-between text-left outline-none",
-            !selected && "text-[#5a635a]",
+            !selected && "text-[var(--pf-c-ink-5a635a)]",
           )}
         >
           <span className="truncate">
             {selected ? selected.name : "Select a venue"}
           </span>
-          <ChevronDown className="ml-2 h-4 w-4 shrink-0 text-[#7e8a7e]" />
+          <ChevronDown className="ml-2 h-4 w-4 shrink-0 text-[var(--pf-c-ink-7e8a7e)]" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="start"
-        className="z-[120] max-h-60 w-[var(--radix-dropdown-menu-trigger-width)] overflow-y-auto rounded-[1rem] border-[#2a2f2a] bg-[#131614] p-1 text-[#f2f5ef]"
+        className="z-[120] max-h-60 w-[var(--radix-dropdown-menu-trigger-width)] overflow-y-auto rounded-[1rem] border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-1 text-[var(--pf-c-ink-f2f5ef)] pf-card"
       >
         <DropdownMenuItem
-          className="cursor-pointer rounded-xl px-3 py-2.5 text-[15px] text-[#7e8a7e] focus:bg-[#1a1e1b] focus:text-[#f2f5ef]"
+          className="cursor-pointer rounded-xl px-3 py-2.5 text-[15px] text-[var(--pf-c-ink-7e8a7e)] focus:bg-[var(--pf-c-fill-1a1e1b)] focus:text-[var(--pf-c-ink-f2f5ef)]"
           onSelect={() => onChange("")}
         >
           <span className="flex-1">None</span>
-          {!value && <Check className="h-4 w-4 text-[var(--pf-volt)]" />}
+          {!value && <Check className="h-4 w-4 text-[var(--pf-volt-text)]" />}
         </DropdownMenuItem>
         {venues.length === 0 ? (
           <DropdownMenuItem
             disabled
-            className="rounded-xl px-3 py-2.5 text-[15px] text-[#5a635a]"
+            className="rounded-xl px-3 py-2.5 text-[15px] text-[var(--pf-c-ink-5a635a)]"
           >
             No venues yet
           </DropdownMenuItem>
@@ -848,12 +848,12 @@ function HomeVenueDropdown({
           venues.map((venue) => (
             <DropdownMenuItem
               key={venue.id}
-              className="cursor-pointer rounded-xl px-3 py-2.5 text-[15px] text-[#f2f5ef] focus:bg-[#1a1e1b] focus:text-[#f2f5ef]"
+              className="cursor-pointer rounded-xl px-3 py-2.5 text-[15px] text-[var(--pf-c-ink-f2f5ef)] focus:bg-[var(--pf-c-fill-1a1e1b)] focus:text-[var(--pf-c-ink-f2f5ef)]"
               onSelect={() => onChange(venue.id)}
             >
               <span className="min-w-0 flex-1 truncate">{venue.name}</span>
               {value === venue.id && (
-                <Check className="ml-2 h-4 w-4 shrink-0 text-[var(--pf-volt)]" />
+                <Check className="ml-2 h-4 w-4 shrink-0 text-[var(--pf-volt-text)]" />
               )}
             </DropdownMenuItem>
           ))

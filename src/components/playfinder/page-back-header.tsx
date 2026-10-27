@@ -28,7 +28,7 @@ export function PageBackHeader({
   return (
     <div
       className={cn(
-        "sticky top-0 z-[var(--pf-z-header)] flex min-h-[57px] items-center justify-center border-b border-[var(--pf-border)] bg-[rgba(8,9,10,0.92)] px-4 py-4 backdrop-blur-[20px]",
+        "sticky top-0 z-[var(--pf-z-header)] flex min-h-[57px] items-center justify-center border-b border-[var(--pf-border)] bg-[rgb(var(--pf-c-fill-08090a-rgb)/0.92)] px-4 py-4 backdrop-blur-[20px]",
         className,
       )}
     >
@@ -36,13 +36,13 @@ export function PageBackHeader({
         <button
           type="button"
           onClick={goBack}
-          className="absolute left-2 grid h-10 w-10 place-items-center rounded-xl text-white outline-none transition-transform active:scale-90 active:bg-[var(--pf-surface)] focus-visible:ring-2 focus-visible:ring-[var(--pf-volt)]"
+          className="absolute left-2 grid h-10 w-10 place-items-center rounded-xl text-[var(--pf-c-ink-ffffff)] outline-none transition-transform active:scale-90 active:bg-[var(--pf-surface)] focus-visible:ring-2 focus-visible:ring-[var(--pf-volt)]"
           aria-label="Go back"
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
       )}
-      <h1 className="text-lg font-semibold text-white">{title}</h1>
+      <h1 className="text-lg font-semibold text-[var(--pf-c-ink-ffffff)]">{title}</h1>
     </div>
   );
 }

@@ -63,7 +63,7 @@ export function PageView({ page }: PageViewProps) {
   }, [page.categoryLabel, page.city, followInfo.followers]);
 
   return (
-    <div className="w-full pb-10 font-grotesk text-[#f2f5ef]">
+    <div className="w-full pb-10 font-grotesk text-[var(--pf-c-ink-f2f5ef)]">
       <PageDesktopRightRail page={page} />
 
       {/* Banner + identity */}
@@ -81,15 +81,15 @@ export function PageView({ page }: PageViewProps) {
               className="h-full w-full"
               style={{
                 background:
-                  "repeating-linear-gradient(135deg, #131614 0 10px, #161a17 10px 20px)",
+                  "repeating-linear-gradient(135deg, var(--pf-c-fill-131614) 0 10px, var(--pf-c-fill-161a17) 10px 20px)",
               }}
             />
           )}
-          <div className="absolute inset-0 bg-gradient-to-b from-[rgba(8,9,10,0.15)] via-transparent to-[#08090a]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[rgb(var(--pf-c-fill-08090a-rgb)/0.15)] via-transparent to-[var(--pf-c-fill-08090a)]" />
           <button
             type="button"
             onClick={goBack}
-            className="absolute left-3.5 top-3.5 z-[2] grid h-10 w-10 place-items-center rounded-xl border border-white/[0.06] bg-[rgba(8,9,10,0.6)] text-[#b4bcaf] backdrop-blur-[10px] active:scale-90"
+            className="absolute left-3.5 top-3.5 z-[2] grid h-10 w-10 place-items-center rounded-xl border border-[rgb(var(--pf-contrast-rgb)/0.06)] bg-[rgb(var(--pf-c-fill-08090a-rgb)/0.6)] text-[var(--pf-c-ink-b4bcaf)] backdrop-blur-[10px] active:scale-90"
             aria-label="Go back"
           >
             <span className="text-lg leading-none">‹</span>
@@ -106,11 +106,11 @@ export function PageView({ page }: PageViewProps) {
               <UserAvatar
                 avatarUrl={page.avatarUrl}
                 size={80}
-                className="h-20 w-20 rounded-[1rem] border-[3px] border-[#08090a]"
+                className="h-20 w-20 rounded-[1rem] border-[3px] border-[var(--pf-c-line-08090a)]"
               />
             ) : (
-              <div className="grid h-20 w-20 place-items-center overflow-hidden rounded-[1rem] border-[3px] border-[#08090a] bg-[#1a1e1b]">
-                <span className="text-2xl font-bold tracking-[-0.03em] text-[var(--pf-volt)]">
+              <div className="grid h-20 w-20 place-items-center overflow-hidden rounded-[1rem] border-[3px] border-[var(--pf-c-line-08090a)] bg-[var(--pf-c-fill-1a1e1b)]">
+                <span className="text-2xl font-bold tracking-[-0.03em] text-[var(--pf-volt-text)]">
                   {page.initials}
                 </span>
               </div>
@@ -139,9 +139,9 @@ export function PageView({ page }: PageViewProps) {
                 />
               )}
             </div>
-            <p className="mt-2 text-[13px] text-[#b4bcaf]">{metaLine}</p>
+            <p className="mt-2 text-[13px] text-[var(--pf-c-ink-b4bcaf)]">{metaLine}</p>
             {page.bio?.trim() && (
-              <p className="mt-2 text-[15px] leading-relaxed text-[#b4bcaf]">
+              <p className="mt-2 text-[15px] leading-relaxed text-[var(--pf-c-ink-b4bcaf)]">
                 {page.bio.trim()}
               </p>
             )}
@@ -150,7 +150,7 @@ export function PageView({ page }: PageViewProps) {
       </div>
 
       {/* Action row — stubs for 1.5; sticky on mobile */}
-      <div className="sticky top-[var(--pf-header-h)] z-10 border-b border-white/[0.04] bg-[rgba(8,9,10,0.92)] px-4 py-2.5 backdrop-blur-[16px] lg:static lg:top-0 lg:border-0 lg:bg-transparent lg:px-6 lg:py-4 lg:backdrop-blur-none">
+      <div className="sticky top-[var(--pf-header-h)] z-10 border-b border-[rgb(var(--pf-contrast-rgb)/0.04)] bg-[rgb(var(--pf-c-fill-08090a-rgb)/0.92)] px-4 py-2.5 backdrop-blur-[16px] lg:static lg:top-0 lg:border-0 lg:bg-transparent lg:px-6 lg:py-4 lg:backdrop-blur-none">
         <div className="flex gap-2">
           {page.isAdmin ? (
             <>
@@ -165,7 +165,7 @@ export function PageView({ page }: PageViewProps) {
               <button
                 type="button"
                 disabled
-                className="flex h-[42px] flex-1 items-center justify-center rounded-xl border border-[#2a2f2a] bg-[#131614] text-[14px] font-bold text-[#f2f5ef] opacity-90 lg:flex-none lg:px-6"
+                className="flex h-[42px] flex-1 items-center justify-center rounded-xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[14px] font-bold text-[var(--pf-c-ink-f2f5ef)] opacity-90 lg:flex-none lg:px-6 pf-card"
                 title="Coming in a later step"
               >
                 Share
@@ -183,7 +183,7 @@ export function PageView({ page }: PageViewProps) {
               <button
                 type="button"
                 disabled
-                className="flex h-[42px] flex-1 items-center justify-center rounded-xl border border-[#2a2f2a] bg-[#131614] text-[14px] font-bold text-[#f2f5ef] opacity-90"
+                className="flex h-[42px] flex-1 items-center justify-center rounded-xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[14px] font-bold text-[var(--pf-c-ink-f2f5ef)] opacity-90 pf-card"
                 title="Coming in a later step"
               >
                 {page.type === PageType.VENUE
@@ -204,7 +204,7 @@ export function PageView({ page }: PageViewProps) {
               <button
                 type="button"
                 disabled
-                className="flex h-[42px] flex-1 items-center justify-center rounded-xl border border-[#2a2f2a] bg-[#131614] text-[14px] font-bold text-[#f2f5ef] opacity-90"
+                className="flex h-[42px] flex-1 items-center justify-center rounded-xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[14px] font-bold text-[var(--pf-c-ink-f2f5ef)] opacity-90 pf-card"
                 title="Coming in a later step"
               >
                 {page.type === PageType.VENUE
@@ -217,9 +217,9 @@ export function PageView({ page }: PageViewProps) {
       </div>
 
       {/* Modules: mobile pills / desktop left rail */}
-      <div className="lg:mt-2 lg:flex lg:gap-0 lg:border-t lg:border-[#2a2f2a]">
-        <aside className="hidden w-[180px] shrink-0 flex-col gap-1 border-r border-[#2a2f2a] px-3 py-4 lg:flex">
-          <p className="mb-2 px-2 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#7e8a7e]">
+      <div className="lg:mt-2 lg:flex lg:gap-0 lg:border-t lg:border-[var(--pf-c-line-2a2f2a)]">
+        <aside className="hidden w-[180px] shrink-0 flex-col gap-1 border-r border-[var(--pf-c-line-2a2f2a)] px-3 py-4 lg:flex">
+          <p className="mb-2 px-2 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-c-ink-7e8a7e)]">
             Modules
           </p>
           {isClub
@@ -231,8 +231,8 @@ export function PageView({ page }: PageViewProps) {
                   className={cn(
                     "rounded-xl px-3 py-2.5 text-left text-[14px] font-semibold transition-colors",
                     clubTab === tab.id
-                      ? "border border-[#2a2f2a] bg-[#131614] text-[#f2f5ef]"
-                      : "text-[#b4bcaf] hover:bg-[#131614]",
+                      ? "border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-f2f5ef)]"
+                      : "text-[var(--pf-c-ink-b4bcaf)] hover:bg-[var(--pf-c-fill-131614)]",
                   )}
                 >
                   {tab.label}
@@ -246,8 +246,8 @@ export function PageView({ page }: PageViewProps) {
                   className={cn(
                     "rounded-xl px-3 py-2.5 text-left text-[14px] font-semibold transition-colors",
                     venueTab === tab.id
-                      ? "border border-[#2a2f2a] bg-[#131614] text-[#f2f5ef]"
-                      : "text-[#b4bcaf] hover:bg-[#131614]",
+                      ? "border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-f2f5ef)]"
+                      : "text-[var(--pf-c-ink-b4bcaf)] hover:bg-[var(--pf-c-fill-131614)]",
                   )}
                 >
                   {tab.label}
@@ -302,14 +302,14 @@ export function PageView({ page }: PageViewProps) {
 
 function ModulePlaceholder({ label }: { label: string }) {
   return (
-    <div className="rounded-2xl border border-dashed border-[#353c34] bg-[#131614]/50 px-4 py-14 text-center">
-      <p className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#7e8a7e]">
+    <div className="rounded-2xl border border-dashed border-[var(--pf-c-line-353c34)] bg-[rgb(var(--pf-c-fill-131614-rgb)/0.5)] px-4 py-14 text-center">
+      <p className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-c-ink-7e8a7e)]">
         {label}
       </p>
-      <p className="mt-2 text-[15px] font-semibold tracking-[-0.02em] text-[#f2f5ef]">
+      <p className="mt-2 text-[15px] font-semibold tracking-[-0.02em] text-[var(--pf-c-ink-f2f5ef)]">
         Coming soon
       </p>
-      <p className="mt-1 text-[13px] text-[#7e8a7e]">
+      <p className="mt-1 text-[13px] text-[var(--pf-c-ink-7e8a7e)]">
         This module is a placeholder for step 1.4.
       </p>
     </div>
@@ -329,11 +329,11 @@ function PagePostsList({
 }) {
   if (posts.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-[#353c34] px-4 py-14 text-center">
-        <p className="text-[15px] font-semibold tracking-[-0.02em] text-[#f2f5ef]">
+      <div className="rounded-2xl border border-dashed border-[var(--pf-c-line-353c34)] px-4 py-14 text-center">
+        <p className="text-[15px] font-semibold tracking-[-0.02em] text-[var(--pf-c-ink-f2f5ef)]">
           No posts yet
         </p>
-        <p className="mt-2 text-[13px] text-[#7e8a7e]">
+        <p className="mt-2 text-[13px] text-[var(--pf-c-ink-7e8a7e)]">
           When this page posts, updates will show up here.
         </p>
       </div>
@@ -345,7 +345,7 @@ function PagePostsList({
       {posts.map((post) => (
         <article
           key={post.id}
-          className="rounded-2xl border border-[#2a2f2a] bg-[#131614] p-3.5"
+          className="rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-3.5 pf-card"
         >
           <div className="mb-2.5 flex items-center gap-2.5">
             {avatarUrl ? (
@@ -355,20 +355,20 @@ function PagePostsList({
                 className="h-9 w-9 rounded-[10px] border-0"
               />
             ) : (
-              <div className="grid h-9 w-9 place-items-center rounded-[10px] bg-[#232824] text-xs font-bold text-[var(--pf-volt)]">
+              <div className="grid h-9 w-9 place-items-center rounded-[10px] bg-[var(--pf-c-fill-232824)] text-xs font-bold text-[var(--pf-volt-text)]">
                 {initials}
               </div>
             )}
             <div className="min-w-0">
               <p className="truncate text-[14px] font-bold">{pageName}</p>
-              <p className="text-[12px] text-[#7e8a7e]">
+              <p className="text-[12px] text-[var(--pf-c-ink-7e8a7e)]">
                 {formatDistanceToNow(new Date(post.createdAt), {
                   addSuffix: true,
                 })}
               </p>
             </div>
           </div>
-          <p className="whitespace-pre-wrap text-[14px] leading-relaxed text-[#b4bcaf]">
+          <p className="whitespace-pre-wrap text-[14px] leading-relaxed text-[var(--pf-c-ink-b4bcaf)]">
             {post.content}
           </p>
         </article>

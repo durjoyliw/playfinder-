@@ -139,11 +139,11 @@ export default function ChannelHeader() {
   const profileHref = other?.username ? `/users/${other.username}` : undefined;
 
   return (
-    <div className="flex-shrink-0 border-b border-[#262626] bg-[var(--pf-bg)]">
+    <div className="flex-shrink-0 border-b border-[var(--pf-c-line-262626)] bg-[var(--pf-bg)]">
       <header className="relative flex items-center gap-3 px-3 py-3">
         <Link
           href="/messages"
-          className="flex-shrink-0 rounded-full p-2 text-white transition-colors hover:bg-[#1a1a1a] lg:hidden"
+          className="flex-shrink-0 rounded-full p-2 text-[var(--pf-c-ink-ffffff)] transition-colors hover:bg-[var(--pf-c-fill-1a1a1a)] lg:hidden"
           aria-label="Back to conversations"
         >
           <ArrowLeft className="h-5 w-5" />
@@ -164,8 +164,8 @@ export default function ChannelHeader() {
         </div>
 
         <div className="min-w-0 flex-1">
-          <p className="truncate font-bold text-white">{displayName}</p>
-          <p className="text-xs text-[#888888]">
+          <p className="truncate font-bold text-[var(--pf-c-ink-ffffff)]">{displayName}</p>
+          <p className="text-xs text-[var(--pf-c-ink-888888)]">
             {isGroup
               ? `${otherMembers.length + 1} members`
               : formatLastSeen(other?.last_active, other?.online)}
@@ -176,14 +176,14 @@ export default function ChannelHeader() {
           <button
             type="button"
             onClick={() => setMenuOpen((o) => !o)}
-            className="rounded-full p-2 text-[#888888] transition-colors hover:bg-[#1a1a1a] hover:text-white"
+            className="rounded-full p-2 text-[var(--pf-c-ink-888888)] transition-colors hover:bg-[var(--pf-c-fill-1a1a1a)] hover:text-[var(--pf-c-ink-ffffff)]"
             aria-label="Conversation options"
           >
             <MoreVertical className="h-5 w-5" />
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 top-10 z-50 min-w-[180px] overflow-hidden rounded-xl border border-[#333] bg-[#1a1a1a] py-1 shadow-lg">
+            <div className="absolute right-0 top-10 z-50 min-w-[180px] overflow-hidden rounded-xl border border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1a1a1a)] py-1 shadow-lg pf-card">
               {isGroup ? (
                 <button
                   type="button"
@@ -191,14 +191,14 @@ export default function ChannelHeader() {
                     setGroupInfoOpen(true);
                     setMenuOpen(false);
                   }}
-                  className="block w-full px-4 py-2.5 text-left text-sm text-white transition-colors hover:bg-[#2a2a2a]"
+                  className="block w-full px-4 py-2.5 text-left text-sm text-[var(--pf-c-ink-ffffff)] transition-colors hover:bg-[var(--pf-c-fill-2a2a2a)]"
                 >
                   Group info
                 </button>
               ) : profileHref ? (
                 <Link
                   href={profileHref}
-                  className="block w-full px-4 py-2.5 text-left text-sm text-white transition-colors hover:bg-[#2a2a2a]"
+                  className="block w-full px-4 py-2.5 text-left text-sm text-[var(--pf-c-ink-ffffff)] transition-colors hover:bg-[var(--pf-c-fill-2a2a2a)]"
                   onClick={() => setMenuOpen(false)}
                 >
                   View Profile
@@ -207,7 +207,7 @@ export default function ChannelHeader() {
                 <button
                   type="button"
                   disabled
-                  className="block w-full cursor-not-allowed px-4 py-2.5 text-left text-sm text-[#666]"
+                  className="block w-full cursor-not-allowed px-4 py-2.5 text-left text-sm text-[var(--pf-c-ink-666666)]"
                 >
                   View Profile
                 </button>
@@ -215,7 +215,7 @@ export default function ChannelHeader() {
               <button
                 type="button"
                 onClick={toggleMute}
-                className="block w-full px-4 py-2.5 text-left text-sm text-white transition-colors hover:bg-[#2a2a2a]"
+                className="block w-full px-4 py-2.5 text-left text-sm text-[var(--pf-c-ink-ffffff)] transition-colors hover:bg-[var(--pf-c-fill-2a2a2a)]"
               >
                 {isMuted ? "Unmute notifications" : "Mute notifications"}
               </button>
@@ -224,7 +224,7 @@ export default function ChannelHeader() {
                   type="button"
                   disabled={leavePending}
                   onClick={() => void leaveGroup()}
-                  className="block w-full px-4 py-2.5 text-left text-sm text-red-400 transition-colors hover:bg-[#2a2a2a] disabled:opacity-60"
+                  className="block w-full px-4 py-2.5 text-left text-sm text-red-400 transition-colors hover:bg-[var(--pf-c-fill-2a2a2a)] disabled:opacity-60"
                 >
                   Leave group
                 </button>
@@ -233,14 +233,14 @@ export default function ChannelHeader() {
                   <button
                     type="button"
                     onClick={deleteConversation}
-                    className="block w-full px-4 py-2.5 text-left text-sm text-white transition-colors hover:bg-[#2a2a2a]"
+                    className="block w-full px-4 py-2.5 text-left text-sm text-[var(--pf-c-ink-ffffff)] transition-colors hover:bg-[var(--pf-c-fill-2a2a2a)]"
                   >
                     Delete conversation
                   </button>
                   <button
                     type="button"
                     onClick={() => setBlockConfirmOpen(true)}
-                    className="block w-full px-4 py-2.5 text-left text-sm text-red-400 transition-colors hover:bg-[#2a2a2a]"
+                    className="block w-full px-4 py-2.5 text-left text-sm text-red-400 transition-colors hover:bg-[var(--pf-c-fill-2a2a2a)]"
                   >
                     Block {displayName}
                   </button>
@@ -253,9 +253,9 @@ export default function ChannelHeader() {
 
       {blockConfirmOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 px-6">
-          <div className="w-full max-w-sm rounded-2xl border border-[#2a2a2a] bg-[#161616] p-5">
-            <p className="text-lg font-bold text-white">Block {displayName}?</p>
-            <p className="mt-2 text-sm text-[#888888]">
+          <div className="w-full max-w-sm rounded-2xl border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] p-5 pf-card">
+            <p className="text-lg font-bold text-[var(--pf-c-ink-ffffff)]">Block {displayName}?</p>
+            <p className="mt-2 text-sm text-[var(--pf-c-ink-888888)]">
               They won&apos;t be able to see your profile or posts.
             </p>
             <div className="mt-5 flex gap-2">
@@ -272,7 +272,7 @@ export default function ChannelHeader() {
                 type="button"
                 disabled={blockPending}
                 onClick={() => setBlockConfirmOpen(false)}
-                className="flex-1 rounded-xl border border-[#2a2a2a] bg-transparent px-4 py-2.5 text-sm font-semibold text-[#f0f0f0] disabled:opacity-70"
+                className="flex-1 rounded-xl border border-[var(--pf-c-line-2a2a2a)] bg-transparent px-4 py-2.5 text-sm font-semibold text-[var(--pf-c-ink-f0f0f0)] disabled:opacity-70"
               >
                 Cancel
               </button>
@@ -299,21 +299,21 @@ export default function ChannelHeader() {
           onClick={() => setGroupInfoOpen(false)}
         >
           <div
-            className="w-full max-w-sm rounded-2xl border border-[#2a2a2a] bg-[#161616] p-5"
+            className="w-full max-w-sm rounded-2xl border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] p-5 pf-card"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-4 flex items-center justify-between">
-              <p className="text-lg font-bold text-white">{displayName}</p>
+              <p className="text-lg font-bold text-[var(--pf-c-ink-ffffff)]">{displayName}</p>
               <button
                 type="button"
                 onClick={() => setGroupInfoOpen(false)}
-                className="rounded-full p-1 text-[#888888] hover:bg-[#1a1a1a] hover:text-white"
+                className="rounded-full p-1 text-[var(--pf-c-ink-888888)] hover:bg-[var(--pf-c-fill-1a1a1a)] hover:text-[var(--pf-c-ink-ffffff)]"
                 aria-label="Close"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[#888888]">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--pf-c-ink-888888)]">
               {otherMembers.length + 1} members
             </p>
             <div className="max-h-72 space-y-1 overflow-y-auto">
@@ -329,14 +329,14 @@ export default function ChannelHeader() {
                     getInitials(sessionUser.displayName)
                   )}
                 </div>
-                <p className="truncate text-sm font-semibold text-white">You</p>
+                <p className="truncate text-sm font-semibold text-[var(--pf-c-ink-ffffff)]">You</p>
               </div>
               {otherMembers.map((member) => (
                 <Link
                   key={member.id}
                   href={member.username ? `/users/${member.username}` : "#"}
                   onClick={() => setGroupInfoOpen(false)}
-                  className="flex items-center gap-3 rounded-xl px-2 py-2 transition-colors hover:bg-[#1f1f1f]"
+                  className="flex items-center gap-3 rounded-xl px-2 py-2 transition-colors hover:bg-[var(--pf-c-fill-1f1f1f)]"
                 >
                   <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-xs font-bold text-[var(--pf-on-accent)]">
                     {member.image ? (
@@ -349,7 +349,7 @@ export default function ChannelHeader() {
                       getInitials(member.name ?? member.id)
                     )}
                   </div>
-                  <p className="truncate text-sm font-semibold text-white">
+                  <p className="truncate text-sm font-semibold text-[var(--pf-c-ink-ffffff)]">
                     {member.name ?? member.id}
                   </p>
                 </Link>

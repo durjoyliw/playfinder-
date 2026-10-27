@@ -40,7 +40,7 @@ export function SearchHeader({ value, onChange, onSubmit }: SearchHeaderProps) {
       <button
         type="button"
         onClick={() => router.push("/home")}
-        className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-[#2a2f2a] bg-[#131614] text-[#b4bcaf] transition-transform active:scale-90 lg:hidden"
+        className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-b4bcaf)] transition-transform active:scale-90 lg:hidden pf-card"
         aria-label="Back"
       >
         <ChevronLeft className="h-[22px] w-[22px]" />
@@ -48,7 +48,7 @@ export function SearchHeader({ value, onChange, onSubmit }: SearchHeaderProps) {
 
       <form onSubmit={handleSubmit} className="min-w-0 flex-1">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-[#7e8a7e]" />
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--pf-c-ink-7e8a7e)]" />
           <input
             ref={inputRef}
             type="text"
@@ -60,13 +60,13 @@ export function SearchHeader({ value, onChange, onSubmit }: SearchHeaderProps) {
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder="Search players, games, venues..."
-            className="h-12 w-full rounded-[14px] border border-[#2a2f2a] bg-[#131614] py-3.5 pl-11 pr-10 text-base text-[#f2f5ef] outline-none placeholder:text-[#5a635a] focus:border-[var(--pf-volt)]"
+            className="h-12 w-full rounded-[14px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] py-3.5 pl-11 pr-10 text-base text-[var(--pf-c-ink-f2f5ef)] outline-none placeholder:text-[var(--pf-c-ink-5a635a)] focus:border-[var(--pf-volt)] pf-card"
           />
           {value.length > 0 && (
             <button
               type="button"
               onClick={clear}
-              className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-[#7e8a7e] hover:text-white"
+              className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-[var(--pf-c-ink-7e8a7e)] hover:text-[var(--pf-c-ink-ffffff)]"
               aria-label="Clear search"
             >
               <X className="h-4 w-4" />

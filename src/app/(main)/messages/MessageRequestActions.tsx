@@ -56,8 +56,8 @@ export default function MessageRequestActions() {
   };
 
   return (
-    <div className="flex flex-shrink-0 flex-col gap-2 border-t border-[#262626] bg-[var(--pf-bg)] px-4 py-3">
-      <p className="text-center text-sm text-[#888888]">
+    <div className="flex flex-shrink-0 flex-col gap-2 border-t border-[var(--pf-c-line-262626)] bg-[var(--pf-bg)] px-4 py-3">
+      <p className="text-center text-sm text-[var(--pf-c-ink-888888)]">
         {displayName} wants to message you
       </p>
       <div className="flex gap-2">
@@ -73,7 +73,7 @@ export default function MessageRequestActions() {
           type="button"
           disabled={isLoading !== null}
           onClick={() => void handleAction("DECLINE")}
-          className="flex-1 rounded-[20px] border border-[#2a2a2a] bg-transparent px-5 py-1.5 text-sm text-[#888888] disabled:opacity-50"
+          className="flex-1 rounded-[20px] border border-[var(--pf-c-line-2a2a2a)] bg-transparent px-5 py-1.5 text-sm text-[var(--pf-c-ink-888888)] disabled:opacity-50"
         >
           {isLoading === "DECLINE" ? "Declining..." : "Decline"}
         </button>

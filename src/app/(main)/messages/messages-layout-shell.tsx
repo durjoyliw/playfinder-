@@ -19,7 +19,7 @@ function MessagesLayoutInner({ children }: { children: React.ReactNode }) {
       <div className="flex h-full min-h-0 flex-1 overflow-hidden">
         <div
           className={cn(
-            "h-full min-h-0 flex-col overflow-hidden lg:flex lg:w-[420px] lg:flex-shrink-0 lg:border-r lg:border-[#1a1a1a]",
+            "h-full min-h-0 flex-col overflow-hidden lg:flex lg:w-[420px] lg:flex-shrink-0 lg:border-r lg:border-[var(--pf-c-line-1a1a1a)]",
             isInbox ? "flex w-full" : "hidden",
           )}
         >

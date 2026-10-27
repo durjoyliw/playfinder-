@@ -38,7 +38,7 @@ export default function ProfilePostsList({ userId }: ProfilePostsListProps) {
   if (status === "pending") {
     return (
       <div className="flex justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt)]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt-text)]" />
       </div>
     );
   }
@@ -53,7 +53,7 @@ export default function ProfilePostsList({ userId }: ProfilePostsListProps) {
 
   if (status === "success" && !posts.length && !hasNextPage) {
     return (
-      <p className="py-8 text-center text-sm text-gray-500">No posts yet.</p>
+      <p className="py-8 text-center text-sm text-[var(--pf-c-ink-6b7280)]">No posts yet.</p>
     );
   }
 
@@ -67,7 +67,7 @@ export default function ProfilePostsList({ userId }: ProfilePostsListProps) {
       ))}
       {isFetchingNextPage && (
         <div className="flex justify-center py-4">
-          <Loader2 className="h-6 w-6 animate-spin text-[var(--pf-volt)]" />
+          <Loader2 className="h-6 w-6 animate-spin text-[var(--pf-volt-text)]" />
         </div>
       )}
     </InfiniteScrollContainer>

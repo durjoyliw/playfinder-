@@ -18,6 +18,6 @@ export default async function OnboardingLayout({
   }
 
   return (
-    <div className="min-h-screen bg-[#0d0d0d] text-white">{children}</div>
+    <div className="min-h-screen bg-[var(--pf-c-fill-0d0d0d)] text-[var(--pf-c-ink-ffffff)]">{children}</div>
   );
 }

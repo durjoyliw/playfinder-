@@ -30,7 +30,7 @@ interface MapboxLocationAutocompleteProps {
 }
 
 const DEFAULT_INPUT_CLASS =
-  "w-full rounded-xl border border-[#333] bg-[#1a1a1a] px-4 py-3.5 text-base text-white placeholder:text-[#6b6b6b] focus:border-[var(--pf-volt)] focus:outline-none";
+  "w-full rounded-xl border border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1a1a1a)] px-4 py-3.5 text-base text-[var(--pf-c-ink-ffffff)] placeholder:text-[var(--pf-c-ink-6b6b6b)] focus:border-[var(--pf-volt)] focus:outline-none pf-card";
 
 /**
  * Shared Mapbox city/postcode autocomplete used by Settings → Location
@@ -146,12 +146,12 @@ export function MapboxLocationAutocomplete({
         autoComplete="off"
       />
       {open && suggestions.length > 0 && (
-        <ul className="absolute z-[200] mt-1 max-h-60 w-full overflow-auto rounded-xl border border-[#333] bg-[#1a1a1a] py-1 shadow-lg">
+        <ul className="absolute z-[200] mt-1 max-h-60 w-full overflow-auto rounded-xl border border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1a1a1a)] py-1 shadow-lg pf-card">
           {suggestions.map((feature) => (
             <li key={feature.id}>
               <button
                 type="button"
-                className="w-full px-4 py-2.5 text-left text-sm text-white hover:bg-[#262626]"
+                className="w-full px-4 py-2.5 text-left text-sm text-[var(--pf-c-ink-ffffff)] hover:bg-[var(--pf-c-fill-262626)]"
                 onClick={() => selectPlace(feature)}
               >
                 {feature.place_name}
@@ -161,7 +161,7 @@ export function MapboxLocationAutocomplete({
         </ul>
       )}
       {loading && (
-        <p className="mt-1 text-xs text-gray-500">Searching places…</p>
+        <p className="mt-1 text-xs text-[var(--pf-c-ink-6b7280)]">Searching places…</p>
       )}
     </div>
   );

@@ -111,7 +111,7 @@ export function FeedCard({
   const typeBadge = getPostTypeBadge(postType ?? null);
 
   return (
-    <div className="overflow-hidden rounded-xl bg-[#1a1a1a]">
+    <div className="overflow-hidden rounded-xl bg-[var(--pf-c-fill-1a1a1a)] pf-card">
       <div
         className="h-[3px]"
         style={{ backgroundColor: cardAccentColors[type] }}
@@ -138,7 +138,7 @@ export function FeedCard({
               ) : (
                 <div
                   className={cn(
-                    "flex h-10 w-10 flex-shrink-0 items-center justify-center bg-[#2a2a2a] text-sm font-bold text-white",
+                    "flex h-10 w-10 flex-shrink-0 items-center justify-center bg-[var(--pf-c-fill-2a2a2a)] text-sm font-bold text-[var(--pf-c-ink-ffffff)]",
                     avatarRadius,
                   )}
                 >
@@ -148,7 +148,7 @@ export function FeedCard({
 
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <span className="truncate font-semibold text-white">
+                  <span className="truncate font-semibold text-[var(--pf-c-ink-ffffff)]">
                     {name}
                   </span>
                   {authorPageType && (
@@ -193,12 +193,12 @@ export function FeedCard({
         </div>
 
         {sport && (
-          <span className="mb-3 inline-block rounded bg-[#2a2a2a] px-2 py-0.5 text-xs text-muted-foreground">
+          <span className="mb-3 inline-block rounded bg-[var(--pf-c-fill-2a2a2a)] px-2 py-0.5 text-xs text-muted-foreground">
             {sport}
           </span>
         )}
 
-        <p className="mb-3 text-sm leading-relaxed text-white">{content}</p>
+        <p className="mb-3 text-sm leading-relaxed text-[var(--pf-c-ink-ffffff)]">{content}</p>
 
         {showSpots && (
           <div
@@ -223,7 +223,7 @@ export function FeedCard({
                   background: "transparent",
                 }}
               >
-                <IconCheck size={14} className="text-[var(--pf-volt)]" stroke={2.5} />
+                <IconCheck size={14} className="text-[var(--pf-volt-text)]" stroke={2.5} />
               </div>
             ))}
             {Array.from({ length: slotsRemaining }).map((_, i) => (
@@ -233,12 +233,12 @@ export function FeedCard({
                   width: 28,
                   height: 28,
                   borderRadius: "50%",
-                  border: "2px dashed #444",
+                  border: "2px dashed var(--pf-c-line-444444)",
                   background: "transparent",
                 }}
               />
             ))}
-            <span style={{ fontSize: 13, color: "var(--pf-volt)", fontWeight: 600 }}>
+            <span style={{ fontSize: 13, color: "var(--pf-volt-text)", fontWeight: 600 }}>
               {slotsRemaining > 0
                 ? `${slotsRemaining} spot${slotsRemaining > 1 ? "s" : ""} left`
                 : "Full"}
@@ -261,19 +261,19 @@ export function FeedCard({
         {isLooking && (timeChip || locationChip || skillLevel) && (
           <div className="mb-3 flex flex-wrap gap-2">
             {timeChip && (
-              <span className="flex items-center gap-1 rounded-full border border-border bg-[#1f1f1f] px-2.5 py-1 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1 rounded-full border border-border bg-[var(--pf-c-fill-1f1f1f)] px-2.5 py-1 text-xs text-muted-foreground">
                 <Clock className="h-3 w-3" />
                 {timeChip}
               </span>
             )}
             {locationChip && (
-              <span className="flex items-center gap-1 rounded-full border border-border bg-[#1f1f1f] px-2.5 py-1 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1 rounded-full border border-border bg-[var(--pf-c-fill-1f1f1f)] px-2.5 py-1 text-xs text-muted-foreground">
                 <MapPin className="h-3 w-3" />
                 {locationChip}
               </span>
             )}
             {skillLevel && (
-              <span className="rounded-full border border-border bg-[#1f1f1f] px-2.5 py-1 text-xs text-muted-foreground">
+              <span className="rounded-full border border-border bg-[var(--pf-c-fill-1f1f1f)] px-2.5 py-1 text-xs text-muted-foreground">
                 ⭐ {skillLevel}
               </span>
             )}
@@ -285,7 +285,7 @@ export function FeedCard({
             {tags.map((tag, i) => (
               <span
                 key={i}
-                className="rounded-full border border-border bg-[#1f1f1f] px-2.5 py-1 text-xs text-muted-foreground"
+                className="rounded-full border border-border bg-[var(--pf-c-fill-1f1f1f)] px-2.5 py-1 text-xs text-muted-foreground"
               >
                 {tag}
               </span>
@@ -298,7 +298,7 @@ export function FeedCard({
             <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">
               <span>Expires in {expiresIn}</span>
             </div>
-            <div className="h-1 overflow-hidden rounded-full bg-[#2a2a2a]">
+            <div className="h-1 overflow-hidden rounded-full bg-[var(--pf-c-fill-2a2a2a)]">
               <div
                 className="h-full rounded-full bg-[var(--pf-volt)] transition-all"
                 style={{ width: `${expiryPercent}%` }}
@@ -327,7 +327,7 @@ export function FeedCard({
                   <button
                     type="button"
                     onClick={() => setCommentsOpen((open) => !open)}
-                    className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-white"
+                    className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-[var(--pf-c-ink-ffffff)]"
                     aria-label={commentsOpen ? "Hide replies" : "Show replies"}
                   >
                     <MessageCircle className="h-4 w-4" />
@@ -337,7 +337,7 @@ export function FeedCard({
                   <button
                     type="button"
                     onClick={() => setSendDialogOpen(true)}
-                    className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-white"
+                    className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-[var(--pf-c-ink-ffffff)]"
                     aria-label="Send as message"
                   >
                     <Send className="h-4 w-4" />

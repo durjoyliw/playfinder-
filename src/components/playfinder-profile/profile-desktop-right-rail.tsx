@@ -58,8 +58,8 @@ export function ProfileDesktopRightRail() {
       <DesktopSearchBox />
 
       {suggestions.length > 0 && (
-        <div className="rounded-2xl border border-[#2a2f2a] bg-[#131614] p-4">
-          <p className="mb-1 text-[17px] font-bold text-[#f2f5ef]">
+        <div className="rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-4 pf-card">
+          <p className="mb-1 text-[17px] font-bold text-[var(--pf-c-ink-f2f5ef)]">
             You might like
           </p>
           <div className="flex flex-col">
@@ -68,7 +68,7 @@ export function ProfileDesktopRightRail() {
                 key={player.id}
                 className={
                   "flex items-center gap-2.5 py-2.5" +
-                  (i > 0 ? " border-t border-[#2a2f2a]" : "")
+                  (i > 0 ? " border-t border-[var(--pf-c-line-2a2f2a)]" : "")
                 }
               >
                 <Link
@@ -82,15 +82,15 @@ export function ProfileDesktopRightRail() {
                       className="h-9 w-9 shrink-0 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#232824] text-xs font-bold text-[var(--pf-volt)]">
+                    <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--pf-c-fill-232824)] text-xs font-bold text-[var(--pf-volt-text)]">
                       {getInitials(player.displayName)}
                     </div>
                   )}
                   <div className="min-w-0">
-                    <div className="truncate text-[13px] font-bold text-[#f2f5ef]">
+                    <div className="truncate text-[13px] font-bold text-[var(--pf-c-ink-f2f5ef)]">
                       {player.displayName}
                     </div>
-                    <div className="truncate text-xs text-[#7e8a7e]">
+                    <div className="truncate text-xs text-[var(--pf-c-ink-7e8a7e)]">
                       @{player.username}
                     </div>
                   </div>
@@ -107,8 +107,8 @@ export function ProfileDesktopRightRail() {
       )}
 
       {openGames.length > 0 && (
-        <div className="rounded-2xl border border-[#2a2f2a] bg-[#131614] p-4">
-          <p className="mb-3 text-[17px] font-bold text-[#f2f5ef]">
+        <div className="rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-4 pf-card">
+          <p className="mb-3 text-[17px] font-bold text-[var(--pf-c-ink-f2f5ef)]">
             Open games{area !== "your area" ? ` in ${area}` : " near you"}
           </p>
           <div className="flex flex-col">
@@ -118,7 +118,7 @@ export function ProfileDesktopRightRail() {
                 href={`/posts/${game.postId}?tab=arena`}
                 className={
                   "flex items-center gap-2.5 py-2.5 transition-opacity hover:opacity-80" +
-                  (i > 0 ? " border-t border-[#2a2f2a]" : "")
+                  (i > 0 ? " border-t border-[var(--pf-c-line-2a2f2a)]" : "")
                 }
               >
                 {game.avatar.startsWith("http") ? (
@@ -128,15 +128,15 @@ export function ProfileDesktopRightRail() {
                     className="h-8 w-8 shrink-0 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#232824] text-xs font-bold text-[#b4bcaf]">
+                  <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[var(--pf-c-fill-232824)] text-xs font-bold text-[var(--pf-c-ink-b4bcaf)]">
                     {game.avatar}
                   </div>
                 )}
                 <div className="min-w-0">
-                  <div className="truncate text-[13px] font-bold text-[#f2f5ef]">
+                  <div className="truncate text-[13px] font-bold text-[var(--pf-c-ink-f2f5ef)]">
                     {game.name}
                   </div>
-                  <div className="truncate text-xs text-[#7e8a7e]">
+                  <div className="truncate text-xs text-[var(--pf-c-ink-7e8a7e)]">
                     {game.timeLabel ?? game.sport} &middot; {game.location}
                   </div>
                 </div>

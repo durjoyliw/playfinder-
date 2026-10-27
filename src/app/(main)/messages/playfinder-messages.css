@@ -18,7 +18,7 @@
   min-height: 0;
   flex: 1;
   background: var(--pf-bg);
-  color: #fff;
+  color: var(--pf-c-ink-ffffff);
 }
 
 .playfinder-messages .str-chat__container {

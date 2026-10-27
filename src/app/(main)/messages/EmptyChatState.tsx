@@ -26,11 +26,11 @@ export default function EmptyChatState() {
           getInitials(displayName)
         )}
       </div>
-      <p className="mt-4 font-bold text-white">{displayName}</p>
+      <p className="mt-4 font-bold text-[var(--pf-c-ink-ffffff)]">{displayName}</p>
       <p
         className="mt-1 text-sm"
         style={{
-          color: isTeammate ? "rgb(var(--pf-volt-rgb)/0.55)" : "#555555",
+          color: isTeammate ? "rgb(var(--pf-volt-rgb)/0.55)" : "var(--pf-c-ink-555555)",
         }}
       >
         {isTeammate ? "Teammates ⚡" : "Not teammates yet"}
@@ -38,7 +38,7 @@ export default function EmptyChatState() {
       <button
         type="button"
         onClick={() => fillInput("Hey! 👋")}
-        className="mt-6 rounded-full bg-[#1f1f1f] px-5 py-2.5 text-sm text-white transition-colors hover:bg-[#2a2a2a]"
+        className="mt-6 rounded-full bg-[var(--pf-c-fill-1f1f1f)] px-5 py-2.5 text-sm text-[var(--pf-c-ink-ffffff)] transition-colors hover:bg-[var(--pf-c-fill-2a2a2a)]"
       >
         Say hello 👋
       </button>

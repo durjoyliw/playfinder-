@@ -307,10 +307,10 @@ export default function ProfileActions({
             type="button"
             disabled={isPending}
             className={cn(
-              "flex-1 rounded-xl border border-[rgb(var(--pf-volt-rgb)/0.4)] bg-[#1e1e1e] py-6 font-semibold",
+              "flex-1 rounded-xl border border-[rgb(var(--pf-volt-rgb)/0.4)] bg-[var(--pf-c-fill-1e1e1e)] py-6 font-semibold pf-card",
               removeTeammateConfirmActive
-                ? "text-[#e05555] hover:bg-[#1e1e1e]"
-                : "text-[var(--pf-volt)] hover:bg-[rgb(var(--pf-volt-rgb)/0.08)]",
+                ? "text-[#e05555] hover:bg-[var(--pf-c-fill-1e1e1e)]"
+                : "text-[var(--pf-volt-text)] hover:bg-[rgb(var(--pf-volt-rgb)/0.08)]",
             )}
             onClick={handleTeammateClick}
           >
@@ -326,8 +326,8 @@ export default function ProfileActions({
           type="button"
           disabled={isPending}
           className={cn(
-            "flex-1 rounded-xl border border-[#2a2a2a] bg-[#161616] py-6 font-semibold hover:bg-[#1f1f1f]",
-            cancelConfirmActive ? "text-red-400" : "text-[#888888]",
+            "flex-1 rounded-xl border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] py-6 font-semibold hover:bg-[var(--pf-c-fill-1f1f1f)] pf-card",
+            cancelConfirmActive ? "text-red-400" : "text-[var(--pf-c-ink-888888)]",
           )}
           onClick={handleRequestedClick}
         >
@@ -350,7 +350,7 @@ export default function ProfileActions({
           <Button
             type="button"
             disabled={isPending}
-            className="flex-1 rounded-xl border border-[#2a2a2a] bg-[#1e1e1e] py-6 font-semibold text-[#888888] hover:bg-[#252525]"
+            className="flex-1 rounded-xl border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-1e1e1e)] py-6 font-semibold text-[var(--pf-c-ink-888888)] hover:bg-[var(--pf-c-fill-252525)] pf-card"
             onClick={() => setDeclinedRequest(true)}
           >
             Decline
@@ -384,7 +384,7 @@ export default function ProfileActions({
           <button
             type="button"
             onClick={() => setMenuOpen((o) => !o)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#2a2a2a] bg-[#161616] text-[#f0f0f0] transition-colors hover:bg-[#1e1e1e]"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] text-[var(--pf-c-ink-f0f0f0)] transition-colors hover:bg-[var(--pf-c-fill-1e1e1e)]"
             aria-label="Profile menu"
           >
             <IconDots className="h-5 w-5" />
@@ -394,8 +394,8 @@ export default function ProfileActions({
             <div
               className="z-50"
               style={{
-                background: "#161616",
-                border: "1px solid #2a2a2a",
+                background: "var(--pf-c-fill-161616)",
+                border: "1px solid var(--pf-c-line-2a2a2a)",
                 borderRadius: 12,
                 minWidth: 200,
                 position: "absolute",
@@ -407,14 +407,14 @@ export default function ProfileActions({
               <button
                 type="button"
                 onClick={() => void handleCopyProfileLink()}
-                className="w-full text-left transition-colors hover:bg-[#1e1e1e]"
+                className="w-full text-left transition-colors hover:bg-[var(--pf-c-fill-1e1e1e)]"
                 style={{
                   padding: "12px 16px",
                   display: "flex",
                   gap: 10,
                   alignItems: "center",
                   fontSize: 14,
-                  color: "#f0f0f0",
+                  color: "var(--pf-c-ink-f0f0f0)",
                 }}
               >
                 <IconCopy className="h-4 w-4" />
@@ -426,7 +426,7 @@ export default function ProfileActions({
                 onClick={() => void handleToggleMute()}
                 disabled={muteLoading}
                 className={cn(
-                  "w-full text-left transition-colors hover:bg-[#1e1e1e]",
+                  "w-full text-left transition-colors hover:bg-[var(--pf-c-fill-1e1e1e)]",
                   muteLoading && "opacity-70",
                 )}
                 style={{
@@ -435,7 +435,7 @@ export default function ProfileActions({
                   gap: 10,
                   alignItems: "center",
                   fontSize: 14,
-                  color: "#f0f0f0",
+                  color: "var(--pf-c-ink-f0f0f0)",
                 }}
               >
                 <IconBellOff className="h-4 w-4" />
@@ -445,7 +445,7 @@ export default function ProfileActions({
               <button
                 type="button"
                 onClick={() => setBlockConfirmOpen(true)}
-                className="w-full text-left transition-colors hover:bg-[#1e1e1e]"
+                className="w-full text-left transition-colors hover:bg-[var(--pf-c-fill-1e1e1e)]"
                 style={{
                   padding: "12px 16px",
                   display: "flex",
@@ -465,11 +465,11 @@ export default function ProfileActions({
 
       {blockConfirmOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 px-6">
-          <div className="w-full max-w-sm rounded-2xl border border-[#2a2a2a] bg-[#161616] p-5">
-            <p className="text-lg font-bold text-white">
+          <div className="w-full max-w-sm rounded-2xl border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] p-5 pf-card">
+            <p className="text-lg font-bold text-[var(--pf-c-ink-ffffff)]">
               Block {user.displayName}?
             </p>
-            <p className="mt-2 text-sm text-[#888888]">
+            <p className="mt-2 text-sm text-[var(--pf-c-ink-888888)]">
               They won&apos;t be able to see your profile or posts.
             </p>
             <div className="mt-5 flex gap-2">
@@ -484,7 +484,7 @@ export default function ProfileActions({
               <button
                 type="button"
                 onClick={() => setBlockConfirmOpen(false)}
-                className="flex-1 rounded-xl border border-[#2a2a2a] bg-transparent px-4 py-2.5 text-sm font-semibold text-[#f0f0f0]"
+                className="flex-1 rounded-xl border border-[var(--pf-c-line-2a2a2a)] bg-transparent px-4 py-2.5 text-sm font-semibold text-[var(--pf-c-ink-f0f0f0)]"
               >
                 Cancel
               </button>
@@ -494,7 +494,7 @@ export default function ProfileActions({
       )}
 
       <Button
-        className="flex-1 rounded-xl border border-[#2a2a2a] bg-[#161616] py-6 font-semibold text-[#f0f0f0] hover:bg-[#1f1f1f]"
+        className="flex-1 rounded-xl border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] py-6 font-semibold text-[var(--pf-c-ink-f0f0f0)] hover:bg-[var(--pf-c-fill-1f1f1f)] pf-card"
         asChild
       >
         <Link href={`/messages?to=${encodeURIComponent(user.id)}`}>

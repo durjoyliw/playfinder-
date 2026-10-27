@@ -101,7 +101,7 @@ export function MainAppShell({
           isFullBleedRoute
             ? "h-[100dvh] overflow-hidden lg:min-w-0 lg:max-w-none lg:flex-1"
             : cn(
-                "min-h-[100dvh] lg:border-x lg:border-[#2a2f2a]",
+                "min-h-[100dvh] lg:border-x lg:border-[var(--pf-c-line-2a2f2a)]",
                 isWideRoute ? "lg:max-w-[920px]" : "lg:max-w-[600px]",
               ),
           // Mobile chat thread: pin the column to the visible area so the

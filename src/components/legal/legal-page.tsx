@@ -34,7 +34,7 @@ export function LegalPage({
         <div className="mx-auto flex w-full max-w-[480px] items-center px-4 py-4 lg:max-w-[600px]">
           <Link
             href="/"
-            className="text-lg font-bold italic text-[var(--pf-volt)]"
+            className="text-lg font-bold italic text-[var(--pf-volt-text)]"
           >
             PlayFinder
           </Link>
@@ -45,7 +45,7 @@ export function LegalPage({
         <p className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-text-3)]">
           {eyebrow}
         </p>
-        <h1 className="mt-2 text-[30px] font-bold leading-tight tracking-[-0.03em] text-white">
+        <h1 className="mt-2 text-[30px] font-bold leading-tight tracking-[-0.03em] text-[var(--pf-c-ink-ffffff)]">
           {title}
         </h1>
         {updated && (
@@ -72,7 +72,7 @@ export function LegalPage({
                   href={link.href}
                   aria-current={link.href === current ? "page" : undefined}
                   className={cn(
-                    "transition-colors hover:text-white",
+                    "transition-colors hover:text-[var(--pf-c-ink-ffffff)]",
                     link.href === current
                       ? "font-semibold text-[var(--pf-text)]"
                       : "text-[var(--pf-text-3)]",

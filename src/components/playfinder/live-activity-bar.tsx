@@ -20,7 +20,7 @@ export function LiveActivityBar() {
 
   return (
     <div
-      className="relative mx-4 mb-2 mt-3 flex items-center gap-3.5 overflow-hidden rounded-2xl border border-[#2a2f2a] px-[18px] py-3.5"
+      className="relative mx-4 mb-2 mt-3 flex items-center gap-3.5 overflow-hidden rounded-2xl border border-[var(--pf-c-line-2a2f2a)] px-[18px] py-3.5"
       style={{
         background:
           "linear-gradient(135deg, var(--pf-surface) 0%, var(--pf-bg-2) 100%)",
@@ -35,11 +35,11 @@ export function LiveActivityBar() {
         }}
       />
       <div className="relative">
-        <div className="text-[28px] font-bold leading-none text-[var(--pf-volt)]">
+        <div className="text-[28px] font-bold leading-none text-[var(--pf-volt-text)]">
           {count}
         </div>
-        <div className="mt-1 text-[13px] leading-snug text-[#b4bcaf]">
-          <strong className="font-semibold text-[#f2f5ef]">
+        <div className="mt-1 text-[13px] leading-snug text-[var(--pf-c-ink-b4bcaf)]">
+          <strong className="font-semibold text-[var(--pf-c-ink-f2f5ef)]">
             athletes active
           </strong>{" "}
           nearby

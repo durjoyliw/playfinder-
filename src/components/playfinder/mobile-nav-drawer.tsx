@@ -170,7 +170,7 @@ export function MobileNavDrawer({ triggerClassName }: MobileNavDrawerProps) {
                     className={cn(
                       "grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[var(--pf-surface-2)]",
                       active
-                        ? "text-[var(--pf-volt)]"
+                        ? "text-[var(--pf-volt-text)]"
                         : "text-[var(--pf-text-2)]",
                     )}
                   >

@@ -27,7 +27,7 @@ export function SettingsSubpageLayout({
 export function SettingsLoading() {
   return (
     <div className="flex min-h-[40vh] items-center justify-center">
-      <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt)]" />
+      <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt-text)]" />
     </div>
   );
 }
@@ -51,7 +51,7 @@ export function SettingsSection({ title, children }: SettingsSectionProps) {
       <h2 className="mb-2 px-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
         {title}
       </h2>
-      <div className="overflow-hidden rounded-xl bg-[#161616]">{children}</div>
+      <div className="overflow-hidden rounded-xl bg-[var(--pf-c-fill-161616)] pf-card">{children}</div>
     </div>
   );
 }
@@ -67,15 +67,15 @@ type SettingsRowProps = {
 );
 
 const settingsRowClassName =
-  "flex w-full items-center gap-3 border-b border-[#2a2a2a] px-4 py-3.5 text-left transition-colors last:border-b-0 hover:bg-[#1f1f1f]";
+  "flex w-full items-center gap-3 border-b border-[var(--pf-c-line-2a2a2a)] px-4 py-3.5 text-left transition-colors last:border-b-0 hover:bg-[var(--pf-c-fill-1f1f1f)]";
 
 export function SettingsRow({ href, onClick, icon, label, value }: SettingsRowProps) {
   const content = (
     <>
-      <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center text-[var(--pf-volt)]">
+      <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center text-[var(--pf-volt-text)]">
         {icon}
       </span>
-      <span className="flex-1 text-sm font-medium text-white">{label}</span>
+      <span className="flex-1 text-sm font-medium text-[var(--pf-c-ink-ffffff)]">{label}</span>
       {value && (
         <span className="max-w-[40%] truncate text-xs text-muted-foreground">
           {value}
@@ -111,7 +111,7 @@ export function SettingsPlaceholder({
 }: SettingsPlaceholderProps) {
   return (
     <SettingsSubpageLayout title={title}>
-      <div className="rounded-xl bg-[#161616] p-6 text-center">
+      <div className="rounded-xl bg-[var(--pf-c-fill-161616)] p-6 text-center pf-card">
         <p className="text-sm text-muted-foreground">{description}</p>
       </div>
     </SettingsSubpageLayout>
@@ -119,7 +119,7 @@ export function SettingsPlaceholder({
 }
 
 export const settingsInputClassName =
-  "w-full rounded-lg border border-[#2a2a2a] bg-[#0d0d0d] px-3 py-2.5 text-base text-white lg:text-sm focus:border-[var(--pf-volt)] focus:outline-none";
+  "w-full rounded-lg border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-0d0d0d)] px-3 py-2.5 text-base text-[var(--pf-c-ink-ffffff)] lg:text-sm focus:border-[var(--pf-volt)] focus:outline-none";
 
 export const settingsSaveButtonClassName =
   "w-full rounded-lg bg-[var(--pf-volt)] py-2.5 text-sm font-semibold text-[var(--pf-on-accent)] transition-colors hover:bg-[var(--pf-volt-hover)] disabled:opacity-60";

@@ -87,19 +87,19 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
 
   return (
     <div className="mx-auto min-h-full w-full max-w-lg bg-[var(--pf-bg)] pb-8">
-      <header className="sticky top-0 z-40 flex items-center border-b border-[#262626] bg-[var(--pf-bg)] px-4 py-3">
+      <header className="sticky top-0 z-40 flex items-center border-b border-[var(--pf-c-line-262626)] bg-[var(--pf-bg)] px-4 py-3">
         <button
           type="button"
           onClick={() => {
             const tab = searchParams.get("tab") ?? "social";
             router.push(`/home?tab=${tab}`);
           }}
-          className="rounded-full p-2 text-white hover:bg-[#161616]"
+          className="rounded-full p-2 text-[var(--pf-c-ink-ffffff)] hover:bg-[var(--pf-c-fill-161616)]"
           aria-label="Go back"
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <h1 className="flex-1 text-center text-base font-bold text-white">
+        <h1 className="flex-1 text-center text-base font-bold text-[var(--pf-c-ink-ffffff)]">
           Post
         </h1>
         <div className="relative flex w-9 justify-end">
@@ -107,13 +107,13 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
             <PostOptionsMenu
               post={post}
               redirectToFeedOnDelete
-              triggerClassName="rounded-full p-2 text-gray-400 hover:bg-[#161616] hover:text-white"
+              triggerClassName="rounded-full p-2 text-[var(--pf-c-ink-9ca3af)] hover:bg-[var(--pf-c-fill-161616)] hover:text-[var(--pf-c-ink-ffffff)]"
             />
           )}
         </div>
       </header>
 
-      <article className="mx-4 mt-4 overflow-hidden rounded-xl bg-[#161616]">
+      <article className="mx-4 mt-4 overflow-hidden rounded-xl bg-[var(--pf-c-fill-161616)] pf-card">
         <div
           className="h-[3px]"
           style={{ backgroundColor: accentColors[card.type] }}
@@ -132,18 +132,18 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
                   className="h-11 w-11 flex-shrink-0 rounded-full object-cover"
                 />
               ) : (
-                <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-[#2a2a2a] text-sm font-bold text-white">
+                <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-[var(--pf-c-fill-2a2a2a)] text-sm font-bold text-[var(--pf-c-ink-ffffff)]">
                   {card.avatar}
                 </div>
               )}
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-semibold text-white">{card.name}</span>
+                  <span className="font-semibold text-[var(--pf-c-ink-ffffff)]">{card.name}</span>
                   {card.isVerified && (
                     <BadgeCheck className="h-4 w-4 fill-[#3B82F6] text-[#3B82F6]" />
                   )}
                 </div>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-[var(--pf-c-ink-6b7280)]">
                   {card.timestamp} · {card.location}
                 </p>
               </div>
@@ -154,12 +154,12 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
           </div>
 
           {card.sport && (
-            <span className="mb-3 inline-block rounded-full bg-[#2a2a2a] px-2.5 py-1 text-xs text-gray-300">
+            <span className="mb-3 inline-block rounded-full bg-[var(--pf-c-fill-2a2a2a)] px-2.5 py-1 text-xs text-[var(--pf-c-ink-d1d5db)]">
               {card.sport}
             </span>
           )}
 
-          <p className="mb-4 text-base leading-relaxed text-white">
+          <p className="mb-4 text-base leading-relaxed text-[var(--pf-c-ink-ffffff)]">
             {card.content}
           </p>
 
@@ -189,7 +189,7 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
                       background: "transparent",
                     }}
                   >
-                    <IconCheck size={14} className="text-[var(--pf-volt)]" stroke={2.5} />
+                    <IconCheck size={14} className="text-[var(--pf-volt-text)]" stroke={2.5} />
                   </div>
                   {isOwnPost && (
                     <button
@@ -225,13 +225,13 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
                     width: 28,
                     height: 28,
                     borderRadius: "50%",
-                    border: "2px dashed #444",
+                    border: "2px dashed var(--pf-c-line-444444)",
                     background: "transparent",
                   }}
                 />
               ))}
               <span
-                style={{ fontSize: 13, color: "var(--pf-volt)", fontWeight: 600 }}
+                style={{ fontSize: 13, color: "var(--pf-volt-text)", fontWeight: 600 }}
               >
                 {slotsRemaining > 0
                   ? `${slotsRemaining} spot${slotsRemaining > 1 ? "s" : ""} left`
@@ -252,13 +252,13 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
           {isLooking && (card.timeChip || card.locationChip) && (
               <div className="mb-4 flex flex-wrap gap-2">
                 {card.timeChip && (
-                  <span className="flex items-center gap-1 rounded-full border border-[#333] bg-[#1a1a1a] px-2.5 py-1 text-xs text-gray-400">
+                  <span className="flex items-center gap-1 rounded-full border border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1a1a1a)] px-2.5 py-1 text-xs text-[var(--pf-c-ink-9ca3af)]">
                     <Clock className="h-3 w-3" />
                     {card.timeChip}
                   </span>
                 )}
                 {card.locationChip && (
-                  <span className="flex items-center gap-1 rounded-full border border-[#333] bg-[#1a1a1a] px-2.5 py-1 text-xs text-gray-400">
+                  <span className="flex items-center gap-1 rounded-full border border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1a1a1a)] px-2.5 py-1 text-xs text-[var(--pf-c-ink-9ca3af)]">
                     <MapPin className="h-3 w-3" />
                     {card.locationChip}
                   </span>
@@ -288,7 +288,7 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
             </div>
           )}
 
-          <div className="flex items-center gap-6 border-t border-[#262626] pt-4">
+          <div className="flex items-center gap-6 border-t border-[var(--pf-c-line-262626)] pt-4">
             <FeedCardLikeButton
               postId={card.postId}
               initialState={{
@@ -301,8 +301,8 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
         </div>
       </article>
 
-      <section className="mx-4 mt-4 rounded-xl bg-[#161616] p-4">
-        <h2 className="mb-3 text-sm font-semibold text-white">Comments</h2>
+      <section className="mx-4 mt-4 rounded-xl bg-[var(--pf-c-fill-161616)] p-4 pf-card">
+        <h2 className="mb-3 text-sm font-semibold text-[var(--pf-c-ink-ffffff)]">Comments</h2>
         <FeedCardComments
           postId={card.postId}
           initialReplyCount={card.replies}

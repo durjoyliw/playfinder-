@@ -50,7 +50,7 @@ export function LocationForm() {
 
   return (
     <SettingsSubpageLayout title="Location">
-      <div className="space-y-4 rounded-xl bg-[#161616] p-4">
+      <div className="space-y-4 rounded-xl bg-[var(--pf-c-fill-161616)] p-4 pf-card">
         <div>
           <label
             htmlFor="location"
@@ -63,7 +63,7 @@ export function LocationForm() {
             value={location}
             onChange={setLocation}
             placeholder="e.g. Glasgow"
-            inputClassName="w-full rounded-xl border border-[#333] bg-[#1a1a1a] px-4 py-3 text-base text-white lg:text-sm placeholder:text-gray-500 focus:border-[var(--pf-volt)] focus:outline-none"
+            inputClassName="w-full rounded-xl border border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1a1a1a)] px-4 py-3 text-base text-[var(--pf-c-ink-ffffff)] lg:text-sm placeholder:text-[var(--pf-c-ink-6b7280)] focus:border-[var(--pf-volt)] focus:outline-none pf-card"
           />
         </div>
 

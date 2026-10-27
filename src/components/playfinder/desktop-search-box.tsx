@@ -64,8 +64,8 @@ export function DesktopSearchBox() {
 
   return (
     <div ref={containerRef} className="relative">
-      <div className="flex items-center gap-2.5 rounded-full border border-[#2a2f2a] bg-[#131614] px-4 py-3 transition-colors focus-within:border-[#353c34]">
-        <Search className="h-[18px] w-[18px] shrink-0 text-[#7e8a7e]" />
+      <div className="flex items-center gap-2.5 rounded-full border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] px-4 py-3 transition-colors focus-within:border-[var(--pf-c-line-353c34)]">
+        <Search className="h-[18px] w-[18px] shrink-0 text-[var(--pf-c-ink-7e8a7e)]" />
         <input
           type="text"
           inputMode="search"
@@ -85,16 +85,16 @@ export function DesktopSearchBox() {
             }
           }}
           placeholder="Search PlayFinder"
-          className="min-w-0 flex-1 bg-transparent text-sm text-[#f2f5ef] outline-none placeholder:text-[#7e8a7e]"
+          className="min-w-0 flex-1 bg-transparent text-sm text-[var(--pf-c-ink-f2f5ef)] outline-none placeholder:text-[var(--pf-c-ink-7e8a7e)]"
         />
       </div>
 
       {showDropdown && (
-        <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 overflow-hidden rounded-2xl border border-[#2a2f2a] bg-[#131614] shadow-xl">
+        <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 overflow-hidden rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] shadow-xl pf-card">
           {isFetching && results.length === 0 ? (
-            <p className="px-4 py-3.5 text-sm text-[#7e8a7e]">Searching…</p>
+            <p className="px-4 py-3.5 text-sm text-[var(--pf-c-ink-7e8a7e)]">Searching…</p>
           ) : results.length === 0 ? (
-            <p className="px-4 py-3.5 text-sm text-[#7e8a7e]">
+            <p className="px-4 py-3.5 text-sm text-[var(--pf-c-ink-7e8a7e)]">
               No players found for &ldquo;{debouncedQuery}&rdquo;
             </p>
           ) : (
@@ -104,7 +104,7 @@ export function DesktopSearchBox() {
                   key={player.id}
                   href={`/users/${player.username}`}
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-[#1a1e1b]"
+                  className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-[var(--pf-c-fill-1a1e1b)]"
                 >
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-xs font-bold text-[var(--pf-on-accent)]">
                     {player.avatarUrl ? (
@@ -118,10 +118,10 @@ export function DesktopSearchBox() {
                     )}
                   </div>
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-bold text-[#f2f5ef]">
+                    <p className="truncate text-sm font-bold text-[var(--pf-c-ink-f2f5ef)]">
                       {player.displayName}
                     </p>
-                    <p className="truncate text-xs text-[#7e8a7e]">
+                    <p className="truncate text-xs text-[var(--pf-c-ink-7e8a7e)]">
                       @{player.username}
                     </p>
                   </div>
@@ -130,7 +130,7 @@ export function DesktopSearchBox() {
               <button
                 type="button"
                 onClick={() => goToResults(query)}
-                className="flex w-full items-center gap-3 border-t border-[#2a2f2a] px-4 py-3 text-left text-sm font-semibold text-[var(--pf-volt)] transition-colors hover:bg-[#1a1e1b]"
+                className="flex w-full items-center gap-3 border-t border-[var(--pf-c-line-2a2f2a)] px-4 py-3 text-left text-sm font-semibold text-[var(--pf-volt-text)] transition-colors hover:bg-[var(--pf-c-fill-1a1e1b)]"
               >
                 Search for &ldquo;{query.trim()}&rdquo;
               </button>

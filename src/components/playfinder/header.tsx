@@ -23,7 +23,7 @@ export function Header({
   };
 
   return (
-    <header className="sticky top-0 z-[var(--pf-z-header)] flex shrink-0 items-center gap-2 border-b border-white/[0.04] bg-[rgba(8,9,10,0.92)] px-4 py-3 pt-[calc(12px+env(safe-area-inset-top,0px))] font-grotesk backdrop-blur-[20px] lg:hidden">
+    <header className="sticky top-0 z-[var(--pf-z-header)] flex shrink-0 items-center gap-2 border-b border-[rgb(var(--pf-contrast-rgb)/0.04)] bg-[rgb(var(--pf-c-fill-08090a-rgb)/0.92)] px-4 py-3 pt-[calc(12px+env(safe-area-inset-top,0px))] font-grotesk backdrop-blur-[20px] lg:hidden">
       <MobileNavDrawer />
 
       <Link
@@ -37,7 +37,7 @@ export function Header({
         >
           <Zap className="h-5 w-5" fill="currentColor" />
         </span>
-        <span className="truncate text-[22px] font-bold leading-none tracking-[-0.04em] text-white">
+        <span className="truncate text-[22px] font-bold leading-none tracking-[-0.04em] text-[var(--pf-c-ink-ffffff)]">
           PlayFinder
         </span>
       </Link>
@@ -45,7 +45,7 @@ export function Header({
       <button
         type="button"
         onClick={handleSearchClick}
-        className="relative grid h-10 w-10 shrink-0 place-items-center rounded-xl text-[#7e8a7e] transition-all active:scale-90 active:bg-[#131614]"
+        className="relative grid h-10 w-10 shrink-0 place-items-center rounded-xl text-[var(--pf-c-ink-7e8a7e)] transition-all active:scale-90 active:bg-[var(--pf-c-fill-131614)]"
         aria-label="Search"
         aria-current={pathname === "/search" ? "page" : undefined}
       >

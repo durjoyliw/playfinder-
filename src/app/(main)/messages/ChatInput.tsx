@@ -149,7 +149,7 @@ export default function ChatInput() {
   if (inputLocked) {
     return (
       <div className="bg-[var(--pf-bg)] px-4 py-3">
-        <p className="w-full text-center text-sm text-[#888888]">
+        <p className="w-full text-center text-sm text-[var(--pf-c-ink-888888)]">
           Request sent — waiting for a reply
         </p>
       </div>
@@ -217,7 +217,7 @@ export default function ChatInput() {
           onKeyDown={handleKeyDown}
           onBlur={() => channel.stopTyping().catch(() => {})}
           placeholder="Message..."
-          className="max-h-[108px] min-w-0 flex-1 resize-none rounded-full border-none bg-[#1a1a1a] px-4 py-2.5 text-base leading-[22px] lg:text-sm text-white outline-none placeholder:text-[#888888] focus:ring-0"
+          className="max-h-[108px] min-w-0 flex-1 resize-none rounded-full border-none bg-[var(--pf-c-fill-1a1a1a)] px-4 py-2.5 text-base leading-[22px] lg:text-sm text-[var(--pf-c-ink-ffffff)] outline-none placeholder:text-[var(--pf-c-ink-888888)] focus:ring-0"
         />
 
         {hasText ? (
@@ -272,7 +272,7 @@ function IconButton({
       disabled={disabled}
       aria-label={label}
       className={cn(
-        "flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-[#888888] transition-colors hover:text-white disabled:opacity-50",
+        "flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-[var(--pf-c-ink-888888)] transition-colors hover:text-[var(--pf-c-ink-ffffff)] disabled:opacity-50",
       )}
     >
       {children}

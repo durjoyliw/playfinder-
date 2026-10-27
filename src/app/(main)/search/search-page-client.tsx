@@ -230,7 +230,7 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
   })();
 
   return (
-    <div className="flex min-h-[calc(100dvh-3.5rem-5rem)] flex-col bg-[#08090a] font-grotesk">
+    <div className="flex min-h-[calc(100dvh-3.5rem-5rem)] flex-col bg-[var(--pf-c-fill-08090a)] font-grotesk">
       <SearchHeader
         value={draftQuery}
         onChange={setDraftQuery}
@@ -257,12 +257,12 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
 
           {isLoading && resultsCount === 0 && (
             <div className="flex justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt)]" />
+              <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt-text)]" />
             </div>
           )}
 
           {!isLoading && (
-            <p className="flex items-center gap-2 px-4 pb-2 text-sm text-[#666666]">
+            <p className="flex items-center gap-2 px-4 pb-2 text-sm text-[var(--pf-c-ink-666666)]">
               <span className="h-2 w-2 flex-shrink-0 rounded-full bg-[var(--pf-volt)]" />
               {resultsLabel}
             </p>
@@ -271,7 +271,7 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
           {filter === "all" && (
             <div className="flex-1 overflow-y-auto pb-4">
               {!isLoading && allCount === 0 && (
-                <p className="px-4 py-8 text-center text-sm text-[#666666]">
+                <p className="px-4 py-8 text-center text-sm text-[var(--pf-c-ink-666666)]">
                   {emptyMessage}
                 </p>
               )}
@@ -335,7 +335,7 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
                 </p>
               )}
               {playersQuery.isSuccess && players.length === 0 && (
-                <p className="px-4 py-8 text-center text-sm text-[#666666]">
+                <p className="px-4 py-8 text-center text-sm text-[var(--pf-c-ink-666666)]">
                   {emptyMessage}
                 </p>
               )}
@@ -359,7 +359,7 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
               {postsQuery.isSuccess &&
                 socialPosts.length === 0 &&
                 !postsQuery.hasNextPage && (
-                  <p className="px-4 py-8 text-center text-sm text-[#666666]">
+                  <p className="px-4 py-8 text-center text-sm text-[var(--pf-c-ink-666666)]">
                     {emptyMessage}
                   </p>
                 )}
@@ -376,7 +376,7 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
                   ))}
                   {postsQuery.isFetchingNextPage && (
                     <div className="flex justify-center py-4">
-                      <Loader2 className="h-6 w-6 animate-spin text-[var(--pf-volt)]" />
+                      <Loader2 className="h-6 w-6 animate-spin text-[var(--pf-volt-text)]" />
                     </div>
                   )}
                 </InfiniteScrollContainer>
@@ -394,7 +394,7 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
               {arenaQuery.isSuccess &&
                 arenaPosts.length === 0 &&
                 !arenaQuery.hasNextPage && (
-                  <p className="px-4 py-8 text-center text-sm text-[#666666]">
+                  <p className="px-4 py-8 text-center text-sm text-[var(--pf-c-ink-666666)]">
                     {emptyMessage}
                   </p>
                 )}
@@ -411,7 +411,7 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
                   ))}
                   {arenaQuery.isFetchingNextPage && (
                     <div className="flex justify-center py-4">
-                      <Loader2 className="h-6 w-6 animate-spin text-[var(--pf-volt)]" />
+                      <Loader2 className="h-6 w-6 animate-spin text-[var(--pf-volt-text)]" />
                     </div>
                   )}
                 </InfiniteScrollContainer>
@@ -422,7 +422,7 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
           {filter === "venues" && (
             <div className="flex-1 overflow-y-auto">
               {venues.length === 0 && (
-                <p className="px-4 py-8 text-center text-sm text-[#666666]">
+                <p className="px-4 py-8 text-center text-sm text-[var(--pf-c-ink-666666)]">
                   {emptyMessage}
                 </p>
               )}
@@ -435,7 +435,7 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
           {filter === "clubs" && (
             <div className="flex-1 overflow-y-auto">
               {clubs.length === 0 && (
-                <p className="px-4 py-8 text-center text-sm text-[#666666]">
+                <p className="px-4 py-8 text-center text-sm text-[var(--pf-c-ink-666666)]">
                   {emptyMessage}
                 </p>
               )}
@@ -472,7 +472,7 @@ function AllResultsSection({
         <button
           type="button"
           onClick={onSeeAll}
-          className="rounded-md text-[13px] font-semibold text-[var(--pf-volt)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--pf-volt)]"
+          className="rounded-md text-[13px] font-semibold text-[var(--pf-volt-text)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--pf-volt)]"
         >
           See all{total > ALL_PREVIEW_COUNT ? ` (${total})` : ""}
         </button>

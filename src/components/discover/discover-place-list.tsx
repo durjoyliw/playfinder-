@@ -80,10 +80,10 @@ export function DiscoverPlaceList({
     return (
       <div>
         <div className="mb-3.5 px-4">
-          <div className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#7e8a7e]">
+          <div className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-c-ink-7e8a7e)]">
             Glasgow · within 5 mi
           </div>
-          <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[#f2f5ef]">
+          <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[var(--pf-c-ink-f2f5ef)]">
             {isVenues ? "Play near you" : "Local clubs"}
           </div>
         </div>
@@ -91,7 +91,7 @@ export function DiscoverPlaceList({
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="mx-4 mb-2.5 h-[96px] animate-pulse rounded-2xl bg-[#131614]"
+              className="mx-4 mb-2.5 h-[96px] animate-pulse rounded-2xl bg-[var(--pf-c-fill-131614)] pf-card"
             />
           ))}
         </div>
@@ -103,14 +103,14 @@ export function DiscoverPlaceList({
     return (
       <div className="px-4">
         <div className="mb-3.5">
-          <div className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#7e8a7e]">
+          <div className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-c-ink-7e8a7e)]">
             Glasgow · within 5 mi
           </div>
-          <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[#f2f5ef]">
+          <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[var(--pf-c-ink-f2f5ef)]">
             {isVenues ? "Play near you" : "Local clubs"}
           </div>
         </div>
-        <p className="py-5 text-center text-sm text-[#7e8a7e]">
+        <p className="py-5 text-center text-sm text-[var(--pf-c-ink-7e8a7e)]">
           Try a different sport or check back later
         </p>
       </div>
@@ -120,10 +120,10 @@ export function DiscoverPlaceList({
   return (
     <div>
       <div className="mb-3.5 px-4">
-        <div className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#7e8a7e]">
+        <div className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-c-ink-7e8a7e)]">
           Glasgow · within 5 mi
         </div>
-        <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[#f2f5ef]">
+        <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[var(--pf-c-ink-f2f5ef)]">
           {isVenues ? "Play near you" : "Local clubs"}
         </div>
       </div>
@@ -132,7 +132,7 @@ export function DiscoverPlaceList({
         {places.map((place) => (
           <div
             key={place.id}
-            className="mb-2.5 flex gap-3 rounded-2xl border border-[#2a2f2a] bg-[#131614] p-3 transition-transform active:scale-[0.98]"
+            className="mb-2.5 flex gap-3 rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-3 transition-transform active:scale-[0.98] pf-card"
           >
             <a
               href={`https://maps.google.com/?q=${place.lat},${place.lng}`}
@@ -169,16 +169,16 @@ export function DiscoverPlaceList({
               </div>
 
               <div className="flex min-w-0 flex-1 flex-col">
-                <p className="text-sm font-semibold leading-tight text-[#f2f5ef]">
+                <p className="text-sm font-semibold leading-tight text-[var(--pf-c-ink-f2f5ef)]">
                   {place.name}
                 </p>
                 {place.address && (
-                  <p className="mt-1 truncate text-xs text-[#7e8a7e]">
+                  <p className="mt-1 truncate text-xs text-[var(--pf-c-ink-7e8a7e)]">
                     {place.address}
                   </p>
                 )}
                 <div className="mt-auto flex flex-wrap items-center gap-2.5 pt-2">
-                  <span className="font-dm-mono text-xs font-medium text-[var(--pf-volt)]">
+                  <span className="font-dm-mono text-xs font-medium text-[var(--pf-volt-text)]">
                     {formatDistanceMiles(place.distanceMiles)}
                   </span>
                   {place.openStatus != null && place.openStatus !== "" && (
@@ -198,7 +198,7 @@ export function DiscoverPlaceList({
                 href={place.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="self-center shrink-0 text-xs font-semibold text-[var(--pf-volt)] hover:underline"
+                className="self-center shrink-0 text-xs font-semibold text-[var(--pf-volt-text)] hover:underline"
                 onClick={(e) => e.stopPropagation()}
               >
                 Visit →

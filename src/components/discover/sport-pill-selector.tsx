@@ -18,12 +18,12 @@ export function SportPillSelector({
   activeCount = 0,
 }: SportPillSelectorProps) {
   return (
-    <div className="border-b border-[#2a2a2a] bg-[#0d0d0d] px-4 py-3">
+    <div className="border-b border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-0d0d0d)] px-4 py-3">
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-[#666666]">
+        <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--pf-c-ink-666666)]">
           Filter Active Hotspots
         </span>
-        <span className="text-[10px] font-medium text-[#666666]">
+        <span className="text-[10px] font-medium text-[var(--pf-c-ink-666666)]">
           {activeCount} Venues Active
         </span>
       </div>
@@ -38,7 +38,7 @@ export function SportPillSelector({
               "flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2 text-xs font-semibold transition-all duration-200",
               selectedSport === sport.id
                 ? "bg-[var(--pf-volt)] text-[var(--pf-on-accent)] shadow-md shadow-[rgb(var(--pf-volt-rgb)/0.3)]"
-                : "border border-[#2a2a2a] bg-[#161616] text-[#f0f0f0] active:scale-95",
+                : "border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] text-[var(--pf-c-ink-f0f0f0)] active:scale-95",
             )}
           >
             {sport.id === "all" && (

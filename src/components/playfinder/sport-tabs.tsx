@@ -58,7 +58,7 @@ export function SportTabs({ tabs, activeTab, onTabChange }: SportTabsProps) {
                         ? "text-[var(--pf-on-accent)]"
                         : "text-[#0a0b0a]",
                     )
-                  : "border-[#2a2f2a] bg-[#131614] text-[#7e8a7e] hover:-translate-y-0.5 hover:border-[#353c34]",
+                  : "border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-7e8a7e)] hover:-translate-y-0.5 hover:border-[var(--pf-c-line-353c34)]",
               )}
               style={
                 isActive

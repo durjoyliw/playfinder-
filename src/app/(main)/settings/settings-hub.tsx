@@ -84,12 +84,12 @@ export function SettingsHub() {
         <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-[var(--pf-volt)] text-2xl font-bold text-[var(--pf-on-accent)]">
           {getInitials(data.displayName)}
         </div>
-        <h1 className="text-2xl font-bold text-white">{data.displayName}</h1>
+        <h1 className="text-2xl font-bold text-[var(--pf-c-ink-ffffff)]">{data.displayName}</h1>
         <p className="mt-1 text-sm text-muted-foreground">@{data.username}</p>
         <button
           type="button"
           onClick={handleShareProfile}
-          className="mt-4 rounded-full border border-[var(--pf-volt)] px-6 py-2 text-sm font-medium text-[var(--pf-volt)] transition-colors hover:bg-[rgb(var(--pf-volt-rgb)/0.1)]"
+          className="mt-4 rounded-full border border-[var(--pf-volt)] px-6 py-2 text-sm font-medium text-[var(--pf-volt-text)] transition-colors hover:bg-[rgb(var(--pf-volt-rgb)/0.1)]"
         >
           Share profile
         </button>

@@ -40,7 +40,7 @@ export function FeedCardShareButton({
       type="button"
       onClick={handleShare}
       className={cn(
-        "flex items-center gap-1.5 text-[#888888] transition-colors hover:text-white",
+        "flex items-center gap-1.5 text-[var(--pf-c-ink-888888)] transition-colors hover:text-[var(--pf-c-ink-ffffff)]",
         className,
       )}
       aria-label="Share post"

@@ -48,7 +48,7 @@ export default function ChannelChatPage() {
   if (status === "loading") {
     return (
       <div className="flex h-full min-h-0 flex-1 items-center justify-center bg-[var(--pf-bg)]">
-        <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt)]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt-text)]" />
       </div>
     );
   }
@@ -56,7 +56,7 @@ export default function ChannelChatPage() {
   if (status === "error") {
     return (
       <div className="flex h-full min-h-0 flex-1 flex-col items-center justify-center gap-4 bg-[var(--pf-bg)] p-6 text-center">
-        <p className="text-sm text-[#888888]">Conversation not found</p>
+        <p className="text-sm text-[var(--pf-c-ink-888888)]">Conversation not found</p>
         <Link
           href="/messages"
           className="rounded-full bg-[var(--pf-volt)] px-4 py-2 text-sm font-bold text-[var(--pf-on-accent)]"

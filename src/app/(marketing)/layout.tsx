@@ -7,8 +7,8 @@ export default function MarketingLayout({
     <div
       style={{
         minHeight: "100vh",
-        backgroundColor: "#0d0d0d",
-        color: "#ffffff",
+        backgroundColor: "var(--pf-c-fill-0d0d0d)",
+        color: "var(--pf-c-ink-ffffff)",
         // Keep content out from under the notch in landscape. Side insets are
         // 0 in portrait, so portrait is unaffected.
         paddingLeft: "env(safe-area-inset-left, 0px)",

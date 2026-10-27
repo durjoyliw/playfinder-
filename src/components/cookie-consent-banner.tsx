@@ -59,7 +59,7 @@ export function CookieConsentBanner() {
     <section
       role="region"
       aria-label="Cookie consent"
-      className="pf-consent fixed z-[var(--pf-z-banner)] mx-auto max-w-[456px] rounded-2xl border border-[var(--pf-border)] bg-[rgba(19,22,20,0.97)] p-4 font-grotesk text-[var(--pf-text)] shadow-[0_12px_40px_rgba(0,0,0,0.55)] backdrop-blur-[20px] duration-300 animate-in fade-in-0 slide-in-from-bottom-4 motion-reduce:animate-none"
+      className="pf-consent fixed z-[var(--pf-z-banner)] mx-auto max-w-[456px] rounded-2xl border border-[var(--pf-border)] bg-[rgb(var(--pf-c-fill-131614-rgb)/0.97)] p-4 font-grotesk text-[var(--pf-text)] shadow-[0_12px_40px_rgba(0,0,0,0.55)] backdrop-blur-[20px] duration-300 animate-in fade-in-0 slide-in-from-bottom-4 motion-reduce:animate-none"
     >
       <p className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-text-3)]">
         Cookies

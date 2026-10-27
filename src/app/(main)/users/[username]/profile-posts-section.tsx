@@ -52,7 +52,7 @@ export default function ProfilePostsSection({
 
   return (
     <div>
-      <div className="mb-4 flex gap-2 border-b border-[#262626]">
+      <div className="mb-4 flex gap-2 border-b border-[var(--pf-c-line-262626)]">
         {(["posts", "highlights"] as const).map((t) => (
           <button
             key={t}
@@ -61,8 +61,8 @@ export default function ProfilePostsSection({
             className={cn(
               "border-b-2 px-3 pb-2 text-sm font-medium capitalize transition-colors",
               tab === t
-                ? "border-[var(--pf-volt)] text-[var(--pf-volt)]"
-                : "border-transparent text-[#7e8a7e] hover:text-white",
+                ? "border-[var(--pf-volt)] text-[var(--pf-volt-text)]"
+                : "border-transparent text-[var(--pf-c-ink-7e8a7e)] hover:text-[var(--pf-c-ink-ffffff)]",
             )}
           >
             {t}
@@ -72,7 +72,7 @@ export default function ProfilePostsSection({
 
       {status === "pending" && (
         <div className="flex justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt)]" />
+          <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt-text)]" />
         </div>
       )}
 
@@ -86,13 +86,13 @@ export default function ProfilePostsSection({
         <div className="py-8 text-center">
           {tab === "highlights" ? (
             <>
-              <p className="text-sm text-gray-400">No highlights yet</p>
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="text-sm text-[var(--pf-c-ink-9ca3af)]">No highlights yet</p>
+              <p className="mt-1 text-xs text-[var(--pf-c-ink-6b7280)]">
                 Pin your best posts here.
               </p>
             </>
           ) : (
-            <p className="text-sm text-gray-500">No posts yet.</p>
+            <p className="text-sm text-[var(--pf-c-ink-6b7280)]">No posts yet.</p>
           )}
         </div>
       )}
@@ -135,7 +135,7 @@ export default function ProfilePostsSection({
           ))}
           {isFetchingNextPage && (
             <div className="flex justify-center py-4">
-              <Loader2 className="h-6 w-6 animate-spin text-[var(--pf-volt)]" />
+              <Loader2 className="h-6 w-6 animate-spin text-[var(--pf-volt-text)]" />
             </div>
           )}
         </InfiniteScrollContainer>

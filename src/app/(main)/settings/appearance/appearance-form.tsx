@@ -170,13 +170,13 @@ export function AppearanceForm({
       {/* Live sample so the accent + on-accent pairing is easy to judge. */}
       <section>
         <h2 className={groupLabelClass}>Preview</h2>
-        <div className="space-y-3 rounded-2xl border border-[var(--pf-border)] bg-[var(--pf-surface)] p-4">
+        <div className="space-y-3 rounded-2xl border border-[var(--pf-border)] bg-[var(--pf-surface)] p-4 pf-card">
           <p className="text-[15px] font-semibold text-[var(--pf-text)]">
             5-a-side tonight, 2 spots left
           </p>
           <p className="text-[13px] text-[var(--pf-text-2)]">
             Toryglen · 7pm ·{" "}
-            <span className="font-semibold text-[var(--pf-volt)]">
+            <span className="font-semibold text-[var(--pf-volt-text)]">
               Looking to play
             </span>
           </p>

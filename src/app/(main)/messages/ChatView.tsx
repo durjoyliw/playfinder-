@@ -25,7 +25,7 @@ export default function ChatView({ channel }: ChatViewProps) {
               <ChatMessageList />
             </div>
           </div>
-          <div className="flex-shrink-0 border-t border-[#1e1e1e]">
+          <div className="flex-shrink-0 border-t border-[var(--pf-c-line-1e1e1e)]">
             <MessageRequestActions />
             <ChatInput />
           </div>

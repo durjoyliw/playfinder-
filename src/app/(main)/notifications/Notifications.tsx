@@ -98,10 +98,10 @@ export default function Notifications() {
 function MentionsEmptyStub() {
   return (
     <div className="flex flex-col items-center px-4 py-16 text-center">
-      <p className="text-[15px] font-semibold tracking-[-0.02em] text-[#f2f5ef]">
+      <p className="text-[15px] font-semibold tracking-[-0.02em] text-[var(--pf-c-ink-f2f5ef)]">
         No mentions yet
       </p>
-      <p className="mt-2 max-w-[260px] text-[13px] leading-relaxed text-[#7e8a7e]">
+      <p className="mt-2 max-w-[260px] text-[13px] leading-relaxed text-[var(--pf-c-ink-7e8a7e)]">
         When someone mentions you, it will show up here.
       </p>
     </div>
@@ -129,7 +129,7 @@ function AllNotificationsList({
 
   if (status === "success" && !notifications.length && !hasNextPage) {
     return (
-      <p className="py-8 text-center text-[#7e8a7e]">
+      <p className="py-8 text-center text-[var(--pf-c-ink-7e8a7e)]">
         You don&apos;t have any notifications yet.
       </p>
     );

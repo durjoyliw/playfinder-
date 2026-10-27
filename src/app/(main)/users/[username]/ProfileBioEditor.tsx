@@ -52,10 +52,10 @@ export default function ProfileBioEditor({
     <div className="mt-7 px-4">
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <p className="mb-1 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#7e8a7e]">
+          <p className="mb-1 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-c-ink-7e8a7e)]">
             In my own words
           </p>
-          <h2 className="text-[22px] font-bold tracking-[-0.03em] text-[#f2f5ef]">
+          <h2 className="text-[22px] font-bold tracking-[-0.03em] text-[var(--pf-c-ink-f2f5ef)]">
             Athlete Story
           </h2>
         </div>
@@ -63,7 +63,7 @@ export default function ProfileBioEditor({
           <button
             type="button"
             onClick={() => setIsEditing(true)}
-            className="grid h-10 w-10 place-items-center rounded-xl border border-[#2a2f2a] bg-[#131614] text-[#7e8a7e]"
+            className="grid h-10 w-10 place-items-center rounded-xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-7e8a7e)] pf-card"
             aria-label="Edit athlete story"
           >
             <Pencil className="h-[17px] w-[17px]" />
@@ -71,9 +71,9 @@ export default function ProfileBioEditor({
         )}
       </div>
 
-      <div className="relative overflow-hidden rounded-[18px] border border-[#2a2f2a] bg-[#131614] p-[22px]">
+      <div className="relative overflow-hidden rounded-[18px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-[22px] pf-card">
         <div
-          className="pointer-events-none absolute right-4 top-2 font-serif text-[52px] leading-none text-[var(--pf-volt)] opacity-10"
+          className="pointer-events-none absolute right-4 top-2 font-serif text-[52px] leading-none text-[var(--pf-volt-text)] opacity-10"
           aria-hidden
         >
           "
@@ -84,7 +84,7 @@ export default function ProfileBioEditor({
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               rows={5}
-              className="w-full resize-none rounded-[14px] border border-[#2a2f2a] bg-[#0d0f0d] px-3 py-2.5 text-base leading-relaxed lg:text-[15px] text-[#f2f5ef] outline-none focus:border-[var(--pf-volt)]"
+              className="w-full resize-none rounded-[14px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-0d0f0d)] px-3 py-2.5 text-base leading-relaxed lg:text-[15px] text-[var(--pf-c-ink-f2f5ef)] outline-none focus:border-[var(--pf-volt)]"
               placeholder="Tell others about your sports background..."
               autoFocus
             />
@@ -103,7 +103,7 @@ export default function ProfileBioEditor({
                   setDraft(bio ?? "");
                   setIsEditing(false);
                 }}
-                className="rounded-xl px-4 py-2 text-sm text-[#7e8a7e]"
+                className="rounded-xl px-4 py-2 text-sm text-[var(--pf-c-ink-7e8a7e)]"
               >
                 Cancel
               </button>
@@ -111,11 +111,11 @@ export default function ProfileBioEditor({
           </div>
         ) : (
           <>
-            <p className="relative z-[1] text-[15px] leading-relaxed text-[#b4bcaf]">
+            <p className="relative z-[1] text-[15px] leading-relaxed text-[var(--pf-c-ink-b4bcaf)]">
               {bio?.trim() || placeholder}
             </p>
             {bio?.trim() && (
-              <p className="relative z-[1] mt-3.5 font-dm-mono text-[10px] text-[#5a635a]">
+              <p className="relative z-[1] mt-3.5 font-dm-mono text-[10px] text-[var(--pf-c-ink-5a635a)]">
                 Last updated recently
               </p>
             )}

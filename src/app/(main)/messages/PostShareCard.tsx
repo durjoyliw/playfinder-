@@ -34,8 +34,8 @@ export default function PostShareCard({
       className={cn(
         "block w-full max-w-[260px] overflow-hidden rounded-2xl border transition-opacity hover:opacity-90",
         isMe
-          ? "rounded-tr-sm border-[rgb(var(--pf-volt-rgb)/0.3)] bg-[#161c0f]"
-          : "rounded-tl-sm border-[#2a2a2a] bg-[#1a1a1a]",
+          ? "rounded-tr-sm border-[rgb(var(--pf-volt-rgb)/0.3)] bg-[var(--pf-volt-tint-2)]"
+          : "rounded-tl-sm border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-1a1a1a)]",
       )}
     >
       {imageUrl && (
@@ -54,16 +54,16 @@ export default function PostShareCard({
           )}
         </div>
         <div className="min-w-0">
-          <p className="truncate text-xs font-bold text-white">
+          <p className="truncate text-xs font-bold text-[var(--pf-c-ink-ffffff)]">
             {authorName}
             {attachment.sport ? ` · ${attachment.sport}` : ""}
           </p>
           {snippet && (
-            <p className="mt-0.5 line-clamp-2 text-xs text-[#b4bcaf]">
+            <p className="mt-0.5 line-clamp-2 text-xs text-[var(--pf-c-ink-b4bcaf)]">
               {snippet}
             </p>
           )}
-          <p className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--pf-volt)]">
+          <p className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--pf-volt-text)]">
             View post
           </p>
         </div>

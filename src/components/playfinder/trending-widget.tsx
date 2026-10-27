@@ -41,12 +41,12 @@ export function TrendingWidget() {
     .slice(0, 5);
 
   return (
-    <div className="rounded-2xl border border-[#2a2f2a] bg-[#131614] p-4">
-      <p className="mb-1 text-[17px] font-bold text-[#f2f5ef]">
+    <div className="rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-4 pf-card">
+      <p className="mb-1 text-[17px] font-bold text-[var(--pf-c-ink-f2f5ef)]">
         Trending in your sports
       </p>
       {topics.length === 0 ? (
-        <p className="py-1.5 text-xs text-[#7e8a7e]">
+        <p className="py-1.5 text-xs text-[var(--pf-c-ink-7e8a7e)]">
           Nothing trending yet -- check back once there&apos;s more activity in
           your sports.
         </p>
@@ -58,18 +58,18 @@ export function TrendingWidget() {
               href={`/search?q=${encodeURIComponent(topic.word)}`}
               className={
                 "flex items-center justify-between gap-2 py-2.5 transition-opacity hover:opacity-80" +
-                (i > 0 ? " border-t border-[#2a2f2a]" : "")
+                (i > 0 ? " border-t border-[var(--pf-c-line-2a2f2a)]" : "")
               }
             >
               <div className="min-w-0">
-                <p className="truncate text-xs text-[#7e8a7e]">
+                <p className="truncate text-xs text-[var(--pf-c-ink-7e8a7e)]">
                   {topic.emoji} {topic.label} · Trending
                 </p>
-                <p className="truncate text-sm font-bold text-[#f2f5ef]">
+                <p className="truncate text-sm font-bold text-[var(--pf-c-ink-f2f5ef)]">
                   {capitalize(topic.word)}
                 </p>
               </div>
-              <span className="shrink-0 text-xs text-[#7e8a7e]">
+              <span className="shrink-0 text-xs text-[var(--pf-c-ink-7e8a7e)]">
                 {topic.mentions} posts
               </span>
             </Link>

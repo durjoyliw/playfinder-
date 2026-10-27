@@ -40,7 +40,7 @@ export default async function Page({ params: { postId } }: PageProps) {
 
   if (!user) {
     return (
-      <p className="bg-[#0d0d0d] p-8 text-center text-red-400">
+      <p className="bg-[var(--pf-c-fill-0d0d0d)] p-8 text-center text-red-400">
         You&apos;re not authorized to view this page.
       </p>
     );

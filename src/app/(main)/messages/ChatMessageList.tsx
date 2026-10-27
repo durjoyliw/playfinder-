@@ -142,7 +142,7 @@ export default function ChatMessageList() {
         return (
           <div key={message.id}>
             {showDate && message.created_at && (
-              <p className="my-4 text-center text-xs text-[#888888]">
+              <p className="my-4 text-center text-xs text-[var(--pf-c-ink-888888)]">
                 {formatDateSeparator(message.created_at)}
               </p>
             )}
@@ -185,7 +185,7 @@ export default function ChatMessageList() {
                 )}
               >
                 {isGroup && !isMe && showAvatar && message.user?.name && (
-                  <p className="mb-0.5 ml-1 text-[11px] font-semibold text-[#888888]">
+                  <p className="mb-0.5 ml-1 text-[11px] font-semibold text-[var(--pf-c-ink-888888)]">
                     {message.user.name}
                   </p>
                 )}
@@ -204,7 +204,7 @@ export default function ChatMessageList() {
                       "block w-full text-left",
                       isMe
                         ? "rounded-2xl rounded-tr-sm bg-[var(--pf-volt)] px-4 py-2.5 text-[var(--pf-on-accent)]"
-                        : "rounded-2xl rounded-tl-sm bg-[#2a2a2a] px-4 py-2.5 text-white",
+                        : "rounded-2xl rounded-tl-sm bg-[var(--pf-c-fill-2a2a2a)] px-4 py-2.5 text-[var(--pf-c-ink-ffffff)]",
                     )}
                     onClick={() =>
                       setReactionTargetId((id) =>
@@ -257,7 +257,7 @@ export default function ChatMessageList() {
                           count ? (
                             <span
                               key={type}
-                              className="inline-flex items-center gap-0.5 rounded-full border border-[#333] bg-[#1a1a1a] px-2 py-0.5 text-xs text-white"
+                              className="inline-flex items-center gap-0.5 rounded-full border border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1a1a1a)] px-2 py-0.5 text-xs text-[var(--pf-c-ink-ffffff)]"
                             >
                               {emojiForReactionType(type)} {count}
                             </span>
@@ -268,7 +268,7 @@ export default function ChatMessageList() {
 
                 <p
                   className={cn(
-                    "mt-0.5 flex items-center gap-1 text-[10px] text-[#888888]",
+                    "mt-0.5 flex items-center gap-1 text-[10px] text-[var(--pf-c-ink-888888)]",
                     isMe ? "justify-end" : "justify-start",
                   )}
                 >
@@ -284,7 +284,7 @@ export default function ChatMessageList() {
       })}
 
       {typingUsers.length > 0 && (
-        <p className="mt-2 text-sm italic text-[#888888]">
+        <p className="mt-2 text-sm italic text-[var(--pf-c-ink-888888)]">
           {typingName} is typing...
         </p>
       )}
@@ -331,10 +331,10 @@ function MessageTick({
   const status = getMessageTickStatus(channel, message, user.id);
 
   if (status === "seen") {
-    return <CheckCheck className="h-3.5 w-3.5 text-[var(--pf-volt)]" />;
+    return <CheckCheck className="h-3.5 w-3.5 text-[var(--pf-volt-text)]" />;
   }
   if (status === "delivered") {
-    return <CheckCheck className="h-3.5 w-3.5 text-[#888888]" />;
+    return <CheckCheck className="h-3.5 w-3.5 text-[var(--pf-c-ink-888888)]" />;
   }
-  return <Check className="h-3.5 w-3.5 text-[#888888]" />;
+  return <Check className="h-3.5 w-3.5 text-[var(--pf-c-ink-888888)]" />;
 }

@@ -34,14 +34,14 @@ export function TeammatesList({
 
   if (!teammates.length) {
     return (
-      <p className="px-4 py-12 text-center text-sm text-[#888888]">
+      <p className="px-4 py-12 text-center text-sm text-[var(--pf-c-ink-888888)]">
         No teammates yet. Follow players back when they follow you.
       </p>
     );
   }
 
   return (
-    <ul className="divide-y divide-[#1a1a1a]">
+    <ul className="divide-y divide-[var(--pf-c-line-1a1a1a)]">
       {teammates.map((teammate) => {
         const sportTags = formatTeammateSportLabels(teammate.sports);
         const initials = getInitials(teammate.displayName);
@@ -49,14 +49,14 @@ export function TeammatesList({
         const isConfirming = confirmingId === teammate.id;
 
         return (
-          <li key={teammate.id} className="bg-[#161616]">
+          <li key={teammate.id} className="bg-[var(--pf-c-fill-161616)]">
             <div className="flex items-center gap-3 px-4 py-3">
               <button
                 type="button"
                 onClick={() => router.push(`/users/${teammate.username}`)}
                 className="flex min-w-0 flex-1 items-center gap-3 text-left"
               >
-                <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#2a2a2a] text-sm font-bold text-[#888888]">
+                <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-c-fill-2a2a2a)] text-sm font-bold text-[var(--pf-c-ink-888888)]">
                   {hasPhoto ? (
                     <img
                       src={teammate.avatarUrl!}
@@ -68,11 +68,11 @@ export function TeammatesList({
                   )}
                 </div>
                 <div className="min-w-0">
-                  <p className="truncate text-[15px] text-[#f0f0f0]">
+                  <p className="truncate text-[15px] text-[var(--pf-c-ink-f0f0f0)]">
                     {teammate.displayName}
                   </p>
                   {sportTags && (
-                    <p className="mt-0.5 truncate text-xs text-[#555555]">
+                    <p className="mt-0.5 truncate text-xs text-[var(--pf-c-ink-555555)]">
                       {sportTags}
                     </p>
                   )}
@@ -86,7 +86,7 @@ export function TeammatesList({
                     e.stopPropagation();
                     setConfirmingId(teammate.id);
                   }}
-                  className="flex-shrink-0 rounded-[20px] border border-[#2a2a2a] bg-[#161616] px-3.5 py-1.5 text-sm text-[#888888] transition-colors hover:bg-[#1f1f1f]"
+                  className="flex-shrink-0 rounded-[20px] border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] px-3.5 py-1.5 text-sm text-[var(--pf-c-ink-888888)] transition-colors hover:bg-[var(--pf-c-fill-1f1f1f)] pf-card"
                 >
                   Remove
                 </button>
@@ -95,7 +95,7 @@ export function TeammatesList({
 
             {isConfirming && (
               <div className="flex flex-wrap items-center gap-2 px-4 pb-3">
-                <span className="text-[13px] text-[#888888]">
+                <span className="text-[13px] text-[var(--pf-c-ink-888888)]">
                   Remove {teammate.displayName} as teammate?
                 </span>
                 <button
@@ -110,7 +110,7 @@ export function TeammatesList({
                   type="button"
                   disabled={removeMutation.isPending}
                   onClick={() => setConfirmingId(null)}
-                  className="rounded-[20px] border border-[#2a2a2a] bg-transparent px-3.5 py-[5px] text-xs text-[#888888] transition-colors hover:text-[#f0f0f0]"
+                  className="rounded-[20px] border border-[var(--pf-c-line-2a2a2a)] bg-transparent px-3.5 py-[5px] text-xs text-[var(--pf-c-ink-888888)] transition-colors hover:text-[var(--pf-c-ink-f0f0f0)]"
                 >
                   Cancel
                 </button>

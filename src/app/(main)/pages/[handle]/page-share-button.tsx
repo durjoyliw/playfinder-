@@ -58,7 +58,7 @@ export function PageShareButton({
       type="button"
       variant="outline"
       onClick={() => void share()}
-      className="h-10 flex-1 rounded-xl border-[#2a2f2a] bg-[#131614] text-sm font-semibold text-[#f2f5ef] hover:bg-[#1a1e1b] hover:text-[#f2f5ef]"
+      className="h-10 flex-1 rounded-xl border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-sm font-semibold text-[var(--pf-c-ink-f2f5ef)] hover:bg-[var(--pf-c-fill-1a1e1b)] hover:text-[var(--pf-c-ink-f2f5ef)] pf-card"
     >
       Share
     </Button>

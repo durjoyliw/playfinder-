@@ -65,7 +65,7 @@ export function IdentitySwitcher({
     return (
       <div
         className={cn(
-          "grid shrink-0 place-items-center rounded-full bg-[#131614]",
+          "grid shrink-0 place-items-center rounded-full bg-[var(--pf-c-fill-131614)]",
           compact ? "h-10 w-10" : "h-9 w-9",
           className,
         )}
@@ -87,10 +87,10 @@ export function IdentitySwitcher({
           type="button"
           disabled={isSwitching}
           className={cn(
-            "flex shrink-0 items-center gap-1.5 rounded-xl text-[#b4bcaf] transition-colors active:bg-[#131614] disabled:opacity-70",
+            "flex shrink-0 items-center gap-1.5 rounded-xl text-[var(--pf-c-ink-b4bcaf)] transition-colors active:bg-[var(--pf-c-fill-131614)] disabled:opacity-70",
             compact
               ? "h-10 w-10 justify-center"
-              : "min-h-9 px-1.5 py-1 hover:bg-[#131614]",
+              : "min-h-9 px-1.5 py-1 hover:bg-[var(--pf-c-fill-131614)]",
             className,
           )}
           aria-label={
@@ -112,7 +112,7 @@ export function IdentitySwitcher({
             ) : (
               <div
                 className={cn(
-                  "grid place-items-center bg-[#232824] text-[11px] font-bold text-[var(--pf-volt)]",
+                  "grid place-items-center bg-[var(--pf-c-fill-232824)] text-[11px] font-bold text-[var(--pf-volt-text)]",
                   compact ? "h-9 w-9 rounded-[10px]" : "h-8 w-8 rounded-lg",
                 )}
               >
@@ -130,16 +130,16 @@ export function IdentitySwitcher({
             />
           )}
           {!compact && (
-            <ChevronsUpDown className="h-3.5 w-3.5 text-[#5a635a]" />
+            <ChevronsUpDown className="h-3.5 w-3.5 text-[var(--pf-c-ink-5a635a)]" />
           )}
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="z-[120] min-w-[220px] rounded-xl border-[#2a2f2a] bg-[#131614] p-1.5 text-[#f2f5ef]"
+        className="z-[120] min-w-[220px] rounded-xl border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-1.5 text-[var(--pf-c-ink-f2f5ef)] pf-card"
       >
         <DropdownMenuItem
-          className="cursor-pointer gap-2.5 rounded-lg px-2.5 py-2 focus:bg-[#1a1e1b] focus:text-[#f2f5ef]"
+          className="cursor-pointer gap-2.5 rounded-lg px-2.5 py-2 focus:bg-[var(--pf-c-fill-1a1e1b)] focus:text-[var(--pf-c-ink-f2f5ef)]"
           onSelect={() =>
             mutate({ kind: "user", id: data.user.id })
           }
@@ -153,10 +153,10 @@ export function IdentitySwitcher({
             <p className="truncate text-[13px] font-semibold">
               {data.user.displayName}
             </p>
-            <p className="truncate text-[11px] text-[#7e8a7e]">You</p>
+            <p className="truncate text-[11px] text-[var(--pf-c-ink-7e8a7e)]">You</p>
           </div>
           {data.identity.kind === "user" && (
-            <Check className="h-4 w-4 shrink-0 text-[var(--pf-volt)]" />
+            <Check className="h-4 w-4 shrink-0 text-[var(--pf-volt-text)]" />
           )}
         </DropdownMenuItem>
 
@@ -166,7 +166,7 @@ export function IdentitySwitcher({
           return (
             <DropdownMenuItem
               key={page.id}
-              className="cursor-pointer gap-2.5 rounded-lg px-2.5 py-2 focus:bg-[#1a1e1b] focus:text-[#f2f5ef]"
+              className="cursor-pointer gap-2.5 rounded-lg px-2.5 py-2 focus:bg-[var(--pf-c-fill-1a1e1b)] focus:text-[var(--pf-c-ink-f2f5ef)]"
               onSelect={() => mutate({ kind: "page", id: page.id })}
             >
               {page.avatarUrl ? (
@@ -176,19 +176,19 @@ export function IdentitySwitcher({
                   className="h-8 w-8 rounded-lg border-0"
                 />
               ) : (
-                <div className="grid h-8 w-8 place-items-center rounded-lg bg-[#232824] text-[11px] font-bold text-[var(--pf-volt)]">
+                <div className="grid h-8 w-8 place-items-center rounded-lg bg-[var(--pf-c-fill-232824)] text-[11px] font-bold text-[var(--pf-volt-text)]">
                   {getInitials(page.name)}
                 </div>
               )}
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[13px] font-semibold">{page.name}</p>
-                <p className="truncate text-[11px] text-[#7e8a7e]">
+                <p className="truncate text-[11px] text-[var(--pf-c-ink-7e8a7e)]">
                   {page.type === PageType.VENUE ? "Venue" : "Club"} · @
                   {page.handle}
                 </p>
               </div>
               {selected && (
-                <Check className="h-4 w-4 shrink-0 text-[var(--pf-volt)]" />
+                <Check className="h-4 w-4 shrink-0 text-[var(--pf-volt-text)]" />
               )}
             </DropdownMenuItem>
           );

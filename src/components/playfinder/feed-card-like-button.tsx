@@ -73,10 +73,10 @@ export function FeedCardLikeButton({
         onClick={() => mutate()}
         disabled={isPending}
         className={cn(
-          "flex flex-1 items-center justify-center rounded-[10px] border border-[#2a2a2a] bg-[#1f1f1f] py-[9px] text-center text-[13px] tabular-nums transition-colors disabled:opacity-50",
+          "flex flex-1 items-center justify-center rounded-[10px] border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-1f1f1f)] py-[9px] text-center text-[13px] tabular-nums transition-colors disabled:opacity-50",
           data.isLikedByUser
-            ? "font-medium text-[var(--pf-volt)]"
-            : "text-[#888888] hover:text-white",
+            ? "font-medium text-[var(--pf-volt-text)]"
+            : "text-[var(--pf-c-ink-888888)] hover:text-[var(--pf-c-ink-ffffff)]",
           className,
         )}
         aria-label={data.isLikedByUser ? "Unlike post" : "Like post"}
@@ -92,8 +92,8 @@ export function FeedCardLikeButton({
       onClick={() => mutate()}
       disabled={isPending}
       className={cn(
-        "group flex items-center gap-1.5 text-[#7e8a7e] transition-colors hover:text-[#f2f5ef] disabled:opacity-50",
-        data.isLikedByUser && "text-[var(--pf-volt)]",
+        "group flex items-center gap-1.5 text-[var(--pf-c-ink-7e8a7e)] transition-colors hover:text-[var(--pf-c-ink-f2f5ef)] disabled:opacity-50",
+        data.isLikedByUser && "text-[var(--pf-volt-text)]",
         className,
       )}
       aria-label={data.isLikedByUser ? "Unlike post" : "Like post"}
@@ -102,7 +102,7 @@ export function FeedCardLikeButton({
         className="h-5 w-5 transition-transform duration-150 ease-[cubic-bezier(0.34,1.36,0.64,1)] group-active:scale-125"
         style={
           data.isLikedByUser
-            ? { fill: "var(--pf-volt)", color: "var(--pf-volt)" }
+            ? { fill: "var(--pf-volt)", color: "var(--pf-volt-text)" }
             : undefined
         }
       />

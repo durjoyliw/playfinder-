@@ -72,9 +72,9 @@ export default function FollowButton({
         className={cn(
           "h-12 w-12 rounded-xl border font-semibold",
           data.isTeammate
-            ? "border-[rgb(var(--pf-volt-rgb)/0.4)] bg-transparent text-[var(--pf-volt)] hover:bg-[rgb(var(--pf-volt-rgb)/0.08)]"
+            ? "border-[rgb(var(--pf-volt-rgb)/0.4)] bg-transparent text-[var(--pf-volt-text)] hover:bg-[rgb(var(--pf-volt-rgb)/0.08)]"
             : data.isFollowedByUser
-              ? "border-[#2a2a2a] bg-[#161616] text-[#888888] hover:bg-[#1f1f1f]"
+              ? "border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] text-[var(--pf-c-ink-888888)] hover:bg-[var(--pf-c-fill-1f1f1f)]"
               : "border-[var(--pf-volt)] bg-[var(--pf-volt)] text-[var(--pf-on-accent)] hover:bg-[var(--pf-volt-active)]",
           className,
         )}
@@ -105,9 +105,9 @@ export default function FollowButton({
       className={cn(
         "rounded-xl font-semibold",
         data.isTeammate
-          ? "border border-[rgb(var(--pf-volt-rgb)/0.4)] bg-transparent text-[var(--pf-volt)] hover:bg-[rgb(var(--pf-volt-rgb)/0.08)]"
+          ? "border border-[rgb(var(--pf-volt-rgb)/0.4)] bg-transparent text-[var(--pf-volt-text)] hover:bg-[rgb(var(--pf-volt-rgb)/0.08)]"
           : data.isFollowedByUser
-            ? "border border-[#2a2a2a] bg-[#161616] text-[#888888] hover:bg-[#1f1f1f]"
+            ? "border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] text-[var(--pf-c-ink-888888)] hover:bg-[var(--pf-c-fill-1f1f1f)]"
             : "bg-[var(--pf-volt)] text-[var(--pf-on-accent)] hover:bg-[var(--pf-volt-active)]",
         className,
       )}

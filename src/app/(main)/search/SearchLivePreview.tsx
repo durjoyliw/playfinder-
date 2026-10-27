@@ -29,10 +29,10 @@ export function SearchLivePreview({
     <div className="flex-1 overflow-y-auto">
       {isFetching && players.length === 0 ? (
         <div className="flex justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt)]" />
+          <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt-text)]" />
         </div>
       ) : players.length === 0 ? (
-        <p className="px-4 py-8 text-center text-sm text-[#666666]">
+        <p className="px-4 py-8 text-center text-sm text-[var(--pf-c-ink-666666)]">
           No profiles found for &ldquo;{query}&rdquo;
         </p>
       ) : (
@@ -40,7 +40,7 @@ export function SearchLivePreview({
           <Link
             key={player.id}
             href={`/users/${player.username}`}
-            className="flex items-center gap-3 border-b border-[#111] px-4 py-3 transition-colors hover:bg-[#111]"
+            className="flex items-center gap-3 border-b border-[var(--pf-c-line-111111)] px-4 py-3 transition-colors hover:bg-[var(--pf-c-fill-111111)]"
           >
             <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-sm font-bold text-[var(--pf-on-accent)]">
               {player.avatarUrl ? (
@@ -54,10 +54,10 @@ export function SearchLivePreview({
               )}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-bold text-white">
+              <p className="truncate text-sm font-bold text-[var(--pf-c-ink-ffffff)]">
                 {player.displayName}
               </p>
-              <p className="truncate text-xs text-[#666666]">
+              <p className="truncate text-xs text-[var(--pf-c-ink-666666)]">
                 @{player.username}
               </p>
             </div>
@@ -68,7 +68,7 @@ export function SearchLivePreview({
       <button
         type="button"
         onClick={onSeeAllResults}
-        className="flex w-full items-center gap-3 border-b border-[#111] px-4 py-3.5 text-left text-sm font-semibold text-[var(--pf-volt)] transition-colors hover:bg-[#111]"
+        className="flex w-full items-center gap-3 border-b border-[var(--pf-c-line-111111)] px-4 py-3.5 text-left text-sm font-semibold text-[var(--pf-volt-text)] transition-colors hover:bg-[var(--pf-c-fill-111111)]"
       >
         <Search className="h-4 w-4 flex-shrink-0" />
         Search for &ldquo;{query}&rdquo;

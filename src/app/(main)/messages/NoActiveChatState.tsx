@@ -9,11 +9,11 @@ export function NoActiveChatState() {
 
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col items-center justify-center gap-3.5 bg-[var(--pf-bg)] p-10 text-center">
-      <div className="grid h-16 w-16 place-items-center rounded-full bg-[#1a1a1a] text-[#888888]">
+      <div className="grid h-16 w-16 place-items-center rounded-full bg-[var(--pf-c-fill-1a1a1a)] text-[var(--pf-c-ink-888888)]">
         <MessageCircle className="h-[30px] w-[30px]" strokeWidth={1.75} />
       </div>
-      <p className="text-xl font-bold text-white">Start a conversation</p>
-      <p className="max-w-[260px] text-sm leading-relaxed text-[#888888]">
+      <p className="text-xl font-bold text-[var(--pf-c-ink-ffffff)]">Start a conversation</p>
+      <p className="max-w-[260px] text-sm leading-relaxed text-[var(--pf-c-ink-888888)]">
         Choose from your existing conversations, or start a new one.
       </p>
       <button

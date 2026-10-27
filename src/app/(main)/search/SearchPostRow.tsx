@@ -15,7 +15,7 @@ export function SearchPostRow({ post }: SearchPostRowProps) {
   return (
     <Link
       href={`/posts/${post.id}`}
-      className="block border-b border-[#111] px-4 py-3 transition-colors hover:bg-[#111111]"
+      className="block border-b border-[var(--pf-c-line-111111)] px-4 py-3 transition-colors hover:bg-[var(--pf-c-fill-111111)]"
     >
       <div className="flex items-start gap-3">
         <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-xs font-bold text-[var(--pf-on-accent)]">
@@ -31,17 +31,17 @@ export function SearchPostRow({ post }: SearchPostRowProps) {
         </div>
 
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-bold text-white">{post.user.displayName}</p>
-          <p className="mt-1 line-clamp-3 text-sm leading-snug text-[#cccccc]">
+          <p className="text-sm font-bold text-[var(--pf-c-ink-ffffff)]">{post.user.displayName}</p>
+          <p className="mt-1 line-clamp-3 text-sm leading-snug text-[var(--pf-c-ink-cccccc)]">
             {post.content}
           </p>
           <div className="mt-2 flex flex-wrap items-center gap-2">
             {sportLabel && (
-              <span className="rounded-full bg-[#1f2d00] px-2 py-0.5 text-[10px] font-medium text-[var(--pf-volt)]">
+              <span className="rounded-full bg-[var(--pf-volt-tint)] px-2 py-0.5 text-[10px] font-medium text-[var(--pf-volt-text)]">
                 {sportLabel}
               </span>
             )}
-            <span className="text-xs text-[#666666]">
+            <span className="text-xs text-[var(--pf-c-ink-666666)]">
               {post._count.likes} like{post._count.likes === 1 ? "" : "s"}
             </span>
           </div>

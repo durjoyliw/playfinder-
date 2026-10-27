@@ -2,10 +2,10 @@ import { MapPin, MessageCircle, Radio, Trophy } from "lucide-react";
 import Link from "next/link";
 
 const VOLT = "var(--pf-volt)";
-const BG = "#0d0d0d";
-const CARD = "#161616";
-const MUTED = "#a3a3a3";
-const BORDER = "#2a2a2a";
+const BG = "var(--pf-c-fill-0d0d0d)";
+const CARD = "var(--pf-c-fill-161616)";
+const MUTED = "var(--pf-c-ink-a3a3a3)";
+const BORDER = "var(--pf-c-line-2a2a2a)";
 
 const features = [
   {
@@ -160,7 +160,7 @@ export function PlayFinderLanding() {
             borderBottom: `1px solid ${BORDER}`,
             position: "sticky",
             top: 0,
-            backgroundColor: "rgba(13,13,13,0.88)",
+            backgroundColor: "rgb(var(--pf-c-fill-0d0d0d-rgb)/0.88)",
             backdropFilter: "blur(10px)",
             zIndex: 20,
           }}
@@ -234,7 +234,7 @@ export function PlayFinderLanding() {
                   fontWeight: 800,
                   lineHeight: 1.1,
                   letterSpacing: "-0.02em",
-                  color: "#ffffff",
+                  color: "var(--pf-c-ink-ffffff)",
                 }}
               >
                 Find your game.
@@ -293,7 +293,7 @@ export function PlayFinderLanding() {
                     borderRadius: 9999,
                     backgroundColor: CARD,
                     border: `1px solid ${BORDER}`,
-                    color: "#ffffff",
+                    color: "var(--pf-c-ink-ffffff)",
                     fontSize: 15,
                     fontWeight: 600,
                     textDecoration: "none",
@@ -328,7 +328,7 @@ export function PlayFinderLanding() {
                     }}
                   />
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: "#ffffff" }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: "var(--pf-c-ink-ffffff)" }}>
                       Fraser is broadcasting
                     </div>
                     <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>
@@ -391,7 +391,7 @@ export function PlayFinderLanding() {
               ))}
             </div>
             <span style={{ fontSize: 14, color: MUTED }}>
-              <strong style={{ color: "#ffffff" }}>312 players</strong>{" "}
+              <strong style={{ color: "var(--pf-c-ink-ffffff)" }}>312 players</strong>{" "}
               already active in Glasgow
             </span>
           </div>
@@ -406,7 +406,7 @@ export function PlayFinderLanding() {
               fontSize: 28,
               margin: "0 0 32px",
               letterSpacing: "-0.01em",
-              color: "#ffffff",
+              color: "var(--pf-c-ink-ffffff)",
             }}
           >
             Everything you need to play more
@@ -445,7 +445,7 @@ export function PlayFinderLanding() {
                         position: "absolute",
                         inset: 0,
                         background:
-                          "linear-gradient(180deg, rgba(13,13,13,0.15) 0%, rgba(13,13,13,0.92) 100%)",
+                          "linear-gradient(180deg, rgb(var(--pf-c-fill-0d0d0d-rgb)/0.15) 0%, rgb(var(--pf-c-fill-0d0d0d-rgb)/0.92) 100%)",
                       }}
                     />
                   </>
@@ -462,7 +462,7 @@ export function PlayFinderLanding() {
                     margin: "0 0 8px",
                     fontSize: 17,
                     fontWeight: 700,
-                    color: "#ffffff",
+                    color: "var(--pf-c-ink-ffffff)",
                     position: "relative",
                     zIndex: 1,
                   }}
@@ -474,7 +474,7 @@ export function PlayFinderLanding() {
                     margin: 0,
                     fontSize: 14,
                     lineHeight: 1.55,
-                    color: photo ? "#d4d4d4" : MUTED,
+                    color: photo ? "var(--pf-c-ink-d4d4d4)" : MUTED,
                     position: "relative",
                     zIndex: 1,
                     maxWidth: 360,
@@ -495,7 +495,7 @@ export function PlayFinderLanding() {
               fontSize: 28,
               margin: "0 0 32px",
               letterSpacing: "-0.01em",
-              color: "#ffffff",
+              color: "var(--pf-c-ink-ffffff)",
             }}
           >
             How it works
@@ -528,7 +528,7 @@ export function PlayFinderLanding() {
                       margin: "0 0 8px",
                       fontSize: 16,
                       fontWeight: 700,
-                      color: "#ffffff",
+                      color: "var(--pf-c-ink-ffffff)",
                     }}
                   >
                     {title}
@@ -566,7 +566,7 @@ export function PlayFinderLanding() {
                   fontWeight: 500,
                   lineHeight: 1.4,
                   margin: "0 0 24px",
-                  color: "#ffffff",
+                  color: "var(--pf-c-ink-ffffff)",
                 }}
               >
                 &quot;I posted a broadcast on a Tuesday night and had a full
@@ -586,7 +586,7 @@ export function PlayFinderLanding() {
                   }}
                 />
                 <div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "#ffffff" }}>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "var(--pf-c-ink-ffffff)" }}>
                     Fraser Boyle
                   </div>
                   <div style={{ fontSize: 13, color: MUTED, marginTop: 2 }}>
@@ -605,7 +605,7 @@ export function PlayFinderLanding() {
             style={{
               padding: "64px 72px",
               borderRadius: 24,
-              background: `radial-gradient(120% 140% at 20% 0%, rgb(var(--pf-volt-rgb)/0.12) 0%, rgba(22,22,22,0) 60%), ${CARD}`,
+              background: `radial-gradient(120% 140% at 20% 0%, rgb(var(--pf-volt-rgb)/0.12) 0%, rgb(var(--pf-c-fill-161616-rgb)/0) 60%), ${CARD}`,
               border: `1px solid ${BORDER}`,
             }}
           >
@@ -615,7 +615,7 @@ export function PlayFinderLanding() {
                   margin: "0 0 10px",
                   fontSize: 32,
                   fontWeight: 800,
-                  color: "#ffffff",
+                  color: "var(--pf-c-ink-ffffff)",
                 }}
               >
                 Ready to play?

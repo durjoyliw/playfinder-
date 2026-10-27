@@ -101,10 +101,10 @@ export function ComposerDateTimePicker({
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="w-full text-left text-[15px] text-white"
+        className="w-full text-left text-[15px] text-[var(--pf-c-ink-ffffff)]"
         aria-expanded={open}
       >
-        <span className={selected ? "text-white" : "text-[#888888]"}>
+        <span className={selected ? "text-[var(--pf-c-ink-ffffff)]" : "text-[var(--pf-c-ink-888888)]"}>
           {label}
         </span>
       </button>
@@ -127,7 +127,7 @@ export function ComposerDateTimePicker({
                     "rounded-[10px] border px-3 py-1.5 text-xs font-semibold",
                     active
                       ? "border-[var(--pf-volt-cta)] bg-[var(--pf-volt-cta)] text-[var(--pf-on-accent)]"
-                      : "border-[#2a2f2a] text-[#b4bcaf]",
+                      : "border-[var(--pf-c-line-2a2f2a)] text-[var(--pf-c-ink-b4bcaf)]",
                   )}
                 >
                   {chip.label}
@@ -148,7 +148,7 @@ export function ComposerDateTimePicker({
                     "flex h-[58px] w-11 shrink-0 flex-col items-center justify-center rounded-[12px] border",
                     active
                       ? "border-[var(--pf-volt-cta)] bg-[var(--pf-volt-cta)] text-[var(--pf-on-accent)]"
-                      : "border-[#2a2f2a] text-[#b4bcaf]",
+                      : "border-[var(--pf-c-line-2a2f2a)] text-[var(--pf-c-ink-b4bcaf)]",
                   )}
                 >
                   <span className="font-dm-mono text-[9px] font-medium uppercase tracking-wider">
@@ -178,7 +178,7 @@ export function ComposerDateTimePicker({
                     "shrink-0 whitespace-nowrap rounded-[10px] border px-3 py-2 text-xs font-semibold",
                     active
                       ? "border-[var(--pf-volt-cta)] bg-[var(--pf-volt-cta)] text-[var(--pf-on-accent)]"
-                      : "border-[#2a2f2a] text-[#b4bcaf]",
+                      : "border-[var(--pf-c-line-2a2f2a)] text-[var(--pf-c-ink-b4bcaf)]",
                   )}
                 >
                   {formatTimeSlot(slot.hours, slot.minutes)}

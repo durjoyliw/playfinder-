@@ -90,9 +90,9 @@ export function PostInterestedPanel({
           type="button"
           onClick={() => setExpanded((v) => !v)}
           style={{
-            background: "#161616",
-            border: "1px solid #2a2a2a",
-            color: "#f0f0f0",
+            background: "var(--pf-c-fill-161616)",
+            border: "1px solid var(--pf-c-line-2a2a2a)",
+            color: "var(--pf-c-ink-f0f0f0)",
             borderRadius: 20,
             padding: "8px 16px",
             fontSize: 13,
@@ -106,9 +106,9 @@ export function PostInterestedPanel({
           onClick={handleManualFill}
           disabled={patchMutation.isPending}
           style={{
-            background: "#161616",
-            border: "1px solid #2a2a2a",
-            color: "var(--pf-volt)",
+            background: "var(--pf-c-fill-161616)",
+            border: "1px solid var(--pf-c-line-2a2a2a)",
+            color: "var(--pf-volt-text)",
             borderRadius: 20,
             padding: "8px 16px",
             fontSize: 13,
@@ -122,10 +122,10 @@ export function PostInterestedPanel({
       {expanded && (
         <div className="mt-3 space-y-2">
           {isLoading && (
-            <p className="text-sm text-[#888888]">Loading…</p>
+            <p className="text-sm text-[var(--pf-c-ink-888888)]">Loading…</p>
           )}
           {!isLoading && interests.length === 0 && (
-            <p className="text-sm text-[#888888]">No interested players yet.</p>
+            <p className="text-sm text-[var(--pf-c-ink-888888)]">No interested players yet.</p>
           )}
           {interests.map((interest) => {
             const sportTag = interest.user.sports[0];
@@ -136,7 +136,7 @@ export function PostInterestedPanel({
             return (
               <div
                 key={interest.id}
-                className="flex items-center justify-between gap-3 rounded-xl bg-[#1a1a1a] p-3"
+                className="flex items-center justify-between gap-3 rounded-xl bg-[var(--pf-c-fill-1a1a1a)] p-3 pf-card"
               >
                 <Link
                   href={`/users/${interest.user.username}`}
@@ -149,16 +149,16 @@ export function PostInterestedPanel({
                       className="h-9 w-9 flex-shrink-0 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[#2a2a2a] text-xs font-bold text-white">
+                    <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[var(--pf-c-fill-2a2a2a)] text-xs font-bold text-[var(--pf-c-ink-ffffff)]">
                       {getInitials(interest.user.displayName)}
                     </div>
                   )}
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-white">
+                    <p className="truncate text-sm font-semibold text-[var(--pf-c-ink-ffffff)]">
                       {interest.user.displayName}
                     </p>
                     {sportLabel && (
-                      <span className="text-xs text-[#888888]">
+                      <span className="text-xs text-[var(--pf-c-ink-888888)]">
                         {sportLabel}
                         {sportTag?.skillLevel
                           ? ` · ${sportTag.skillLevel}`
@@ -171,7 +171,7 @@ export function PostInterestedPanel({
                 <div className="flex flex-shrink-0 items-center gap-2">
                   {interest.status === "ACCEPTED" ? (
                     <>
-                      <span className="text-xs font-medium text-[var(--pf-volt)]">
+                      <span className="text-xs font-medium text-[var(--pf-volt-text)]">
                         Accepted ✓
                       </span>
                       {interest.userId !== authorId && (
@@ -183,7 +183,7 @@ export function PostInterestedPanel({
                               action: "REMOVE",
                             })
                           }
-                          className="rounded-lg bg-[#2a2a2a] px-3 py-1.5 text-xs text-[#888888] hover:text-white"
+                          className="rounded-lg bg-[var(--pf-c-fill-2a2a2a)] px-3 py-1.5 text-xs text-[var(--pf-c-ink-888888)] hover:text-[var(--pf-c-ink-ffffff)]"
                         >
                           Remove
                         </button>
@@ -211,7 +211,7 @@ export function PostInterestedPanel({
                             action: "IGNORE",
                           })
                         }
-                        className="rounded-lg bg-[#2a2a2a] px-3 py-1.5 text-xs text-[#888888]"
+                        className="rounded-lg bg-[var(--pf-c-fill-2a2a2a)] px-3 py-1.5 text-xs text-[var(--pf-c-ink-888888)]"
                       >
                         Ignore
                       </button>

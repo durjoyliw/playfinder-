@@ -111,13 +111,13 @@ export default function NotificationsSettingsPage() {
     <div className="min-h-full bg-[var(--pf-bg)] pb-8">
       <PageBackHeader title="Notifications" backHref="/settings" />
       <div className="px-4 py-6">
-        <div className="overflow-hidden rounded-xl bg-[#161616] p-4">
+        <div className="overflow-hidden rounded-xl bg-[var(--pf-c-fill-161616)] p-4 pf-card">
           <div className="flex items-start gap-3">
-            <span className="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[rgb(var(--pf-volt-rgb)/0.15)] text-[var(--pf-volt)]">
+            <span className="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[rgb(var(--pf-volt-rgb)/0.15)] text-[var(--pf-volt-text)]">
               <Bell className="h-5 w-5" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="font-semibold text-white">Push notifications</p>
+              <p className="font-semibold text-[var(--pf-c-ink-ffffff)]">Push notifications</p>
               <p className="mt-0.5 text-sm text-muted-foreground">
                 Get notified on this device for likes, comments, teammate
                 requests, messages, and updates about games near you -- even
@@ -156,7 +156,7 @@ export default function NotificationsSettingsPage() {
                       onClick={subscribed ? disablePush : enablePush}
                       className={
                         subscribed
-                          ? "mt-3 rounded-full border border-[#2a2a2a] bg-[#1a1a1a] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#232323] disabled:opacity-60"
+                          ? "mt-3 rounded-full border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-1a1a1a)] px-4 py-2 text-sm font-semibold text-[var(--pf-c-ink-ffffff)] transition-colors hover:bg-[var(--pf-c-fill-232323)] disabled:opacity-60"
                           : "mt-3 rounded-full bg-[var(--pf-volt)] px-4 py-2 text-sm font-semibold text-[var(--pf-on-accent)] transition-colors hover:bg-[var(--pf-volt-active)] disabled:opacity-60"
                       }
                     >

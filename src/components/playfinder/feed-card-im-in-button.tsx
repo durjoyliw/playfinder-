@@ -64,8 +64,8 @@ export function FeedCardImInButton({
         disabled
         className={baseClass}
         style={{
-          background: "#1a1a1a",
-          color: "#555",
+          background: "var(--pf-c-fill-1a1a1a)",
+          color: "var(--pf-c-ink-555555)",
           cursor: "not-allowed",
         }}
       >
@@ -87,7 +87,7 @@ export function FeedCardImInButton({
           type="button"
           onClick={() => setShowCancelConfirm(false)}
           disabled={cancelMutation.isPending}
-          className={`${baseClass} flex-1 border border-[#2a2a2a] bg-[#1a1a1a] text-[#888888] hover:bg-[#1f1f1f]`}
+          className={`${baseClass} flex-1 border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-1a1a1a)] text-[var(--pf-c-ink-888888)] hover:bg-[var(--pf-c-fill-1f1f1f)]`}
         >
           Keep
         </button>
@@ -111,7 +111,7 @@ export function FeedCardImInButton({
         className={baseClass}
         style={{
           background: "#1a2a1a",
-          color: "var(--pf-volt)",
+          color: "var(--pf-volt-text)",
           cursor: "pointer",
         }}
       >
@@ -128,7 +128,7 @@ export function FeedCardImInButton({
         className={baseClass}
         style={{
           background: "#1a2a1a",
-          color: "var(--pf-volt)",
+          color: "var(--pf-volt-text)",
           cursor: "default",
         }}
       >

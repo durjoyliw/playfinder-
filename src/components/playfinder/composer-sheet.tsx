@@ -50,10 +50,10 @@ interface ComposerSheetProps {
 }
 
 const textareaClassName =
-  "mb-3.5 w-full min-h-[110px] resize-none rounded-[14px] border border-[#2a2f2a] bg-[#131614] p-4 text-base text-white outline-none placeholder:text-[#888888] focus:border-[var(--pf-volt-cta)]";
+  "mb-3.5 w-full min-h-[110px] resize-none rounded-[14px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-4 text-base text-[var(--pf-c-ink-ffffff)] outline-none placeholder:text-[var(--pf-c-ink-888888)] focus:border-[var(--pf-volt-cta)] pf-card";
 
 const fieldInputClassName =
-  "min-h-6 w-full border-0 bg-transparent text-base text-white outline-none lg:text-[15px] placeholder:text-[#888888] [color-scheme:dark]";
+  "min-h-6 w-full border-0 bg-transparent text-base text-[var(--pf-c-ink-ffffff)] outline-none lg:text-[15px] placeholder:text-[var(--pf-c-ink-888888)] [color-scheme:dark]";
 
 const ARENA_INTENTS = POST_INTENTS.filter(
   (o) =>
@@ -162,7 +162,7 @@ function getComposerSportDisplay(raw: string): { name: string; emoji: string } {
 const visibilityActiveClass =
   "rounded-[10px] border border-[var(--pf-volt-cta)] bg-[var(--pf-volt-cta)] px-3 py-2 text-xs font-bold text-[var(--pf-on-accent)]";
 const visibilityInactiveClass =
-  "rounded-[10px] border border-[#2a2f2a] bg-[#131614] px-3 py-2 text-xs font-semibold text-[#888888]";
+  "rounded-[10px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] px-3 py-2 text-xs font-semibold text-[var(--pf-c-ink-888888)] pf-card";
 
 const composerSubmitButtonClassName =
   "ml-auto h-12 min-h-12 shrink-0 rounded-full bg-[var(--pf-volt-cta)] px-[22px] py-3 text-[15px] font-bold text-[var(--pf-on-accent)] hover:bg-[rgb(var(--pf-volt-cta-rgb)/0.9)]";
@@ -170,13 +170,13 @@ const composerSubmitButtonClassName =
 const sportChipSelectedClass =
   "flex min-h-9 items-center gap-1 rounded-[10px] border border-[var(--pf-volt-cta)] bg-[var(--pf-volt-cta)] px-3 py-2 text-xs font-semibold text-[var(--pf-on-accent)] transition-colors";
 const sportChipIdleClass =
-  "flex min-h-9 items-center gap-1 rounded-[10px] border border-[#2a2f2a] bg-[#131614] px-3 py-2 text-xs font-semibold text-[#b4bcaf] transition-colors";
+  "flex min-h-9 items-center gap-1 rounded-[10px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] px-3 py-2 text-xs font-semibold text-[var(--pf-c-ink-b4bcaf)] transition-colors pf-card";
 
 const footerChipClass =
-  "flex min-h-9 items-center gap-1.5 rounded-[10px] border border-[#2a2f2a] bg-[#131614] px-3 py-2 text-xs text-[#b4bcaf]";
+  "flex min-h-9 items-center gap-1.5 rounded-[10px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] px-3 py-2 text-xs text-[var(--pf-c-ink-b4bcaf)] pf-card";
 
 const mediaBtnClass =
-  "grid h-9 w-9 place-items-center rounded-[10px] border border-[#2a2f2a] bg-[#131614] text-[#b4bcaf] hover:border-[var(--pf-volt-cta)] hover:text-[var(--pf-volt-cta)]";
+  "grid h-9 w-9 place-items-center rounded-[10px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-b4bcaf)] hover:border-[var(--pf-volt-cta)] hover:text-[var(--pf-volt-cta)] pf-card";
 
 function VisibilityToggle({
   visibility,
@@ -231,12 +231,12 @@ function FieldRow({
   return (
     <div
       className={cn(
-        "flex min-h-[52px] items-center gap-2.5 rounded-[14px] border border-[#2a2f2a] bg-[#131614] px-4 py-3.5",
+        "flex min-h-[52px] items-center gap-2.5 rounded-[14px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] px-4 py-3.5 pf-card",
         className,
       )}
     >
       {(label || icon) && (
-        <span className="flex min-w-[50px] shrink-0 items-center gap-1 text-[13px] font-semibold text-[#7e8a7e]">
+        <span className="flex min-w-[50px] shrink-0 items-center gap-1 text-[13px] font-semibold text-[var(--pf-c-ink-7e8a7e)]">
           {icon}
           {label}
         </span>
@@ -579,25 +579,25 @@ export function ComposerSheet({
       />
 
       <div
-        className="relative z-10 max-h-[90%] w-full max-w-[480px] overflow-y-auto rounded-t-[24px] border border-[#2a2f2a] border-b-0 bg-[#161616] px-4 pb-[calc(24px+env(safe-area-inset-bottom,0px))] pt-4 text-white shadow-[0_-10px_40px_rgba(0,0,0,0.5)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="relative z-10 max-h-[90%] w-full max-w-[480px] overflow-y-auto rounded-t-[24px] border border-[var(--pf-c-line-2a2f2a)] border-b-0 bg-[var(--pf-c-fill-161616)] px-4 pb-[calc(24px+env(safe-area-inset-bottom,0px))] pt-4 text-[var(--pf-c-ink-ffffff)] shadow-[0_-10px_40px_rgba(0,0,0,0.5)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         role="dialog"
         aria-modal="true"
         aria-labelledby="composer-sheet-title"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mx-auto mb-4 h-1 w-10 rounded-sm bg-[#353c34]" aria-hidden />
+        <div className="mx-auto mb-4 h-1 w-10 rounded-sm bg-[var(--pf-c-fill-353c34)]" aria-hidden />
 
         <div className="mb-[18px] flex items-center justify-between">
           <h2
             id="composer-sheet-title"
-            className="text-[22px] font-bold tracking-[-0.03em] text-white"
+            className="text-[22px] font-bold tracking-[-0.03em] text-[var(--pf-c-ink-ffffff)]"
           >
             Create
           </h2>
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="grid h-[38px] w-[38px] place-items-center rounded-full bg-[#131614] text-[#b4bcaf] transition-transform active:scale-90"
+            className="grid h-[38px] w-[38px] place-items-center rounded-full bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-b4bcaf)] transition-transform active:scale-90"
             aria-label="Close"
           >
             <X className="h-[18px] w-[18px]" />
@@ -618,18 +618,18 @@ export function ComposerSheet({
               "min-h-14 rounded-2xl border p-4 text-left transition-all active:scale-[0.97]",
               activeTab === "social"
                 ? "border-[var(--pf-volt-cta)] bg-[rgb(var(--pf-volt-neon-rgb)/0.05)]"
-                : "border-[#2a2f2a] bg-[#131614]",
+                : "border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)]",
             )}
           >
             <div
               className={cn(
                 "mb-1 text-[15px] font-bold",
-                activeTab === "social" ? "text-[var(--pf-volt-cta)]" : "text-white",
+                activeTab === "social" ? "text-[var(--pf-volt-cta)]" : "text-[var(--pf-c-ink-ffffff)]",
               )}
             >
               Social
             </div>
-            <div className="text-xs text-[#7e8a7e]">
+            <div className="text-xs text-[var(--pf-c-ink-7e8a7e)]">
               Share something with the community
             </div>
           </button>
@@ -642,18 +642,18 @@ export function ComposerSheet({
               "min-h-14 rounded-2xl border p-4 text-left transition-all active:scale-[0.97]",
               activeTab === "arena"
                 ? "border-[var(--pf-volt-cta)] bg-[rgb(var(--pf-volt-neon-rgb)/0.05)]"
-                : "border-[#2a2f2a] bg-[#131614]",
+                : "border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)]",
             )}
           >
             <div
               className={cn(
                 "mb-1 text-[15px] font-bold",
-                activeTab === "arena" ? "text-[var(--pf-volt-cta)]" : "text-white",
+                activeTab === "arena" ? "text-[var(--pf-volt-cta)]" : "text-[var(--pf-c-ink-ffffff)]",
               )}
             >
               Arena
             </div>
-            <div className="text-xs text-[#7e8a7e]">
+            <div className="text-xs text-[var(--pf-c-ink-7e8a7e)]">
               Find players. Create a game.
             </div>
           </button>
@@ -669,21 +669,21 @@ export function ComposerSheet({
                 className="h-8 w-8 rounded-lg object-cover"
               />
             ) : (
-              <div className="grid h-8 w-8 place-items-center rounded-lg bg-[#232824] text-[11px] font-bold text-[var(--pf-volt)]">
+              <div className="grid h-8 w-8 place-items-center rounded-lg bg-[var(--pf-c-fill-232824)] text-[11px] font-bold text-[var(--pf-volt-text)]">
                 {getInitials(actingPage.name)}
               </div>
             )}
-            <p className="min-w-0 flex-1 text-[13px] font-semibold text-[var(--pf-volt)]">
+            <p className="min-w-0 flex-1 text-[13px] font-semibold text-[var(--pf-volt-text)]">
               Posting as{" "}
-              <span className="text-[#f2f5ef]">{actingPage.name}</span>
+              <span className="text-[var(--pf-c-ink-f2f5ef)]">{actingPage.name}</span>
             </p>
           </div>
         )}
 
-        <div className="mb-3.5 flex items-center gap-2.5 text-[13px] text-[#7e8a7e]">
+        <div className="mb-3.5 flex items-center gap-2.5 text-[13px] text-[var(--pf-c-ink-7e8a7e)]">
           <IdentitySwitcher />
           <span className="min-w-0 flex-1">
-            Posting as <b className="text-white">{postingAsName}</b>
+            Posting as <b className="text-[var(--pf-c-ink-ffffff)]">{postingAsName}</b>
           </span>
         </div>
 
@@ -705,7 +705,7 @@ export function ComposerSheet({
                 className={textareaClassName}
                 required
               />
-              <p className="pointer-events-none absolute bottom-6 right-3 text-xs text-[#888888]">
+              <p className="pointer-events-none absolute bottom-6 right-3 text-xs text-[var(--pf-c-ink-888888)]">
                 {socialContent.length}/280
               </p>
             </div>
@@ -735,7 +735,7 @@ export function ComposerSheet({
                 maxLength={280}
                 className={textareaClassName}
               />
-              <p className="pointer-events-none absolute bottom-6 right-3 text-xs text-[#888888]">
+              <p className="pointer-events-none absolute bottom-6 right-3 text-xs text-[var(--pf-c-ink-888888)]">
                 {arenaContent.length}/280
               </p>
             </div>
@@ -775,7 +775,7 @@ export function ComposerSheet({
                         "rounded-[10px] border px-3 py-1.5 text-xs font-semibold transition-colors",
                         selectedIntent === option.value
                           ? option.className
-                          : "border-[#2a2f2a] bg-transparent text-[#888888]",
+                          : "border-[var(--pf-c-line-2a2f2a)] bg-transparent text-[var(--pf-c-ink-888888)]",
                       )}
                     >
                       {option.label}
@@ -811,23 +811,23 @@ export function ComposerSheet({
                   <button
                     type="button"
                     onClick={() => setSlotsNeeded((n) => Math.max(1, n - 1))}
-                    className="grid h-8 w-8 place-items-center rounded-[10px] border border-[#2a2f2a] text-white hover:border-[var(--pf-volt-cta)] hover:text-[var(--pf-volt-cta)]"
+                    className="grid h-8 w-8 place-items-center rounded-[10px] border border-[var(--pf-c-line-2a2f2a)] text-[var(--pf-c-ink-ffffff)] hover:border-[var(--pf-volt-cta)] hover:text-[var(--pf-volt-cta)]"
                     aria-label="Decrease players"
                   >
                     <Minus className="h-4 w-4" />
                   </button>
-                  <span className="min-w-[2rem] text-center text-[15px] font-semibold text-white">
+                  <span className="min-w-[2rem] text-center text-[15px] font-semibold text-[var(--pf-c-ink-ffffff)]">
                     {slotsNeeded}
                   </span>
                   <button
                     type="button"
                     onClick={() => setSlotsNeeded((n) => Math.min(10, n + 1))}
-                    className="grid h-8 w-8 place-items-center rounded-[10px] border border-[#2a2f2a] text-white hover:border-[var(--pf-volt-cta)] hover:text-[var(--pf-volt-cta)]"
+                    className="grid h-8 w-8 place-items-center rounded-[10px] border border-[var(--pf-c-line-2a2f2a)] text-[var(--pf-c-ink-ffffff)] hover:border-[var(--pf-volt-cta)] hover:text-[var(--pf-volt-cta)]"
                     aria-label="Increase players"
                   >
                     <Plus className="h-4 w-4" />
                   </button>
-                  <span className="text-xs text-[#7e8a7e]">players needed</span>
+                  <span className="text-xs text-[var(--pf-c-ink-7e8a7e)]">players needed</span>
                 </div>
               </FieldRow>
 

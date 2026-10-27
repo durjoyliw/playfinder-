@@ -29,10 +29,10 @@ interface FeedCardCommentItemProps {
 
 function FeedCardCommentItem({ comment }: FeedCardCommentItemProps) {
   return (
-    <div className="flex gap-2.5 rounded-lg border border-[#2a2a2a] bg-[#161616] p-3">
+    <div className="flex gap-2.5 rounded-lg border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] p-3 pf-card">
       <Link
         href={`/users/${comment.user.username}`}
-        className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#2a2a2a] text-xs font-bold text-white transition-opacity hover:opacity-80"
+        className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[var(--pf-c-fill-2a2a2a)] text-xs font-bold text-[var(--pf-c-ink-ffffff)] transition-opacity hover:opacity-80"
       >
         {getInitials(comment.user.displayName)}
       </Link>
@@ -40,7 +40,7 @@ function FeedCardCommentItem({ comment }: FeedCardCommentItemProps) {
         <div className="mb-0.5 flex items-center gap-2">
           <Link
             href={`/users/${comment.user.username}`}
-            className="text-sm font-semibold text-white hover:underline"
+            className="text-sm font-semibold text-[var(--pf-c-ink-ffffff)] hover:underline"
           >
             {comment.user.displayName}
           </Link>
@@ -48,7 +48,7 @@ function FeedCardCommentItem({ comment }: FeedCardCommentItemProps) {
             {formatRelativeDate(comment.createdAt)}
           </span>
         </div>
-        <p className="text-sm leading-relaxed text-gray-300">
+        <p className="text-sm leading-relaxed text-[var(--pf-c-ink-d1d5db)]">
           {comment.content}
         </p>
       </div>
@@ -177,7 +177,7 @@ export function FeedCardComments({
         <button
           type="button"
           onClick={() => setInternalOpen((open) => !open)}
-          className="flex w-full items-center gap-1.5 px-0 py-3 text-muted-foreground transition-colors hover:text-white"
+          className="flex w-full items-center gap-1.5 px-0 py-3 text-muted-foreground transition-colors hover:text-[var(--pf-c-ink-ffffff)]"
         >
           <MessageCircle className="h-4 w-4" />
           <span className="text-sm">
@@ -195,7 +195,7 @@ export function FeedCardComments({
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Write a reply..."
-              className="flex-1 rounded-lg border border-[#2a2a2a] bg-[#161616] px-3 py-2 text-base text-white lg:text-sm placeholder:text-muted-foreground focus:border-[var(--pf-volt)] focus:outline-none"
+              className="flex-1 rounded-lg border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] px-3 py-2 text-base text-[var(--pf-c-ink-ffffff)] lg:text-sm placeholder:text-muted-foreground focus:border-[var(--pf-volt)] focus:outline-none pf-card"
             />
             <button
               type="submit"
@@ -216,7 +216,7 @@ export function FeedCardComments({
               type="button"
               onClick={() => fetchNextPage()}
               disabled={isFetching}
-              className="text-xs text-[var(--pf-volt)] hover:underline disabled:opacity-50"
+              className="text-xs text-[var(--pf-volt-text)] hover:underline disabled:opacity-50"
             >
               Load earlier replies
             </button>
@@ -224,7 +224,7 @@ export function FeedCardComments({
 
           {status === "pending" && (
             <div className="flex justify-center py-2">
-              <Loader2 className="h-5 w-5 animate-spin text-[var(--pf-volt)]" />
+              <Loader2 className="h-5 w-5 animate-spin text-[var(--pf-volt-text)]" />
             </div>
           )}
 

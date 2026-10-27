@@ -68,13 +68,13 @@ export function BottomNav() {
   const linkClass = (active: boolean) =>
     cn(
       "relative flex h-full min-h-12 w-full flex-1 items-center justify-center transition-colors active:scale-90",
-      active ? "text-[var(--pf-volt)]" : "text-[#7e8a7e]",
+      active ? "text-[var(--pf-volt-text)]" : "text-[var(--pf-c-ink-7e8a7e)]",
     );
 
   return (
     <nav
       data-pf-bottom-nav
-      className="fixed bottom-0 left-0 right-0 z-[var(--pf-z-nav)] flex h-[calc(64px+env(safe-area-inset-bottom,0px))] shrink-0 items-stretch border-t border-white/[0.05] bg-[rgba(8,9,10,0.95)] pb-[env(safe-area-inset-bottom,0px)] font-grotesk backdrop-blur-[24px]">
+      className="fixed bottom-0 left-0 right-0 z-[var(--pf-z-nav)] flex h-[calc(64px+env(safe-area-inset-bottom,0px))] shrink-0 items-stretch border-t border-[rgb(var(--pf-contrast-rgb)/0.05)] bg-[rgb(var(--pf-c-fill-08090a-rgb)/0.95)] pb-[env(safe-area-inset-bottom,0px)] font-grotesk backdrop-blur-[24px]">
       <div className="mx-auto flex h-full w-full max-w-md items-stretch">
         {navItems.slice(0, 2).map((item) => {
           const active = item.isActive(pathname);
@@ -123,7 +123,7 @@ export function BottomNav() {
               <span className="relative inline-flex">
                 <item.icon className="h-6 w-6 shrink-0" />
                 {showBadge && (
-                  <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full border-2 border-[#08090a] bg-[var(--pf-volt)] px-1 font-dm-mono text-[9px] font-bold text-[var(--pf-on-accent)]">
+                  <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full border-2 border-[var(--pf-c-line-08090a)] bg-[var(--pf-volt)] px-1 font-dm-mono text-[9px] font-bold text-[var(--pf-on-accent)]">
                     {unreadCount > 9 ? "9+" : unreadCount}
                   </span>
                 )}

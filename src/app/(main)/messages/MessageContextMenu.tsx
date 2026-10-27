@@ -30,7 +30,7 @@ export default function MessageContextMenu({
         onClick={onClose}
       />
       <div
-        className="fixed z-50 min-w-[120px] overflow-hidden rounded-xl border border-[#333] bg-[#1a1a1a] py-1 shadow-lg"
+        className="fixed z-50 min-w-[120px] overflow-hidden rounded-xl border border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1a1a1a)] py-1 shadow-lg pf-card"
         style={{ left: x, top: y }}
       >
         <MenuItem onClick={onReact}>React</MenuItem>
@@ -59,7 +59,7 @@ function MenuItem({
       type="button"
       onClick={onClick}
       className={cn(
-        "w-full px-4 py-2 text-left text-sm text-white transition-colors hover:bg-[#2a2a2a]",
+        "w-full px-4 py-2 text-left text-sm text-[var(--pf-c-ink-ffffff)] transition-colors hover:bg-[var(--pf-c-fill-2a2a2a)]",
         className,
       )}
     >

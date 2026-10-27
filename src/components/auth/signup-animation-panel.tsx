@@ -74,7 +74,7 @@ export function SignupAnimationPanel() {
 
   return (
     <div
-      className="hidden h-full w-1/2 flex-col items-center justify-center bg-[#0d0d0d] md:flex"
+      className="hidden h-full w-1/2 flex-col items-center justify-center bg-[var(--pf-c-fill-0d0d0d)] md:flex"
       style={{ minHeight: "100%" }}
     >
       <div

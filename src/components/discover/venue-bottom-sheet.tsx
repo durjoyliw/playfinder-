@@ -3,11 +3,21 @@
 import { DiscoverPlaceList } from "@/components/discover/discover-place-list";
 import type { DiscoverPlace, DiscoverTabType } from "@/lib/discover-places";
 import { cn } from "@/lib/utils";
-import { useEffect, useMemo, useState, type RefObject } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type RefObject,
+} from "react";
 import { Drawer } from "vaul";
 
-/** Visible height of the sheet when collapsed. */
+/** Visible height of the sheet at "peek" (the default resting state). */
 const PEEK_PX = 220;
+/** First-render estimate of the collapsed bar until it is measured. */
+const COLLAPSED_ESTIMATE_PX = 106;
+
+type SnapName = "collapsed" | "peek" | "half" | "full";
 /** Space left between the header and the sheet when fully open. */
 const FULL_TOP_GAP_PX = 8;
 
@@ -56,7 +66,7 @@ export function DiscoverVenueClubTabs({
               onClick={() => onTabChange(tab.id)}
               className={cn(
                 "relative z-[2] flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-[10px] py-2.5 text-sm font-bold transition-colors duration-200",
-                isActive ? "text-[var(--pf-on-accent)]" : "text-[#7e8a7e]",
+                isActive ? "text-[var(--pf-on-accent)]" : "text-[var(--pf-c-ink-7e8a7e)]",
               )}
             >
               {tab.label}
@@ -64,7 +74,7 @@ export function DiscoverVenueClubTabs({
           );
         })}
       </div>
-      <p className="px-4 pb-2 text-right font-dm-mono text-[11px] font-medium text-[#7e8a7e]">
+      <p className="px-4 pb-2 text-right font-dm-mono text-[11px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
         {nearbyCount} nearby
       </p>
     </div>
@@ -115,11 +125,35 @@ function useAreaSize(ref: RefObject<HTMLElement>) {
 }
 
 /**
+ * Live height of an element, via a callback ref so it starts measuring as
+ * soon as the element mounts (the bar only renders once the sheet has sizes).
+ */
+function useElementHeight<T extends HTMLElement>() {
+  const [node, setNode] = useState<T | null>(null);
+  const [height, setHeight] = useState<number | null>(null);
+  useEffect(() => {
+    if (!node) return;
+    const measure = () =>
+      setHeight(Math.round(node.getBoundingClientRect().height));
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [node]);
+  const ref = useCallback((el: T | null) => setNode(el), []);
+  return [ref, height] as const;
+}
+
+/**
  * Draggable venue sheet on mobile Discover (vaul).
  *
  * The sheet is exactly as tall as the map area (minus a small top gap) and
  * sits directly above the bottom nav, so "full" means no translation -- vaul
  * only lets the inner list scroll when the sheet is at rest at translateY(0).
+ *
+ * Snaps, lowest first: "collapsed" shows only the handle + Venues/Clubs bar
+ * over the full map (Airbnb-style), then "peek", "half", "full". Swipe down
+ * from peek to collapse; drag the bar up to expand again.
  *
  * vaul measures px snap points against `window.innerHeight` (it assumes a
  * full-screen drawer), so each visible height `v` is converted with
@@ -134,24 +168,39 @@ export function VenueBottomSheet({
   sportKey,
 }: VenueBottomSheetProps) {
   const size = useAreaSize(boundsRef);
-  const [snapIndex, setSnapIndex] = useState(0);
+  const [barRef, barHeight] = useElementHeight<HTMLDivElement>();
+  const [snap, setSnap] = useState<SnapName>("peek");
 
   const sheetHeight = size ? Math.max(size.area - FULL_TOP_GAP_PX, 0) : 0;
 
-  const snapPoints = useMemo(() => {
+  // Named snaps -> vaul px values. Snaps that collapse to the same height on
+  // very short screens are merged (the higher name wins).
+  const snaps = useMemo(() => {
     if (!size || sheetHeight === 0) return [];
-    const peek = Math.min(PEEK_PX, sheetHeight);
+    const collapsed = Math.min(barHeight ?? COLLAPSED_ESTIMATE_PX, sheetHeight);
+    const peek = Math.min(Math.max(PEEK_PX, collapsed), sheetHeight);
     const half = Math.max(Math.round(size.area * 0.5), peek);
-    const visible = Array.from(new Set([peek, half, sheetHeight])).sort(
-      (a, b) => a - b,
-    );
-    return visible.map((v) => `${v + size.viewport - sheetHeight}px`);
-  }, [size, sheetHeight]);
+    const visible: [SnapName, number][] = [
+      ["collapsed", collapsed],
+      ["peek", peek],
+      ["half", half],
+      ["full", sheetHeight],
+    ];
+    const byHeight = new Map<number, SnapName>();
+    visible.forEach(([name, v]) => byHeight.set(v, name));
+    return Array.from(byHeight.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([v, name]) => ({
+        name,
+        point: `${v + size.viewport - sheetHeight}px`,
+      }));
+  }, [size, sheetHeight, barHeight]);
 
-  if (snapPoints.length === 0) return null;
+  if (snaps.length === 0) return null;
 
-  const activeIndex = Math.min(snapIndex, snapPoints.length - 1);
-  const isFull = activeIndex === snapPoints.length - 1;
+  const snapPoints = snaps.map((s) => s.point);
+  const active = snaps.find((s) => s.name === snap) ?? snaps[0];
+  const isFull = active.name === "full";
 
   return (
     <Drawer.Root
@@ -160,17 +209,17 @@ export function VenueBottomSheet({
       dismissible={false}
       noBodyStyles
       snapPoints={snapPoints}
-      activeSnapPoint={snapPoints[activeIndex]}
+      activeSnapPoint={active.point}
       setActiveSnapPoint={(point) => {
-        const next = snapPoints.indexOf(String(point));
-        if (next !== -1) setSnapIndex(next);
+        const next = snaps.find((s) => s.point === String(point));
+        if (next) setSnap(next.name);
       }}
       fadeFromIndex={snapPoints.length - 1}
     >
       <Drawer.Content
         aria-describedby={undefined}
         onOpenAutoFocus={(e) => e.preventDefault()}
-        className="fixed inset-x-0 z-20 mx-auto flex max-w-[480px] flex-col rounded-t-[24px] border-t border-white/[0.06] bg-[var(--pf-bg)] shadow-[0_-10px_40px_rgba(0,0,0,0.4)] outline-none"
+        className="fixed inset-x-0 z-20 mx-auto flex max-w-[480px] flex-col rounded-t-[24px] border-t border-[rgb(var(--pf-contrast-rgb)/0.06)] bg-[var(--pf-bg)] shadow-[0_-10px_40px_rgba(0,0,0,0.4)] outline-none"
         style={{
           height: sheetHeight,
           bottom: "calc(64px + env(safe-area-inset-bottom, 0px))",
@@ -178,18 +227,21 @@ export function VenueBottomSheet({
       >
         <Drawer.Title className="sr-only">Nearby venues</Drawer.Title>
 
-        <div className="flex shrink-0 justify-center pb-2 pt-3">
-          <Drawer.Handle
-            aria-label="Drag to resize"
-            className="!h-1 !w-10 !bg-[var(--pf-border-light)] !opacity-100"
+        {/* The always-visible bar: what stays on screen when collapsed. */}
+        <div ref={barRef} className="shrink-0">
+          <div className="flex justify-center pb-2 pt-3">
+            <Drawer.Handle
+              aria-label="Drag to resize"
+              className="!h-1 !w-10 !bg-[var(--pf-border-light)] !opacity-100"
+            />
+          </div>
+
+          <DiscoverVenueClubTabs
+            activeTab={activeTab}
+            onTabChange={onTabChange}
+            nearbyCount={places.length}
           />
         </div>
-
-        <DiscoverVenueClubTabs
-          activeTab={activeTab}
-          onTabChange={onTabChange}
-          nearbyCount={places.length}
-        />
 
         <div
           className={cn(

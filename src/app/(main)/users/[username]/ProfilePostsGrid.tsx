@@ -39,7 +39,7 @@ export default function ProfilePostsGrid({ userId }: ProfilePostsGridProps) {
   if (status === "pending") {
     return (
       <div className="flex justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt)]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt-text)]" />
       </div>
     );
   }
@@ -54,7 +54,7 @@ export default function ProfilePostsGrid({ userId }: ProfilePostsGridProps) {
 
   if (status === "success" && !posts.length && !hasNextPage) {
     return (
-      <p className="py-8 text-center text-sm text-gray-500">
+      <p className="py-8 text-center text-sm text-[var(--pf-c-ink-6b7280)]">
         No posts yet.
       </p>
     );
@@ -73,9 +73,9 @@ export default function ProfilePostsGrid({ userId }: ProfilePostsGridProps) {
           <Link
             key={post.id}
             href={`/posts/${post.id}`}
-            className="overflow-hidden rounded-xl border border-[#262626] bg-[#1a1a1a]"
+            className="overflow-hidden rounded-xl border border-[var(--pf-c-line-262626)] bg-[var(--pf-c-fill-1a1a1a)] pf-card"
           >
-            <div className="relative aspect-[4/3] bg-[#262626]">
+            <div className="relative aspect-[4/3] bg-[var(--pf-c-fill-262626)]">
               {imageAttachment ? (
                 <Image
                   src={imageAttachment.url}
@@ -94,14 +94,14 @@ export default function ProfilePostsGrid({ userId }: ProfilePostsGridProps) {
                   {typeBadge.label}
                 </span>
               </div>
-              <p className="line-clamp-2 text-xs text-gray-300">{post.content}</p>
+              <p className="line-clamp-2 text-xs text-[var(--pf-c-ink-d1d5db)]">{post.content}</p>
             </div>
           </Link>
         );
       })}
       {isFetchingNextPage && (
         <div className="col-span-2 flex justify-center py-4">
-          <Loader2 className="h-6 w-6 animate-spin text-[var(--pf-volt)]" />
+          <Loader2 className="h-6 w-6 animate-spin text-[var(--pf-volt-text)]" />
         </div>
       )}
     </InfiniteScrollContainer>

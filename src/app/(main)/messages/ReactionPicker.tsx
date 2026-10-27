@@ -15,7 +15,7 @@ export default function ReactionPicker({
   return (
     <div
       className={cn(
-        "flex items-center gap-1 rounded-full border border-[#333] bg-[#1a1a1a] px-2 py-1.5 shadow-lg",
+        "flex items-center gap-1 rounded-full border border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1a1a1a)] px-2 py-1.5 shadow-lg",
         className,
       )}
       role="toolbar"
@@ -26,7 +26,7 @@ export default function ReactionPicker({
           key={emoji}
           type="button"
           onClick={() => onSelect(emoji)}
-          className="rounded-full px-1.5 py-0.5 text-lg transition-colors hover:bg-[#2a2a2a]"
+          className="rounded-full px-1.5 py-0.5 text-lg transition-colors hover:bg-[var(--pf-c-fill-2a2a2a)]"
         >
           {emoji}
         </button>

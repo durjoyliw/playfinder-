@@ -164,14 +164,14 @@ export function PostViewerMenu({
   if (isOwnPost) return null;
 
   const menuItemClass =
-    "flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-[13px] font-medium text-[#f2f5ef] transition-colors hover:bg-[#1e211e]";
+    "flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-[13px] font-medium text-[var(--pf-c-ink-f2f5ef)] transition-colors hover:bg-[var(--pf-c-fill-1e211e)]";
 
   return (
     <div ref={menuRef} className={cn("relative", className)}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[#7e8a7e] transition-transform hover:bg-[#1e211e] hover:text-[#f2f5ef] active:scale-90"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[var(--pf-c-ink-7e8a7e)] transition-transform hover:bg-[var(--pf-c-fill-1e211e)] hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
         aria-label="Post options"
         aria-expanded={open}
         aria-haspopup="menu"
@@ -182,7 +182,7 @@ export function PostViewerMenu({
       {open && (
         <div
           role="menu"
-          className="absolute right-0 top-9 z-50 w-[220px] overflow-hidden rounded-xl border border-[#2a2f2a] bg-[#161816] py-1 shadow-lg"
+          className="absolute right-0 top-9 z-50 w-[220px] overflow-hidden rounded-xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-161816)] py-1 shadow-lg pf-card"
         >
           <button
             type="button"
@@ -191,7 +191,7 @@ export function PostViewerMenu({
             disabled={followMutation.isPending}
             onClick={() => followMutation.mutate()}
           >
-            <UserPlus className="h-4 w-4 shrink-0 text-[#7e8a7e]" />
+            <UserPlus className="h-4 w-4 shrink-0 text-[var(--pf-c-ink-7e8a7e)]" />
             {followInfo?.isTeammate
               ? `Teammates with @${authorUsername}`
               : followInfo?.isFollowedByUser
@@ -206,7 +206,7 @@ export function PostViewerMenu({
             disabled={muteMutation.isPending}
             onClick={() => muteMutation.mutate()}
           >
-            <VolumeX className="h-4 w-4 shrink-0 text-[#7e8a7e]" />
+            <VolumeX className="h-4 w-4 shrink-0 text-[var(--pf-c-ink-7e8a7e)]" />
             {muteInfo?.muted
               ? `Unmute @${authorUsername}`
               : `Mute @${authorUsername}`}
@@ -246,13 +246,13 @@ export function PostViewerMenu({
           onClick={() => setBlockConfirmOpen(false)}
         >
           <div
-            className="w-full max-w-sm rounded-2xl border border-[#2a2f2a] bg-[#161816] p-5"
+            className="w-full max-w-sm rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-161816)] p-5 pf-card"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-lg font-bold text-[#f2f5ef]">
+            <p className="text-lg font-bold text-[var(--pf-c-ink-f2f5ef)]">
               Block @{authorUsername}?
             </p>
-            <p className="mt-2 text-sm text-[#7e8a7e]">
+            <p className="mt-2 text-sm text-[var(--pf-c-ink-7e8a7e)]">
               They won&apos;t be able to see your profile or posts, and you
               won&apos;t see theirs.
             </p>
@@ -268,7 +268,7 @@ export function PostViewerMenu({
               <button
                 type="button"
                 onClick={() => setBlockConfirmOpen(false)}
-                className="flex-1 rounded-xl border border-[#2a2f2a] bg-transparent px-4 py-2.5 text-sm font-semibold text-[#f2f5ef]"
+                className="flex-1 rounded-xl border border-[var(--pf-c-line-2a2f2a)] bg-transparent px-4 py-2.5 text-sm font-semibold text-[var(--pf-c-ink-f2f5ef)]"
               >
                 Cancel
               </button>
@@ -283,11 +283,11 @@ export function PostViewerMenu({
           onClick={() => setReportOpen(false)}
         >
           <div
-            className="w-full max-w-sm rounded-2xl border border-[#2a2f2a] bg-[#161816] p-5"
+            className="w-full max-w-sm rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-161816)] p-5 pf-card"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-lg font-bold text-[#f2f5ef]">Report post</p>
-            <p className="mt-2 text-sm text-[#7e8a7e]">
+            <p className="text-lg font-bold text-[var(--pf-c-ink-f2f5ef)]">Report post</p>
+            <p className="mt-2 text-sm text-[var(--pf-c-ink-7e8a7e)]">
               Why are you reporting this post by {authorName}?
             </p>
             <div className="mt-4 space-y-1.5">
@@ -297,7 +297,7 @@ export function PostViewerMenu({
                   type="button"
                   disabled={reportMutation.isPending}
                   onClick={() => reportMutation.mutate(reason)}
-                  className="w-full rounded-xl border border-[#2a2f2a] px-3.5 py-2.5 text-left text-sm font-medium text-[#f2f5ef] transition-colors hover:bg-[#1e211e]"
+                  className="w-full rounded-xl border border-[var(--pf-c-line-2a2f2a)] px-3.5 py-2.5 text-left text-sm font-medium text-[var(--pf-c-ink-f2f5ef)] transition-colors hover:bg-[var(--pf-c-fill-1e211e)]"
                 >
                   {reason}
                 </button>
@@ -306,7 +306,7 @@ export function PostViewerMenu({
             <button
               type="button"
               onClick={() => setReportOpen(false)}
-              className="mt-4 w-full rounded-xl border border-[#2a2f2a] bg-transparent px-4 py-2.5 text-sm font-semibold text-[#f2f5ef]"
+              className="mt-4 w-full rounded-xl border border-[var(--pf-c-line-2a2f2a)] bg-transparent px-4 py-2.5 text-sm font-semibold text-[var(--pf-c-ink-f2f5ef)]"
             >
               Cancel
             </button>

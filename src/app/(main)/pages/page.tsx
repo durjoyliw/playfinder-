@@ -29,7 +29,7 @@ export default async function YourPagesPage() {
   });
 
   return (
-    <div className="min-h-full bg-[#08090a] font-grotesk text-[#f2f5ef]">
+    <div className="min-h-full bg-[var(--pf-c-fill-08090a)] font-grotesk text-[var(--pf-c-ink-f2f5ef)]">
       <PageBackHeader title="Your Pages" />
 
       <div className="flex flex-col gap-3.5 px-4 py-4 lg:px-6">
@@ -38,28 +38,28 @@ export default async function YourPagesPage() {
           className="flex w-full items-center gap-3 rounded-2xl bg-[var(--pf-volt)] px-4 py-3.5 text-left text-[15px] font-bold tracking-[-0.02em] text-[var(--pf-on-accent)] transition-[filter] hover:brightness-110 active:scale-[0.99]"
         >
           <span
-            className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-dashed border-[rgba(10,11,10,0.35)] bg-[rgba(10,11,10,0.18)]"
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-dashed border-[color-mix(in_srgb,var(--pf-on-accent)_35%,transparent)] bg-[color-mix(in_srgb,var(--pf-on-accent)_18%,transparent)]"
             aria-hidden
           >
             <Plus className="h-[18px] w-[18px]" strokeWidth={2.5} />
           </span>
           <span>
             Create a Page
-            <span className="mt-0.5 block font-dm-mono text-[10px] font-medium uppercase tracking-[0.08em] text-[#0a0b0a]/70">
+            <span className="mt-0.5 block font-dm-mono text-[10px] font-medium uppercase tracking-[0.08em] text-[color-mix(in_srgb,var(--pf-on-accent)_70%,transparent)]">
               Club or venue
             </span>
           </span>
         </Link>
 
         {pages.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-[#353c34] px-5 py-12 text-center">
-            <div className="mx-auto mb-3.5 grid h-14 w-14 place-items-center rounded-[14px] border border-[#2a2f2a] bg-[#131614] text-[#5a635a]">
+          <div className="rounded-2xl border border-dashed border-[var(--pf-c-line-353c34)] px-5 py-12 text-center">
+            <div className="mx-auto mb-3.5 grid h-14 w-14 place-items-center rounded-[14px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-5a635a)] pf-card">
               <LayoutGrid className="h-6 w-6" />
             </div>
             <h2 className="text-[16px] font-bold tracking-[-0.02em]">
               No pages yet
             </h2>
-            <p className="mt-1.5 text-[13px] leading-relaxed text-[#7e8a7e]">
+            <p className="mt-1.5 text-[13px] leading-relaxed text-[var(--pf-c-ink-7e8a7e)]">
               No pages yet — create your first
             </p>
             <Link
@@ -78,7 +78,7 @@ export default async function YourPagesPage() {
                 <li key={page.id}>
                   <Link
                     href={`/pages/${page.handle}`}
-                    className="flex items-center gap-3 rounded-2xl border border-[#2a2f2a] bg-[#131614] p-3 transition-colors hover:bg-[#1a1e1b] active:scale-[0.99]"
+                    className="flex items-center gap-3 rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-3 transition-colors hover:bg-[var(--pf-c-fill-1a1e1b)] active:scale-[0.99] pf-card"
                   >
                     {page.avatarUrl ? (
                       <UserAvatar
@@ -89,8 +89,8 @@ export default async function YourPagesPage() {
                     ) : (
                       <div
                         className={cn(
-                          "grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#232824] text-[15px] font-bold",
-                          isVenue ? "text-[#c9a227]" : "text-[var(--pf-volt)]",
+                          "grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[var(--pf-c-fill-232824)] text-[15px] font-bold",
+                          isVenue ? "text-[#c9a227]" : "text-[var(--pf-volt-text)]",
                         )}
                       >
                         {initials}
@@ -112,7 +112,7 @@ export default async function YourPagesPage() {
                           {isVenue ? "Venue" : "Club"}
                         </span>
                       </div>
-                      <p className="mt-0.5 truncate text-[13px] text-[#7e8a7e]">
+                      <p className="mt-0.5 truncate text-[13px] text-[var(--pf-c-ink-7e8a7e)]">
                         @{page.handle}
                       </p>
                     </div>

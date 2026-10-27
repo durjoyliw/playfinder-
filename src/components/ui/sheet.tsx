@@ -28,16 +28,16 @@ const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 const sheetVariants = cva(
-  "fixed z-[var(--pf-z-overlay)] gap-4 bg-[#0d0f0d] shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:duration-300",
+  "fixed z-[var(--pf-z-overlay)] gap-4 bg-[var(--pf-c-fill-0d0f0d)] shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:duration-300",
   {
     variants: {
       side: {
         top: "inset-x-0 top-0 border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
         bottom:
           "inset-x-0 bottom-0 border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
-        left: "inset-y-0 left-0 h-full w-[78%] max-w-[300px] border-r border-[#2a2f2a] data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm",
+        left: "inset-y-0 left-0 h-full w-[78%] max-w-[300px] border-r border-[var(--pf-c-line-2a2f2a)] data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm",
         right:
-          "inset-y-0 right-0 h-full w-[78%] max-w-[300px] border-l border-[#2a2f2a] data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm",
+          "inset-y-0 right-0 h-full w-[78%] max-w-[300px] border-l border-[var(--pf-c-line-2a2f2a)] data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm",
       },
     },
     defaultVariants: {
@@ -123,7 +123,7 @@ const SheetTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
-    className={cn("text-lg font-semibold text-[#f2f5ef]", className)}
+    className={cn("text-lg font-semibold text-[var(--pf-c-ink-f2f5ef)]", className)}
     {...props}
   />
 ));
@@ -135,7 +135,7 @@ const SheetDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn("text-sm text-[#7e8a7e]", className)}
+    className={cn("text-sm text-[var(--pf-c-ink-7e8a7e)]", className)}
     {...props}
   />
 ));

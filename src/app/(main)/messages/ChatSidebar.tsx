@@ -63,7 +63,7 @@ function ConversationPreview({ channel }: ChannelPreviewUIComponentProps) {
         void channel.markRead();
         router.push(`/messages/${encodeURIComponent(channel.id ?? "")}`);
       }}
-      className="flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-[#161616] active:bg-[#1f1f1f]"
+      className="flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-[var(--pf-c-fill-161616)] active:bg-[var(--pf-c-fill-1f1f1f)]"
     >
       <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-sm font-bold text-[var(--pf-on-accent)]">
         {isGroup ? (
@@ -80,23 +80,23 @@ function ConversationPreview({ channel }: ChannelPreviewUIComponentProps) {
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-2">
-          <p className="truncate font-bold text-white">{displayName}</p>
+          <p className="truncate font-bold text-[var(--pf-c-ink-ffffff)]">{displayName}</p>
           <div className="flex flex-shrink-0 items-center gap-1.5">
             {lastAt && (
-              <span className="text-xs text-[#888888]">
+              <span className="text-xs text-[var(--pf-c-ink-888888)]">
                 {formatConversationTime(
                   lastAt instanceof Date ? lastAt : String(lastAt),
                 )}
               </span>
             )}
             {unread > 0 && (
-              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--pf-volt)] px-1 text-[10px] font-bold text-white">
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--pf-volt)] px-1 text-[10px] font-bold text-[var(--pf-badge-text)]">
                 {unread > 9 ? "9+" : unread}
               </span>
             )}
           </div>
         </div>
-        <p className="truncate text-sm text-[#888888]">{previewText}</p>
+        <p className="truncate text-sm text-[var(--pf-c-ink-888888)]">{previewText}</p>
       </div>
     </button>
   );
@@ -175,12 +175,12 @@ export default function ConversationsList() {
   return (
     <div className="flex h-full min-h-0 w-full flex-1 flex-col bg-[var(--pf-bg)]">
       <div className="flex items-center justify-between px-4 pb-2 pt-4">
-        <h1 className="text-2xl font-bold text-white">Messages</h1>
+        <h1 className="text-2xl font-bold text-[var(--pf-c-ink-ffffff)]">Messages</h1>
         <div className="flex items-center gap-1">
           <button
             type="button"
             onClick={() => searchInputRef.current?.focus()}
-            className="rounded-full p-2 text-[#888888] transition-colors hover:bg-[#1a1a1a] hover:text-white"
+            className="rounded-full p-2 text-[var(--pf-c-ink-888888)] transition-colors hover:bg-[var(--pf-c-fill-1a1a1a)] hover:text-[var(--pf-c-ink-ffffff)]"
             aria-label="Focus search"
           >
             <Search className="h-5 w-5" />
@@ -188,7 +188,7 @@ export default function ConversationsList() {
           <button
             type="button"
             onClick={() => setShowNewChatDialog(true)}
-            className="rounded-full p-2 text-[#888888] transition-colors hover:bg-[#1a1a1a] hover:text-white"
+            className="rounded-full p-2 text-[var(--pf-c-ink-888888)] transition-colors hover:bg-[var(--pf-c-fill-1a1a1a)] hover:text-[var(--pf-c-ink-ffffff)]"
             aria-label="New message"
           >
             <Pencil className="h-5 w-5" />
@@ -211,14 +211,14 @@ export default function ConversationsList() {
 
       <div className="px-4 pb-3">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#888888]" />
+          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--pf-c-ink-888888)]" />
           <input
             ref={searchInputRef}
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search conversations..."
-            className="w-full rounded-full bg-[#1a1a1a] py-2.5 pl-11 pr-4 text-base text-white lg:text-sm placeholder:text-[#888888] focus:outline-none focus:ring-1 focus:ring-[#333]"
+            className="w-full rounded-full bg-[var(--pf-c-fill-1a1a1a)] py-2.5 pl-11 pr-4 text-base text-[var(--pf-c-ink-ffffff)] lg:text-sm placeholder:text-[var(--pf-c-ink-888888)] focus:outline-none focus:ring-1 focus:ring-[var(--pf-c-line-333333)]"
             aria-label="Search conversations"
           />
         </div>
@@ -233,7 +233,7 @@ export default function ConversationsList() {
           channelRenderFilterFn={channelRenderFilterFn}
           showChannelSearch={false}
           EmptyStateIndicator={() => (
-            <p className="px-4 py-8 text-center text-sm text-[#888888]">
+            <p className="px-4 py-8 text-center text-sm text-[var(--pf-c-ink-888888)]">
               {searchQuery
                 ? "No conversations match your search."
                 : activeTab === "requests"
@@ -266,7 +266,7 @@ function TabButton({
       className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
         active
           ? "bg-[var(--pf-volt)] text-[var(--pf-on-accent)]"
-          : "bg-[#1a1a1a] text-[#888888] hover:text-white"
+          : "bg-[var(--pf-c-fill-1a1a1a)] text-[var(--pf-c-ink-888888)] hover:text-[var(--pf-c-ink-ffffff)]"
       }`}
     >
       {label}

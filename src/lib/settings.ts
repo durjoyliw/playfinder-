@@ -5,7 +5,7 @@ export const PROFILE_INTENT_OPTIONS = [
   {
     value: ProfileIntent.LOOKING_TO_PLAY,
     label: "Looking to Play",
-    className: "border-[var(--pf-volt)] bg-[rgb(var(--pf-volt-rgb)/0.15)] text-[var(--pf-volt)]",
+    className: "border-[var(--pf-volt)] bg-[rgb(var(--pf-volt-rgb)/0.15)] text-[var(--pf-volt-text)]",
     activeClassName: "bg-[var(--pf-volt)] text-[var(--pf-on-accent)]",
   },
   {
@@ -29,7 +29,7 @@ export const PROFILE_INTENT_PROFILE_OPTIONS = [
     label: "Looking to Play",
     description: "find casual games and partners",
     pillClassName:
-      "border-[rgb(var(--pf-volt-rgb)/0.3)] bg-[rgb(var(--pf-volt-rgb)/0.1)] text-[var(--pf-volt)] hover:bg-[rgb(var(--pf-volt-rgb)/0.2)]",
+      "border-[rgb(var(--pf-volt-rgb)/0.3)] bg-[rgb(var(--pf-volt-rgb)/0.1)] text-[var(--pf-volt-text)] hover:bg-[rgb(var(--pf-volt-rgb)/0.2)]",
     dotClassName: "bg-[var(--pf-volt)]",
   },
   {

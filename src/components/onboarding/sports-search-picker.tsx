@@ -43,12 +43,12 @@ export function SportsSearchPicker({ selected, onChange }: SportsSearchPickerPro
           onFocus={() => setFocused(true)}
           onBlur={() => setTimeout(() => setFocused(false), 150)}
           placeholder="Search sports..."
-          className="w-full rounded-xl border border-[#333] bg-[#1a1a1a] px-4 py-3.5 text-base text-white placeholder:text-[#6b6b6b] focus:border-[var(--pf-volt)] focus:outline-none"
+          className="w-full rounded-xl border border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1a1a1a)] px-4 py-3.5 text-base text-[var(--pf-c-ink-ffffff)] placeholder:text-[var(--pf-c-ink-6b6b6b)] focus:border-[var(--pf-volt)] focus:outline-none pf-card"
         />
         {showDropdown && (
-          <ul className="ob-dropdown-in absolute z-20 mt-1 max-h-52 w-full overflow-auto rounded-xl border border-[#333] bg-[#1a1a1a] py-1 shadow-lg">
+          <ul className="ob-dropdown-in absolute z-20 mt-1 max-h-52 w-full overflow-auto rounded-xl border border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1a1a1a)] py-1 shadow-lg pf-card">
             {filtered.length === 0 ? (
-              <li className="px-4 py-3 text-sm text-gray-500">No sports found</li>
+              <li className="px-4 py-3 text-sm text-[var(--pf-c-ink-6b7280)]">No sports found</li>
             ) : (
               filtered.map((sport) => {
                 const isSelected = selected.includes(sport.id);
@@ -60,16 +60,16 @@ export function SportsSearchPicker({ selected, onChange }: SportsSearchPickerPro
                       onClick={() => toggle(sport.id)}
                       className={cn(
                         "flex w-full items-center justify-between px-4 py-2.5 text-left text-sm transition-colors",
-                        isSelected ? "bg-[#1f2d00]" : "hover:bg-[#262626]",
+                        isSelected ? "bg-[var(--pf-volt-tint)]" : "hover:bg-[var(--pf-c-fill-262626)]",
                       )}
                     >
-                      <span className="text-white">
+                      <span className="text-[var(--pf-c-ink-ffffff)]">
                         {sport.emoji} {sport.name}
                       </span>
                       {isSelected ? (
-                        <Check className="h-5 w-5 text-[var(--pf-volt)]" />
+                        <Check className="h-5 w-5 text-[var(--pf-volt-text)]" />
                       ) : (
-                        <Plus className="h-5 w-5 text-gray-500" />
+                        <Plus className="h-5 w-5 text-[var(--pf-c-ink-6b7280)]" />
                       )}
                     </button>
                   </li>
@@ -82,7 +82,7 @@ export function SportsSearchPicker({ selected, onChange }: SportsSearchPickerPro
 
       {!showDropdown && (
         <div className="mt-5">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--pf-c-ink-6b7280)]">
             Popular
           </p>
           <div className="flex flex-wrap gap-2">
@@ -99,7 +99,7 @@ export function SportsSearchPicker({ selected, onChange }: SportsSearchPickerPro
                     "ob-lift rounded-full border px-3 py-1.5 text-sm font-medium",
                     isSelected
                       ? "border-[var(--pf-volt)] bg-[var(--pf-volt)] text-[var(--pf-on-accent)]"
-                      : "border-[#333] bg-[#161616] text-white hover:border-[#444]",
+                      : "border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-161616)] text-[var(--pf-c-ink-ffffff)] hover:border-[var(--pf-c-line-444444)]",
                   )}
                 >
                   {sport.emoji} {sport.name}
@@ -111,11 +111,11 @@ export function SportsSearchPicker({ selected, onChange }: SportsSearchPickerPro
       )}
 
       <div className="mt-6 flex-1">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--pf-c-ink-6b7280)]">
           Selected ({selected.length})
         </p>
         {selected.length === 0 ? (
-          <p className="text-sm text-gray-500">Pick at least one sport to continue.</p>
+          <p className="text-sm text-[var(--pf-c-ink-6b7280)]">Pick at least one sport to continue.</p>
         ) : (
           <div className="flex flex-wrap gap-2">
             {selected.map((id) => {

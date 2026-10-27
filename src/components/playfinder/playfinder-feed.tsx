@@ -37,7 +37,7 @@ export function PlayFinderFeed({ sportFilter, feedTypeTab }: PlayFinderFeedProps
   if (status === "pending") {
     return (
       <div className="flex justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt)]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt-text)]" />
       </div>
     );
   }
@@ -57,7 +57,7 @@ export function PlayFinderFeed({ sportFilter, feedTypeTab }: PlayFinderFeedProps
       posts: "No posts yet. Share something with the community.",
     };
     return (
-      <p className="px-4 py-8 text-center text-sm text-[#7e8a7e]">
+      <p className="px-4 py-8 text-center text-sm text-[var(--pf-c-ink-7e8a7e)]">
         {emptyMessages[feedTypeTab]}
       </p>
     );
@@ -73,7 +73,7 @@ export function PlayFinderFeed({ sportFilter, feedTypeTab }: PlayFinderFeedProps
     >
       {isFetching && (
         <div className="flex justify-center py-2">
-          <Loader2 className="h-4 w-4 animate-spin text-[var(--pf-volt)]" />
+          <Loader2 className="h-4 w-4 animate-spin text-[var(--pf-volt-text)]" />
         </div>
       )}
       {posts.map((post, index) => (

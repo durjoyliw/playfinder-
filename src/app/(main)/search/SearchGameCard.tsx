@@ -49,7 +49,7 @@ export function SearchGameCard({ post }: SearchGameCardProps) {
   };
 
   return (
-    <article className="mx-4 my-2.5 rounded-xl border border-[#222222] bg-[#161616] p-3.5">
+    <article className="mx-4 my-2.5 rounded-xl border border-[var(--pf-c-line-222222)] bg-[var(--pf-c-fill-161616)] p-3.5 pf-card">
       <div className="mb-2 flex items-center justify-between gap-2">
         <span style={typeBadge.style}>{typeBadge.label}</span>
         {isLooking && post.slotsNeeded != null && post.slotsNeeded > 0 && (
@@ -59,9 +59,9 @@ export function SearchGameCard({ post }: SearchGameCardProps) {
         )}
       </div>
 
-      <p className="font-bold leading-snug text-white">{post.content}</p>
+      <p className="font-bold leading-snug text-[var(--pf-c-ink-ffffff)]">{post.content}</p>
 
-      <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-[#666666]">
+      <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-[var(--pf-c-ink-666666)]">
         {post.location && (
           <span className="inline-flex items-center gap-1">
             <MapPin className="h-3.5 w-3.5" />
@@ -88,7 +88,7 @@ export function SearchGameCard({ post }: SearchGameCardProps) {
             getInitials(post.user.displayName)
           )}
         </div>
-        <p className="text-xs text-[#666666]">
+        <p className="text-xs text-[var(--pf-c-ink-666666)]">
           {post.user.displayName}
           {skill ? ` · ${skill}` : ""}
         </p>
@@ -107,7 +107,7 @@ export function SearchGameCard({ post }: SearchGameCardProps) {
         <Link
           href={`/posts/${post.id}`}
           className={cn(
-            "flex flex-1 items-center justify-center rounded-full bg-[#1f1f1f] py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#2a2a2a]",
+            "flex flex-1 items-center justify-center rounded-full bg-[var(--pf-c-fill-1f1f1f)] py-2.5 text-sm font-medium text-[var(--pf-c-ink-ffffff)] transition-colors hover:bg-[var(--pf-c-fill-2a2a2a)]",
             isOwn && "flex-1",
           )}
         >

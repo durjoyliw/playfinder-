@@ -35,8 +35,8 @@ export function PlayFinderHome({ feedSportTabs }: PlayFinderHomeProps) {
   }, [feedSportTabs, sportFilter]);
 
   return (
-    <div className="bg-[#08090a]">
-      <div className="sticky top-[var(--pf-header-h)] z-20 border-b border-white/[0.04] bg-[rgba(8,9,10,0.92)] backdrop-blur-[20px] lg:top-0">
+    <div className="bg-[var(--pf-c-fill-08090a)]">
+      <div className="sticky top-[var(--pf-header-h)] z-20 border-b border-[rgb(var(--pf-contrast-rgb)/0.04)] bg-[rgb(var(--pf-c-fill-08090a-rgb)/0.92)] backdrop-blur-[20px] lg:top-0">
         <SportTabs
           tabs={feedSportTabs}
           activeTab={sportFilter}

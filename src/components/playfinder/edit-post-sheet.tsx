@@ -41,13 +41,13 @@ const panelStyle: CSSProperties = {
   maxHeight: "90vh",
   overflowY: "auto",
   borderRadius: 16,
-  border: "1px solid #262626",
-  background: "#0d0d0d",
-  color: "#fff",
+  border: "1px solid var(--pf-c-line-262626)",
+  background: "var(--pf-c-fill-0d0d0d)",
+  color: "var(--pf-c-ink-ffffff)",
 };
 
 const fieldClassName =
-  "w-full rounded-xl border border-[#333] bg-[#1a1a1a] px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-[var(--pf-volt)] focus:outline-none [color-scheme:dark]";
+  "w-full rounded-xl border border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1a1a1a)] px-4 py-3 text-sm text-[var(--pf-c-ink-ffffff)] placeholder:text-[var(--pf-c-ink-6b7280)] focus:border-[var(--pf-volt)] focus:outline-none [color-scheme:dark] pf-card";
 
 function initFromPost(post: PostData) {
   const sport = post.sport ?? Sport.FOOTBALL;
@@ -157,14 +157,14 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
       onClick={() => onOpenChange(false)}
     >
       <div style={panelStyle} onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between border-b border-[#262626] px-4 py-4">
-          <h2 className="flex-1 text-center text-lg font-bold text-white">
+        <div className="flex items-center justify-between border-b border-[var(--pf-c-line-262626)] px-4 py-4">
+          <h2 className="flex-1 text-center text-lg font-bold text-[var(--pf-c-ink-ffffff)]">
             Edit post
           </h2>
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="rounded-full p-1 text-gray-400 hover:bg-[#1f1f1f] hover:text-white"
+            className="rounded-full p-1 text-[var(--pf-c-ink-9ca3af)] hover:bg-[var(--pf-c-fill-1f1f1f)] hover:text-[var(--pf-c-ink-ffffff)]"
             aria-label="Close"
           >
             <X className="h-5 w-5" />
@@ -173,7 +173,7 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
 
         <form onSubmit={handleSubmit} className="space-y-5 px-4 py-4 pb-8">
           <div>
-            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[var(--pf-c-ink-6b7280)]">
               Sport
             </label>
             <div className="flex flex-wrap gap-2">
@@ -186,7 +186,7 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
                     "rounded-full px-3 py-1.5 text-sm font-medium",
                     sport === s.enum
                       ? "bg-[var(--pf-volt)] text-[var(--pf-on-accent)]"
-                      : "bg-[#1f1f1f] text-white",
+                      : "bg-[var(--pf-c-fill-1f1f1f)] text-[var(--pf-c-ink-ffffff)]",
                   )}
                 >
                   {s.emoji} {s.label}
@@ -196,7 +196,7 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
           </div>
 
           <div>
-            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[var(--pf-c-ink-6b7280)]">
               Intent
             </label>
             <div className="flex flex-wrap gap-2">
@@ -209,7 +209,7 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
                     "rounded-full border px-3 py-1.5 text-sm font-medium",
                     intent === option.value
                       ? option.className
-                      : "border-[#333] bg-[#1f1f1f] text-gray-400",
+                      : "border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1f1f1f)] text-[var(--pf-c-ink-9ca3af)]",
                   )}
                 >
                   {option.label}
@@ -219,7 +219,7 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
           </div>
 
           <div>
-            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[var(--pf-c-ink-6b7280)]">
               Location
             </label>
             <input
@@ -232,7 +232,7 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
 
           {!isBanter && (
             <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-500">
+              <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[var(--pf-c-ink-6b7280)]">
                 Date & time
               </label>
               <input
@@ -247,7 +247,7 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
 
           {isLookingToPlay && (
             <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-500">
+              <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[var(--pf-c-ink-6b7280)]">
                 Players needed
               </label>
               <input
@@ -267,7 +267,7 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
           )}
 
           <div>
-            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[var(--pf-c-ink-6b7280)]">
               Details
             </label>
             <textarea
@@ -278,7 +278,7 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
               className={cn(fieldClassName, "resize-none")}
               required
             />
-            <p className="mt-1 text-right text-xs text-gray-500">
+            <p className="mt-1 text-right text-xs text-[var(--pf-c-ink-6b7280)]">
               {content.length}/280
             </p>
           </div>

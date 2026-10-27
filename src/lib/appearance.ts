@@ -37,6 +37,13 @@ export type AccentId = (typeof ACCENTS)[number]["id"];
 export const DEFAULT_THEME: ThemeId = "noir";
 export const DEFAULT_ACCENT: AccentId = "volt";
 
+/** Bases with a light background (dark text). */
+export const LIGHT_THEMES: readonly ThemeId[] = ["offwhite", "white"];
+
+export function isLightTheme(theme: string | undefined | null): boolean {
+  return LIGHT_THEMES.includes(theme as ThemeId);
+}
+
 /** Unknown or missing cookie values fall back to the defaults. */
 export function parseTheme(raw: string | undefined | null): ThemeId {
   return THEMES.some((t) => t.id === raw) ? (raw as ThemeId) : DEFAULT_THEME;

@@ -67,7 +67,7 @@ export function SlidingPillTabs<T extends string>({
             onClick={() => onTabChange(tab.id)}
             className={cn(
               "relative z-[2] flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-[10px] py-2.5 text-sm font-bold transition-colors duration-200",
-              isActive ? activeTextClassName : "text-[#7e8a7e]",
+              isActive ? activeTextClassName : "text-[var(--pf-c-ink-7e8a7e)]",
             )}
           >
             {tab.label}
