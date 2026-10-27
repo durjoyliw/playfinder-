@@ -53,7 +53,7 @@ export function SearchGameCard({ post }: SearchGameCardProps) {
       <div className="mb-2 flex items-center justify-between gap-2">
         <span style={typeBadge.style}>{typeBadge.label}</span>
         {isLooking && post.slotsNeeded != null && post.slotsNeeded > 0 && (
-          <span className="rounded-full bg-[#2a1a00] px-2.5 py-0.5 text-[10px] font-semibold text-amber-400">
+          <span className="rounded-full bg-[var(--pf-status-amber-bg)] px-2.5 py-0.5 text-[10px] font-semibold text-[var(--pf-status-amber-fg)]">
             {post.slotsNeeded} slots left
           </span>
         )}

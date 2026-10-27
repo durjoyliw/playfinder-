@@ -3,6 +3,7 @@
 import { FeedCardComments } from "@/components/playfinder/feed-card-comments";
 import { FeedCardImInButton } from "@/components/playfinder/feed-card-im-in-button";
 import { FeedCardLikeButton } from "@/components/playfinder/feed-card-like-button";
+import { FeedCardSaveButton } from "@/components/playfinder/feed-card-save-button";
 import { FeedCardMessageClubButton } from "@/components/playfinder/feed-card-message-club-button";
 import { FeedCardShareButton } from "@/components/playfinder/feed-card-share-button";
 import { PostInterestedPanel } from "@/components/playfinder/post-interested-panel";
@@ -297,6 +298,12 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
               }}
             />
             <FeedCardShareButton postId={card.postId} />
+            <FeedCardSaveButton
+              postId={card.postId}
+              initialState={{
+                isBookmarkedByUser: card.isBookmarkedByUser ?? false,
+              }}
+            />
           </div>
         </div>
       </article>

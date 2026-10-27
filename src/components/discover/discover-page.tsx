@@ -84,10 +84,6 @@ export function DiscoverPage({ userSports }: DiscoverPageProps) {
       {/* Desktop: results list column */}
       <div className="hidden h-full w-[420px] shrink-0 flex-col border-r border-[var(--pf-c-line-2a2f2a)] lg:flex">
         <div className="shrink-0 border-b border-[var(--pf-c-line-2a2f2a)] px-5 pb-4 pt-5">
-          <div className="mb-3 inline-flex items-center gap-1.5 rounded-[10px] border border-[var(--pf-c-line-2a2f2a)] bg-[rgb(var(--pf-c-fill-131614-rgb)/0.6)] px-3 py-2 font-dm-mono text-[10px] font-semibold tracking-[0.1em] text-[var(--pf-c-ink-b4bcaf)]">
-            <span className="h-[7px] w-[7px] animate-pf-status-pulse rounded-full bg-[var(--pf-volt)]" />
-            GLASGOW LIVE
-          </div>
           <DiscoverSportPills
             sports={userSports}
             activeSportId={activeSportId}

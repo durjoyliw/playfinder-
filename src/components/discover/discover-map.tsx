@@ -136,7 +136,7 @@ export function DiscoverMap({
             ? String(place.openStatus)
             : "";
         const openStatusHtml = openStatusLabel
-          ? `<span style="background:${openStatusLabel.includes("Open") ? "#1a2a1a" : "#2a1a0a"};color:${openStatusLabel.includes("Open") ? "#4ade80" : "#fb923c"};font-size:11px;border-radius:4px;padding:2px 8px;margin-bottom:8px;display:inline-block;">${escapeHtml(openStatusLabel)}</span>`
+          ? `<span style="background:${openStatusLabel.includes("Open") ? "var(--pf-status-success-bg)" : "var(--pf-status-warning-bg)"};color:${openStatusLabel.includes("Open") ? "var(--pf-status-success-fg)" : "var(--pf-status-warning-fg)"};font-size:11px;border-radius:4px;padding:2px 8px;margin-bottom:8px;display:inline-block;">${escapeHtml(openStatusLabel)}</span>`
           : "";
 
         const popup = new mapboxgl.Popup({

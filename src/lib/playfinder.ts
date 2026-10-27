@@ -224,6 +224,7 @@ export function mapPostToFeedCard(
     isUrgent,
     likes: post._count.likes,
     isLikedByUser: post.likes.length > 0,
+    isBookmarkedByUser: post.bookmarks.length > 0,
     replies: post._count.comments,
     slotsRemaining: showSpots ? interestFields.spotsLeft : undefined,
     acceptedCount: showSpots ? interestFields.acceptedCount : undefined,

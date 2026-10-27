@@ -34,8 +34,8 @@ function OpenStatusBadge({ status }: { status: OpenStatus | string }) {
         className={cn(
           "rounded px-1.5 py-0.5 text-[10px] font-semibold",
           isCloses && !isOpen
-            ? "bg-[#2a1a1a] text-[#f87171]"
-            : "bg-[#1a2a1a] text-[#4ade80]",
+            ? "bg-[var(--pf-status-danger-bg)] text-[var(--pf-status-danger-fg)]"
+            : "bg-[var(--pf-status-success-bg)] text-[var(--pf-status-success-fg)]",
         )}
       >
         {status}
@@ -46,20 +46,20 @@ function OpenStatusBadge({ status }: { status: OpenStatus | string }) {
   const normalized = status as OpenStatus;
   if (normalized === "open") {
     return (
-      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-[#1a2a1a] text-[#4ade80]">
+      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-[var(--pf-status-success-bg)] text-[var(--pf-status-success-fg)]">
         Open
       </span>
     );
   }
   if (normalized === "closes_soon") {
     return (
-      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-[#2a1a1a] text-[#f87171]">
+      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-[var(--pf-status-danger-bg)] text-[var(--pf-status-danger-fg)]">
         Closes soon
       </span>
     );
   }
   return (
-    <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-[#2a1a1a] text-[#f87171]">
+    <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-[var(--pf-status-danger-bg)] text-[var(--pf-status-danger-fg)]">
       Closed
     </span>
   );

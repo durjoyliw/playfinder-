@@ -219,9 +219,11 @@ export function VenueBottomSheet({
       <Drawer.Content
         aria-describedby={undefined}
         onOpenAutoFocus={(e) => e.preventDefault()}
-        className="fixed inset-x-0 z-20 mx-auto flex max-w-[480px] flex-col rounded-t-[24px] border-t border-[rgb(var(--pf-contrast-rgb)/0.06)] bg-[var(--pf-bg)] shadow-[0_-10px_40px_rgba(0,0,0,0.4)] outline-none"
+        className="fixed inset-x-0 z-20 mx-auto flex max-w-[480px] flex-col rounded-t-[24px] border-t border-[rgb(var(--pf-contrast-rgb)/0.06)] bg-[var(--pf-bg)] outline-none"
         style={{
           height: sheetHeight,
+          // Inline: Tailwind reads shadow-[var(..)] as a colour, not a box-shadow.
+          boxShadow: "var(--pf-sheet-shadow)",
           bottom: "calc(64px + env(safe-area-inset-bottom, 0px))",
         }}
       >

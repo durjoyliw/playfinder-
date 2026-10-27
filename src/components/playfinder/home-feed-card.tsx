@@ -3,6 +3,7 @@
 import { useSession } from "@/app/(main)/SessionProvider";
 import { FeedCardImInButton } from "@/components/playfinder/feed-card-im-in-button";
 import { FeedCardLikeButton } from "@/components/playfinder/feed-card-like-button";
+import { FeedCardSaveButton } from "@/components/playfinder/feed-card-save-button";
 import { FeedCardShareButton } from "@/components/playfinder/feed-card-share-button";
 import { PostViewerMenu } from "@/components/playfinder/post-viewer-menu";
 import { SendPostDialog } from "@/components/playfinder/send-post-dialog";
@@ -48,6 +49,7 @@ export function HomeFeedCard({
   imageUrl,
   likes,
   isLikedByUser,
+  isBookmarkedByUser = false,
   replies,
   showImInButton,
   isTeammate = false,
@@ -175,6 +177,12 @@ export function HomeFeedCard({
         >
           <Send className="h-[18px] w-[18px]" />
         </button>
+        <FeedCardSaveButton
+          postId={postId}
+          initialState={{ isBookmarkedByUser }}
+          iconSize={19}
+          className="active:scale-90"
+        />
       </div>
 
       {!isArenaLayout && location && (

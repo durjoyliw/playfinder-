@@ -22,6 +22,8 @@ export interface HomeFeedCardProps {
   imageUrl?: string;
   likes: number;
   isLikedByUser: boolean;
+  /** Saved (bookmarked) by the signed-in user. */
+  isBookmarkedByUser?: boolean;
   replies: number;
   showImInButton: boolean;
   isTeammate?: boolean;
@@ -62,6 +64,7 @@ export function mapPostToHomeFeedCard(
       imageUrl: image?.url,
       likes: post._count.likes,
       isLikedByUser: post.likes.length > 0,
+    isBookmarkedByUser: post.bookmarks.length > 0,
       replies: post._count.comments,
       showImInButton,
       isTeammate: post.isTeammate,
@@ -92,6 +95,7 @@ export function mapPostToHomeFeedCard(
     imageUrl: image?.url,
     likes: post._count.likes,
     isLikedByUser: post.likes.length > 0,
+    isBookmarkedByUser: post.bookmarks.length > 0,
     replies: post._count.comments,
     showImInButton,
     isTeammate: post.isTeammate,

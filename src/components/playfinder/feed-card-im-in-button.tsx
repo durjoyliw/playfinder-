@@ -110,7 +110,7 @@ export function FeedCardImInButton({
         onClick={() => setShowCancelConfirm(true)}
         className={baseClass}
         style={{
-          background: "#1a2a1a",
+          background: "var(--pf-status-success-bg)",
           color: "var(--pf-volt-text)",
           cursor: "pointer",
         }}
@@ -127,7 +127,7 @@ export function FeedCardImInButton({
         disabled
         className={baseClass}
         style={{
-          background: "#1a2a1a",
+          background: "var(--pf-status-success-bg)",
           color: "var(--pf-volt-text)",
           cursor: "default",
         }}

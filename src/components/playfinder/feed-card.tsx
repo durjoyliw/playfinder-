@@ -3,6 +3,7 @@
 import { FeedCardComments } from "@/components/playfinder/feed-card-comments";
 import { FeedCardImInButton } from "@/components/playfinder/feed-card-im-in-button";
 import { FeedCardLikeButton } from "@/components/playfinder/feed-card-like-button";
+import { FeedCardSaveButton } from "@/components/playfinder/feed-card-save-button";
 import { FeedCardMessageClubButton } from "@/components/playfinder/feed-card-message-club-button";
 import { FeedCardShareButton } from "@/components/playfinder/feed-card-share-button";
 import { PostViewerMenu } from "@/components/playfinder/post-viewer-menu";
@@ -49,6 +50,8 @@ export interface FeedCardProps {
   expiryPercent?: number;
   likes?: number;
   isLikedByUser?: boolean;
+  /** Saved (bookmarked) by the signed-in user. */
+  isBookmarkedByUser?: boolean;
   tags?: string[];
   replies?: number;
   /** Hide actions and comments — used on profile post list */
@@ -90,6 +93,7 @@ export function FeedCard({
   expiryPercent = 100,
   likes = 0,
   isLikedByUser = false,
+  isBookmarkedByUser = false,
   tags = [],
   replies = 0,
   compact = false,
@@ -342,6 +346,12 @@ export function FeedCard({
                   >
                     <Send className="h-4 w-4" />
                   </button>
+                  <FeedCardSaveButton
+                    postId={postId}
+                    initialState={{ isBookmarkedByUser }}
+                    iconSize={16}
+                    className="min-h-0"
+                  />
                 </div>
 
                 <span className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">

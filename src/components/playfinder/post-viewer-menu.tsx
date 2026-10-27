@@ -215,7 +215,7 @@ export function PostViewerMenu({
           <button
             type="button"
             role="menuitem"
-            className={cn(menuItemClass, "text-[#ef4444] hover:bg-[#2a1616]")}
+            className={cn(menuItemClass, "text-[#ef4444] hover:bg-[var(--pf-status-danger-hover)]")}
             onClick={() => {
               setOpen(false);
               setBlockConfirmOpen(true);
@@ -228,7 +228,7 @@ export function PostViewerMenu({
           <button
             type="button"
             role="menuitem"
-            className={cn(menuItemClass, "text-[#ef4444] hover:bg-[#2a1616]")}
+            className={cn(menuItemClass, "text-[#ef4444] hover:bg-[var(--pf-status-danger-hover)]")}
             onClick={() => {
               setOpen(false);
               setReportOpen(true);

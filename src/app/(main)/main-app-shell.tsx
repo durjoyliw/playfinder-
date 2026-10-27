@@ -28,6 +28,7 @@ function hasOwnMobileHeader(pathname: string) {
     pathname === "/pages" ||
     pathname.startsWith("/pages/new") ||
     pathname.startsWith("/teammates") ||
+    pathname.startsWith("/saved") ||
     pathname.startsWith("/search")
   );
 }

@@ -18,6 +18,7 @@ import {
   Palette,
   Power,
   Shield,
+  Trash2,
   SlidersHorizontal,
   Trophy,
   User,
@@ -183,6 +184,14 @@ export function SettingsHub() {
             onClick={openCookieSettings}
             icon={<SlidersHorizontal className="h-5 w-5" />}
             label="Cookie settings"
+          />
+        </SettingsSection>
+
+        <SettingsSection title="Danger zone">
+          <SettingsRow
+            href="/settings/delete-account"
+            icon={<Trash2 className="h-5 w-5 text-[#ef4444]" />}
+            label="Delete account"
           />
         </SettingsSection>
       </div>

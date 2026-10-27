@@ -14,11 +14,13 @@ import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   BadgeCheck,
+  Bookmark,
   ChevronRight,
   LayoutGrid,
   LogOut,
   Menu,
   Settings,
+  Users,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -54,6 +56,18 @@ const DRAWER_LINKS: DrawerLink[] = [
     label: "Pages",
     icon: LayoutGrid,
     isActive: (path) => path === "/pages" || path.startsWith("/pages/"),
+  },
+  {
+    href: "/teammates",
+    label: "Teammates",
+    icon: Users,
+    isActive: (path) => path.startsWith("/teammates"),
+  },
+  {
+    href: "/saved",
+    label: "Saved",
+    icon: Bookmark,
+    isActive: (path) => path.startsWith("/saved"),
   },
   {
     href: "/settings",
@@ -124,6 +138,7 @@ export function MobileNavDrawer({ triggerClassName }: MobileNavDrawerProps) {
           <Link
             href={profileHref}
             onClick={close}
+            aria-label={`View your profile, ${displayName}`}
             className={cn(rowBase, "items-start gap-3 py-3")}
           >
             <UserAvatar
