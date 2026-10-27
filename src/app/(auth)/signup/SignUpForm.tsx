@@ -11,6 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { todayIsoDate } from "@/lib/age";
 import { signUpSchema, SignUpValues } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
@@ -28,6 +29,7 @@ export default function SignUpForm() {
       email: "",
       username: "",
       password: "",
+      birthDate: "",
     },
   });
 
@@ -78,6 +80,29 @@ export default function SignUpForm() {
               <FormControl>
                 <PasswordInput placeholder="Password" {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="birthDate"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Date of birth</FormLabel>
+              <FormControl>
+                <Input
+                  type="date"
+                  autoComplete="bday"
+                  min="1900-01-01"
+                  max={todayIsoDate()}
+                  {...field}
+                />
+              </FormControl>
+              <p className="text-xs text-muted-foreground">
+                You must be 18 or over. We don’t show your birthday on your
+                profile.
+              </p>
               <FormMessage />
             </FormItem>
           )}

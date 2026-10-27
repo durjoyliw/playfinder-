@@ -1,3 +1,4 @@
+import { checkBirthDate } from "@/lib/age";
 import { isValidSportKey } from "@/lib/onboarding-sports";
 import { PostIntent, ProfileIntent, SkillLevel, Sport } from "@prisma/client";
 import { z } from "zod";
@@ -11,6 +12,13 @@ export const signUpSchema = z.object({
     "Only letters, numbers, - and _ allowed",
   ),
   password: requiredString.min(8, "Must be at least 8 characters"),
+  /** "YYYY-MM-DD"; must be a real date and 18+ (see src/lib/age.ts). */
+  birthDate: requiredString.superRefine((value, ctx) => {
+    const check = checkBirthDate(value);
+    if (!check.ok) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: check.message });
+    }
+  }),
 });
 
 export type SignUpValues = z.infer<typeof signUpSchema>;

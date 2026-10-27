@@ -25,6 +25,8 @@ model User {
   avatarUrl             String?
   bio                   String?
   location              String?
+  /// Date of birth (UTC midnight). Null for accounts created before the 18+ age gate.
+  birthDate             DateTime?
   profileIntent         ProfileIntent?
   completedOnboarding   Boolean                @default(false)
   role                  UserRole               @default(USER)

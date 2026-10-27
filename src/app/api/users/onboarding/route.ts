@@ -1,4 +1,5 @@
 import { validateRequest } from "@/auth";
+import { needsBirthDate } from "@/lib/age";
 import prisma from "@/lib/prisma";
 import { completeOnboardingSchema } from "@/lib/validation";
 import { revalidatePath } from "next/cache";
@@ -9,6 +10,19 @@ export async function POST(req: Request) {
 
     if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Age gate: a new account can't finish onboarding (and so can't reach
+    // the app) until a date of birth is on file.
+    const account = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: { birthDate: true, completedOnboarding: true },
+    });
+    if (!account || needsBirthDate(account)) {
+      return Response.json(
+        { error: "Confirm your date of birth first" },
+        { status: 403 },
+      );
     }
 
     const body = completeOnboardingSchema.parse(await req.json());
