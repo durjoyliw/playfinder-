@@ -76,7 +76,7 @@ export default function ProfileBioEditor({
           className="pointer-events-none absolute right-4 top-2 font-serif text-[52px] leading-none text-[var(--pf-volt-text)] opacity-10"
           aria-hidden
         >
-          "
+          &ldquo;
         </div>
         {isEditing ? (
           <div className="relative z-[1] space-y-3">

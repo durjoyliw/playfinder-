@@ -4,7 +4,7 @@ import { Pencil, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { Channel } from "stream-chat";
+import type { Channel, DefaultGenerics } from "stream-chat";
 import {
   ChannelList,
   type ChannelPreviewUIComponentProps,
@@ -29,7 +29,9 @@ function isIncomingRequest(channel: Channel, currentUserId: string) {
   return pending && requestedBy !== currentUserId;
 }
 
-function ConversationPreview({ channel }: ChannelPreviewUIComponentProps) {
+function ConversationPreview({
+  channel,
+}: ChannelPreviewUIComponentProps<DefaultGenerics>) {
   const router = useRouter();
   const { user } = useSession();
   const isGroup = isGroupChannel(channel);
@@ -70,7 +72,7 @@ function ConversationPreview({ channel }: ChannelPreviewUIComponentProps) {
           <span className="text-[13px]">{getInitials(displayName)}</span>
         ) : other?.image ? (
           <img
-            src={other.image}
+            src={String(other.image)}
             alt=""
             className="h-full w-full object-cover"
           />
@@ -82,13 +84,13 @@ function ConversationPreview({ channel }: ChannelPreviewUIComponentProps) {
         <div className="flex items-start justify-between gap-2">
           <p className="truncate font-bold text-[var(--pf-c-ink-ffffff)]">{displayName}</p>
           <div className="flex flex-shrink-0 items-center gap-1.5">
-            {lastAt && (
+            {lastAt ? (
               <span className="text-xs text-[var(--pf-c-ink-888888)]">
                 {formatConversationTime(
                   lastAt instanceof Date ? lastAt : String(lastAt),
                 )}
               </span>
-            )}
+            ) : null}
             {unread > 0 && (
               <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--pf-volt)] px-1 text-[10px] font-bold text-[var(--pf-badge-text)]">
                 {unread > 9 ? "9+" : unread}
@@ -138,7 +140,7 @@ export default function ConversationsList() {
   const blockedUserIdsMemo = useMemo(() => blockedUserIds, [blockedUserIds]);
 
   const ChannelPreviewCustom = useCallback(
-    (props: ChannelPreviewUIComponentProps) => (
+    (props: ChannelPreviewUIComponentProps<DefaultGenerics>) => (
       <ConversationPreview {...props} />
     ),
     [],

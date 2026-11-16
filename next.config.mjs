@@ -1,11 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  // Type-checking and linting run on every build (they were disabled while
+  // ~120 type errors existed; the codebase is now clean, so keep it that way).
   experimental: {
     // Enables unstable_after() (src/lib/after-response.ts): notification
     // pushes run after the response, once transactions have committed.

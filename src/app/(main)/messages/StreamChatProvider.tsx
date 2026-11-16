@@ -35,7 +35,8 @@ export default function StreamChatProvider({
   return (
     <StreamChatReact
       client={initState.client}
-      className="playfinder-messages str-chat flex h-full min-h-0 flex-1 flex-col"
+      // Note: <Chat> renders no DOM element and has no className prop; the
+      // old className here was silently ignored, so it is omitted.
       theme={isLightBase ? "str-chat__theme-light" : "str-chat__theme-dark"}
     >
       {children}

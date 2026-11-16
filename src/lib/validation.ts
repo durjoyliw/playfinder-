@@ -59,6 +59,8 @@ export const createBroadcastSchema = z
   );
 
 export type CreateBroadcastValues = z.infer<typeof createBroadcastSchema>;
+/** What a client sends (visibility is optional; the server defaults it). */
+export type CreateBroadcastInput = z.input<typeof createBroadcastSchema>;
 
 export const updateUserProfileSchema = z.object({
   displayName: requiredString,
@@ -95,10 +97,14 @@ export type PatchUserProfileValues = z.infer<typeof patchUserProfileSchema>;
 
 const userSportEntrySchema = z.object({
   sport: z.string().refine(isValidSportKey, "Invalid sport"),
-  skillLevel: z.preprocess(
-    (value) => (value === "" ? null : value),
-    z.nativeEnum(SkillLevel).nullish(),
-  ),
+  // skillLevel is NOT NULL in the database. A sport added without a level
+  // (possible from the settings form) used to crash the write; default it.
+  skillLevel: z
+    .preprocess(
+      (value) => (value === "" ? null : value),
+      z.nativeEnum(SkillLevel).nullish(),
+    )
+    .transform((value) => value ?? SkillLevel.BEGINNER),
 });
 
 export const updateUserSportsSchema = z.object({

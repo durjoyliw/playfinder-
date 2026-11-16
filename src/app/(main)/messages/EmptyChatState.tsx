@@ -18,7 +18,7 @@ export default function EmptyChatState() {
       <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-xl font-bold text-[var(--pf-on-accent)]">
         {other?.image ? (
           <img
-            src={other.image}
+            src={String(other.image)}
             alt=""
             className="h-full w-full object-cover"
           />

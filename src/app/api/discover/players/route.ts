@@ -19,7 +19,7 @@ export async function GET(req: Request) {
     const filterEntry = DISCOVER_SPORT_FILTERS.find((f) => f.id === sportFilter);
     const sportKey = filterEntry?.sportKey ?? null;
 
-    let sportsWhere: Prisma.UserSportWhereInput | undefined;
+    let sportsWhere: Prisma.UserSportListRelationFilter | undefined;
 
     if (sportKey) {
       const normalized = normalizeSportKey(sportKey);
@@ -47,6 +47,10 @@ export async function GET(req: Request) {
       where: {
         id: { not: user.id },
         completedOnboarding: true,
+        // Never surface suspended/banned accounts, or anyone either side has blocked.
+        status: { notIn: ["SUSPENDED", "BANNED"] },
+        blocking: { none: { blockedId: user.id } },
+        blockedBy: { none: { blockerId: user.id } },
         ...(sportsWhere ? { sports: sportsWhere } : {}),
       },
       select: {
@@ -62,6 +66,8 @@ export async function GET(req: Request) {
         },
       },
       orderBy: { displayName: "asc" },
+      // Bounded: this used to return every user in the database.
+      take: 50,
     });
 
     const players: DiscoverPlayer[] = users.map((u) => ({

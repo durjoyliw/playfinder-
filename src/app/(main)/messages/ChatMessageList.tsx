@@ -3,8 +3,11 @@
 import { cn } from "@/lib/utils";
 import { Check, CheckCheck } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { FormatMessageResponse } from "stream-chat";
-import { useChannelStateContext, useChatContext } from "stream-chat-react";
+import {
+  useChannelStateContext,
+  useChatContext,
+  type StreamMessage,
+} from "stream-chat-react";
 import { useSession } from "../SessionProvider";
 import { useChatComposer } from "./chat-composer-context";
 import EmptyChatState from "./EmptyChatState";
@@ -34,7 +37,7 @@ export default function ChatMessageList() {
 
   const [reactionTargetId, setReactionTargetId] = useState<string | null>(null);
   const [contextMenu, setContextMenu] = useState<{
-    message: FormatMessageResponse;
+    message: StreamMessage;
     x: number;
     y: number;
   } | null>(null);
@@ -70,12 +73,14 @@ export default function ChatMessageList() {
     registerScrollToBottom(() => scrollToBottom("smooth"));
   }, [registerScrollToBottom, scrollToBottom]);
 
+  const messageCount = messages?.length ?? 0;
+  const lastMessageId = messages?.at(-1)?.id;
   useEffect(() => {
-    scrollToBottom((messages?.length ?? 0) <= 1 ? "auto" : "smooth");
-  }, [messages?.length, messages?.at(-1)?.id, scrollToBottom]);
+    scrollToBottom(messageCount <= 1 ? "auto" : "smooth");
+  }, [messageCount, lastMessageId, scrollToBottom]);
 
   const toggleReaction = useCallback(
-    async (message: FormatMessageResponse, emoji: string) => {
+    async (message: StreamMessage, emoji: string) => {
       const type = streamTypeForEmoji(emoji);
       const own = message.own_reactions?.find((r) => r.type === type);
       try {
@@ -89,11 +94,11 @@ export default function ChatMessageList() {
       }
       setReactionTargetId(null);
     },
-    [channel, client],
+    [channel],
   );
 
   const openContextMenu = useCallback(
-    (message: FormatMessageResponse, clientX: number, clientY: number) => {
+    (message: StreamMessage, clientX: number, clientY: number) => {
       setReactionTargetId(null);
       setContextMenu({ message, x: clientX, y: clientY });
     },
@@ -102,7 +107,7 @@ export default function ChatMessageList() {
 
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const bindLongPress = (message: FormatMessageResponse) => ({
+  const bindLongPress = (message: StreamMessage) => ({
     onTouchStart: (e: React.TouchEvent) => {
       const touch = e.touches[0];
       longPressTimer.current = setTimeout(() => {
@@ -325,7 +330,7 @@ function MessageTick({
   message,
 }: {
   channel: ReturnType<typeof useChannelStateContext>["channel"];
-  message: FormatMessageResponse;
+  message: StreamMessage;
 }) {
   const { user } = useSession();
   const status = getMessageTickStatus(channel, message, user.id);

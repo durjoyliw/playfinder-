@@ -237,7 +237,7 @@ export function mapPostToFeedCard(
   };
 }
 
-export function sortPlayfinderPosts(posts: PostData[]): PostData[] {
+export function sortPlayfinderPosts<T extends PostData>(posts: T[]): T[] {
   const now = new Date();
 
   return [...posts].sort((a, b) => {
@@ -257,7 +257,9 @@ export function sortPlayfinderPosts(posts: PostData[]): PostData[] {
   });
 }
 
-export function filterActivePlayfinderPosts(posts: PostData[]): PostData[] {
+export function filterActivePlayfinderPosts<T extends PostData>(
+  posts: T[],
+): T[] {
   const now = new Date();
   return posts.filter((post) => {
     if (!isLookingToPlayIntent(post.intent)) return true;

@@ -14,8 +14,8 @@ export default function useInitializeChatClient() {
   const [state, setState] = useState<InitState>({ status: "loading" });
 
   useEffect(() => {
-    const client = getStreamBrowserClient();
-    if (!client) {
+    const maybeClient = getStreamBrowserClient();
+    if (!maybeClient) {
       setState({
         status: "error",
         message:
@@ -23,6 +23,8 @@ export default function useInitializeChatClient() {
       });
       return;
     }
+    // Narrowed once here so the nested callbacks keep the non-null type.
+    const client: StreamChat = maybeClient;
 
     let cancelled = false;
 

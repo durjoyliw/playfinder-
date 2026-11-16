@@ -9,7 +9,7 @@ import {
 import kyInstance from "@/lib/ky";
 import { PLAYFINDER_SPORTS, POST_INTENTS } from "@/lib/playfinder";
 import { PostData } from "@/lib/types";
-import { CreateBroadcastValues } from "@/lib/validation";
+import { CreateBroadcastInput } from "@/lib/validation";
 import { cn } from "@/lib/utils";
 import { PostIntent, Sport } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -110,7 +110,7 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
   }, [open, onOpenChange]);
 
   const mutation = useMutation({
-    mutationFn: (values: CreateBroadcastValues) =>
+    mutationFn: (values: CreateBroadcastInput) =>
       kyInstance.patch(`/api/posts/${post.id}`, { json: values }).json<PostData>(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-feed"] });
