@@ -1,5 +1,6 @@
 "use client";
 
+import { DateOfBirthInput } from "@/components/date-of-birth-input";
 import LoadingButton from "@/components/LoadingButton";
 import { PasswordInput } from "@/components/PasswordInput";
 import {
@@ -11,7 +12,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { todayIsoDate } from "@/lib/age";
 import { signUpSchema, SignUpValues } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
@@ -87,16 +87,15 @@ export default function SignUpForm() {
         <FormField
           control={form.control}
           name="birthDate"
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <FormItem>
               <FormLabel>Date of birth</FormLabel>
               <FormControl>
-                <Input
-                  type="date"
-                  autoComplete="bday"
-                  min="1900-01-01"
-                  max={todayIsoDate()}
-                  {...field}
+                <DateOfBirthInput
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  invalid={!!fieldState.error}
                 />
               </FormControl>
               <p className="text-xs text-muted-foreground">

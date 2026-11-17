@@ -1,6 +1,7 @@
 "use client";
 
-import { MINIMUM_AGE, todayIsoDate } from "@/lib/age";
+import { DateOfBirthInput } from "@/components/date-of-birth-input";
+import { MINIMUM_AGE } from "@/lib/age";
 import { Loader2 } from "lucide-react";
 import { useState, useTransition } from "react";
 import { confirmBirthDate } from "./actions";
@@ -35,23 +36,17 @@ export function DateOfBirthForm() {
         birthday on your profile.
       </p>
 
-      <label className="mt-8 block">
-        <span className="text-[12px] font-medium text-[var(--pf-text-3)]">
+      <fieldset className="mt-8">
+        <legend className="mb-2 text-[12px] font-medium text-[var(--pf-text-3)]">
           Date of birth
-        </span>
-        <input
-          type="date"
-          required
-          autoComplete="bday"
-          min="1900-01-01"
-          max={todayIsoDate()}
+        </legend>
+        <DateOfBirthInput
           value={value}
-          onChange={(e) => setValue(e.target.value)}
-          aria-invalid={!!error}
-          aria-describedby={error ? "dob-error" : undefined}
-          className="mt-2 h-12 w-full rounded-2xl border border-[var(--pf-border)] bg-[var(--pf-surface)] px-4 text-base text-[var(--pf-text)] outline-none transition-colors focus:border-[var(--pf-volt)] lg:text-[15px]"
+          onChange={setValue}
+          invalid={!!error}
+          describedBy={error ? "dob-error" : undefined}
         />
-      </label>
+      </fieldset>
 
       {error && (
         <p

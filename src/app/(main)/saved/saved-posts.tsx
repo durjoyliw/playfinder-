@@ -1,5 +1,6 @@
 "use client";
 
+import { FeedEnd } from "@/components/system/feed-end";
 import { useSession } from "@/app/(main)/SessionProvider";
 import InfiniteScrollContainer from "@/components/InfiniteScrollContainer";
 import { FeedCard } from "@/components/playfinder/feed-card";
@@ -56,7 +57,7 @@ export function SavedPosts() {
   if (posts.length === 0 && !hasNextPage) {
     return (
       <div className="flex flex-col items-center px-8 py-20 text-center">
-        <span className="grid h-14 w-14 place-items-center rounded-2xl bg-[var(--pf-surface)] text-[var(--pf-volt-text)] pf-card">
+        <span className="pf-card grid h-14 w-14 place-items-center rounded-2xl bg-[var(--pf-surface)] text-[var(--pf-volt-text)]">
           <Bookmark className="h-6 w-6" />
         </span>
         <h2 className="mt-5 text-[19px] font-bold tracking-[-0.02em] text-[var(--pf-text)]">
@@ -89,6 +90,7 @@ export function SavedPosts() {
           <Loader2 className="h-6 w-6 animate-spin text-[var(--pf-volt-text)]" />
         </div>
       )}
+      {!hasNextPage && <FeedEnd noun="saved posts" />}
     </InfiniteScrollContainer>
   );
 }
