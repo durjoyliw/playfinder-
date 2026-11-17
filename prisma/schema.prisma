@@ -55,6 +55,7 @@ model User {
   createdPages            Page[]           @relation("PageCreator")
   pageMemberships         PageMembership[]
   pageFollows             PageFollow[]
+  feedback                Feedback[]
 
   createdAt DateTime @default(now())
 
@@ -552,4 +553,22 @@ model RateLimit {
 
   @@index([windowStart])
   @@map("rate_limits")
+}
+
+/// Beta feedback sent from the app (Settings / menu → Send feedback).
+/// Deleted with the account, like the rest of a user's data.
+model Feedback {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message   String
+  /// The in-app path the person came from, e.g. "/discover".
+  page      String?
+  userAgent String?
+  /// NEW or DONE (admin triage).
+  status    String   @default("NEW")
+  createdAt DateTime @default(now())
+
+  @@index([status, createdAt])
+  @@map("feedback")
 }

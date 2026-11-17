@@ -1,3 +1,4 @@
+import { ConsentedAnalytics } from "@/components/consented-analytics";
 import { CookieConsentBanner } from "@/components/cookie-consent-banner";
 import { Toaster } from "@/components/ui/toaster";
 import {
@@ -41,6 +42,16 @@ export const metadata: Metadata = {
     default: "PlayFinder",
   },
   description: "Find players and games near you",
+  applicationName: "PlayFinder",
+  icons: {
+    icon: [{ url: "/icon-192.png", sizes: "192x192", type: "image/png" }],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
+  appleWebApp: {
+    capable: true,
+    title: "PlayFinder",
+    statusBarStyle: "black-translucent",
+  },
 };
 
 // `viewport-fit=cover` lets iOS report real safe-area insets, so the
@@ -49,6 +60,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
+  themeColor: "#08090a",
 };
 
 export default function RootLayout({
@@ -80,6 +92,7 @@ export default function RootLayout({
         </ReactQueryProvider>
         <Toaster />
         <CookieConsentBanner />
+        <ConsentedAnalytics />
       </body>
     </html>
   );

@@ -18,6 +18,7 @@ import {
   LayoutGrid,
   LogOut,
   Menu,
+  MessageSquareText,
   Settings,
   Users,
   type LucideIcon,
@@ -191,11 +192,32 @@ export function MobileNavDrawer({ triggerClassName }: MobileNavDrawerProps) {
           </nav>
         </div>
 
+        {/* Beta feedback: always one tap away, and it remembers the page. */}
+        <div className="shrink-0 px-3">
+          <Link
+            href={`/settings/feedback?from=${encodeURIComponent(pathname)}`}
+            onClick={close}
+            className="flex items-center gap-3 rounded-2xl border border-[rgb(var(--pf-volt-rgb)/0.35)] bg-[rgb(var(--pf-volt-rgb)/0.08)] px-3 py-3 transition-colors active:scale-[0.98] hover:bg-[rgb(var(--pf-volt-rgb)/0.12)]"
+          >
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[var(--pf-volt)] text-[var(--pf-on-accent)]">
+              <MessageSquareText className="h-[18px] w-[18px]" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[15px] font-semibold text-[var(--pf-text)]">
+                Send feedback
+              </span>
+              <span className="block truncate text-[12px] text-[var(--pf-text-3)]">
+                Found a bug or have an idea? Tell us.
+              </span>
+            </span>
+          </Link>
+        </div>
+
         {/* Pinned footer: version label, then Log out -- always visible. */}
         <div className="shrink-0 px-3 pb-[calc(12px+env(safe-area-inset-bottom,0px))] pt-3">
           <div className="flex items-baseline justify-between px-3 pb-3 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-text-4)]">
             <span>PlayFinder</span>
-            <span className="normal-case tracking-[0.04em]">v0.1</span>
+            <span className="normal-case tracking-[0.04em]">v0.1 beta</span>
           </div>
           <div className="mx-3 mb-2 h-px bg-[var(--pf-border)]" />
           <button

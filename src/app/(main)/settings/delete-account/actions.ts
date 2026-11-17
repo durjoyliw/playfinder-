@@ -22,7 +22,7 @@ export interface DeleteAccountResult {
  *   bookmarks, interests and notifications; the user's own comments, likes,
  *   bookmarks, post interests, notifications (sent and received), message
  *   requests, push subscriptions, blocks, mutes, reports they filed,
- *   appeals, Page memberships and Page follows.
+ *   appeals, Page memberships, Page follows and beta feedback.
  * - Media rows attached to their posts (that FK is SetNull, so they would
  *   otherwise be left behind).
  * - Pages left with no OWNER become UNCLAIMED (the Page itself stays, like a

@@ -11,8 +11,10 @@ import {
   Ban,
   Bell,
   Cookie,
+  Download,
   FileText,
   MessageCircle,
+  MessageSquareText,
   Info,
   KeyRound,
   MapPin,
@@ -169,6 +171,14 @@ export function SettingsHub() {
 
         <SettingsSection title="Privacy">
           <SettingsRow
+            onClick={() => {
+              // A plain navigation lets the browser save the JSON file.
+              window.location.href = "/api/users/export";
+            }}
+            icon={<Download className="h-5 w-5" />}
+            label="Download your data"
+          />
+          <SettingsRow
             href="/settings/blocked"
             icon={<Ban className="h-5 w-5" />}
             label="Blocked Accounts"
@@ -176,6 +186,11 @@ export function SettingsHub() {
         </SettingsSection>
 
         <SettingsSection title="Support">
+          <SettingsRow
+            href="/settings/feedback?from=%2Fsettings"
+            icon={<MessageSquareText className="h-5 w-5" />}
+            label="Send feedback"
+          />
           <SettingsRow
             href="/settings/help"
             icon={<MessageCircle className="h-5 w-5" />}
