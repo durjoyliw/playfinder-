@@ -318,6 +318,16 @@ export function ComposerSheet({
     if (first) setSelectedSport(first);
   }, [activeTab, selectedSport, userSports]);
 
+  // Games need a time (the server rejects them without one). Start two hours
+  // from now, like tapping an intent used to.
+  useEffect(() => {
+    if (activeTab !== "arena" || gameAt) return;
+    const defaultDate = new Date();
+    defaultDate.setHours(defaultDate.getHours() + 2, 0, 0, 0);
+    setGameAt(toDatetimeLocalValue(defaultDate));
+    setTimeLabel(formatBroadcastTimeLabel(defaultDate.toISOString()));
+  }, [activeTab, gameAt]);
+
   const { data: actingState } = useActingIdentityState();
   const actingPage =
     actingState?.identity.kind === "page"
@@ -418,7 +428,9 @@ export function ComposerSheet({
         ? "Pick Looking to Play or Recruiting"
         : !location.trim()
           ? "Add a location to post"
-          : null;
+          : !timeLabel.trim()
+            ? "Pick when the game is"
+            : null;
   const arenaValid = arenaMissing === null;
 
   const handleArenaSubmit = (e: React.FormEvent) => {
