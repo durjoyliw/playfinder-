@@ -1,5 +1,6 @@
 "use client";
 
+import { BETA_CITY } from "@/lib/beta";
 import {
   BroadcastArt,
   CityArt,
@@ -36,6 +37,9 @@ import { useMemo, useState } from "react";
 
 const VOLT = "var(--pf-volt)";
 const TOTAL_STEPS = 6;
+/** The "Where are you based?" step; skipped during the Glasgow-only beta. */
+const LOCATION_STEP = 3;
+const SKIPPED_STEPS: readonly number[] = BETA_CITY ? [LOCATION_STEP] : [];
 
 const INTENT_CARDS = [
   {
@@ -169,17 +173,19 @@ function TopBar({
         <span />
       )}
       <div className="flex items-center justify-center gap-2">
-        {Array.from({ length: TOTAL_STEPS }, (_, i) => (
-          <div
-            key={i}
-            className="h-2 rounded-full transition-all duration-300"
-            style={{
-              width: i === step && !complete ? 24 : 8,
-              backgroundColor:
-                complete || i <= step ? VOLT : "var(--pf-c-fill-2a2a2a)",
-            }}
-          />
-        ))}
+        {Array.from({ length: TOTAL_STEPS }, (_, i) => i)
+          .filter((i) => !SKIPPED_STEPS.includes(i))
+          .map((i) => (
+            <div
+              key={i}
+              className="h-2 rounded-full transition-all duration-300"
+              style={{
+                width: i === step && !complete ? 24 : 8,
+                backgroundColor:
+                  complete || i <= step ? VOLT : "var(--pf-c-fill-2a2a2a)",
+              }}
+            />
+          ))}
       </div>
       <span />
     </div>
@@ -226,7 +232,7 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
   const [skillLevels, setSkillLevels] = useState<
     Partial<Record<string, SkillLevel>>
   >({});
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState(BETA_CITY ?? "");
   const [profileIntent, setProfileIntent] = useState<ProfileIntent>(
     ProfileIntent.LOOKING_TO_PLAY,
   );
@@ -265,12 +271,20 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
       });
     }
     setDirection("fwd");
-    setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1));
+    setStep((s) => {
+      let next = Math.min(s + 1, TOTAL_STEPS - 1);
+      while (SKIPPED_STEPS.includes(next)) next += 1;
+      return next;
+    });
   };
 
   const goBack = () => {
     setDirection("back");
-    setStep((s) => Math.max(0, s - 1));
+    setStep((s) => {
+      let prev = Math.max(0, s - 1);
+      while (SKIPPED_STEPS.includes(prev)) prev -= 1;
+      return prev;
+    });
   };
 
   const handleComplete = async () => {

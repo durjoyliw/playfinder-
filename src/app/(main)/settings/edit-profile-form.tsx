@@ -1,5 +1,6 @@
 "use client";
 
+import { BETA_CITY } from "@/lib/beta";
 import { useSession } from "@/app/(main)/SessionProvider";
 import CropImageDialog from "@/components/CropImageDialog";
 import { MapboxLocationAutocomplete } from "@/components/mapbox-location-autocomplete";
@@ -158,18 +159,20 @@ export function EditProfileForm() {
           />
         </section>
 
-        <section>
-          <label htmlFor="location" className={labelClassName}>
-            Location
-          </label>
-          <MapboxLocationAutocomplete
-            id="location"
-            value={location}
-            onChange={setLocation}
-            onPlaceSelect={setLocation}
-            inputClassName={inputClassName}
-          />
-        </section>
+        {!BETA_CITY && (
+          <section>
+            <label htmlFor="location" className={labelClassName}>
+              Location
+            </label>
+            <MapboxLocationAutocomplete
+              id="location"
+              value={location}
+              onChange={setLocation}
+              onPlaceSelect={setLocation}
+              inputClassName={inputClassName}
+            />
+          </section>
+        )}
 
         <button
           type="button"

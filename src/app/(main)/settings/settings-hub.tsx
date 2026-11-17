@@ -1,5 +1,6 @@
 "use client";
 
+import { BETA_CITY } from "@/lib/beta";
 import { logout } from "@/app/(auth)/actions";
 import { useSession } from "@/app/(main)/SessionProvider";
 import { useToast } from "@/components/ui/use-toast";
@@ -88,7 +89,9 @@ export function SettingsHub() {
         <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-[var(--pf-volt)] text-2xl font-bold text-[var(--pf-on-accent)]">
           {getInitials(data.displayName)}
         </div>
-        <h1 className="text-2xl font-bold text-[var(--pf-c-ink-ffffff)]">{data.displayName}</h1>
+        <h1 className="text-2xl font-bold text-[var(--pf-c-ink-ffffff)]">
+          {data.displayName}
+        </h1>
         <p className="mt-1 text-sm text-muted-foreground">@{data.username}</p>
         <button
           type="button"
@@ -142,12 +145,14 @@ export function SettingsHub() {
         </SettingsSection>
 
         <SettingsSection title="Preferences">
-          <SettingsRow
-            href="/settings/location"
-            icon={<MapPin className="h-5 w-5" />}
-            label="Location"
-            value={locationLabel}
-          />
+          {!BETA_CITY && (
+            <SettingsRow
+              href="/settings/location"
+              icon={<MapPin className="h-5 w-5" />}
+              label="Location"
+              value={locationLabel}
+            />
+          )}
           <SettingsRow
             href="/settings/intent"
             icon={<Zap className="h-5 w-5" />}

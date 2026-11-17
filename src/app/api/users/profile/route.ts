@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { BETA_CITY } from "@/lib/beta";
 import prisma from "@/lib/prisma";
 import type { UserSettingsData } from "@/lib/settings";
 import streamServerClient from "@/lib/stream";
@@ -89,7 +90,7 @@ export async function PATCH(req: Request) {
           }),
           ...(body.bio !== undefined && { bio: body.bio || null }),
           ...(body.location !== undefined && {
-            location: body.location || null,
+            location: BETA_CITY ?? (body.location || null),
           }),
           ...(body.profileIntent !== undefined && {
             profileIntent: body.profileIntent,

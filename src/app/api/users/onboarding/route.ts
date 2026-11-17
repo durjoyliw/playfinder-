@@ -1,4 +1,5 @@
 import { validateRequest } from "@/auth";
+import { BETA_CITY } from "@/lib/beta";
 import { needsBirthDate } from "@/lib/age";
 import prisma from "@/lib/prisma";
 import { completeOnboardingSchema } from "@/lib/validation";
@@ -49,7 +50,7 @@ export async function POST(req: Request) {
       return tx.user.update({
         where: { id: user.id },
         data: {
-          location: body.location,
+          location: BETA_CITY ?? body.location,
           profileIntent: body.profileIntent,
           completedOnboarding: true,
         },

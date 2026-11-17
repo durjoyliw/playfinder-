@@ -1,5 +1,6 @@
 "use client";
 
+import { BETA_CITY } from "@/lib/beta";
 import ProfileActions from "@/app/(main)/users/[username]/ProfileActions";
 import ProfileBioEditor from "@/app/(main)/users/[username]/ProfileBioEditor";
 import ProfileIntentPill from "@/app/(main)/users/[username]/ProfileIntentPill";
@@ -114,15 +115,17 @@ export default function AthleteProfile({
                     Edit profile
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="cursor-pointer gap-2.5 rounded-lg px-3 py-2.5 text-[14px] font-semibold text-[var(--pf-c-ink-f2f5ef)] focus:bg-[var(--pf-c-fill-1a1e1b)] focus:text-[var(--pf-c-ink-f2f5ef)]"
-                  asChild
-                >
-                  <Link href="/settings/location">
-                    <MapPin className="h-4 w-4 text-[var(--pf-c-ink-7e8a7e)]" />
-                    Edit location
-                  </Link>
-                </DropdownMenuItem>
+                {!BETA_CITY && (
+                  <DropdownMenuItem
+                    className="cursor-pointer gap-2.5 rounded-lg px-3 py-2.5 text-[14px] font-semibold text-[var(--pf-c-ink-f2f5ef)] focus:bg-[var(--pf-c-fill-1a1e1b)] focus:text-[var(--pf-c-ink-f2f5ef)]"
+                    asChild
+                  >
+                    <Link href="/settings/location">
+                      <MapPin className="h-4 w-4 text-[var(--pf-c-ink-7e8a7e)]" />
+                      Edit location
+                    </Link>
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
