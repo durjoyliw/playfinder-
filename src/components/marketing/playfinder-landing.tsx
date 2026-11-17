@@ -25,15 +25,13 @@ const features = [
   {
     icon: MapPin,
     title: "Find players near you",
-    description:
-      "Filter by sport and skill level. Find your match in seconds.",
+    description: "Filter by sport and skill level. Find your match in seconds.",
     Art: null,
   },
   {
     icon: MessageCircle,
     title: "Chat and organise",
-    description:
-      "DM players directly and coordinate everything in one place.",
+    description: "DM players directly and coordinate everything in one place.",
     Art: null,
   },
   {
@@ -60,8 +58,7 @@ const steps = [
   {
     number: "3",
     title: "Broadcast or join a game",
-    description:
-      "Post your own, or tap I'm in and DM to lock in the details.",
+    description: "Post your own, or tap I'm in and DM to lock in the details.",
   },
 ] as const;
 
@@ -146,7 +143,7 @@ export function PlayFinderLanding() {
               fontStyle: "italic",
               lineHeight: 1.15,
               paddingBottom: 4,
-              color: VOLT,
+              color: "var(--pf-volt-text)",
             }}
           >
             PlayFinder
@@ -185,7 +182,13 @@ export function PlayFinderLanding() {
         </nav>
 
         {/* Hero */}
-        <section style={{ padding: "72px 56px 96px", maxWidth: 1352, margin: "0 auto" }}>
+        <section
+          style={{
+            padding: "72px 56px 96px",
+            maxWidth: 1352,
+            margin: "0 auto",
+          }}
+        >
           <div className="pf-hero-grid">
             <div>
               <div
@@ -230,7 +233,7 @@ export function PlayFinderLanding() {
                 <br />
                 <span
                   style={{
-                    color: VOLT,
+                    color: "var(--pf-volt-text)",
                     fontStyle: "italic",
                     display: "inline-block",
                     lineHeight: 1.15,
@@ -250,11 +253,18 @@ export function PlayFinderLanding() {
                   color: MUTED,
                 }}
               >
-                The local sports network for Glasgow. Post a game, find
-                players, and never miss a match.
+                The local sports network for Glasgow. Post a game, find players,
+                and never miss a match.
               </p>
 
-              <div style={{ display: "flex", gap: 14, marginTop: 36, flexWrap: "wrap" }}>
+              <div
+                style={{
+                  display: "flex",
+                  gap: 14,
+                  marginTop: 36,
+                  flexWrap: "wrap",
+                }}
+              >
                 <Link
                   href={JOIN_HREF}
                   className="pf-btn-primary"
@@ -293,8 +303,9 @@ export function PlayFinderLanding() {
             </div>
 
             <div className="pf-hero-visual" style={{ position: "relative" }}>
-              <div className="pf-hero-photo">
+              <div className="pf-hero-photo" style={{ backgroundColor: CARD }}>
                 <PitchArt
+                  fit="contain"
                   className="h-full w-full"
                   title="A five-a-side pitch with two open spots waiting to be filled"
                 />
@@ -319,7 +330,13 @@ export function PlayFinderLanding() {
                     F
                   </div>
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: "var(--pf-c-ink-ffffff)" }}>
+                    <div
+                      style={{
+                        fontSize: 14,
+                        fontWeight: 700,
+                        color: "var(--pf-c-ink-ffffff)",
+                      }}
+                    >
                       Fraser is broadcasting
                     </div>
                     <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>
@@ -337,7 +354,13 @@ export function PlayFinderLanding() {
                     borderTop: `1px solid ${BORDER}`,
                   }}
                 >
-                  <span style={{ fontSize: 12, color: "var(--pf-volt-text)", fontWeight: 600 }}>
+                  <span
+                    style={{
+                      fontSize: 12,
+                      color: "var(--pf-volt-text)",
+                      fontWeight: 600,
+                    }}
+                  >
                     2 spots left
                   </span>
                   <span
@@ -361,7 +384,9 @@ export function PlayFinderLanding() {
         </section>
 
         {/* Beta facts */}
-        <div style={{ padding: "0 56px 8px", maxWidth: 1352, margin: "0 auto" }}>
+        <div
+          style={{ padding: "0 56px 8px", maxWidth: 1352, margin: "0 auto" }}
+        >
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
             {betaFacts.map((fact) => (
               <span
@@ -382,7 +407,13 @@ export function PlayFinderLanding() {
         </div>
 
         {/* Features */}
-        <section style={{ padding: "48px 56px 88px", maxWidth: 1352, margin: "0 auto" }}>
+        <section
+          style={{
+            padding: "48px 56px 88px",
+            maxWidth: 1352,
+            margin: "0 auto",
+          }}
+        >
           <h2
             style={{
               fontFamily: "inherit",
@@ -472,7 +503,9 @@ export function PlayFinderLanding() {
         </section>
 
         {/* How it works */}
-        <section style={{ padding: "8px 56px 88px", maxWidth: 1352, margin: "0 auto" }}>
+        <section
+          style={{ padding: "8px 56px 88px", maxWidth: 1352, margin: "0 auto" }}
+        >
           <h2
             style={{
               fontWeight: 700,
@@ -535,9 +568,14 @@ export function PlayFinderLanding() {
         </section>
 
         {/* Built in Glasgow */}
-        <section style={{ padding: "8px 56px 88px", maxWidth: 1352, margin: "0 auto" }}>
+        <section
+          style={{ padding: "8px 56px 88px", maxWidth: 1352, margin: "0 auto" }}
+        >
           <div className="pf-testimonial-grid">
-            <div className="pf-testimonial-photo">
+            <div
+              className="pf-testimonial-photo"
+              style={{ backgroundColor: CARD }}
+            >
               <CityArt
                 className="h-full w-full"
                 title="Map of Glasgow with pins in Partick, the West End, Dennistoun, Govan and the Southside"
@@ -568,7 +606,15 @@ export function PlayFinderLanding() {
                 Made by a five-a-side player who got tired of group chats dying
                 the week before kick-off.
               </p>
-              <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, color: MUTED, maxWidth: 460 }}>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: 15,
+                  lineHeight: 1.6,
+                  color: MUTED,
+                  maxWidth: 460,
+                }}
+              >
                 PlayFinder is in beta. Some things will be rough — when you spot
                 one, send feedback from the app menu and it gets fixed.
               </p>
@@ -577,7 +623,9 @@ export function PlayFinderLanding() {
         </section>
 
         {/* Bottom CTA */}
-        <section style={{ padding: "0 56px 64px", maxWidth: 1352, margin: "0 auto" }}>
+        <section
+          style={{ padding: "0 56px 64px", maxWidth: 1352, margin: "0 auto" }}
+        >
           <div
             className="pf-cta-band"
             style={{
@@ -637,28 +685,43 @@ export function PlayFinderLanding() {
             borderTop: `1px solid ${BORDER}`,
           }}
         >
-          <div className="pf-footer-inner" style={{ maxWidth: 1352, margin: "0 auto" }}>
+          <div
+            className="pf-footer-inner"
+            style={{ maxWidth: 1352, margin: "0 auto" }}
+          >
             <span
               style={{
                 fontSize: 18,
                 fontWeight: 700,
                 fontStyle: "italic",
-                color: VOLT,
+                color: "var(--pf-volt-text)",
               }}
             >
               PlayFinder
             </span>
             <div style={{ display: "flex", gap: 28 }}>
-              <Link href="/privacy" style={{ fontSize: 13, color: MUTED, textDecoration: "none" }}>
+              <Link
+                href="/privacy"
+                style={{ fontSize: 13, color: MUTED, textDecoration: "none" }}
+              >
                 Privacy
               </Link>
-              <Link href="/terms" style={{ fontSize: 13, color: MUTED, textDecoration: "none" }}>
+              <Link
+                href="/terms"
+                style={{ fontSize: 13, color: MUTED, textDecoration: "none" }}
+              >
                 Terms
               </Link>
-              <Link href="/cookies" style={{ fontSize: 13, color: MUTED, textDecoration: "none" }}>
+              <Link
+                href="/cookies"
+                style={{ fontSize: 13, color: MUTED, textDecoration: "none" }}
+              >
                 Cookies
               </Link>
-              <Link href="/contact" style={{ fontSize: 13, color: MUTED, textDecoration: "none" }}>
+              <Link
+                href="/contact"
+                style={{ fontSize: 13, color: MUTED, textDecoration: "none" }}
+              >
                 Contact
               </Link>
             </div>

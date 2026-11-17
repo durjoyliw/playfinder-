@@ -14,11 +14,17 @@ const MUTED = "var(--pf-c-ink-a3a3a3)";
 interface ArtProps {
   className?: string;
   title?: string;
+  /**
+   * "cover" (default) fills the box and may crop the edges; "contain" shows
+   * the whole drawing (use where the frame's shape varies, e.g. the hero).
+   */
+  fit?: "cover" | "contain";
 }
 
 function Frame({
   className,
   title,
+  fit = "cover",
   viewBox,
   children,
 }: ArtProps & { viewBox: string; children: React.ReactNode }) {
@@ -29,7 +35,9 @@ function Frame({
       role={title ? "img" : undefined}
       aria-label={title}
       aria-hidden={title ? undefined : true}
-      preserveAspectRatio="xMidYMid slice"
+      preserveAspectRatio={
+        fit === "contain" ? "xMidYMid meet" : "xMidYMid slice"
+      }
       xmlns="http://www.w3.org/2000/svg"
     >
       {title ? <title>{title}</title> : null}
@@ -121,11 +129,16 @@ function Player({
 }
 
 /** Hero: top-down five-a-side pitch with two open spots. */
-export function PitchArt({ className, title }: ArtProps) {
+export function PitchArt({ className, title, fit }: ArtProps) {
   const W = 600;
   const H = 720;
   return (
-    <Frame className={className} title={title} viewBox={`0 0 ${W} ${H}`}>
+    <Frame
+      className={className}
+      title={title}
+      fit={fit}
+      viewBox={`0 0 ${W} ${H}`}
+    >
       <Backdrop w={W} h={H} id="pitch" />
       <g
         transform="translate(90 90)"
