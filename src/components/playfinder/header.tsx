@@ -1,5 +1,6 @@
 "use client";
 
+import { BetaBadge } from "@/components/playfinder/beta-badge";
 import { MobileNavDrawer } from "@/components/playfinder/mobile-nav-drawer";
 import { Search, Zap } from "lucide-react";
 import Link from "next/link";
@@ -40,6 +41,7 @@ export function Header({
         <span className="truncate text-[22px] font-bold leading-none tracking-[-0.04em] text-[var(--pf-c-ink-ffffff)]">
           PlayFinder
         </span>
+        <BetaBadge />
       </Link>
 
       <button

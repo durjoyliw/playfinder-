@@ -89,6 +89,10 @@ export interface UserSettingsData {
   profileIntent: ProfileIntent | null;
   email: string | null;
   sports: UserSportEntry[];
+  /** False for name-only beta accounts that haven't set a password yet. */
+  hasPassword: boolean;
+  /** True when the account signs in with Google. */
+  hasGoogle: boolean;
 }
 
 export function getProfileIntentLabel(intent: ProfileIntent | null): string {

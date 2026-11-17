@@ -1,5 +1,6 @@
 "use client";
 
+import { BetaBadge } from "@/components/playfinder/beta-badge";
 import { logout } from "@/app/(auth)/actions";
 import { useSession } from "@/app/(main)/SessionProvider";
 import { usePlayFinder } from "@/components/playfinder/playfinder-provider";
@@ -201,6 +202,7 @@ export function DesktopSidebar({
         <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[11px] bg-[var(--pf-volt)] text-[var(--pf-on-accent)]">
           <Zap className="h-5 w-5" fill="currentColor" />
         </span>
+        <BetaBadge />
       </Link>
 
       <nav className="flex flex-col gap-1">

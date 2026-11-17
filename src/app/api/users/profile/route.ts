@@ -17,6 +17,8 @@ const userProfileSelect = {
   location: true,
   profileIntent: true,
   email: true,
+  passwordHash: true,
+  googleId: true,
   sports: {
     select: {
       sport: true,
@@ -36,15 +38,8 @@ export async function GET() {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const dbUser = await prisma.user.findFirst({
-      where: {
-        OR: [
-          { id: sessionUser.id },
-          ...(sessionUser.email
-            ? [{ email: sessionUser.email }]
-            : []),
-        ],
-      },
+    const dbUser = await prisma.user.findUnique({
+      where: { id: sessionUser.id },
       select: userProfileSelect,
     });
 
@@ -60,6 +55,9 @@ export async function GET() {
       profileIntent: dbUser.profileIntent,
       email: dbUser.email,
       sports: dbUser.sports,
+      // Only booleans leave the server; never the hash or Google id.
+      hasPassword: dbUser.passwordHash !== null,
+      hasGoogle: dbUser.googleId !== null,
     };
 
     return Response.json(data);
@@ -120,6 +118,8 @@ export async function PATCH(req: Request) {
       profileIntent: updatedUser.profileIntent,
       email: updatedUser.email,
       sports: updatedUser.sports,
+      hasPassword: updatedUser.passwordHash !== null,
+      hasGoogle: updatedUser.googleId !== null,
     };
 
     revalidatePath(`/users/${updatedUser.username}`);
@@ -178,6 +178,9 @@ export async function PUT(req: Request) {
       profileIntent: dbUser.profileIntent,
       email: dbUser.email,
       sports: dbUser.sports,
+      // Only booleans leave the server; never the hash or Google id.
+      hasPassword: dbUser.passwordHash !== null,
+      hasGoogle: dbUser.googleId !== null,
     };
 
     revalidatePath(`/users/${dbUser.username}`);

@@ -19,7 +19,9 @@ export const RATE_LIMITS = {
   // Auth (subject: IP, plus username for login)
   "login-ip": { limit: 20, windowSec: 15 * 60 },
   "login-user": { limit: 10, windowSec: 15 * 60 },
-  "signup-ip": { limit: 10, windowSec: 60 * 60 },
+  // Generous on purpose: beta testers often join together on one network
+  // (uni / club Wi-Fi share a single public IP).
+  "signup-ip": { limit: 40, windowSec: 60 * 60 },
   "admin-login-ip": { limit: 10, windowSec: 15 * 60 },
 
   // Writes (subject: user id)
@@ -48,6 +50,9 @@ export const RATE_LIMITS = {
   "mark-read": { limit: 60, windowSec: 10 * 60 },
   "account-delete": { limit: 5, windowSec: 60 * 60 },
   "birth-date": { limit: 10, windowSec: 60 * 60 },
+  "secure-account": { limit: 10, windowSec: 60 * 60 },
+  feedback: { limit: 10, windowSec: 60 * 60 },
+  "data-export": { limit: 5, windowSec: 60 * 60 },
 } as const;
 
 export type RateLimitBucket = keyof typeof RATE_LIMITS;

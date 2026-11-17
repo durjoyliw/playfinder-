@@ -1,5 +1,13 @@
 "use client";
 
+import {
+  BroadcastArt,
+  CityArt,
+  LevelsArt,
+  PitchArt,
+  ProfileArt,
+  SportsArt,
+} from "@/components/illustrations/playfinder-art";
 import { MapboxLocationAutocomplete } from "@/components/mapbox-location-autocomplete";
 import { SportsSearchPicker } from "@/components/onboarding/sports-search-picker";
 import kyInstance from "@/lib/ky";
@@ -285,11 +293,16 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
             >
               PlayFinder
             </span>
+            <span className="ob-reveal ob-reveal--1 mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--pf-c-line-2a2a2a)] px-3 py-1 font-dm-mono text-[11px] uppercase tracking-[0.14em] text-[var(--pf-volt-text)]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--pf-volt)]" />
+              Beta tester
+            </span>
             <h1 className="ob-reveal ob-reveal--1 text-3xl font-bold text-[var(--pf-c-ink-ffffff)]">
-              Welcome, {firstName}!
+              {firstName}, welcome to the beta!
             </h1>
             <p className="ob-reveal ob-reveal--1 mt-4 max-w-xs text-base leading-relaxed text-[var(--pf-c-ink-a3a3a3)]">
-              Let&apos;s set up your athlete profile in 60 seconds.
+              You&apos;re one of the first players trying PlayFinder in Glasgow.
+              Let&apos;s set up your profile — it takes about a minute.
             </p>
             <div className="mt-12 w-full">
               <PrimaryButton onClick={goNext}>Let&apos;s go</PrimaryButton>
@@ -440,23 +453,25 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
           <div className="flex flex-1 flex-col px-6 pb-8 pt-4">
             <div className="flex flex-col items-center text-center">
               <div className="ob-success-badge mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--pf-volt)]">
-                <Trophy className="h-8 w-8 text-black" />
+                <Trophy className="h-8 w-8 text-[var(--pf-on-accent)]" />
               </div>
-              <h1 className="ob-reveal text-2xl font-bold text-[var(--pf-c-ink-ffffff)]">You&apos;re all set!</h1>
+              <h1 className="ob-reveal text-2xl font-bold text-[var(--pf-c-ink-ffffff)]">
+                You&apos;re all set, {firstName}!
+              </h1>
               <p className="ob-reveal ob-reveal--1 mt-2 text-sm text-[var(--pf-c-ink-a3a3a3)]">
-                Welcome to PlayFinder Glasgow. Your athlete profile is live.
+                Your athlete profile is live. Thanks for testing PlayFinder.
               </p>
             </div>
 
-            <div className="mt-8 grid grid-cols-2 gap-3">
-              <div className="rounded-xl bg-[var(--pf-c-fill-161616)] p-4 text-center pf-card">
-                <p className="text-2xl font-bold text-[var(--pf-volt-text)]">247</p>
-                <p className="mt-1 text-xs text-[var(--pf-c-ink-6b7280)]">Players near you</p>
-              </div>
-              <div className="rounded-xl bg-[var(--pf-c-fill-161616)] p-4 text-center pf-card">
-                <p className="text-2xl font-bold text-[var(--pf-volt-text)]">12</p>
-                <p className="mt-1 text-xs text-[var(--pf-c-ink-6b7280)]">Active games today</p>
-              </div>
+            <div className="mt-8 rounded-xl border border-[rgb(var(--pf-volt-rgb)/0.35)] bg-[rgb(var(--pf-volt-rgb)/0.08)] p-4">
+              <p className="text-sm font-semibold text-[var(--pf-c-ink-ffffff)]">
+                You&apos;re testing an early version
+              </p>
+              <p className="mt-1 text-sm leading-relaxed text-[var(--pf-c-ink-a3a3a3)]">
+                Some things will be rough. If anything breaks or feels off, open
+                the menu and tap <strong>Send feedback</strong> — it goes straight
+                to the person building this.
+              </p>
             </div>
 
             <div className="mt-6 rounded-xl bg-[var(--pf-c-fill-161616)] p-5 pf-card">
@@ -526,12 +541,14 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
         className="relative hidden overflow-hidden border-r border-[var(--pf-c-line-2a2a2a)] md:flex md:w-[42%] md:min-w-[420px] md:flex-col md:justify-end md:p-12"
         aria-hidden
       >
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url(https://picsum.photos/seed/playfinder-onboarding-${step}/900/1200)`,
-          }}
-        />
+        {(() => {
+          // One illustration per step (replaces the old random stock photos).
+          const PanelArt =
+            [PitchArt, SportsArt, LevelsArt, CityArt, BroadcastArt, ProfileArt][
+              step
+            ] ?? PitchArt;
+          return <PanelArt className="absolute inset-0 h-full w-full" />;
+        })()}
         <div
           className="absolute inset-0"
           style={{

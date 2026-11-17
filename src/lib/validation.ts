@@ -23,6 +23,48 @@ export const signUpSchema = z.object({
 
 export type SignUpValues = z.infer<typeof signUpSchema>;
 
+/** Shared 18+ date-of-birth field ("YYYY-MM-DD"). */
+const birthDateField = requiredString.superRefine((value, ctx) => {
+  const check = checkBirthDate(value);
+  if (!check.ok) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: check.message });
+  }
+});
+
+/** Beta join: just a name to call you by, plus the 18+ gate. */
+export const joinBetaSchema = z.object({
+  name: requiredString
+    .min(2, "At least 2 characters")
+    .max(40, "Keep it under 40 characters")
+    .refine(
+      (value) => !/[<>@/\\]|https?:|www\./i.test(value),
+      "Just a name please — no links or symbols",
+    ),
+  birthDate: birthDateField,
+  acceptTerms: z.literal(true, {
+    errorMap: () => ({ message: "Please accept the terms to continue" }),
+  }),
+});
+
+export type JoinBetaValues = z.infer<typeof joinBetaSchema>;
+
+/** Beta accounts adding a username + password so they can log in anywhere. */
+export const secureAccountSchema = z
+  .object({
+    username: requiredString
+      .min(3, "At least 3 characters")
+      .max(30, "At most 30 characters")
+      .regex(/^[a-zA-Z0-9_-]+$/, "Only letters, numbers, - and _ allowed"),
+    password: requiredString.min(8, "Must be at least 8 characters").max(128),
+    confirmPassword: requiredString,
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
+
+export type SecureAccountValues = z.infer<typeof secureAccountSchema>;
+
 export const loginSchema = z.object({
   username: requiredString,
   password: requiredString,

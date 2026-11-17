@@ -1,6 +1,8 @@
 import { SignupAnimationPanel } from "@/components/auth/signup-animation-panel";
+import { BETA_OPEN_JOIN } from "@/lib/beta";
 import { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import SignUpForm from "./SignUpForm";
 
 export const metadata: Metadata = {
@@ -8,6 +10,9 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
+  // During the beta, new players join with just a name at /join.
+  if (BETA_OPEN_JOIN) redirect("/join");
+
   return (
     <main className="flex h-screen items-center justify-center p-5 pl-[max(1.25rem,env(safe-area-inset-left))] pr-[max(1.25rem,env(safe-area-inset-right))]">
       <div className="flex h-full max-h-[40rem] w-full max-w-[64rem] overflow-hidden rounded-2xl bg-card shadow-2xl pf-card">

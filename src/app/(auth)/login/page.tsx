@@ -1,4 +1,5 @@
 import { SignupAnimationPanel } from "@/components/auth/signup-animation-panel";
+import { BETA_OPEN_JOIN, JOIN_HREF } from "@/lib/beta";
 import { Metadata } from "next";
 import Link from "next/link";
 import GoogleSignInButton from "./google/GoogleSignInButton";
@@ -22,8 +23,10 @@ export default function Page() {
               <div className="h-px flex-1 bg-muted" />
             </div>
             <LoginForm />
-            <Link href="/signup" className="block text-center hover:underline">
-              Don&apos;t have an account? Sign up
+            <Link href={JOIN_HREF} className="block text-center hover:underline">
+              {BETA_OPEN_JOIN
+                ? "New here? Join the beta"
+                : "Don\u2019t have an account? Sign up"}
             </Link>
           </div>
         </div>

@@ -1,3 +1,10 @@
+import {
+  BroadcastArt,
+  CityArt,
+  PitchArt,
+  ProfileArt,
+} from "@/components/illustrations/playfinder-art";
+import { JOIN_HREF } from "@/lib/beta";
 import { MapPin, MessageCircle, Radio, Trophy } from "lucide-react";
 import Link from "next/link";
 
@@ -13,36 +20,37 @@ const features = [
     title: "Broadcast a game instantly",
     description:
       "Need one more player? Post a broadcast and get responses in minutes.",
-    photo: "https://picsum.photos/seed/playfinder-broadcast/640/960",
+    Art: BroadcastArt,
   },
   {
     icon: MapPin,
     title: "Find players near you",
     description:
       "Filter by sport and skill level. Find your match in seconds.",
-    photo: null,
+    Art: null,
   },
   {
     icon: MessageCircle,
     title: "Chat and organise",
     description:
       "DM players directly and coordinate everything in one place.",
-    photo: null,
+    Art: null,
   },
   {
     icon: Trophy,
     title: "Your athlete profile",
     description:
       "Your sports, skill levels, and what you're looking for. All in one place.",
-    photo: "https://picsum.photos/seed/playfinder-trophy/640/480",
+    Art: ProfileArt,
   },
 ] as const;
 
 const steps = [
   {
     number: "1",
-    title: "Create your profile",
-    description: "Sign up in 30 seconds. Add your sports and area.",
+    title: "Tell us your name",
+    description:
+      "No email or password during the beta. Add your sports and area.",
   },
   {
     number: "2",
@@ -57,41 +65,7 @@ const steps = [
   },
 ] as const;
 
-const avatarSeeds = [
-  "playfinder-a",
-  "playfinder-b",
-  "playfinder-c",
-  "playfinder-d",
-];
-
-function GoogleIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
-      viewBox="0 0 256 262"
-      aria-hidden
-    >
-      <path
-        fill="#4285f4"
-        d="M255.878 133.451c0-10.734-.871-18.567-2.756-26.69H130.55v48.448h71.947c-1.45 12.04-9.283 30.172-26.69 42.356l-.244 1.622l38.755 30.023l2.685.268c24.659-22.774 38.875-56.282 38.875-96.027"
-      />
-      <path
-        fill="#34a853"
-        d="M130.55 261.1c35.248 0 64.839-11.605 86.453-31.622l-41.196-31.913c-11.024 7.688-25.82 13.055-45.257 13.055c-34.523 0-63.824-22.773-74.269-54.25l-1.531.13l-40.298 31.187l-.527 1.465C35.393 231.798 79.49 261.1 130.55 261.1"
-      />
-      <path
-        fill="#fbbc05"
-        d="M56.281 156.37c-2.756-8.123-4.351-16.827-4.351-25.82c0-8.994 1.595-17.697 4.206-25.82l-.073-1.73L15.26 71.312l-1.335.635C5.077 89.644 0 109.517 0 130.55s5.077 40.905 13.925 58.602z"
-      />
-      <path
-        fill="#eb4335"
-        d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0C79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251"
-      />
-    </svg>
-  );
-}
+const betaFacts = ["Free during the beta", "Glasgow first", "18+"] as const;
 
 export function PlayFinderLanding() {
   return (
@@ -106,7 +80,7 @@ export function PlayFinderLanding() {
         }
 
         .pf-hero-grid { display: grid; grid-template-columns: 1fr 0.95fr; gap: 64px; align-items: center; }
-        .pf-hero-photo { width: 100%; height: 460px; object-fit: cover; border-radius: 20px; display: block; border: 1px solid ${BORDER}; }
+        .pf-hero-photo { width: 100%; height: 460px; border-radius: 20px; display: block; overflow: hidden; border: 1px solid ${BORDER}; }
         .pf-hero-card { position: absolute; left: -28px; bottom: -28px; width: 300px; background: ${CARD}; border: 1px solid ${BORDER}; border-radius: 20px; padding: 18px; box-shadow: 0 20px 48px rgba(0,0,0,0.45); }
 
         .pf-features-grid { display: grid; grid-template-columns: 1.35fr 1fr; grid-template-rows: repeat(3, 1fr); gap: 16px; }
@@ -118,13 +92,13 @@ export function PlayFinderLanding() {
         .pf-step-circle { position: relative; z-index: 2; }
 
         .pf-testimonial-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 56px; align-items: center; }
-        .pf-testimonial-photo { width: 100%; height: 340px; object-fit: cover; border-radius: 20px; border: 1px solid ${BORDER}; }
+        .pf-testimonial-photo { width: 100%; height: 340px; border-radius: 20px; overflow: hidden; border: 1px solid ${BORDER}; }
 
         .pf-cta-band { display: flex; align-items: center; justify-content: space-between; gap: 40px; }
         .pf-footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
 
-        .pf-btn-primary:active, .pf-btn-google:active, .pf-signin:active { transform: scale(0.97); }
-        .pf-btn-primary:focus-visible, .pf-btn-google:focus-visible, .pf-signin:focus-visible, .pf-mini-btn:focus-visible {
+        .pf-btn-primary:active, .pf-btn-secondary:active, .pf-signin:active { transform: scale(0.97); }
+        .pf-btn-primary:focus-visible, .pf-btn-secondary:focus-visible, .pf-signin:focus-visible, .pf-login-link:focus-visible {
           outline: 2px solid ${VOLT}; outline-offset: 2px;
         }
 
@@ -177,22 +151,37 @@ export function PlayFinderLanding() {
           >
             PlayFinder
           </span>
-          <Link
-            href="/login"
-            className="pf-signin"
-            style={{
-              display: "inline-block",
-              padding: "10px 22px",
-              borderRadius: 9999,
-              border: `1px solid ${VOLT}`,
-              color: VOLT,
-              fontSize: 14,
-              fontWeight: 600,
-              textDecoration: "none",
-            }}
-          >
-            Sign in
-          </Link>
+          <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+            <Link
+              href="/login"
+              className="pf-login-link"
+              style={{
+                color: MUTED,
+                fontSize: 14,
+                fontWeight: 600,
+                textDecoration: "none",
+              }}
+            >
+              Log in
+            </Link>
+            <Link
+              href={JOIN_HREF}
+              className="pf-signin"
+              style={{
+                display: "inline-block",
+                padding: "10px 20px",
+                borderRadius: 9999,
+                border: `1px solid ${VOLT}`,
+                color: "var(--pf-volt-text)",
+                fontSize: 14,
+                fontWeight: 600,
+                textDecoration: "none",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Join the beta
+            </Link>
+          </div>
         </nav>
 
         {/* Hero */}
@@ -223,7 +212,7 @@ export function PlayFinderLanding() {
                     display: "inline-block",
                   }}
                 />
-                Live in Glasgow
+                Beta · Live in Glasgow
               </div>
 
               <h1
@@ -267,7 +256,7 @@ export function PlayFinderLanding() {
 
               <div style={{ display: "flex", gap: 14, marginTop: 36, flexWrap: "wrap" }}>
                 <Link
-                  href="/login"
+                  href={JOIN_HREF}
                   className="pf-btn-primary"
                   style={{
                     padding: "15px 30px",
@@ -279,16 +268,15 @@ export function PlayFinderLanding() {
                     textDecoration: "none",
                   }}
                 >
-                  Get started for free
+                  Join the beta — it&apos;s free
                 </Link>
 
                 <Link
                   href="/login"
-                  className="pf-btn-google"
+                  className="pf-btn-secondary"
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
-                    gap: 10,
                     padding: "14px 26px",
                     borderRadius: 9999,
                     backgroundColor: CARD,
@@ -299,34 +287,37 @@ export function PlayFinderLanding() {
                     textDecoration: "none",
                   }}
                 >
-                  <GoogleIcon />
-                  Continue with Google
+                  I have an account
                 </Link>
               </div>
             </div>
 
             <div className="pf-hero-visual" style={{ position: "relative" }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                className="pf-hero-photo"
-                src="https://picsum.photos/seed/playfinder-five-a-side-glasgow/900/1100"
-                alt="Players on a five-a-side football pitch at dusk"
-              />
+              <div className="pf-hero-photo">
+                <PitchArt
+                  className="h-full w-full"
+                  title="A five-a-side pitch with two open spots waiting to be filled"
+                />
+              </div>
               <div className="pf-hero-card">
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <div
+                    aria-hidden
                     style={{
                       width: 40,
                       height: 40,
                       borderRadius: "50%",
-                      backgroundImage:
-                        "url(https://picsum.photos/seed/playfinder-fraser/80/80)",
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      border: `1px solid ${BORDER}`,
+                      backgroundColor: VOLT,
+                      color: "var(--pf-on-accent)",
+                      display: "grid",
+                      placeItems: "center",
+                      fontSize: 15,
+                      fontWeight: 800,
                       flexShrink: 0,
                     }}
-                  />
+                  >
+                    F
+                  </div>
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 700, color: "var(--pf-c-ink-ffffff)" }}>
                       Fraser is broadcasting
@@ -346,12 +337,11 @@ export function PlayFinderLanding() {
                     borderTop: `1px solid ${BORDER}`,
                   }}
                 >
-                  <span style={{ fontSize: 12, color: VOLT, fontWeight: 600 }}>
+                  <span style={{ fontSize: 12, color: "var(--pf-volt-text)", fontWeight: 600 }}>
                     2 spots left
                   </span>
-                  <button
-                    type="button"
-                    className="pf-mini-btn"
+                  <span
+                    aria-hidden
                     style={{
                       padding: "8px 16px",
                       borderRadius: 9999,
@@ -363,37 +353,31 @@ export function PlayFinderLanding() {
                     }}
                   >
                     I&apos;m in
-                  </button>
+                  </span>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Social proof */}
+        {/* Beta facts */}
         <div style={{ padding: "0 56px 8px", maxWidth: 1352, margin: "0 auto" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <div style={{ display: "flex" }}>
-              {avatarSeeds.map((seed, i) => (
-                <div
-                  key={seed}
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: "50%",
-                    backgroundImage: `url(https://picsum.photos/seed/${seed}/72/72)`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    border: `2px solid ${BG}`,
-                    marginLeft: i === 0 ? 0 : -12,
-                  }}
-                />
-              ))}
-            </div>
-            <span style={{ fontSize: 14, color: MUTED }}>
-              <strong style={{ color: "var(--pf-c-ink-ffffff)" }}>312 players</strong>{" "}
-              already active in Glasgow
-            </span>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+            {betaFacts.map((fact) => (
+              <span
+                key={fact}
+                style={{
+                  padding: "7px 14px",
+                  borderRadius: 9999,
+                  border: `1px solid ${BORDER}`,
+                  backgroundColor: CARD,
+                  fontSize: 13,
+                  color: MUTED,
+                }}
+              >
+                {fact}
+              </span>
+            ))}
           </div>
         </div>
 
@@ -412,7 +396,7 @@ export function PlayFinderLanding() {
             Everything you need to play more
           </h2>
           <div className="pf-features-grid">
-            {features.map(({ icon: Icon, title, description, photo }, i) => (
+            {features.map(({ icon: Icon, title, description, Art }, i) => (
               <div
                 key={title}
                 className={i === 0 ? "pf-feature-card--tall" : undefined}
@@ -426,36 +410,36 @@ export function PlayFinderLanding() {
                   justifyContent: "flex-end",
                   position: "relative",
                   overflow: "hidden",
-                  minHeight: photo ? 220 : 160,
+                  minHeight: Art ? 220 : 160,
                 }}
               >
-                {photo && (
-                  <>
-                    <div
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        backgroundImage: `url(${photo})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }}
-                    />
-                    <div
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        background:
-                          "linear-gradient(180deg, rgb(var(--pf-c-fill-0d0d0d-rgb)/0.15) 0%, rgb(var(--pf-c-fill-0d0d0d-rgb)/0.92) 100%)",
-                      }}
-                    />
-                  </>
+                {Art && (
+                  // The illustration gets its own band at the top of the card,
+                  // so it never sits behind the copy.
+                  <div
+                    style={{
+                      position: "relative",
+                      flex: 1,
+                      minHeight: i === 0 ? 240 : 150,
+                      margin: "-26px -26px 22px",
+                      overflow: "hidden",
+                      borderBottom: `1px solid ${BORDER}`,
+                    }}
+                  >
+                    <Art className="absolute inset-0 h-full w-full" />
+                  </div>
                 )}
                 <Icon
                   size={22}
                   // SVG stroke attributes can't take var(); colour via CSS instead.
                   color="currentColor"
                   strokeWidth={2}
-                  style={{ marginBottom: 14, position: "relative", zIndex: 1, color: VOLT }}
+                  style={{
+                    marginBottom: 14,
+                    position: "relative",
+                    zIndex: 1,
+                    color: "var(--pf-volt-text)",
+                  }}
                 />
                 <h3
                   style={{
@@ -474,7 +458,7 @@ export function PlayFinderLanding() {
                     margin: 0,
                     fontSize: 14,
                     lineHeight: 1.55,
-                    color: photo ? "var(--pf-c-ink-d4d4d4)" : MUTED,
+                    color: MUTED,
                     position: "relative",
                     zIndex: 1,
                     maxWidth: 360,
@@ -550,50 +534,44 @@ export function PlayFinderLanding() {
           </div>
         </section>
 
-        {/* Testimonial */}
+        {/* Built in Glasgow */}
         <section style={{ padding: "8px 56px 88px", maxWidth: 1352, margin: "0 auto" }}>
           <div className="pf-testimonial-grid">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              className="pf-testimonial-photo"
-              src="https://picsum.photos/seed/playfinder-park-match/800/700"
-              alt="Players warming up at a local Glasgow park before a match"
-            />
+            <div className="pf-testimonial-photo">
+              <CityArt
+                className="h-full w-full"
+                title="Map of Glasgow with pins in Partick, the West End, Dennistoun, Govan and the Southside"
+              />
+            </div>
             <div>
+              <p
+                style={{
+                  margin: "0 0 10px",
+                  fontFamily: "var(--font-dm-mono), ui-monospace, monospace",
+                  fontSize: 12,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "var(--pf-volt-text)",
+                }}
+              >
+                Built in Glasgow
+              </p>
               <p
                 style={{
                   fontSize: 24,
                   fontWeight: 500,
                   lineHeight: 1.4,
-                  margin: "0 0 24px",
+                  margin: "0 0 18px",
                   color: "var(--pf-c-ink-ffffff)",
                 }}
               >
-                &quot;I posted a broadcast on a Tuesday night and had a full
-                squad by Thursday. Beats scrolling through group chats.&quot;
+                Made by a five-a-side player who got tired of group chats dying
+                the week before kick-off.
               </p>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <div
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: "50%",
-                    backgroundImage:
-                      "url(https://picsum.photos/seed/playfinder-boyle/72/72)",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    border: `1px solid ${BORDER}`,
-                  }}
-                />
-                <div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "var(--pf-c-ink-ffffff)" }}>
-                    Fraser Boyle
-                  </div>
-                  <div style={{ fontSize: 13, color: MUTED, marginTop: 2 }}>
-                    Five-a-side captain, Partick
-                  </div>
-                </div>
-              </div>
+              <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, color: MUTED, maxWidth: 460 }}>
+                PlayFinder is in beta. Some things will be rough — when you spot
+                one, send feedback from the app menu and it gets fixed.
+              </p>
             </div>
           </div>
         </section>
@@ -629,12 +607,12 @@ export function PlayFinderLanding() {
                   maxWidth: 420,
                 }}
               >
-                Join Glasgow&apos;s local sports network and find your next
-                game today.
+                Join the beta and help shape Glasgow&apos;s local sports
+                network. Free while we&apos;re testing.
               </p>
             </div>
             <Link
-              href="/login"
+              href={JOIN_HREF}
               className="pf-btn-primary"
               style={{
                 padding: "15px 30px",
@@ -647,7 +625,7 @@ export function PlayFinderLanding() {
                 whiteSpace: "nowrap",
               }}
             >
-              Get started for free
+              Join the beta
             </Link>
           </div>
         </section>

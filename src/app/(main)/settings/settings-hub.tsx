@@ -6,6 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { openCookieSettings } from "@/lib/consent";
 import { getInitials, getProfileIntentLabel } from "@/lib/settings";
 import { useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
 import {
   BarChart3,
   Ban,
@@ -14,6 +15,7 @@ import {
   FileText,
   MessageCircle,
   Info,
+  KeyRound,
   MapPin,
   Palette,
   Power,
@@ -97,6 +99,22 @@ export function SettingsHub() {
       </div>
 
       <div className="px-4 pt-4">
+        {!data.hasPassword && !data.hasGoogle && (
+          <Link
+            href="/settings/secure-account"
+            className="mb-6 flex items-start gap-3 rounded-xl border border-[rgb(var(--pf-volt-rgb)/0.35)] bg-[rgb(var(--pf-volt-rgb)/0.08)] p-4 transition-colors hover:bg-[rgb(var(--pf-volt-rgb)/0.12)]"
+          >
+            <KeyRound className="mt-0.5 h-5 w-5 flex-shrink-0 text-[var(--pf-volt-text)]" />
+            <span>
+              <span className="block text-sm font-semibold text-[var(--pf-c-ink-ffffff)]">
+                Secure your account
+              </span>
+              <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
+                Add a username and password so you can log in on other devices.
+              </span>
+            </span>
+          </Link>
+        )}
         <SettingsSection title="Your Account">
           <SettingsRow
             href="/settings/edit-profile"
@@ -112,6 +130,18 @@ export function SettingsHub() {
             href="/settings/activity"
             icon={<BarChart3 className="h-5 w-5" />}
             label="Your Activity"
+          />
+          <SettingsRow
+            href="/settings/secure-account"
+            icon={<KeyRound className="h-5 w-5" />}
+            label="Login details"
+            value={
+              data.hasGoogle
+                ? "Google"
+                : data.hasPassword
+                  ? "Password set"
+                  : "Not set"
+            }
           />
         </SettingsSection>
 
