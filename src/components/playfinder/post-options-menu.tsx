@@ -4,11 +4,13 @@ import DeletePostDialog from "@/components/posts/DeletePostDialog";
 import { useToast } from "@/components/ui/use-toast";
 import { EditPostSheet } from "@/components/playfinder/edit-post-sheet";
 import kyInstance from "@/lib/ky";
+import { cn } from "@/lib/utils";
 import { PostData } from "@/lib/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MoreVertical, Pencil, Share2, Star, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useEscapeKey } from "@/hooks/use-escape-key";
 
 interface PostOptionsMenuProps {
   post: PostData;
@@ -26,6 +28,7 @@ export function PostOptionsMenu({
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+  useEscapeKey(open, () => setOpen(false));
   const [editOpen, setEditOpen] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -90,7 +93,7 @@ export function PostOptionsMenu({
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className={triggerClassName}
+          className={cn("pf-hit-lg", triggerClassName)}
           aria-label="Post options"
           aria-expanded={open}
           aria-haspopup="menu"

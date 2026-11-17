@@ -438,7 +438,9 @@ function socialPostCreatedAt(daysAgo: number, hoursOffset: number): Date {
   const date = new Date();
   date.setDate(date.getDate() - daysAgo);
   date.setHours(hoursOffset, 30, 0, 0);
-  return date;
+  // "Today at 10:30" is in the future if the seed runs before 10:30.
+  const latest = Date.now() - 5 * 60 * 1000;
+  return date.getTime() > latest ? new Date(latest) : date;
 }
 
 async function seedSocialPosts(userIdByUsername: Record<string, string>) {

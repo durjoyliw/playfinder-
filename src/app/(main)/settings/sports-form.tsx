@@ -323,7 +323,7 @@ export function SportsForm() {
                     <button
                       type="button"
                       onClick={() => removeSport(sportId)}
-                      className="cursor-pointer border-0 bg-transparent p-0 text-[14px] text-[var(--pf-c-ink-555555)] transition-colors hover:text-[var(--pf-c-ink-f0f0f0)]"
+                      className="pf-hit-lg cursor-pointer border-0 bg-transparent p-0 text-[14px] text-[var(--pf-c-ink-555555)] transition-colors hover:text-[var(--pf-c-ink-f0f0f0)]"
                       aria-label={`Remove ${getSportLabel(sportId)}`}
                     >
                       <IconX size={14} stroke={2} />

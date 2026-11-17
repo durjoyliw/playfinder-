@@ -931,3 +931,24 @@ html body[data-scroll-locked] {
     display: none;
   }
 }
+
+/* Bigger invisible tap area for small icon buttons (no visual change).
+   Sized so neighbours with gap-4 between them don't overlap. */
+@layer utilities {
+  .pf-hit {
+    position: relative;
+  }
+  .pf-hit::after {
+    content: "";
+    position: absolute;
+    inset: -6px -8px;
+  }
+  .pf-hit-lg {
+    position: relative;
+  }
+  .pf-hit-lg::after {
+    content: "";
+    position: absolute;
+    inset: -10px;
+  }
+}

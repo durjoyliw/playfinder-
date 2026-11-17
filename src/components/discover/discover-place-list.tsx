@@ -199,7 +199,7 @@ export function DiscoverPlaceList({
                 href={safeHttpUrl(place.website) ?? undefined}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="self-center shrink-0 text-xs font-semibold text-[var(--pf-volt-text)] hover:underline"
+                className="pf-hit-lg self-center shrink-0 text-xs font-semibold text-[var(--pf-volt-text)] hover:underline"
                 onClick={(e) => e.stopPropagation()}
               >
                 Visit →

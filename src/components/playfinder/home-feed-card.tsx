@@ -154,11 +154,11 @@ export function HomeFeedCard({
         <FeedCardLikeButton
           postId={postId}
           initialState={{ likes, isLikedByUser }}
-          className="min-h-9 gap-[7px] text-[13px] font-medium"
+          className="pf-hit min-h-9 gap-[7px] text-[13px] font-medium"
         />
         <Link
           href={postHref}
-          className="flex min-h-9 items-center gap-1.5 text-[13px] font-medium text-[var(--pf-c-ink-7e8a7e)] transition-transform hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
+          className="pf-hit flex min-h-9 items-center gap-1.5 text-[13px] font-medium text-[var(--pf-c-ink-7e8a7e)] transition-transform hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
           aria-label="View comments"
         >
           <MessageCircle className="h-5 w-5" />
@@ -167,12 +167,12 @@ export function HomeFeedCard({
         <FeedCardShareButton
           postId={postId}
           iconOnly
-          className="min-h-9 text-[var(--pf-c-ink-7e8a7e)] hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
+          className="pf-hit min-h-9 text-[var(--pf-c-ink-7e8a7e)] hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
         />
         <button
           type="button"
           onClick={() => setSendDialogOpen(true)}
-          className="flex min-h-9 items-center text-[var(--pf-c-ink-7e8a7e)] transition-transform hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
+          className="pf-hit flex min-h-9 items-center text-[var(--pf-c-ink-7e8a7e)] transition-transform hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
           aria-label="Send as message"
         >
           <Send className="h-[18px] w-[18px]" />
@@ -181,7 +181,7 @@ export function HomeFeedCard({
           postId={postId}
           initialState={{ isBookmarkedByUser }}
           iconSize={19}
-          className="active:scale-90"
+          className="pf-hit active:scale-90"
         />
       </div>
 

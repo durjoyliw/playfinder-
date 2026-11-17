@@ -7,6 +7,7 @@ import { ArrowLeft, MoreVertical, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useEscapeKey } from "@/hooks/use-escape-key";
 import { useChannelStateContext, useChatContext } from "stream-chat-react";
 import { useSession } from "../SessionProvider";
 import {
@@ -26,6 +27,7 @@ export default function ChannelHeader() {
   const { setActiveChannel } = useChatContext();
   const { channel } = useChannelStateContext();
   const [menuOpen, setMenuOpen] = useState(false);
+  useEscapeKey(menuOpen, () => setMenuOpen(false));
   const [isMuted, setIsMuted] = useState(false);
   const [blockConfirmOpen, setBlockConfirmOpen] = useState(false);
   const [blockPending, setBlockPending] = useState(false);

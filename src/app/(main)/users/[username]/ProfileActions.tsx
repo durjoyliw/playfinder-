@@ -18,6 +18,7 @@ import { QueryKey, useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useEscapeKey } from "@/hooks/use-escape-key";
 import { useSession } from "../../SessionProvider";
 
 interface ProfileActionsProps {
@@ -40,6 +41,7 @@ export default function ProfileActions({
   const [removeTeammateConfirmActive, setRemoveTeammateConfirmActive] =
     useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  useEscapeKey(menuOpen, () => setMenuOpen(false));
   const [muteLoading, setMuteLoading] = useState(false);
   const [muted, setMuted] = useState(false);
   const [blockConfirmOpen, setBlockConfirmOpen] = useState(false);

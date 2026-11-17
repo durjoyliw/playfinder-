@@ -6,6 +6,7 @@ import kyInstance from "@/lib/ky";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Loader2, Search, Send, X } from "lucide-react";
 import { useState } from "react";
+import { useEscapeKey } from "@/hooks/use-escape-key";
 
 interface SendPostDialogProps {
   postId: string;
@@ -24,6 +25,7 @@ export function SendPostDialog({ postId, onOpenChange }: SendPostDialogProps) {
   const [sentTo, setSentTo] = useState<Set<string>>(new Set());
   const [sendErrorFor, setSendErrorFor] = useState<string | null>(null);
   const searchDebounced = useDebounce(searchInput);
+  useEscapeKey(true, () => onOpenChange(false));
 
   const { data, isFetching, isError } = useQuery({
     queryKey: ["teammates-search", searchDebounced],

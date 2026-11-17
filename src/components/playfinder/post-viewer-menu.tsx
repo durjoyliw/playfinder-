@@ -13,6 +13,7 @@ import {
 } from "@tanstack/react-query";
 import { Ban, Flag, MoreHorizontal, UserPlus, VolumeX } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useEscapeKey } from "@/hooks/use-escape-key";
 
 interface PostViewerMenuProps {
   postId: string;
@@ -41,6 +42,7 @@ export function PostViewerMenu({
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+  useEscapeKey(open, () => setOpen(false));
   const [blockConfirmOpen, setBlockConfirmOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -171,7 +173,7 @@ export function PostViewerMenu({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[var(--pf-c-ink-7e8a7e)] transition-transform hover:bg-[var(--pf-c-fill-1e211e)] hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
+        className="pf-hit-lg flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[var(--pf-c-ink-7e8a7e)] transition-transform hover:bg-[var(--pf-c-fill-1e211e)] hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
         aria-label="Post options"
         aria-expanded={open}
         aria-haspopup="menu"
