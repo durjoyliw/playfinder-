@@ -1,8 +1,7 @@
 "use client";
 
-import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
-import { Camera, ImageIcon, Loader2, Mic, Send } from "lucide-react";
+import { Camera, ImageIcon, Loader2, Send } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useChannelStateContext } from "stream-chat-react";
 import { useSession } from "../SessionProvider";
@@ -13,7 +12,6 @@ const MAX_TEXTAREA_LINES = 4;
 const LINE_HEIGHT_PX = 22;
 
 export default function ChatInput() {
-  const { toast } = useToast();
   const { user } = useSession();
   const { draft, clearDraft } = usePendingDmDraft();
   const { channel } = useChannelStateContext();
@@ -197,15 +195,6 @@ export default function ChatInput() {
             disabled={isSending}
           >
             <ImageIcon className="h-5 w-5" />
-          </IconButton>
-          <IconButton
-            label="Voice note"
-            onClick={() =>
-              toast({ description: "Voice notes coming soon" })
-            }
-            disabled={isSending}
-          >
-            <Mic className="h-5 w-5" />
           </IconButton>
         </div>
 

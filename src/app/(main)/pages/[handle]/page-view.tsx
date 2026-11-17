@@ -6,27 +6,25 @@ import {
   usePageFollowInfo,
 } from "@/components/playfinder/page-follow-button";
 import { SlidingPillTabs } from "@/components/playfinder/sliding-pill-tabs";
+import { useToast } from "@/components/ui/use-toast";
 import UserAvatar from "@/components/UserAvatar";
+import { JOIN_HREF } from "@/lib/beta";
 import type { PageViewData } from "@/lib/pages/get-page-view";
 import { cn } from "@/lib/utils";
 import { PageType, VerifyLevel } from "@prisma/client";
 import { formatDistanceToNow } from "date-fns";
 import { BadgeCheck } from "lucide-react";
 import { useSafeBack } from "@/hooks/use-safe-back";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 
-type ClubTab = "roster" | "fixtures" | "posts";
-type VenueTab = "about" | "posts";
+// Roster / Fixtures modules aren't built yet, so they're not shown in the
+// beta (they used to render a developer placeholder).
+type PageTab = "posts" | "about";
 
-const CLUB_TABS = [
-  { id: "roster" as const, label: "Roster" },
-  { id: "fixtures" as const, label: "Fixtures" },
+const PAGE_TABS = [
   { id: "posts" as const, label: "Posts" },
-];
-
-const VENUE_TABS = [
   { id: "about" as const, label: "About" },
-  { id: "posts" as const, label: "Posts" },
 ];
 
 function formatFollowerCount(n: number): string {
@@ -43,15 +41,11 @@ interface PageViewProps {
 
 export function PageView({ page }: PageViewProps) {
   const goBack = useSafeBack("/home");
-  const isClub = page.type === PageType.CLUB;
-  const [clubTab, setClubTab] = useState<ClubTab>("posts");
-  const [venueTab, setVenueTab] = useState<VenueTab>("posts");
+  const [activeModule, setActiveModule] = useState<PageTab>("posts");
   const { data: followInfo } = usePageFollowInfo(page.id, {
     followers: page.followerCount,
     isFollowedByUser: page.isFollowing,
   });
-
-  const activeModule = isClub ? clubTab : venueTab;
 
   const metaLine = useMemo(() => {
     const parts = [
@@ -149,70 +143,27 @@ export function PageView({ page }: PageViewProps) {
         </div>
       </div>
 
-      {/* Action row — stubs for 1.5; sticky on mobile */}
+      {/* Action row; sticky on mobile */}
       <div className="sticky top-[var(--pf-header-h)] z-10 border-b border-[rgb(var(--pf-contrast-rgb)/0.04)] bg-[rgb(var(--pf-c-fill-08090a-rgb)/0.92)] px-4 py-2.5 backdrop-blur-[16px] lg:static lg:top-0 lg:border-0 lg:bg-transparent lg:px-6 lg:py-4 lg:backdrop-blur-none">
         <div className="flex gap-2">
-          {page.isAdmin ? (
-            <>
-              <button
-                type="button"
-                disabled
-                className="flex h-[42px] flex-1 items-center justify-center rounded-xl bg-[var(--pf-volt)] text-[14px] font-bold tracking-[-0.01em] text-[var(--pf-on-accent)] opacity-90 lg:flex-none lg:px-8"
-                title="Coming in a later step"
-              >
-                Manage
-              </button>
-              <button
-                type="button"
-                disabled
-                className="flex h-[42px] flex-1 items-center justify-center rounded-xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[14px] font-bold text-[var(--pf-c-ink-f2f5ef)] opacity-90 lg:flex-none lg:px-6 pf-card"
-                title="Coming in a later step"
-              >
-                Share
-              </button>
-            </>
-          ) : page.isLoggedIn ? (
-            <>
-              <PageFollowButton
-                pageId={page.id}
-                initialState={{
-                  followers: page.followerCount,
-                  isFollowedByUser: page.isFollowing,
-                }}
-              />
-              <button
-                type="button"
-                disabled
-                className="flex h-[42px] flex-1 items-center justify-center rounded-xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[14px] font-bold text-[var(--pf-c-ink-f2f5ef)] opacity-90 pf-card"
-                title="Coming in a later step"
-              >
-                {page.type === PageType.VENUE
-                  ? "Check availability"
-                  : "Ask to join"}
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                type="button"
-                disabled
-                className="flex h-[42px] flex-1 items-center justify-center rounded-xl bg-[var(--pf-volt)] text-[14px] font-bold tracking-[-0.01em] text-[var(--pf-on-accent)] opacity-90"
-                title="Sign in to follow"
-              >
-                Follow
-              </button>
-              <button
-                type="button"
-                disabled
-                className="flex h-[42px] flex-1 items-center justify-center rounded-xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[14px] font-bold text-[var(--pf-c-ink-f2f5ef)] opacity-90 pf-card"
-                title="Coming in a later step"
-              >
-                {page.type === PageType.VENUE
-                  ? "Check availability"
-                  : "Ask to join"}
-              </button>
-            </>
+          {page.isLoggedIn && !page.isAdmin && (
+            <PageFollowButton
+              pageId={page.id}
+              initialState={{
+                followers: page.followerCount,
+                isFollowedByUser: page.isFollowing,
+              }}
+            />
           )}
+          {!page.isLoggedIn && (
+            <Link
+              href={JOIN_HREF}
+              className="flex h-[42px] flex-1 items-center justify-center rounded-xl bg-[var(--pf-volt)] text-[14px] font-bold tracking-[-0.01em] text-[var(--pf-on-accent)]"
+            >
+              Join to follow
+            </Link>
+          )}
+          <PageShareButton name={page.name} handle={page.handle} />
         </div>
       </div>
 
@@ -222,56 +173,31 @@ export function PageView({ page }: PageViewProps) {
           <p className="mb-2 px-2 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-c-ink-7e8a7e)]">
             Modules
           </p>
-          {isClub
-            ? CLUB_TABS.map((tab) => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setClubTab(tab.id)}
-                  className={cn(
-                    "rounded-xl px-3 py-2.5 text-left text-[14px] font-semibold transition-colors",
-                    clubTab === tab.id
-                      ? "border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-f2f5ef)]"
-                      : "text-[var(--pf-c-ink-b4bcaf)] hover:bg-[var(--pf-c-fill-131614)]",
-                  )}
-                >
-                  {tab.label}
-                </button>
-              ))
-            : VENUE_TABS.map((tab) => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setVenueTab(tab.id)}
-                  className={cn(
-                    "rounded-xl px-3 py-2.5 text-left text-[14px] font-semibold transition-colors",
-                    venueTab === tab.id
-                      ? "border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-f2f5ef)]"
-                      : "text-[var(--pf-c-ink-b4bcaf)] hover:bg-[var(--pf-c-fill-131614)]",
-                  )}
-                >
-                  {tab.label}
-                </button>
-              ))}
+          {PAGE_TABS.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setActiveModule(tab.id)}
+              className={cn(
+                "rounded-xl px-3 py-2.5 text-left text-[14px] font-semibold transition-colors",
+                activeModule === tab.id
+                  ? "border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-f2f5ef)]"
+                  : "text-[var(--pf-c-ink-b4bcaf)] hover:bg-[var(--pf-c-fill-131614)]",
+              )}
+            >
+              {tab.label}
+            </button>
+          ))}
         </aside>
 
         <div className="min-w-0 flex-1">
           <div className="lg:hidden">
-            {isClub ? (
-              <SlidingPillTabs
-                tabs={CLUB_TABS}
-                activeId={clubTab}
-                onTabChange={setClubTab}
-                ariaLabel="Page modules"
-              />
-            ) : (
-              <SlidingPillTabs
-                tabs={VENUE_TABS}
-                activeId={venueTab}
-                onTabChange={setVenueTab}
-                ariaLabel="Page modules"
-              />
-            )}
+            <SlidingPillTabs
+              tabs={PAGE_TABS}
+              activeId={activeModule}
+              onTabChange={setActiveModule}
+              ariaLabel="Page sections"
+            />
           </div>
 
           <div className="px-4 pt-2 lg:px-6 lg:pt-4">
@@ -283,15 +209,7 @@ export function PageView({ page }: PageViewProps) {
                 initials={page.initials}
               />
             ) : (
-              <ModulePlaceholder
-                label={
-                  activeModule === "roster"
-                    ? "Roster"
-                    : activeModule === "fixtures"
-                      ? "Fixtures"
-                      : "About"
-                }
-              />
+              <PageAbout page={page} />
             )}
           </div>
         </div>
@@ -300,19 +218,74 @@ export function PageView({ page }: PageViewProps) {
   );
 }
 
-function ModulePlaceholder({ label }: { label: string }) {
+function PageAbout({ page }: { page: PageViewData }) {
+  const rows = [
+    { label: "Type", value: page.categoryLabel },
+    { label: "Area", value: page.city?.trim() || null },
+    {
+      label: "Status",
+      value:
+        page.verify === VerifyLevel.VERIFIED
+          ? "Verified"
+          : page.isAdmin
+            ? "You manage this Page"
+            : null,
+    },
+  ].filter((row): row is { label: string; value: string } => !!row.value);
+
   return (
-    <div className="rounded-2xl border border-dashed border-[var(--pf-c-line-353c34)] bg-[rgb(var(--pf-c-fill-131614-rgb)/0.5)] px-4 py-14 text-center">
-      <p className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-c-ink-7e8a7e)]">
-        {label}
+    <div className="space-y-4 pb-4">
+      <p className="whitespace-pre-line text-[15px] leading-relaxed text-[var(--pf-c-ink-b4bcaf)]">
+        {page.bio?.trim() || `${page.name} hasn\u2019t added a description yet.`}
       </p>
-      <p className="mt-2 text-[15px] font-semibold tracking-[-0.02em] text-[var(--pf-c-ink-f2f5ef)]">
-        Coming soon
-      </p>
-      <p className="mt-1 text-[13px] text-[var(--pf-c-ink-7e8a7e)]">
-        This module is a placeholder for step 1.4.
-      </p>
+      {rows.length > 0 && (
+        <dl className="overflow-hidden rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] pf-card">
+          {rows.map((row) => (
+            <div
+              key={row.label}
+              className="flex items-center justify-between gap-4 border-b border-[var(--pf-c-line-2a2f2a)] px-4 py-3 last:border-b-0"
+            >
+              <dt className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-c-ink-7e8a7e)]">
+                {row.label}
+              </dt>
+              <dd className="text-right text-[14px] font-semibold text-[var(--pf-c-ink-f2f5ef)]">
+                {row.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      )}
     </div>
+  );
+}
+
+function PageShareButton({ name, handle }: { name: string; handle: string }) {
+  const { toast } = useToast();
+
+  async function share() {
+    const url = `${window.location.origin}/pages/${handle}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: name, url });
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      toast({ description: "Link copied" });
+    } catch (error) {
+      // Dismissing the share sheet throws AbortError; that's fine.
+      if (error instanceof Error && error.name === "AbortError") return;
+      toast({ variant: "destructive", description: "Couldn\u2019t share this Page" });
+    }
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={share}
+      className="flex h-[42px] flex-1 items-center justify-center rounded-xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[14px] font-bold text-[var(--pf-c-ink-f2f5ef)] pf-card lg:flex-none lg:px-6"
+    >
+      Share
+    </button>
   );
 }
 

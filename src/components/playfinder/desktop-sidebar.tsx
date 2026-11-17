@@ -25,7 +25,6 @@ import {
   MoreVertical,
   Settings,
   User,
-  Users,
   Zap,
 } from "lucide-react";
 import Link from "next/link";
@@ -280,15 +279,6 @@ export function DesktopSidebar({
             >
               <LogOut className="h-4 w-4 text-[var(--pf-c-ink-7e8a7e)]" />
               Log out
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="cursor-pointer gap-2.5 rounded-lg px-3 py-2.5 text-[14px] font-semibold text-[var(--pf-c-ink-f2f5ef)] focus:bg-[var(--pf-c-fill-1a1e1b)] focus:text-[var(--pf-c-ink-f2f5ef)]"
-              asChild
-            >
-              <Link href="/login">
-                <Users className="h-4 w-4 text-[var(--pf-c-ink-7e8a7e)]" />
-                Switch account
-              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

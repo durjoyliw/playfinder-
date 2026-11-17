@@ -8,7 +8,6 @@ import { getInitials, getProfileIntentLabel } from "@/lib/settings";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import {
-  BarChart3,
   Ban,
   Bell,
   Cookie,
@@ -125,11 +124,6 @@ export function SettingsHub() {
             href="/settings/sports"
             icon={<Trophy className="h-5 w-5" />}
             label="My Sports"
-          />
-          <SettingsRow
-            href="/settings/activity"
-            icon={<BarChart3 className="h-5 w-5" />}
-            label="Your Activity"
           />
           <SettingsRow
             href="/settings/secure-account"

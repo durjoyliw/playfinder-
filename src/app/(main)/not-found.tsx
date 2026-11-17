@@ -1,8 +1,13 @@
+import { StatusScreen } from "@/components/system/status-screen";
+
 export default function NotFound() {
   return (
-    <main className="my-12 w-full space-y-3 text-center">
-      <h1 className="text-3xl font-bold">Not Found</h1>
-      <p>The page you are looking for does not exist.</p>
-    </main>
+    <StatusScreen
+      eyebrow="404"
+      title="Nothing here"
+      description="That page doesn't exist, or it was removed. If a link in the app brought you here, tell us via Send feedback."
+      homeHref="/home"
+      homeLabel="Back to the feed"
+    />
   );
 }

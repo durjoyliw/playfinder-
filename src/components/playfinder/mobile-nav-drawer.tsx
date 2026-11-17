@@ -13,7 +13,6 @@ import { useUserSettings } from "@/hooks/use-user-settings";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  BadgeCheck,
   Bookmark,
   ChevronRight,
   LayoutGrid,
@@ -27,21 +26,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-/**
- * Verified tick is NOT wired to real data — User has no emailVerified /
- * phoneVerified field. Shown as a static badge for now (Phase 1).
- */
-function StaticVerifiedTick({ className }: { className?: string }) {
-  return (
-    <BadgeCheck
-      className={cn(
-        "h-[18px] w-[18px] shrink-0 fill-[#3B82F6] text-[#3B82F6]",
-        className,
-      )}
-      aria-label="Verified"
-    />
-  );
-}
 
 interface DrawerLink {
   href: string;
@@ -151,7 +135,6 @@ export function MobileNavDrawer({ triggerClassName }: MobileNavDrawerProps) {
                 <span className="truncate text-[17px] font-bold leading-tight tracking-[-0.02em] text-[var(--pf-text)]">
                   {displayName}
                 </span>
-                <StaticVerifiedTick className="h-4 w-4" />
               </div>
               <p className="mt-0.5 truncate text-[13px] text-[var(--pf-text-3)]">
                 @{user.username}
