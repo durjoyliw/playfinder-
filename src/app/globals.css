@@ -849,6 +849,10 @@ html body[data-scroll-locked] {
 /* Cookie consent banner (cookie-consent-banner.tsx). Clear of the notch /
    home indicator everywhere; on mobile, lifted above the bottom nav and its
    raised "+" (30px above the bar) whenever that nav is on screen. */
+body {
+  padding-bottom: var(--pf-consent-space, 0px);
+}
+
 .pf-consent {
   left: calc(12px + env(safe-area-inset-left, 0px));
   right: calc(12px + env(safe-area-inset-right, 0px));

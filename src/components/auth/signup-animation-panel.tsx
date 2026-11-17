@@ -5,19 +5,15 @@ import { useCallback, useEffect, useState } from "react";
 
 const ANIMATIONS = [
   [
-    "/animations/Badminton_Player_Character3.json",
     "/animation/Badminton_Player_Character3.json",
   ],
   [
-    "/animations/Soccer%20player%20kicking%20ball.json",
     "/animation/Soccer%20player%20kicking%20ball.json",
   ],
   [
-    "/animations/Volley_Ball_Player_Character1.json",
     "/animation/Volley_Ball_Player_Character1.json",
   ],
   [
-    "/animations/Volley_Ball_Player_Character3.json",
     "/animation/Volley_Ball_Player_Character3.json",
   ],
 ] as const;

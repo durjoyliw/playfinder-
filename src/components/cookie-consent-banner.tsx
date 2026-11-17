@@ -8,7 +8,7 @@ import {
   type ConsentChoice,
 } from "@/lib/consent";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * First-visit cookie consent, shown on every route (mounted in the root
@@ -22,6 +22,28 @@ import { useEffect, useState } from "react";
 export function CookieConsentBanner() {
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState<ConsentChoice | null>(null);
+  const bannerRef = useRef<HTMLElement>(null);
+
+  // While the banner is up, reserve its height at the bottom of the page so
+  // nothing (e.g. the Join button on a short phone) is stuck underneath it.
+  useEffect(() => {
+    const el = bannerRef.current;
+    if (!open || !el) return;
+    const root = document.documentElement;
+    const update = () => {
+      const space = window.innerHeight - el.getBoundingClientRect().top + 12;
+      root.style.setProperty("--pf-consent-space", `${Math.max(0, space)}px`);
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    window.addEventListener("resize", update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+      root.style.removeProperty("--pf-consent-space");
+    };
+  }, [open]);
 
   useEffect(() => {
     const saved = getConsent();
@@ -57,6 +79,7 @@ export function CookieConsentBanner() {
 
   return (
     <section
+      ref={bannerRef}
       role="region"
       aria-label="Cookie consent"
       className="pf-consent fixed z-[var(--pf-z-banner)] mx-auto max-w-[456px] rounded-2xl border border-[var(--pf-border)] bg-[rgb(var(--pf-c-fill-131614-rgb)/0.97)] p-4 font-grotesk text-[var(--pf-text)] shadow-[0_12px_40px_rgba(0,0,0,0.55)] backdrop-blur-[20px] duration-300 animate-in fade-in-0 slide-in-from-bottom-4 motion-reduce:animate-none"
@@ -65,9 +88,9 @@ export function CookieConsentBanner() {
         Cookies
       </p>
       <p className="mt-1.5 text-[13px] leading-relaxed text-[var(--pf-text-2)]">
-        We use essential cookies to keep you logged in and the app secure.
-        With your OK, we’d also use analytics cookies to see how PlayFinder is
-        used so we can improve it. See our{" "}
+        We use essential cookies to keep you logged in and the app secure. With
+        your OK, we’d also use analytics cookies to see how PlayFinder is used
+        so we can improve it. See our{" "}
         <Link
           href="/cookies"
           className="text-[var(--pf-text)] underline underline-offset-2"
