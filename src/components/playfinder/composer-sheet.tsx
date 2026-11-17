@@ -408,10 +408,18 @@ export function ComposerSheet({
     setTimeLabel(formatBroadcastTimeLabel(new Date(value).toISOString()));
   };
 
-  const arenaValid =
-    arenaContent.trim().length > 0 &&
-    selectedSport !== null &&
-    selectedIntent !== null;
+  // The server requires a description, sport, intent and location; say which
+  // one is missing instead of a silently greyed-out Post button.
+  const arenaMissing = !arenaContent.trim()
+    ? "Describe the game to post"
+    : !selectedSport
+      ? "Pick a sport to post"
+      : !selectedIntent
+        ? "Pick Looking to Play or Recruiting"
+        : !location.trim()
+          ? "Add a location to post"
+          : null;
+  const arenaValid = arenaMissing === null;
 
   const handleArenaSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -552,6 +560,11 @@ export function ComposerSheet({
             <IconGif className="h-4 w-4" stroke={1.75} />
           </button>
         </>
+      )}
+      {activeTab === "arena" && arenaMissing && (
+        <p className="w-full text-right text-xs text-[var(--pf-c-ink-888888)]">
+          {arenaMissing}
+        </p>
       )}
       <LoadingButton
         type="submit"
