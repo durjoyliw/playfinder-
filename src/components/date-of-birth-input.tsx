@@ -75,18 +75,18 @@ export function DateOfBirthInput({
   };
 
   const box = cn(
-    "h-12 rounded-2xl border bg-[var(--pf-surface)] px-4 text-base text-[var(--pf-text)] outline-none transition-colors placeholder:text-[var(--pf-text-4)] focus:border-[var(--pf-volt)] lg:text-[15px]",
+    "h-12 w-full min-w-0 rounded-2xl border bg-[var(--pf-surface)] px-4 text-base text-[var(--pf-text)] outline-none transition-colors placeholder:text-[var(--pf-text-4)] focus:border-[var(--pf-volt)] lg:text-[15px]",
     invalid ? "border-[#ef4444]" : "border-[var(--pf-border)]",
     fieldClassName,
   );
 
   return (
     <div
-      className="grid grid-cols-[1fr_1.6fr_1.2fr] gap-2"
+      className="grid w-full grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)_minmax(0,1.2fr)] gap-2"
       role="group"
       aria-describedby={describedBy}
     >
-      <label className="flex flex-col gap-1">
+      <label className="flex min-w-0 flex-col gap-1">
         <span className="text-[12px] text-[var(--pf-text-3)]">Day</span>
         <input
           id={`${id}-day`}
@@ -105,7 +105,7 @@ export function DateOfBirthInput({
           className={box}
         />
       </label>
-      <label className="flex flex-col gap-1">
+      <label className="flex min-w-0 flex-col gap-1">
         <span className="text-[12px] text-[var(--pf-text-3)]">Month</span>
         <select
           id={`${id}-month`}
@@ -133,7 +133,7 @@ export function DateOfBirthInput({
           ))}
         </select>
       </label>
-      <label className="flex flex-col gap-1">
+      <label className="flex min-w-0 flex-col gap-1">
         <span className="text-[12px] text-[var(--pf-text-3)]">Year</span>
         <input
           id={`${id}-year`}
