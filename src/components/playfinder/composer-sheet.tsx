@@ -36,10 +36,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { ComposerDateTimePicker } from "./composer-datetime-picker";
 import { submitBroadcast } from "./actions";
-import {
-  IdentitySwitcher,
-  useActingIdentityState,
-} from "./identity-switcher";
+import { IdentitySwitcher, useActingIdentityState } from "./identity-switcher";
 
 export type ComposerTab = "social" | "arena";
 
@@ -50,15 +47,14 @@ interface ComposerSheetProps {
 }
 
 const textareaClassName =
-  "mb-3.5 w-full min-h-[110px] resize-none rounded-[14px] border border-[#2a2f2a] bg-[#131614] p-4 text-base text-white outline-none placeholder:text-[#888888] focus:border-[#A0CC00]";
+  "mb-3.5 w-full min-h-[110px] resize-none rounded-[14px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-4 text-base text-[var(--pf-c-ink-ffffff)] outline-none placeholder:text-[var(--pf-c-ink-888888)] focus:border-[var(--pf-volt-cta)] pf-card";
 
 const fieldInputClassName =
-  "min-h-6 w-full border-0 bg-transparent text-[15px] text-white outline-none placeholder:text-[#888888] [color-scheme:dark]";
+  "min-h-6 w-full border-0 bg-transparent text-base text-[var(--pf-c-ink-ffffff)] outline-none lg:text-[15px] placeholder:text-[var(--pf-c-ink-888888)] [color-scheme:dark]";
 
 const ARENA_INTENTS = POST_INTENTS.filter(
   (o) =>
-    o.value === PostIntent.LOOKING_TO_PLAY ||
-    o.value === PostIntent.RECRUITING,
+    o.value === PostIntent.LOOKING_TO_PLAY || o.value === PostIntent.RECRUITING,
 );
 
 /** Normalises profile sport keys (kebab, snake, PascalCase, legacy enum) to onboarding id form. */
@@ -87,9 +83,7 @@ function normalizeProfileSportKey(raw: string): string {
     return trimmed.toLowerCase();
   }
   if (/[A-Z]/.test(trimmed)) {
-    return trimmed
-      .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
-      .toLowerCase();
+    return trimmed.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
   }
 
   return trimmed.toLowerCase();
@@ -160,23 +154,23 @@ function getComposerSportDisplay(raw: string): { name: string; emoji: string } {
 }
 
 const visibilityActiveClass =
-  "rounded-[10px] border border-[#A0CC00] bg-[#A0CC00] px-3 py-2 text-xs font-bold text-black";
+  "rounded-[10px] border border-[var(--pf-volt-cta)] bg-[var(--pf-volt-cta)] px-3 py-2 text-xs font-bold text-[var(--pf-on-accent)]";
 const visibilityInactiveClass =
-  "rounded-[10px] border border-[#2a2f2a] bg-[#131614] px-3 py-2 text-xs font-semibold text-[#888888]";
+  "rounded-[10px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] px-3 py-2 text-xs font-semibold text-[var(--pf-c-ink-888888)] pf-card";
 
 const composerSubmitButtonClassName =
-  "ml-auto h-12 min-h-12 shrink-0 rounded-full bg-[#A0CC00] px-[22px] py-3 text-[15px] font-bold text-black hover:bg-[#A0CC00]/90";
+  "ml-auto h-12 min-h-12 shrink-0 rounded-full bg-[var(--pf-volt-cta)] px-[22px] py-3 text-[15px] font-bold text-[var(--pf-on-accent)] hover:bg-[rgb(var(--pf-volt-cta-rgb)/0.9)]";
 
 const sportChipSelectedClass =
-  "flex min-h-9 items-center gap-1 rounded-[10px] border border-[#A0CC00] bg-[#A0CC00] px-3 py-2 text-xs font-semibold text-black transition-colors";
+  "flex min-h-9 items-center gap-1 rounded-[10px] border border-[var(--pf-volt-cta)] bg-[var(--pf-volt-cta)] px-3 py-2 text-xs font-semibold text-[var(--pf-on-accent)] transition-colors";
 const sportChipIdleClass =
-  "flex min-h-9 items-center gap-1 rounded-[10px] border border-[#2a2f2a] bg-[#131614] px-3 py-2 text-xs font-semibold text-[#b4bcaf] transition-colors";
+  "flex min-h-9 items-center gap-1 rounded-[10px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] px-3 py-2 text-xs font-semibold text-[var(--pf-c-ink-b4bcaf)] transition-colors pf-card";
 
 const footerChipClass =
-  "flex min-h-9 items-center gap-1.5 rounded-[10px] border border-[#2a2f2a] bg-[#131614] px-3 py-2 text-xs text-[#b4bcaf]";
+  "flex min-h-9 items-center gap-1.5 rounded-[10px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] px-3 py-2 text-xs text-[var(--pf-c-ink-b4bcaf)] pf-card";
 
 const mediaBtnClass =
-  "grid h-9 w-9 place-items-center rounded-[10px] border border-[#2a2f2a] bg-[#131614] text-[#b4bcaf] hover:border-[#A0CC00] hover:text-[#A0CC00]";
+  "grid h-9 w-9 place-items-center rounded-[10px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-b4bcaf)] hover:border-[var(--pf-volt-cta)] hover:text-[var(--pf-volt-cta)] pf-card";
 
 function VisibilityToggle({
   visibility,
@@ -231,12 +225,12 @@ function FieldRow({
   return (
     <div
       className={cn(
-        "flex min-h-[52px] items-center gap-2.5 rounded-[14px] border border-[#2a2f2a] bg-[#131614] px-4 py-3.5",
+        "pf-card flex min-h-[52px] items-center gap-2.5 rounded-[14px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] px-4 py-3.5",
         className,
       )}
     >
       {(label || icon) && (
-        <span className="flex min-w-[50px] shrink-0 items-center gap-1 text-[13px] font-semibold text-[#7e8a7e]">
+        <span className="flex min-w-[50px] shrink-0 items-center gap-1 text-[13px] font-semibold text-[var(--pf-c-ink-7e8a7e)]">
           {icon}
           {label}
         </span>
@@ -270,7 +264,9 @@ export function ComposerSheet({
 
   // —— Arena state ——
   const [selectedSport, setSelectedSport] = useState<string | null>(null);
-  const [selectedIntent, setSelectedIntent] = useState<PostIntent | null>(null);
+  const [selectedIntent, setSelectedIntent] = useState<PostIntent | null>(
+    PostIntent.LOOKING_TO_PLAY,
+  );
   const [location, setLocation] = useState("");
   const [gameAt, setGameAt] = useState("");
   const [timeLabel, setTimeLabel] = useState("");
@@ -306,12 +302,31 @@ export function ComposerSheet({
 
   const { data: profile } = useQuery({
     queryKey: ["user-settings"],
-    queryFn: () => kyInstance.get("/api/users/profile").json<UserSettingsData>(),
+    queryFn: () =>
+      kyInstance.get("/api/users/profile").json<UserSettingsData>(),
     enabled: open,
     staleTime: 60_000,
   });
 
   const userSports = useMemo(() => profile?.sports ?? [], [profile?.sports]);
+
+  // Arena posts need a sport: start with the person's first one picked, so
+  // the Post button isn't greyed out for no visible reason.
+  useEffect(() => {
+    if (activeTab !== "arena" || selectedSport || !userSports.length) return;
+    const first = normalizeProfileSportKey(userSports[0].sport);
+    if (first) setSelectedSport(first);
+  }, [activeTab, selectedSport, userSports]);
+
+  // Games need a time (the server rejects them without one). Start two hours
+  // from now, like tapping an intent used to.
+  useEffect(() => {
+    if (activeTab !== "arena" || gameAt) return;
+    const defaultDate = new Date();
+    defaultDate.setHours(defaultDate.getHours() + 2, 0, 0, 0);
+    setGameAt(toDatetimeLocalValue(defaultDate));
+    setTimeLabel(formatBroadcastTimeLabel(defaultDate.toISOString()));
+  }, [activeTab, gameAt]);
 
   const { data: actingState } = useActingIdentityState();
   const actingPage =
@@ -320,12 +335,12 @@ export function ComposerSheet({
       : null;
   const postingAsName = actingPage
     ? actingPage.name
-    : (profile?.displayName ?? user.displayName);
+    : profile?.displayName ?? user.displayName;
   const areaChip = getDisplayArea(profile?.location);
 
   const resetArenaForm = () => {
     setSelectedSport(null);
-    setSelectedIntent(null);
+    setSelectedIntent(PostIntent.LOOKING_TO_PLAY);
     setLocation("");
     setGameAt("");
     setTimeLabel("");
@@ -367,7 +382,9 @@ export function ComposerSheet({
   const arenaMutation = useMutation({
     mutationFn: (values: CreateBroadcastValues) => submitBroadcast(values),
     onSuccess: async (newPost) => {
-      await queryClient.cancelQueries({ queryKey: ["post-feed", "playfinder"] });
+      await queryClient.cancelQueries({
+        queryKey: ["post-feed", "playfinder"],
+      });
       queryClient.setQueriesData<PostsPage>(
         { queryKey: ["post-feed", "playfinder"] },
         (oldData) =>
@@ -401,10 +418,20 @@ export function ComposerSheet({
     setTimeLabel(formatBroadcastTimeLabel(new Date(value).toISOString()));
   };
 
-  const arenaValid =
-    arenaContent.trim().length > 0 &&
-    selectedSport !== null &&
-    selectedIntent !== null;
+  // The server requires a description, sport, intent and location; say which
+  // one is missing instead of a silently greyed-out Post button.
+  const arenaMissing = !arenaContent.trim()
+    ? "Describe the game to post"
+    : !selectedSport
+      ? "Pick a sport to post"
+      : !selectedIntent
+        ? "Pick Looking to Play or Recruiting"
+        : !location.trim()
+          ? "Add a location to post"
+          : !timeLabel.trim()
+            ? "Pick when the game is"
+            : null;
+  const arenaValid = arenaMissing === null;
 
   const handleArenaSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -414,7 +441,8 @@ export function ComposerSheet({
     if (!enumSport) {
       toast({
         variant: "destructive",
-        description: "Could not map the selected sport. Try updating your sports in Settings.",
+        description:
+          "Could not map the selected sport. Try updating your sports in Settings.",
       });
       return;
     }
@@ -423,6 +451,8 @@ export function ComposerSheet({
       intent: selectedIntent,
       location,
       timeLabel: isBanter ? undefined : timeLabel,
+      startsAt:
+        !isBanter && gameAt ? new Date(gameAt).toISOString() : undefined,
       content: arenaContent,
       slotsNeeded: isLookingToPlay ? slotsNeeded : null,
       visibility: arenaVisibility,
@@ -438,16 +468,13 @@ export function ComposerSheet({
   const handleGifPick = () => photoInputRef.current?.click();
 
   const socialSportChipLabel = selectedSportIds.length
-    ? selectedSportIds
-        .map((id) => getComposerSportDisplay(id).name)
-        .join(", ")
+    ? selectedSportIds.map((id) => getComposerSportDisplay(id).name).join(", ")
     : "Sport tag";
 
   if (!mounted || !open) return null;
 
   const sportChips = userSports.map((entry, index) => {
-    const sportKey =
-      normalizeProfileSportKey(entry.sport) || `sport-${index}`;
+    const sportKey = normalizeProfileSportKey(entry.sport) || `sport-${index}`;
     const { name, emoji } = getComposerSportDisplay(entry.sport);
     const selected =
       activeTab === "social"
@@ -479,7 +506,7 @@ export function ComposerSheet({
   const sportsEmptyState = !userSports.length ? (
     <Link
       href="/settings/sports"
-      className="text-sm text-[#A0CC00] hover:underline"
+      className="text-sm text-[var(--pf-volt-cta)] hover:underline"
     >
       Add sports in Settings
     </Link>
@@ -546,6 +573,11 @@ export function ComposerSheet({
           </button>
         </>
       )}
+      {activeTab === "arena" && arenaMissing && (
+        <p className="w-full text-right text-xs text-[var(--pf-c-ink-888888)]">
+          {arenaMissing}
+        </p>
+      )}
       <LoadingButton
         type="submit"
         loading={
@@ -560,7 +592,9 @@ export function ComposerSheet({
         }
         className={cn(
           composerSubmitButtonClassName,
-          activeTab === "arena" && !arenaValid && "cursor-not-allowed opacity-40",
+          activeTab === "arena" &&
+            !arenaValid &&
+            "cursor-not-allowed opacity-40",
         )}
       >
         {activeTab === "social" ? "Post" : "Post Arena"}
@@ -570,34 +604,37 @@ export function ComposerSheet({
   );
 
   return createPortal(
-    <div className="fixed inset-0 z-[200] flex items-end justify-center">
+    <div className="fixed inset-0 z-[var(--pf-z-fullscreen)] flex items-end justify-center">
       <button
         type="button"
-        className="absolute inset-0 bg-black/70 backdrop-blur-[6px]"
+        className="pf-sheet-backdrop absolute inset-0 bg-black/70 backdrop-blur-[6px]"
         aria-label="Close composer"
         onClick={() => onOpenChange(false)}
       />
 
       <div
-        className="relative z-10 max-h-[90%] w-full max-w-[480px] overflow-y-auto rounded-t-[24px] border border-[#2a2f2a] border-b-0 bg-[#161616] px-4 pb-[calc(24px+env(safe-area-inset-bottom,0px))] pt-4 text-white shadow-[0_-10px_40px_rgba(0,0,0,0.5)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="pf-sheet relative z-10 max-h-[90%] w-full max-w-[480px] overflow-y-auto rounded-t-[24px] border border-b-0 border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-161616)] px-4 pb-[calc(24px+env(safe-area-inset-bottom,0px))] pt-4 text-[var(--pf-c-ink-ffffff)] shadow-[0_-10px_40px_rgba(0,0,0,0.5)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         role="dialog"
         aria-modal="true"
         aria-labelledby="composer-sheet-title"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mx-auto mb-4 h-1 w-10 rounded-sm bg-[#353c34]" aria-hidden />
+        <div
+          className="mx-auto mb-4 h-1 w-10 rounded-sm bg-[var(--pf-c-fill-353c34)]"
+          aria-hidden
+        />
 
         <div className="mb-[18px] flex items-center justify-between">
           <h2
             id="composer-sheet-title"
-            className="text-[22px] font-bold tracking-[-0.03em] text-white"
+            className="text-[22px] font-bold tracking-[-0.03em] text-[var(--pf-c-ink-ffffff)]"
           >
             Create
           </h2>
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="grid h-[38px] w-[38px] place-items-center rounded-full bg-[#131614] text-[#b4bcaf] transition-transform active:scale-90"
+            className="grid h-[38px] w-[38px] place-items-center rounded-full bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-b4bcaf)] transition-transform active:scale-90"
             aria-label="Close"
           >
             <X className="h-[18px] w-[18px]" />
@@ -617,19 +654,21 @@ export function ComposerSheet({
             className={cn(
               "min-h-14 rounded-2xl border p-4 text-left transition-all active:scale-[0.97]",
               activeTab === "social"
-                ? "border-[#A0CC00] bg-[rgba(200,255,0,0.05)]"
-                : "border-[#2a2f2a] bg-[#131614]",
+                ? "border-[var(--pf-volt-cta)] bg-[rgb(var(--pf-volt-neon-rgb)/0.05)]"
+                : "border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)]",
             )}
           >
             <div
               className={cn(
                 "mb-1 text-[15px] font-bold",
-                activeTab === "social" ? "text-[#A0CC00]" : "text-white",
+                activeTab === "social"
+                  ? "text-[var(--pf-volt-cta)]"
+                  : "text-[var(--pf-c-ink-ffffff)]",
               )}
             >
               Social
             </div>
-            <div className="text-xs text-[#7e8a7e]">
+            <div className="text-xs text-[var(--pf-c-ink-7e8a7e)]">
               Share something with the community
             </div>
           </button>
@@ -641,26 +680,28 @@ export function ComposerSheet({
             className={cn(
               "min-h-14 rounded-2xl border p-4 text-left transition-all active:scale-[0.97]",
               activeTab === "arena"
-                ? "border-[#A0CC00] bg-[rgba(200,255,0,0.05)]"
-                : "border-[#2a2f2a] bg-[#131614]",
+                ? "border-[var(--pf-volt-cta)] bg-[rgb(var(--pf-volt-neon-rgb)/0.05)]"
+                : "border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)]",
             )}
           >
             <div
               className={cn(
                 "mb-1 text-[15px] font-bold",
-                activeTab === "arena" ? "text-[#A0CC00]" : "text-white",
+                activeTab === "arena"
+                  ? "text-[var(--pf-volt-cta)]"
+                  : "text-[var(--pf-c-ink-ffffff)]",
               )}
             >
               Arena
             </div>
-            <div className="text-xs text-[#7e8a7e]">
+            <div className="text-xs text-[var(--pf-c-ink-7e8a7e)]">
               Find players. Create a game.
             </div>
           </button>
         </div>
 
         {actingPage && (
-          <div className="mb-3 flex items-center gap-2.5 rounded-xl border border-[rgba(161,194,23,0.35)] bg-[rgba(161,194,23,0.08)] px-3 py-2.5">
+          <div className="mb-3 flex items-center gap-2.5 rounded-xl border border-[rgb(var(--pf-volt-rgb)/0.35)] bg-[rgb(var(--pf-volt-rgb)/0.08)] px-3 py-2.5">
             {actingPage.avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -669,21 +710,24 @@ export function ComposerSheet({
                 className="h-8 w-8 rounded-lg object-cover"
               />
             ) : (
-              <div className="grid h-8 w-8 place-items-center rounded-lg bg-[#232824] text-[11px] font-bold text-[#a1c217]">
+              <div className="grid h-8 w-8 place-items-center rounded-lg bg-[var(--pf-c-fill-232824)] text-[11px] font-bold text-[var(--pf-volt-text)]">
                 {getInitials(actingPage.name)}
               </div>
             )}
-            <p className="min-w-0 flex-1 text-[13px] font-semibold text-[#a1c217]">
+            <p className="min-w-0 flex-1 text-[13px] font-semibold text-[var(--pf-volt-text)]">
               Posting as{" "}
-              <span className="text-[#f2f5ef]">{actingPage.name}</span>
+              <span className="text-[var(--pf-c-ink-f2f5ef)]">
+                {actingPage.name}
+              </span>
             </p>
           </div>
         )}
 
-        <div className="mb-3.5 flex items-center gap-2.5 text-[13px] text-[#7e8a7e]">
+        <div className="mb-3.5 flex items-center gap-2.5 text-[13px] text-[var(--pf-c-ink-7e8a7e)]">
           <IdentitySwitcher />
           <span className="min-w-0 flex-1">
-            Posting as <b className="text-white">{postingAsName}</b>
+            Posting as{" "}
+            <b className="text-[var(--pf-c-ink-ffffff)]">{postingAsName}</b>
           </span>
         </div>
 
@@ -705,7 +749,7 @@ export function ComposerSheet({
                 className={textareaClassName}
                 required
               />
-              <p className="pointer-events-none absolute bottom-6 right-3 text-xs text-[#888888]">
+              <p className="pointer-events-none absolute bottom-6 right-3 text-xs text-[var(--pf-c-ink-888888)]">
                 {socialContent.length}/280
               </p>
             </div>
@@ -735,7 +779,7 @@ export function ComposerSheet({
                 maxLength={280}
                 className={textareaClassName}
               />
-              <p className="pointer-events-none absolute bottom-6 right-3 text-xs text-[#888888]">
+              <p className="pointer-events-none absolute bottom-6 right-3 text-xs text-[var(--pf-c-ink-888888)]">
                 {arenaContent.length}/280
               </p>
             </div>
@@ -775,7 +819,7 @@ export function ComposerSheet({
                         "rounded-[10px] border px-3 py-1.5 text-xs font-semibold transition-colors",
                         selectedIntent === option.value
                           ? option.className
-                          : "border-[#2a2f2a] bg-transparent text-[#888888]",
+                          : "border-[var(--pf-c-line-2a2f2a)] bg-transparent text-[var(--pf-c-ink-888888)]",
                       )}
                     >
                       {option.label}
@@ -811,23 +855,25 @@ export function ComposerSheet({
                   <button
                     type="button"
                     onClick={() => setSlotsNeeded((n) => Math.max(1, n - 1))}
-                    className="grid h-8 w-8 place-items-center rounded-[10px] border border-[#2a2f2a] text-white hover:border-[#A0CC00] hover:text-[#A0CC00]"
+                    className="grid h-8 w-8 place-items-center rounded-[10px] border border-[var(--pf-c-line-2a2f2a)] text-[var(--pf-c-ink-ffffff)] hover:border-[var(--pf-volt-cta)] hover:text-[var(--pf-volt-cta)]"
                     aria-label="Decrease players"
                   >
                     <Minus className="h-4 w-4" />
                   </button>
-                  <span className="min-w-[2rem] text-center text-[15px] font-semibold text-white">
+                  <span className="min-w-[2rem] text-center text-[15px] font-semibold text-[var(--pf-c-ink-ffffff)]">
                     {slotsNeeded}
                   </span>
                   <button
                     type="button"
                     onClick={() => setSlotsNeeded((n) => Math.min(10, n + 1))}
-                    className="grid h-8 w-8 place-items-center rounded-[10px] border border-[#2a2f2a] text-white hover:border-[#A0CC00] hover:text-[#A0CC00]"
+                    className="grid h-8 w-8 place-items-center rounded-[10px] border border-[var(--pf-c-line-2a2f2a)] text-[var(--pf-c-ink-ffffff)] hover:border-[var(--pf-volt-cta)] hover:text-[var(--pf-volt-cta)]"
                     aria-label="Increase players"
                   >
                     <Plus className="h-4 w-4" />
                   </button>
-                  <span className="text-xs text-[#7e8a7e]">players needed</span>
+                  <span className="text-xs text-[var(--pf-c-ink-7e8a7e)]">
+                    players needed
+                  </span>
                 </div>
               </FieldRow>
 

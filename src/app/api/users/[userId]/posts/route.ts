@@ -1,3 +1,4 @@
+import { visiblePostsWhere } from "@/lib/post-access";
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { getPostDataInclude, PostsPage } from "@/lib/types";
@@ -22,8 +23,11 @@ export async function GET(
 
     const posts = await prisma.post.findMany({
       where: {
-        userId,
-        ...(highlightsOnly ? { isHighlight: true } : {}),
+        AND: [
+          visiblePostsWhere(user.id),
+          { userId },
+          highlightsOnly ? { isHighlight: true } : {},
+        ],
       },
       include: getPostDataInclude(user.id),
       orderBy: { createdAt: "desc" },

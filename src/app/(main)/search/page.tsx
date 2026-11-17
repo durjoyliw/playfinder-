@@ -21,11 +21,11 @@ export default async function Page({ searchParams }: PageProps) {
   const q = params.q?.trim() ?? "";
 
   return (
-    <div className="min-h-[calc(100dvh-3.5rem-5rem)] w-full bg-[#08090a]">
+    <div className="min-h-[calc(100dvh-3.5rem-5rem)] w-full bg-[var(--pf-c-fill-08090a)]">
       <Suspense
         fallback={
           <div className="flex justify-center py-16">
-            <p className="text-sm text-[#666666]">Loading…</p>
+            <p className="text-sm text-[var(--pf-c-ink-666666)]">Loading…</p>
           </div>
         }
       >

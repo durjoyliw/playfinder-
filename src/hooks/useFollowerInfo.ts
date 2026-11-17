@@ -14,5 +14,10 @@ export default function useFollowerInfo(
     staleTime: Infinity,
   });
 
-  return query;
+  // The same cache key is also used by the post menu, which registers it
+  // without data until the menu is opened. initialData doesn't apply to an
+  // entry that already exists, so fall back here instead of handing callers
+  // undefined (search crashed when a person appeared as both a profile result
+  // and a post author).
+  return { ...query, data: query.data ?? initialState };
 }

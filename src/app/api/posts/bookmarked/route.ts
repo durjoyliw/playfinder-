@@ -1,3 +1,4 @@
+import { visiblePostsWhere } from "@/lib/post-access";
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { getPostDataInclude, PostsPage } from "@/lib/types";
@@ -18,6 +19,9 @@ export async function GET(req: NextRequest) {
     const bookmarks = await prisma.bookmark.findMany({
       where: {
         userId: user.id,
+        // Saved posts that were later deleted, hidden or made private (or
+        // whose author blocked you) drop out of the list.
+        post: visiblePostsWhere(user.id),
       },
       include: {
         post: {

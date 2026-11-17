@@ -1,8 +1,11 @@
 "use client";
 
 import { useSession } from "@/app/(main)/SessionProvider";
+import { useToast } from "@/components/ui/use-toast";
+import { INTEREST_STATUS } from "@/lib/game-notifications";
 import kyInstance from "@/lib/ky";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { HTTPError } from "ky";
 import { useState } from "react";
 
 interface FeedCardImInButtonProps {
@@ -13,6 +16,18 @@ interface FeedCardImInButtonProps {
   fullWidth?: boolean;
 }
 
+async function errorMessage(error: unknown, fallback: string) {
+  if (error instanceof HTTPError) {
+    try {
+      const body = (await error.response.json()) as { error?: string };
+      if (body?.error) return body.error;
+    } catch {
+      // not JSON
+    }
+  }
+  return fallback;
+}
+
 export function FeedCardImInButton({
   postId,
   authorId,
@@ -21,35 +36,54 @@ export function FeedCardImInButton({
   fullWidth = false,
 }: FeedCardImInButtonProps) {
   const { user } = useSession();
+  const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [localStatus, setLocalStatus] = useState<string | null>(userInterestStatus);
-  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  // undefined = nothing changed locally yet; null = no request.
+  const [localStatus, setLocalStatus] = useState<string | null | undefined>(
+    undefined,
+  );
+  const [confirming, setConfirming] = useState(false);
 
-  const status = localStatus ?? userInterestStatus;
-  const isPending = status === "PENDING";
-  const isAccepted = status === "ACCEPTED";
-
-  const isOwnPost = user.id === authorId;
+  const status = localStatus === undefined ? userInterestStatus : localStatus;
 
   const expressMutation = useMutation({
     mutationFn: () =>
-      kyInstance.post(`/api/posts/${postId}/interest`).json<{ status: string }>(),
+      kyInstance
+        .post(`/api/posts/${postId}/interest`)
+        .json<{ status: string }>(),
     onSuccess: (data) => {
       setLocalStatus(data.status);
       queryClient.invalidateQueries({ queryKey: ["post-feed"] });
     },
-  });
-
-  const cancelMutation = useMutation({
-    mutationFn: () => kyInstance.delete(`/api/posts/${postId}/interest`),
-    onSuccess: () => {
-      setLocalStatus(null);
-      setShowCancelConfirm(false);
+    onError: async (error) => {
+      toast({
+        variant: "destructive",
+        description: await errorMessage(error, "Couldn't send your request."),
+      });
       queryClient.invalidateQueries({ queryKey: ["post-feed"] });
     },
   });
 
-  if (isOwnPost) {
+  const withdrawMutation = useMutation({
+    mutationFn: () =>
+      kyInstance
+        .delete(`/api/posts/${postId}/interest`)
+        .json<{ status: string | null }>(),
+    onSuccess: (data) => {
+      setLocalStatus(data.status ?? null);
+      setConfirming(false);
+      queryClient.invalidateQueries({ queryKey: ["post-feed"] });
+    },
+    onError: async (error) => {
+      setConfirming(false);
+      toast({
+        variant: "destructive",
+        description: await errorMessage(error, "Something went wrong."),
+      });
+    },
+  });
+
+  if (user.id === authorId) {
     return null;
   }
 
@@ -57,66 +91,44 @@ export function FeedCardImInButton({
     ? "flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-colors"
     : "flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold transition-colors";
 
-  if (isFull) {
-    return (
-      <button
-        type="button"
-        disabled
-        className={baseClass}
-        style={{
-          background: "#1a1a1a",
-          color: "#555",
-          cursor: "not-allowed",
-        }}
-      >
-        Game Full
-      </button>
-    );
-  }
+  const mutedStyle = {
+    background: "var(--pf-c-fill-1a1a1a)",
+    color: "var(--pf-c-ink-888888)",
+    cursor: "default",
+  } as const;
+  const successStyle = {
+    background: "var(--pf-status-success-bg)",
+    color: "var(--pf-volt-text)",
+    cursor: "pointer",
+  } as const;
 
-  if (isPending && showCancelConfirm) {
+  const isPending = status === INTEREST_STATUS.PENDING;
+  const isAccepted = status === INTEREST_STATUS.ACCEPTED;
+
+  if ((isPending || isAccepted) && confirming) {
     return (
-      <div
-        className={
-          fullWidth
-            ? "flex w-full gap-2"
-            : "flex w-full gap-2"
-        }
-      >
+      <div className="flex w-full gap-2">
         <button
           type="button"
-          onClick={() => setShowCancelConfirm(false)}
-          disabled={cancelMutation.isPending}
-          className={`${baseClass} flex-1 border border-[#2a2a2a] bg-[#1a1a1a] text-[#888888] hover:bg-[#1f1f1f]`}
+          onClick={() => setConfirming(false)}
+          disabled={withdrawMutation.isPending}
+          className={`${baseClass} flex-1 border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-1a1a1a)] text-[var(--pf-c-ink-888888)] hover:bg-[var(--pf-c-fill-1f1f1f)]`}
         >
           Keep
         </button>
         <button
           type="button"
-          onClick={() => cancelMutation.mutate()}
-          disabled={cancelMutation.isPending}
+          onClick={() => withdrawMutation.mutate()}
+          disabled={withdrawMutation.isPending}
           className={`${baseClass} flex-1 bg-[#ef4444] text-white hover:bg-[#dc2626]`}
         >
-          {cancelMutation.isPending ? "..." : "Cancel interest"}
+          {withdrawMutation.isPending
+            ? "..."
+            : isAccepted
+              ? "Drop out"
+              : "Cancel request"}
         </button>
       </div>
-    );
-  }
-
-  if (isPending) {
-    return (
-      <button
-        type="button"
-        onClick={() => setShowCancelConfirm(true)}
-        className={baseClass}
-        style={{
-          background: "#1a2a1a",
-          color: "#A1C217",
-          cursor: "pointer",
-        }}
-      >
-        Interested ✓
-      </button>
     );
   }
 
@@ -124,15 +136,55 @@ export function FeedCardImInButton({
     return (
       <button
         type="button"
+        onClick={() => setConfirming(true)}
+        className={baseClass}
+        style={successStyle}
+        aria-label="You're in this game. Tap to drop out."
+      >
+        You&apos;re in ✓
+      </button>
+    );
+  }
+
+  if (isPending) {
+    return (
+      <button
+        type="button"
+        onClick={() => setConfirming(true)}
+        className={baseClass}
+        style={successStyle}
+        aria-label="Request sent. Tap to cancel it."
+      >
+        Request sent ✓
+      </button>
+    );
+  }
+
+  if (status === INTEREST_STATUS.DECLINED) {
+    return (
+      <button type="button" disabled className={baseClass} style={mutedStyle}>
+        Not this time
+      </button>
+    );
+  }
+
+  if (status === INTEREST_STATUS.REMOVED) {
+    return (
+      <button type="button" disabled className={baseClass} style={mutedStyle}>
+        Removed by host
+      </button>
+    );
+  }
+
+  if (isFull) {
+    return (
+      <button
+        type="button"
         disabled
         className={baseClass}
-        style={{
-          background: "#1a2a1a",
-          color: "#A1C217",
-          cursor: "default",
-        }}
+        style={{ ...mutedStyle, cursor: "not-allowed" }}
       >
-        Interested ✓
+        Game full
       </button>
     );
   }
@@ -142,7 +194,7 @@ export function FeedCardImInButton({
       type="button"
       onClick={() => expressMutation.mutate()}
       disabled={expressMutation.isPending}
-      className={`${baseClass} bg-[#A1C217] text-black hover:bg-[#aac62e] disabled:opacity-70`}
+      className={`${baseClass} bg-[var(--pf-volt)] text-[var(--pf-on-accent)] hover:bg-[var(--pf-volt-hover)] disabled:opacity-70`}
     >
       {expressMutation.isPending ? "..." : "I'm in 🤙"}
     </button>

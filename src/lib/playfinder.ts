@@ -23,7 +23,7 @@ export const POST_INTENTS = [
     value: PostIntent.LOOKING_TO_PLAY,
     label: "Looking to Play",
     cardType: "looking" as const,
-    className: "bg-[#A1C217] text-black border-[#A1C217]",
+    className: "bg-[var(--pf-volt)] text-[var(--pf-on-accent)] border-[var(--pf-volt)]",
   },
   {
     value: PostIntent.RECRUITING,
@@ -63,11 +63,11 @@ export function getPostTypeBadge(postType: string | null) {
   return {
     label: isArena ? "Arena" : "Social",
     style: {
-      background: isArena ? "rgba(161,194,23,0.1)" : "rgba(55,138,221,0.12)",
+      background: isArena ? "rgb(var(--pf-volt-rgb)/0.1)" : "rgba(55,138,221,0.12)",
       border: isArena
-        ? "1px solid rgba(161,194,23,0.25)"
+        ? "1px solid rgb(var(--pf-volt-rgb)/0.25)"
         : "1px solid rgba(55,138,221,0.25)",
-      color: isArena ? "#A1C217" : "#378ADD",
+      color: isArena ? "var(--pf-volt)" : "#378ADD",
       fontSize: "11px",
       fontWeight: 700,
       borderRadius: "5px",
@@ -112,12 +112,33 @@ const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
 
 const LISTING_EXPIRY_MS = 24 * 60 * 60 * 1000;
 
-/** Feed listing TTL — not the scheduled game time (that lives in timeLabel). */
-export function getListingExpiresAt(intent: PostIntent): Date | null {
-  if (intent === PostIntent.LOOKING_TO_PLAY) {
-    return new Date(Date.now() + LISTING_EXPIRY_MS);
+/** How long after kick-off a "looking to play" listing stays up. */
+const AFTER_KICKOFF_MS = 3 * 60 * 60 * 1000;
+const MAX_SCHEDULE_AHEAD_MS = 60 * 24 * 60 * 60 * 1000;
+
+/**
+ * When a "looking to play" listing leaves the feed.
+ *
+ * With a kick-off time it stays up until 3h after the game starts — it used
+ * to vanish 24h after *posting*, so a Saturday game posted on Monday was gone
+ * by Tuesday. Without one (or with an implausible one) it falls back to 24h.
+ */
+export function getListingExpiresAt(
+  intent: PostIntent,
+  startsAt?: string | Date | null,
+  now: number = Date.now(),
+): Date | null {
+  if (intent !== PostIntent.LOOKING_TO_PLAY) return null;
+
+  const start = toPostDate(startsAt ?? null);
+  if (
+    start &&
+    start.getTime() > now - AFTER_KICKOFF_MS &&
+    start.getTime() < now + MAX_SCHEDULE_AHEAD_MS
+  ) {
+    return new Date(start.getTime() + AFTER_KICKOFF_MS);
   }
-  return null;
+  return new Date(now + LISTING_EXPIRY_MS);
 }
 
 export function toPostDate(
@@ -224,6 +245,7 @@ export function mapPostToFeedCard(
     isUrgent,
     likes: post._count.likes,
     isLikedByUser: post.likes.length > 0,
+    isBookmarkedByUser: post.bookmarks.length > 0,
     replies: post._count.comments,
     slotsRemaining: showSpots ? interestFields.spotsLeft : undefined,
     acceptedCount: showSpots ? interestFields.acceptedCount : undefined,
@@ -236,7 +258,7 @@ export function mapPostToFeedCard(
   };
 }
 
-export function sortPlayfinderPosts(posts: PostData[]): PostData[] {
+export function sortPlayfinderPosts<T extends PostData>(posts: T[]): T[] {
   const now = new Date();
 
   return [...posts].sort((a, b) => {
@@ -256,7 +278,9 @@ export function sortPlayfinderPosts(posts: PostData[]): PostData[] {
   });
 }
 
-export function filterActivePlayfinderPosts(posts: PostData[]): PostData[] {
+export function filterActivePlayfinderPosts<T extends PostData>(
+  posts: T[],
+): T[] {
   const now = new Date();
   return posts.filter((post) => {
     if (!isLookingToPlayIntent(post.intent)) return true;

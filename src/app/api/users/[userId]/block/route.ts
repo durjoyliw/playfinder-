@@ -1,5 +1,6 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 export async function POST(
   req: Request,
@@ -11,6 +12,9 @@ export async function POST(
     if (!currentUser) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("block-mute", currentUser.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     if (currentUser.id === userId) {
       return Response.json({ error: "Cannot block yourself" }, { status: 400 });
@@ -65,6 +69,9 @@ export async function DELETE(
     if (!currentUser) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("block-mute", currentUser.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     await prisma.block.deleteMany({
       where: {

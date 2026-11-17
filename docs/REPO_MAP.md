@@ -2,6 +2,8 @@
 
 Read-only audit of what the code actually does. Every claim cites a path. If something the prompt asked about is not in the repo, it is marked **not present**.
 
+_Last refreshed: 27 Oct 2026 (branch `feat/ui-batch-2`). Adds the Pages engine models, the unified app shell, the theme system, legal pages, cookie consent, Saved, and account deletion._
+
 ---
 
 ## Framework and versions
@@ -18,7 +20,7 @@ Source: `package.json`.
 | Stream Chat | `stream-chat` `^8.37.0`, `stream-chat-react` `^11.23.0` |
 | UploadThing | `uploadthing` `^7.7.4`, `@uploadthing/react` `^7.3.3` |
 | Tailwind | `tailwindcss` `^3.4.1`, plugin `tailwindcss-animate` `^1.0.7`, wrapped with `withUt()` from `uploadthing/tw` in `tailwind.config.ts`. shadcn-style setup in `components.json` (`style: "default"`, `cssVariables: true`, `baseColor: "slate"`). |
-| Other notable deps | `@tanstack/react-query` `^5.50.1`, TipTap `^2.4.0`, `mapbox-gl` `^3.24.0`, `next-themes` `^0.3.0`, Radix dialog/dropdown/label/slot/tabs/toast/tooltip, `class-variance-authority`, `zod`. |
+| Other notable deps | `@tanstack/react-query` `^5.50.1`, TipTap `^2.4.0`, `mapbox-gl` `^3.24.0`, `next-themes` `^0.3.0`, **`vaul` `1.1.2`** (Discover bottom sheet), Radix dialog/dropdown/label/slot/tabs/toast/tooltip, `class-variance-authority`, `zod`. `.npmrc` sets `legacy-peer-deps=true` (React 19 RC). |
 
 Next config (`next.config.mjs`): TypeScript and ESLint errors ignored during builds; `experimental.staleTimes.dynamic = 30`; `serverExternalPackages: ["@node-rs/argon2"]`; image host `utfs.io`; rewrite `/hashtag/:tag` → `/search?q=%23:tag`.
 
@@ -28,7 +30,9 @@ Next config (`next.config.mjs`): TypeScript and ESLint errors ignored during bui
 
 ```
 d:\playfinder-\
+├── docs/                      # REPO_MAP.md (this file), DESIGN_SYSTEM.md
 ├── prisma/                    # schema.prisma, migrations/, seed.ts
+├── scripts/                   # seed-venues.ts, backfill-page-channels.ts, data/glasgow-venues.json
 ├── public/                    # static SVGs
 ├── reference/Design/          # standalone design prototype (not the Next app)
 ├── src/
@@ -36,7 +40,7 @@ d:\playfinder-\
 │   ├── middleware.ts          # admin cookie gate only
 │   ├── app/                   # Next.js App Router
 │   ├── components/            # UI + feature components
-│   ├── hooks/                 # 4 client hooks
+│   ├── hooks/                 # 7 client hooks
 │   ├── lib/                   # server/shared helpers
 │   └── assets/                # avatar placeholder (imported by UserAvatar)
 ├── tailwind.config.ts
@@ -53,7 +57,8 @@ App Router route groups:
 | `src/app/layout.tsx` | Root HTML, fonts, ThemeProvider, UploadThing SSR plugin, React Query, Toaster |
 | `src/app/(marketing)/page.tsx` | `/` landing; redirects logged-in users to `/home` |
 | `src/app/(auth)/` | `/login`, `/signup`, Google start at `login/google/route.ts` |
-| `src/app/(main)/` | Authenticated app (home, discover, messages, notifications, search, settings, users, posts, bookmarks, teammates) |
+| `src/app/(legal)/` | Public `/privacy`, `/terms`, `/cookies`, `/contact` (shared shell `src/components/legal/legal-page.tsx`). Own group so logged-in and logged-out users both reach them. |
+| `src/app/(main)/` | Authenticated app (home, discover, messages, notifications, search, settings, users, posts, pages, saved, teammates) |
 | `src/app/(admin)/admin/` | Separate admin UI; cookie auth, not Lucia |
 | `src/app/onboarding/` | Post-signup onboarding |
 | `src/app/api/` | REST handlers (see below) |
@@ -61,25 +66,29 @@ App Router route groups:
 `(main)` pages (each `page.tsx`):
 
 - `src/app/(main)/home/page.tsx` — `/home`
-- `src/app/(main)/discover/page.tsx`
+- `src/app/(main)/discover/page.tsx` — map + venue/club sheet (mobile: vaul bottom sheet)
 - `src/app/(main)/messages/page.tsx`, `messages/[channelId]/page.tsx`
 - `src/app/(main)/notifications/page.tsx`
-- `src/app/(main)/search/page.tsx`
-- `src/app/(main)/settings/` (+ about, activity, blocked, edit-profile, help, intent, location, notifications, privacy, sports, terms)
+- `src/app/(main)/search/page.tsx` — All / Profiles / Posts / Arena / Venues / Clubs tabs
+- `src/app/(main)/pages/page.tsx` (your Pages), `pages/new/page.tsx` (create wizard), `pages/[handle]/page.tsx` (Page view)
+- `src/app/(main)/saved/page.tsx` — saved posts (`/bookmarks` now redirects here)
+- `src/app/(main)/settings/` (+ about, activity, appearance, blocked, delete-account, edit-profile, help, intent, location, notifications, sports; `privacy` and `terms` redirect to the public pages)
 - `src/app/(main)/users/[username]/page.tsx`
 - `src/app/(main)/posts/[postId]/page.tsx`
-- `src/app/(main)/bookmarks/page.tsx`
 - `src/app/(main)/teammates/page.tsx`
 
 There is **no** `src/app/(main)/page.tsx`. Logged-in users hitting `/` are redirected to `/home` by `src/app/(marketing)/page.tsx`.
 
 ### Components (`src/components/`)
 
-- `src/components/ui/` — shadcn primitives actually used by the app (button, dialog, dropdown-menu, form, input, label, skeleton, tabs, textarea, toast, toaster, tooltip).
-- `src/components/playfinder/` — current product chrome and feed (header, bottom-nav, desktop-sidebar, desktop-right-rail, home-feed-card, composer-sheet, playfinder-home, …).
+- `src/components/ui/` — shadcn primitives actually used by the app (button, dialog, dropdown-menu, form, input, label, sheet, skeleton, tabs, textarea, toast, toaster, tooltip).
+- `src/components/playfinder/` — current product chrome and feed (header, bottom-nav, mobile-nav-drawer, desktop-sidebar, desktop-right-rail, page-back-header, home-feed-card, feed-card, feed-card-save-button, composer-sheet, playfinder-home, …).
+- `src/components/legal/` — `legal-page.tsx` (public legal/support shell), `cookie-settings-button.tsx`.
+- `src/components/cookie-consent-banner.tsx` — consent banner, mounted in the root layout.
 - `src/components/playfinder-profile/` — live profile screen (`athlete-profile.tsx`) plus a large unused `ui/` kit.
 - `src/components/posts/` — legacy post card + TipTap editor + `submitPost`.
-- `src/components/comments/`, `src/components/discover/`, `src/components/onboarding/`, `src/components/marketing/`, `src/components/teammates/`, `src/components/auth/`.
+- `src/components/discover/` — `discover-page.tsx`, `discover-map.tsx` (Mapbox; light/dark style follows the base), `venue-bottom-sheet.tsx` (vaul; snaps collapsed / peek / half / full), `discover-place-list.tsx`, `sport-pill-selector.tsx`.
+- `src/components/comments/`, `src/components/onboarding/`, `src/components/marketing/`, `src/components/teammates/`, `src/components/auth/`.
 
 ### Server actions and API handlers
 
@@ -93,6 +102,8 @@ Server actions (`"use server"`) live next to the feature, not in a single `actio
 - `src/components/posts/editor/actions.ts` — `submitPost`
 - `src/components/posts/actions.ts` — delete post
 - `src/components/playfinder/actions.ts` — `submitBroadcast`
+- `src/app/(main)/pages/actions.ts` — `createPage`, `checkPageHandle`, `followPage`, `unfollowPage`, `setActingIdentity`, `getActingIdentityState`
+- `src/app/(main)/settings/delete-account/actions.ts` — `deleteAccount` (GDPR erasure; see below)
 - `src/components/comments/actions.ts` — comments
 
 API routes: `src/app/api/**/route.ts` (48 files). Groups include `posts/`, `users/`, `messages/`, `notifications/`, `discover/`, `search/`, `uploadthing/`, `get-token`, `stream/sync-users`, `push/`, `reports/`, `teammates/`, `playfinder/active-count`, `clear-uploads`, `cron/notifications`, `auth/callback/google`.
@@ -106,9 +117,15 @@ API routes: `src/app/api/**/route.ts` (48 files). Groups include `posts/`, `user
 
 ### Lib / helpers (`src/lib/`)
 
-Shared server and client helpers: `prisma.ts`, `stream.ts`, `stream-browser-client.ts`, `stream-messaging.ts`, `uploadthing.ts`, `uploadthing-file-key.ts`, `types.ts`, `validation.ts`, `playfinder.ts`, `home-feed-card.ts`, `onboarding.ts`, `settings.ts`, `sports.ts`, `location.ts`, `teammate.ts`, `teammate-server.ts`, `admin/*`, `discover*`, `push.ts`, `ky.ts`, `utils.ts`, etc.
+Shared server and client helpers: `prisma.ts`, `stream.ts`, `stream-browser-client.ts`, `stream-messaging.ts`, `uploadthing.ts`, `uploadthing-file-key.ts`, `types.ts`, `validation.ts`, `playfinder.ts`, `home-feed-card.ts`, `onboarding.ts`, `settings.ts`, `sports.ts`, `location.ts`, `teammate.ts`, `teammate-server.ts`, `admin/*`, `discover*`, `push.ts`, `ky.ts`, `utils.ts`, plus:
 
-Client hooks: `src/hooks/use-user-settings.ts`, `useFollowerInfo.ts`, `useDebounce.ts`, `use-horizontal-scroll.ts`.
+- `pages/access.ts` — `requirePageRole`, `getPageMembership`, `getActingIdentity` (reads the `pf_acting_as` cookie), `assertLastOwnerProtected`, `getAuthorPageIdForPost`
+- `pages/get-page-view.ts` — `getPageViewByHandle`
+- `appearance.ts` — theme/accent presets, `pf_theme` / `pf_accent` cookies, `isLightTheme`
+- `consent.ts` — `pf_cookie_consent` cookie, `hasAnalyticsConsent()`
+- `venues.ts` + `discover-places.ts` — static venue/club lists used by Discover and Search (not Pages yet)
+
+Client hooks (`src/hooks/`): `use-user-settings.ts`, `useFollowerInfo.ts`, `useDebounce.ts`, `use-horizontal-scroll.ts`, `use-safe-back.ts` (back that never leaves the app), `use-visual-viewport.ts` (keyboard-aware chat layout), `use-is-light-base.ts` (light/dark for Stream + Mapbox).
 
 ---
 
@@ -171,6 +188,36 @@ enum NotificationType {
 }
 ```
 
+Pages engine enums:
+
+```prisma
+enum PageType {
+  VENUE
+  CLUB
+  LEAGUE
+  COACH
+  BRAND
+  COMMUNITY
+}
+
+enum PageRole {
+  OWNER
+  MANAGER
+  ANALYST
+}
+
+enum PageStatus {
+  UNCLAIMED
+  ACTIVE
+  SUSPENDED
+}
+
+enum VerifyLevel {
+  NONE
+  VERIFIED
+}
+```
+
 `Sport` is a large Prisma enum (acrobatics through yoga) defined in `prisma/schema.prisma` lines 147–252. It is used by `Post.sport` (optional). User sports are stored as `UserSport.sport String`, not as this enum.
 
 ### User
@@ -211,12 +258,17 @@ model User {
   interests               PostInterest[]
   reports                 Report[]
   appeals                 Appeal[]
+  createdPages            Page[]           @relation("PageCreator")
+  pageMemberships         PageMembership[]
+  pageFollows             PageFollow[]
 
   createdAt DateTime @default(now())
 
   @@map("users")
 }
 ```
+
+Every relation to `User` is `onDelete: Cascade` except `Page.createdBy` (`SetNull`), so deleting a user removes all their rows in one statement.
 
 Indexes / uniques: `@id` on `id`; `@unique` on `username`, `email`, `googleId`. No other `@@index`.
 
@@ -271,6 +323,8 @@ model Post {
   type                String         @default("ARENA")
   userId              String
   user                User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  authorPageId        String?
+  authorPage          Page?          @relation(fields: [authorPageId], references: [id], onDelete: SetNull)
   attachments         Media[]
   likes               Like[]
   bookmarks           Bookmark[]
@@ -297,6 +351,8 @@ model Post {
 ```
 
 Indexes: primary key only. No `@@index` on `userId`, `createdAt`, `type`, `intent`, or `visibility`.
+
+`userId` is always the human author. A post published *as a Page* also sets `authorPageId` (the user is the Page admin who hit send); cards then show the Page's name, rounded-square avatar and link to `/pages/[handle]`.
 
 ### Media
 
@@ -545,6 +601,104 @@ model Appeal {
 }
 ```
 
+### Page
+
+```prisma
+model Page {
+  id            String      @id @default(cuid())
+  handle        String      @unique
+  name          String
+  type          PageType
+  status        PageStatus  @default(ACTIVE)
+  verify        VerifyLevel @default(NONE)
+  bio           String?
+  avatarUrl     String?
+  bannerUrl     String?
+  lat           Float?
+  lng           Float?
+  city          String?
+  profileData   Json?
+  chatChannelId String?
+  createdById   String?
+  createdBy     User?       @relation("PageCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt     DateTime    @default(now())
+  memberships   PageMembership[]
+  followers     PageFollow[]
+  posts         Post[]
+
+  @@index([type, city])
+  @@index([lat, lng])
+  @@map("pages")
+}
+```
+
+Seeded venues (`scripts/seed-venues.ts`) are `UNCLAIMED` with `createdById = null`. `profileData` holds type-specific extras (e.g. `facilities`). `chatChannelId` is the Page's Stream channel (`ensurePageChannel`).
+
+### PageMembership
+
+```prisma
+model PageMembership {
+  id        String   @id @default(cuid())
+  pageId    String
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      PageRole
+  createdAt DateTime @default(now())
+
+  @@unique([pageId, userId])
+  @@index([userId])
+  @@map("page_memberships")
+}
+```
+
+### PageFollow
+
+```prisma
+model PageFollow {
+  pageId    String
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([pageId, userId])
+  @@map("page_follows")
+}
+```
+
+---
+
+## Pages engine
+
+- Routes: `/pages` (Pages you belong to), `/pages/new` (5-step create wizard; desktop gets a wider column + live preview), `/pages/[handle]` (Page view; loader `src/lib/pages/get-page-view.ts`).
+- Roles: `OWNER` > `MANAGER` > `ANALYST`, checked with `requirePageRole(pageId, min)`. `assertLastOwnerProtected` blocks removing or demoting the last owner (account deletion is the exception: the Page becomes `UNCLAIMED`).
+- Acting identity: the `pf_acting_as` cookie (via `setActingIdentity`) lets a member post as a Page; `getAuthorPageIdForPost()` supplies `Post.authorPageId`.
+- Chat: one Stream channel per Page (`ensurePageChannel`, id from `pageChannelId(pageId)`); `scripts/backfill-page-channels.ts` backfills existing Pages.
+- **Gap:** Search and Discover still use the static lists in `src/lib/venues.ts` / `discover-places.ts`, not Page records. Static entries and seeded Pages don't share names or coordinates, so de-duplication needs an explicit mapping first.
+
+---
+
+## App shell, theming and appearance
+
+- **One shell** — `src/app/(main)/main-app-shell.tsx`. The mobile header and bottom nav are rendered once. Most routes scroll the document (`main` must not be a scroll container, or sticky bars break); Discover and Messages are full-bleed (`h-[100dvh]`, inner scrolling). Sub-pages with their own back bar (settings, post detail, `/pages`, `/pages/new`, teammates, search, saved, a chat thread) hide the global mobile header. `/pages/new` gets a 920px desktop column with no right rail.
+- **Z-index scale** (`globals.css`): `--pf-z-nav` 40, `--pf-z-header` 50, `--pf-z-banner` 55, `--pf-z-overlay` 60, `--pf-z-popover` 120, `--pf-z-fullscreen` 200, `--pf-z-toast` 300. `--pf-header-h` is the mobile header height (sticky bars use it as `top`).
+- **Appearance** — two dials on `<html>`: `data-theme` (noir / slate / offwhite / white) and `data-accent` (volt / optic / emerald / crimson / coral / cyan / orange), stored in the `pf_theme` / `pf_accent` cookies and rendered server-side in `src/app/layout.tsx` (no flash; this makes every route dynamic). UI: Settings → Appearance (`/settings/appearance`). Defaults are Noir + Volt.
+- **Tokens** — `--pf-*` base tokens; accent tokens (`--pf-volt`, `--pf-volt-rgb`, `--pf-on-accent`, `--pf-volt-text`, `--pf-volt-cta`, tints); status tokens (`--pf-status-*`); and the **component palette** `--pf-c-<role>-<hex>`, where each token equals its original hardcoded colour on the dark bases and maps to a role token on the light bases. Cards carry a `pf-card` class that only has rules on light bases.
+- **Third parties** — Stream Chat switches `str-chat__theme-light` / `-dark` and Mapbox switches `light-v11` / `dark-v11` with the base (`use-is-light-base.ts`).
+
+## Cookie consent
+
+`src/components/cookie-consent-banner.tsx` (root layout) records the choice in the `pf_cookie_consent` cookie (`v1:accepted|rejected`, one year). Analytics must check `hasAnalyticsConsent()` in `src/lib/consent.ts`; none is loaded yet. Reopen it via Settings → Legal → Cookie settings, or on `/cookies`.
+
+## Saved posts
+
+Built on the existing `Bookmark` model (no schema change). The save toggle `src/components/playfinder/feed-card-save-button.tsx` sits on `HomeFeedCard`, `FeedCard` and post detail (optimistic; cache key `["bookmark-info", postId]`). The list is `/saved` (`src/app/(main)/saved/`), fed by `GET /api/posts/bookmarked`; the toggle API is `POST` / `DELETE /api/posts/[postId]/bookmark`.
+
+## Account deletion
+
+Settings → Danger zone → `/settings/delete-account`. Two gates (type your username + tick the acknowledgement); `deleteAccount` re-checks the username server-side, then in one transaction deletes the user's post media rows and the `User` (everything else cascades) and marks Pages left without an owner `UNCLAIMED`. Afterwards (best effort): UploadThing files (avatar + post images) and the Stream user (hard delete). Kept: Pages, and moderation records about the account.
+
 ---
 
 ## Auth today
@@ -627,7 +781,7 @@ Current home feed:
 
 A second card, `FeedCard` (`src/components/playfinder/feed-card.tsx`), is used on the profile posts list (`src/app/(main)/users/[username]/profile-posts-section.tsx`) and post detail (`src/components/playfinder/post-detail-view.tsx`).
 
-Legacy card `src/components/posts/Post.tsx` is still used by `ForYouFeed.tsx`, `FollowingFeed.tsx`, `bookmarks/Bookmarks.tsx`, and `users/[username]/UserPosts.tsx`. Of those, only **Bookmarks** is mounted on a live page (`src/app/(main)/bookmarks/page.tsx`). `ForYouFeed`, `FollowingFeed`, and `UserPosts` have no importers.
+Legacy card `src/components/posts/Post.tsx` is still used by `ForYouFeed.tsx`, `FollowingFeed.tsx`, `bookmarks/Bookmarks.tsx`, and `users/[username]/UserPosts.tsx`. **None of these is mounted any more**: `/bookmarks` now redirects to `/saved`, which renders `FeedCard`.
 
 ---
 
@@ -697,6 +851,10 @@ Avatar changes also `partialUpdateUser` on Stream (`src/app/api/uploadthing/core
 - Images 4MB × 5, videos 64MB × 5.
 - Middleware: must be logged in (user not passed through).
 - `onUploadComplete`: `prisma.media.create({ url: file.url, type: IMAGE|VIDEO })` with **no `postId`**. Returns `{ mediaId }`. The post later `connect`s those ids (`submitPost`).
+
+**`pageAsset`** (Page avatar / banner from the create wizard):
+
+- Image, 4MB, one file. Middleware: signed-in user. `onUploadComplete` only returns `{ url }`; `createPage` stores it on `Page.avatarUrl` / `bannerUrl`.
 
 ### How an upload URL is saved
 

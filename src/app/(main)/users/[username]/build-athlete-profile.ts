@@ -59,7 +59,7 @@ function formatProfileLocation(raw: string | null | undefined): string | null {
   const postcode = postcodeMatch[1].toUpperCase().replace(/\s+/, " ");
   const partWithPostcodeIdx = parts.findIndex((p) => /[A-Z]{1,2}\d/i.test(p));
 
-  let area =
+  let area: string | null =
     partWithPostcodeIdx === 0 ? (parts[1] ?? null) : (parts[0] ?? null);
 
   if (area) {

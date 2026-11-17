@@ -1,5 +1,6 @@
 "use client";
 
+import { safeHttpUrl } from "@/lib/safe-url";
 import {
   formatDistanceMiles,
   type DiscoverPlace,
@@ -34,8 +35,8 @@ function OpenStatusBadge({ status }: { status: OpenStatus | string }) {
         className={cn(
           "rounded px-1.5 py-0.5 text-[10px] font-semibold",
           isCloses && !isOpen
-            ? "bg-[#2a1a1a] text-[#f87171]"
-            : "bg-[#1a2a1a] text-[#4ade80]",
+            ? "bg-[var(--pf-status-danger-bg)] text-[var(--pf-status-danger-fg)]"
+            : "bg-[var(--pf-status-success-bg)] text-[var(--pf-status-success-fg)]",
         )}
       >
         {status}
@@ -46,20 +47,20 @@ function OpenStatusBadge({ status }: { status: OpenStatus | string }) {
   const normalized = status as OpenStatus;
   if (normalized === "open") {
     return (
-      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-[#1a2a1a] text-[#4ade80]">
+      <span className="rounded bg-[var(--pf-status-success-bg)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--pf-status-success-fg)]">
         Open
       </span>
     );
   }
   if (normalized === "closes_soon") {
     return (
-      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-[#2a1a1a] text-[#f87171]">
+      <span className="rounded bg-[var(--pf-status-danger-bg)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--pf-status-danger-fg)]">
         Closes soon
       </span>
     );
   }
   return (
-    <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-[#2a1a1a] text-[#f87171]">
+    <span className="rounded bg-[var(--pf-status-danger-bg)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--pf-status-danger-fg)]">
       Closed
     </span>
   );
@@ -80,10 +81,10 @@ export function DiscoverPlaceList({
     return (
       <div>
         <div className="mb-3.5 px-4">
-          <div className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#7e8a7e]">
+          <div className="text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
             Glasgow · within 5 mi
           </div>
-          <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[#f2f5ef]">
+          <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[var(--pf-c-ink-f2f5ef)]">
             {isVenues ? "Play near you" : "Local clubs"}
           </div>
         </div>
@@ -91,7 +92,7 @@ export function DiscoverPlaceList({
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="mx-4 mb-2.5 h-[96px] animate-pulse rounded-2xl bg-[#131614]"
+              className="pf-card mx-4 mb-2.5 h-[96px] animate-pulse rounded-2xl bg-[var(--pf-c-fill-131614)]"
             />
           ))}
         </div>
@@ -103,14 +104,14 @@ export function DiscoverPlaceList({
     return (
       <div className="px-4">
         <div className="mb-3.5">
-          <div className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#7e8a7e]">
+          <div className="text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
             Glasgow · within 5 mi
           </div>
-          <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[#f2f5ef]">
+          <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[var(--pf-c-ink-f2f5ef)]">
             {isVenues ? "Play near you" : "Local clubs"}
           </div>
         </div>
-        <p className="py-5 text-center text-sm text-[#7e8a7e]">
+        <p className="py-5 text-center text-sm text-[var(--pf-c-ink-7e8a7e)]">
           Try a different sport or check back later
         </p>
       </div>
@@ -120,10 +121,10 @@ export function DiscoverPlaceList({
   return (
     <div>
       <div className="mb-3.5 px-4">
-        <div className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#7e8a7e]">
+        <div className="text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
           Glasgow · within 5 mi
         </div>
-        <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[#f2f5ef]">
+        <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[var(--pf-c-ink-f2f5ef)]">
           {isVenues ? "Play near you" : "Local clubs"}
         </div>
       </div>
@@ -132,7 +133,7 @@ export function DiscoverPlaceList({
         {places.map((place) => (
           <div
             key={place.id}
-            className="mb-2.5 flex gap-3 rounded-2xl border border-[#2a2f2a] bg-[#131614] p-3 transition-transform active:scale-[0.98]"
+            className="pf-card mb-2.5 flex gap-3 rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-3 transition-transform active:scale-[0.98]"
           >
             <a
               href={`https://maps.google.com/?q=${place.lat},${place.lng}`}
@@ -163,42 +164,45 @@ export function DiscoverPlaceList({
                   </>
                 ) : (
                   <div className="grid h-full w-full place-items-center">
-                    <IconUsers className="h-6 w-6 text-[#56ccf2]" stroke={1.75} />
+                    <IconUsers
+                      className="h-6 w-6 text-[#56ccf2]"
+                      stroke={1.75}
+                    />
                   </div>
                 )}
               </div>
 
               <div className="flex min-w-0 flex-1 flex-col">
-                <p className="text-sm font-semibold leading-tight text-[#f2f5ef]">
+                <p className="text-sm font-semibold leading-tight text-[var(--pf-c-ink-f2f5ef)]">
                   {place.name}
                 </p>
                 {place.address && (
-                  <p className="mt-1 truncate text-xs text-[#7e8a7e]">
+                  <p className="mt-1 truncate text-xs text-[var(--pf-c-ink-7e8a7e)]">
                     {place.address}
                   </p>
                 )}
                 <div className="mt-auto flex flex-wrap items-center gap-2.5 pt-2">
-                  <span className="font-dm-mono text-xs font-medium text-[#a1c217]">
+                  <span className="font-dm-mono text-xs font-medium text-[var(--pf-volt-text)]">
                     {formatDistanceMiles(place.distanceMiles)}
                   </span>
                   {place.openStatus != null && place.openStatus !== "" && (
                     <OpenStatusBadge status={place.openStatus} />
                   )}
                   {place.bookable && (
-                    <span className="ml-auto rounded-md border border-[#56ccf2]/20 bg-[rgba(86,204,242,0.1)] px-2 py-1 font-dm-mono text-[8px] font-semibold tracking-[0.08em] text-[#56ccf2]">
-                      BOOKABLE
+                    <span className="ml-auto rounded-md border border-[#56ccf2]/20 bg-[rgba(86,204,242,0.1)] px-2 py-1 text-[11px] font-semibold text-[#56ccf2]">
+                      Bookable
                     </span>
                   )}
                 </div>
               </div>
             </a>
 
-            {place.website != null && place.website !== "" && (
+            {safeHttpUrl(place.website) && (
               <a
-                href={place.website}
+                href={safeHttpUrl(place.website) ?? undefined}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="self-center shrink-0 text-xs font-semibold text-[#a1c217] hover:underline"
+                className="pf-hit-lg shrink-0 self-center text-xs font-semibold text-[var(--pf-volt-text)] hover:underline"
                 onClick={(e) => e.stopPropagation()}
               >
                 Visit →

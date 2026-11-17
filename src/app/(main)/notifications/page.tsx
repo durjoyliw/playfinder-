@@ -8,8 +8,13 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className="min-h-full bg-[#0d0d0d]">
-      <PageBackHeader title="Notifications" />
+    <div className="min-h-full bg-[var(--pf-bg)]">
+      {/* A bottom-nav tab, so no back arrow; sits under the app header. */}
+      <PageBackHeader
+        title="Notifications"
+        showBack={false}
+        className="top-[var(--pf-header-h)] lg:top-0"
+      />
       <div className="space-y-4 px-4 py-4">
         <Notifications />
       </div>

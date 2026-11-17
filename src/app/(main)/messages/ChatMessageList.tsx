@@ -3,8 +3,11 @@
 import { cn } from "@/lib/utils";
 import { Check, CheckCheck } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { FormatMessageResponse } from "stream-chat";
-import { useChannelStateContext, useChatContext } from "stream-chat-react";
+import {
+  useChannelStateContext,
+  useChatContext,
+  type StreamMessage,
+} from "stream-chat-react";
 import { useSession } from "../SessionProvider";
 import { useChatComposer } from "./chat-composer-context";
 import EmptyChatState from "./EmptyChatState";
@@ -34,7 +37,7 @@ export default function ChatMessageList() {
 
   const [reactionTargetId, setReactionTargetId] = useState<string | null>(null);
   const [contextMenu, setContextMenu] = useState<{
-    message: FormatMessageResponse;
+    message: StreamMessage;
     x: number;
     y: number;
   } | null>(null);
@@ -70,12 +73,14 @@ export default function ChatMessageList() {
     registerScrollToBottom(() => scrollToBottom("smooth"));
   }, [registerScrollToBottom, scrollToBottom]);
 
+  const messageCount = messages?.length ?? 0;
+  const lastMessageId = messages?.at(-1)?.id;
   useEffect(() => {
-    scrollToBottom((messages?.length ?? 0) <= 1 ? "auto" : "smooth");
-  }, [messages?.length, messages?.at(-1)?.id, scrollToBottom]);
+    scrollToBottom(messageCount <= 1 ? "auto" : "smooth");
+  }, [messageCount, lastMessageId, scrollToBottom]);
 
   const toggleReaction = useCallback(
-    async (message: FormatMessageResponse, emoji: string) => {
+    async (message: StreamMessage, emoji: string) => {
       const type = streamTypeForEmoji(emoji);
       const own = message.own_reactions?.find((r) => r.type === type);
       try {
@@ -89,11 +94,11 @@ export default function ChatMessageList() {
       }
       setReactionTargetId(null);
     },
-    [channel, client],
+    [channel],
   );
 
   const openContextMenu = useCallback(
-    (message: FormatMessageResponse, clientX: number, clientY: number) => {
+    (message: StreamMessage, clientX: number, clientY: number) => {
       setReactionTargetId(null);
       setContextMenu({ message, x: clientX, y: clientY });
     },
@@ -102,7 +107,7 @@ export default function ChatMessageList() {
 
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const bindLongPress = (message: FormatMessageResponse) => ({
+  const bindLongPress = (message: StreamMessage) => ({
     onTouchStart: (e: React.TouchEvent) => {
       const touch = e.touches[0];
       longPressTimer.current = setTimeout(() => {
@@ -129,7 +134,7 @@ export default function ChatMessageList() {
   return (
     <div
       ref={listRef}
-      className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-3 py-4"
+      className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain px-3 py-4"
     >
       {messages.map((message, index) => {
         const prev = messages[index - 1];
@@ -142,7 +147,7 @@ export default function ChatMessageList() {
         return (
           <div key={message.id}>
             {showDate && message.created_at && (
-              <p className="my-4 text-center text-xs text-[#888888]">
+              <p className="my-4 text-center text-xs text-[var(--pf-c-ink-888888)]">
                 {formatDateSeparator(message.created_at)}
               </p>
             )}
@@ -157,7 +162,7 @@ export default function ChatMessageList() {
               {!isMe && (
                 <div className="mr-2 w-8 flex-shrink-0">
                   {showAvatar && (
-                    <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-xs font-bold text-black">
+                    <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-xs font-bold text-[var(--pf-on-accent)]">
                       {(isGroup ? message.user?.image : other?.image) ? (
                         <img
                           src={
@@ -185,7 +190,7 @@ export default function ChatMessageList() {
                 )}
               >
                 {isGroup && !isMe && showAvatar && message.user?.name && (
-                  <p className="mb-0.5 ml-1 text-[11px] font-semibold text-[#888888]">
+                  <p className="mb-0.5 ml-1 text-[11px] font-semibold text-[var(--pf-c-ink-888888)]">
                     {message.user.name}
                   </p>
                 )}
@@ -203,8 +208,8 @@ export default function ChatMessageList() {
                     className={cn(
                       "block w-full text-left",
                       isMe
-                        ? "rounded-2xl rounded-tr-sm bg-[#A1C217] px-4 py-2.5 text-black"
-                        : "rounded-2xl rounded-tl-sm bg-[#2a2a2a] px-4 py-2.5 text-white",
+                        ? "rounded-2xl rounded-tr-sm bg-[var(--pf-volt)] px-4 py-2.5 text-[var(--pf-on-accent)]"
+                        : "rounded-2xl rounded-tl-sm bg-[var(--pf-c-fill-2a2a2a)] px-4 py-2.5 text-[var(--pf-c-ink-ffffff)]",
                     )}
                     onClick={() =>
                       setReactionTargetId((id) =>
@@ -257,7 +262,7 @@ export default function ChatMessageList() {
                           count ? (
                             <span
                               key={type}
-                              className="inline-flex items-center gap-0.5 rounded-full border border-[#333] bg-[#1a1a1a] px-2 py-0.5 text-xs text-white"
+                              className="inline-flex items-center gap-0.5 rounded-full border border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1a1a1a)] px-2 py-0.5 text-xs text-[var(--pf-c-ink-ffffff)]"
                             >
                               {emojiForReactionType(type)} {count}
                             </span>
@@ -268,7 +273,7 @@ export default function ChatMessageList() {
 
                 <p
                   className={cn(
-                    "mt-0.5 flex items-center gap-1 text-[10px] text-[#888888]",
+                    "mt-0.5 flex items-center gap-1 text-[10px] text-[var(--pf-c-ink-888888)]",
                     isMe ? "justify-end" : "justify-start",
                   )}
                 >
@@ -284,7 +289,7 @@ export default function ChatMessageList() {
       })}
 
       {typingUsers.length > 0 && (
-        <p className="mt-2 text-sm italic text-[#888888]">
+        <p className="mt-2 text-sm italic text-[var(--pf-c-ink-888888)]">
           {typingName} is typing...
         </p>
       )}
@@ -325,16 +330,16 @@ function MessageTick({
   message,
 }: {
   channel: ReturnType<typeof useChannelStateContext>["channel"];
-  message: FormatMessageResponse;
+  message: StreamMessage;
 }) {
   const { user } = useSession();
   const status = getMessageTickStatus(channel, message, user.id);
 
   if (status === "seen") {
-    return <CheckCheck className="h-3.5 w-3.5 text-[#A1C217]" />;
+    return <CheckCheck className="h-3.5 w-3.5 text-[var(--pf-volt-text)]" />;
   }
   if (status === "delivered") {
-    return <CheckCheck className="h-3.5 w-3.5 text-[#888888]" />;
+    return <CheckCheck className="h-3.5 w-3.5 text-[var(--pf-c-ink-888888)]" />;
   }
-  return <Check className="h-3.5 w-3.5 text-[#888888]" />;
+  return <Check className="h-3.5 w-3.5 text-[var(--pf-c-ink-888888)]" />;
 }

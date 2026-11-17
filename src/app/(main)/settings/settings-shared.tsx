@@ -17,8 +17,8 @@ export function SettingsSubpageLayout({
   children,
 }: SettingsSubpageLayoutProps) {
   return (
-    <div className="min-h-full bg-[#0d0d0d] pb-8">
-      <PageBackHeader title={title} />
+    <div className="min-h-full bg-[var(--pf-bg)] pb-8">
+      <PageBackHeader title={title} backHref="/settings" />
       <div className="px-4 py-6">{children}</div>
     </div>
   );
@@ -27,7 +27,7 @@ export function SettingsSubpageLayout({
 export function SettingsLoading() {
   return (
     <div className="flex min-h-[40vh] items-center justify-center">
-      <Loader2 className="h-8 w-8 animate-spin text-[#A1C217]" />
+      <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt-text)]" />
     </div>
   );
 }
@@ -51,34 +51,51 @@ export function SettingsSection({ title, children }: SettingsSectionProps) {
       <h2 className="mb-2 px-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
         {title}
       </h2>
-      <div className="overflow-hidden rounded-xl bg-[#161616]">{children}</div>
+      <div className="overflow-hidden rounded-xl bg-[var(--pf-c-fill-161616)] pf-card">{children}</div>
     </div>
   );
 }
 
-interface SettingsRowProps {
-  href: string;
+type SettingsRowProps = {
   icon: React.ReactNode;
   label: string;
   value?: string;
-}
+} & (
+  | { href: string; onClick?: never }
+  // Rows that open something in place (e.g. cookie settings) instead of navigating.
+  | { onClick: () => void; href?: never }
+);
 
-export function SettingsRow({ href, icon, label, value }: SettingsRowProps) {
-  return (
-    <Link
-      href={href}
-      className="flex w-full items-center gap-3 border-b border-[#2a2a2a] px-4 py-3.5 transition-colors last:border-b-0 hover:bg-[#1f1f1f]"
-    >
-      <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center text-[#A1C217]">
+const settingsRowClassName =
+  "pf-row flex w-full items-center gap-3 border-b border-[var(--pf-c-line-2a2a2a)] px-4 py-3.5 text-left last:border-b-0 hover:bg-[var(--pf-c-fill-1f1f1f)]";
+
+export function SettingsRow({ href, onClick, icon, label, value }: SettingsRowProps) {
+  const content = (
+    <>
+      <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center text-[var(--pf-volt-text)]">
         {icon}
       </span>
-      <span className="flex-1 text-sm font-medium text-white">{label}</span>
+      <span className="flex-1 text-sm font-medium text-[var(--pf-c-ink-ffffff)]">{label}</span>
       {value && (
         <span className="max-w-[40%] truncate text-xs text-muted-foreground">
           {value}
         </span>
       )}
       <ChevronRight className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
+    </>
+  );
+
+  if (href === undefined) {
+    return (
+      <button type="button" onClick={onClick} className={settingsRowClassName}>
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <Link href={href} className={settingsRowClassName}>
+      {content}
     </Link>
   );
 }
@@ -94,7 +111,7 @@ export function SettingsPlaceholder({
 }: SettingsPlaceholderProps) {
   return (
     <SettingsSubpageLayout title={title}>
-      <div className="rounded-xl bg-[#161616] p-6 text-center">
+      <div className="rounded-xl bg-[var(--pf-c-fill-161616)] p-6 text-center pf-card">
         <p className="text-sm text-muted-foreground">{description}</p>
       </div>
     </SettingsSubpageLayout>
@@ -102,7 +119,7 @@ export function SettingsPlaceholder({
 }
 
 export const settingsInputClassName =
-  "w-full rounded-lg border border-[#2a2a2a] bg-[#0d0d0d] px-3 py-2.5 text-sm text-white focus:border-[#A1C217] focus:outline-none";
+  "w-full rounded-lg border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-0d0d0d)] px-3 py-2.5 text-base text-[var(--pf-c-ink-ffffff)] lg:text-sm focus:border-[var(--pf-volt)] focus:outline-none";
 
 export const settingsSaveButtonClassName =
-  "w-full rounded-lg bg-[#A1C217] py-2.5 text-sm font-semibold text-black transition-colors hover:bg-[#aac62e] disabled:opacity-60";
+  "w-full rounded-lg bg-[var(--pf-volt)] py-2.5 text-sm font-semibold text-[var(--pf-on-accent)] transition-colors hover:bg-[var(--pf-volt-hover)] disabled:opacity-60";

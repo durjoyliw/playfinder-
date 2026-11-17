@@ -4,18 +4,37 @@ import { lucia } from "@/auth";
 import { getPostAuthRedirect } from "@/lib/onboarding";
 import prisma from "@/lib/prisma";
 import streamServerClient from "@/lib/stream";
+import { checkBirthDate } from "@/lib/age";
 import { signUpSchema, SignUpValues } from "@/lib/validation";
 import { hash } from "@node-rs/argon2";
 import { generateIdFromEntropySize } from "lucia";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { getClientIp, rateLimit, RATE_LIMIT_MESSAGE } from "@/lib/rate-limit";
 
 export async function signUp(
   credentials: SignUpValues,
 ): Promise<{ error: string }> {
   try {
-    const { username, email, password } = signUpSchema.parse(credentials);
+    const limit = await rateLimit("signup-ip", getClientIp());
+    if (!limit.ok) {
+      return { error: RATE_LIMIT_MESSAGE };
+    }
+
+    const parsed = signUpSchema.safeParse(credentials);
+    if (!parsed.success) {
+      // Surface the real reason (e.g. the 18+ message), not a generic error.
+      return { error: parsed.error.issues[0]?.message ?? "Invalid details" };
+    }
+    const { username, email, password } = parsed.data;
+
+    // Age gate, re-checked server-side. Under-18s are rejected before
+    // anything is stored.
+    const age = checkBirthDate(parsed.data.birthDate);
+    if (!age.ok) {
+      return { error: age.message };
+    }
 
     const passwordHash = await hash(password, {
       memoryCost: 19456,
@@ -64,6 +83,7 @@ export async function signUp(
           displayName: username,
           email,
           passwordHash,
+          birthDate: age.birthDate,
         },
       });
       await streamServerClient.upsertUser({

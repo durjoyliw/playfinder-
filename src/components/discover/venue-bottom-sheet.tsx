@@ -1,43 +1,25 @@
 "use client";
 
 import { DiscoverPlaceList } from "@/components/discover/discover-place-list";
-import type { MapMarker } from "@/components/discover/map-overlay-layout";
 import type { DiscoverPlace, DiscoverTabType } from "@/lib/discover-places";
 import { cn } from "@/lib/utils";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type RefObject,
+} from "react";
+import { Drawer } from "vaul";
 
-export type SheetSnap = "peek" | "half" | "full";
+/** Visible height of the sheet at "peek" (the default resting state). */
+const PEEK_PX = 220;
+/** First-render estimate of the collapsed bar until it is measured. */
+const COLLAPSED_ESTIMATE_PX = 106;
 
-const SNAP_ORDER: SheetSnap[] = ["peek", "half", "full"];
-const DRAG_THRESHOLD_PX = 40;
-
-function sheetHeightClass(snap: SheetSnap): string {
-  switch (snap) {
-    case "peek":
-      return "h-[220px]";
-    case "half":
-      return "h-[50dvh]";
-    case "full":
-      return "h-[calc(100dvh-120px)]";
-  }
-}
-
-function expandSnap(snap: SheetSnap): SheetSnap {
-  if (snap === "peek") return "half";
-  if (snap === "half") return "full";
-  return "full";
-}
-
-function collapseSnap(snap: SheetSnap): SheetSnap {
-  if (snap === "full") return "half";
-  if (snap === "half") return "peek";
-  return "peek";
-}
-
-function nextSnap(snap: SheetSnap): SheetSnap {
-  const index = SNAP_ORDER.indexOf(snap);
-  return SNAP_ORDER[(index + 1) % SNAP_ORDER.length];
-}
+type SnapName = "collapsed" | "peek" | "half" | "full";
+/** Space left between the header and the sheet when fully open. */
+const FULL_TOP_GAP_PX = 8;
 
 export interface DiscoverVenueClubTabsProps {
   activeTab: DiscoverTabType;
@@ -66,7 +48,7 @@ export function DiscoverVenueClubTabs({
         aria-label="Venues or clubs"
       >
         <div
-          className="pointer-events-none absolute bottom-2 top-2.5 w-[calc(50%-20px)] rounded-[10px] bg-[#a1c217] transition-[left,background] duration-300 ease-[cubic-bezier(.2,.8,.2,1)]"
+          className="pointer-events-none absolute bottom-2 top-2.5 w-[calc(50%-20px)] rounded-[10px] bg-[var(--pf-volt)] transition-[left,background] duration-300 ease-[cubic-bezier(.2,.8,.2,1)]"
           style={{
             left: isClubs ? "auto" : 16,
             right: isClubs ? 16 : "auto",
@@ -84,7 +66,7 @@ export function DiscoverVenueClubTabs({
               onClick={() => onTabChange(tab.id)}
               className={cn(
                 "relative z-[2] flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-[10px] py-2.5 text-sm font-bold transition-colors duration-200",
-                isActive ? "text-[#0a0b0a]" : "text-[#7e8a7e]",
+                isActive ? "text-[var(--pf-on-accent)]" : "text-[var(--pf-c-ink-7e8a7e)]",
               )}
             >
               {tab.label}
@@ -92,7 +74,7 @@ export function DiscoverVenueClubTabs({
           );
         })}
       </div>
-      <p className="px-4 pb-2 text-right font-dm-mono text-[11px] font-medium text-[#7e8a7e]">
+      <p className="px-4 pb-2 text-right font-dm-mono text-[11px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
         {nearbyCount} nearby
       </p>
     </div>
@@ -100,6 +82,8 @@ export function DiscoverVenueClubTabs({
 }
 
 export interface VenueBottomSheetProps {
+  /** The map area the sheet lives in. Snap points are measured from it. */
+  boundsRef: RefObject<HTMLElement>;
   places: DiscoverPlace[];
   activeTab: DiscoverTabType;
   onTabChange: (tab: DiscoverTabType) => void;
@@ -107,190 +91,177 @@ export interface VenueBottomSheetProps {
   sportKey: string;
 }
 
+/** Height of the map area + the viewport, re-measured on resize. */
+function useAreaSize(ref: RefObject<HTMLElement>) {
+  const [size, setSize] = useState<{ area: number; viewport: number } | null>(
+    null,
+  );
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const measure = () => {
+      const area = Math.round(el.getBoundingClientRect().height);
+      const viewport = window.innerHeight;
+      setSize((prev) =>
+        prev && prev.area === area && prev.viewport === viewport
+          ? prev
+          : { area, viewport },
+      );
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    window.addEventListener("resize", measure);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [ref]);
+
+  return size;
+}
+
+/**
+ * Live height of an element, via a callback ref so it starts measuring as
+ * soon as the element mounts (the bar only renders once the sheet has sizes).
+ */
+function useElementHeight<T extends HTMLElement>() {
+  const [node, setNode] = useState<T | null>(null);
+  const [height, setHeight] = useState<number | null>(null);
+  useEffect(() => {
+    if (!node) return;
+    const measure = () =>
+      setHeight(Math.round(node.getBoundingClientRect().height));
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [node]);
+  const ref = useCallback((el: T | null) => setNode(el), []);
+  return [ref, height] as const;
+}
+
+/**
+ * Draggable venue sheet on mobile Discover (vaul).
+ *
+ * The sheet is exactly as tall as the map area (minus a small top gap) and
+ * sits directly above the bottom nav, so "full" means no translation -- vaul
+ * only lets the inner list scroll when the sheet is at rest at translateY(0).
+ *
+ * Snaps, lowest first: "collapsed" shows only the handle + Venues/Clubs bar
+ * over the full map (Airbnb-style), then "peek", "half", "full". Swipe down
+ * from peek to collapse; drag the bar up to expand again.
+ *
+ * vaul measures px snap points against `window.innerHeight` (it assumes a
+ * full-screen drawer), so each visible height `v` is converted with
+ * `v + viewport - sheetHeight`.
+ */
 export function VenueBottomSheet({
+  boundsRef,
   places,
   activeTab,
   onTabChange,
   loading,
   sportKey,
 }: VenueBottomSheetProps) {
-  const [snap, setSnap] = useState<SheetSnap>("peek");
-  const dragStartY = useRef(0);
-  const didDrag = useRef(false);
-  const isDragging = useRef(false);
+  const size = useAreaSize(boundsRef);
+  const [barRef, barHeight] = useElementHeight<HTMLDivElement>();
+  const [snap, setSnap] = useState<SnapName>("peek");
 
-  const finishDrag = useCallback((clientY: number) => {
-    const distance = dragStartY.current - clientY;
-    if (Math.abs(distance) > 10) didDrag.current = true;
+  const sheetHeight = size ? Math.max(size.area - FULL_TOP_GAP_PX, 0) : 0;
 
-    if (distance > DRAG_THRESHOLD_PX) {
-      setSnap((s) => expandSnap(s));
-    } else if (distance < -DRAG_THRESHOLD_PX) {
-      setSnap((s) => collapseSnap(s));
-    }
-    isDragging.current = false;
-  }, []);
+  // Named snaps -> vaul px values. Snaps that collapse to the same height on
+  // very short screens are merged (the higher name wins).
+  const snaps = useMemo(() => {
+    if (!size || sheetHeight === 0) return [];
+    const collapsed = Math.min(barHeight ?? COLLAPSED_ESTIMATE_PX, sheetHeight);
+    const peek = Math.min(Math.max(PEEK_PX, collapsed), sheetHeight);
+    const half = Math.max(Math.round(size.area * 0.5), peek);
+    const visible: [SnapName, number][] = [
+      ["collapsed", collapsed],
+      ["peek", peek],
+      ["half", half],
+      ["full", sheetHeight],
+    ];
+    const byHeight = new Map<number, SnapName>();
+    visible.forEach(([name, v]) => byHeight.set(v, name));
+    return Array.from(byHeight.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([v, name]) => ({
+        name,
+        point: `${v + size.viewport - sheetHeight}px`,
+      }));
+  }, [size, sheetHeight, barHeight]);
 
-  const onHandlePointerDown = (clientY: number) => {
-    dragStartY.current = clientY;
-    didDrag.current = false;
-    isDragging.current = true;
-  };
+  if (snaps.length === 0) return null;
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    onHandlePointerDown(e.touches[0].clientY);
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (!isDragging.current) return;
-    finishDrag(e.changedTouches[0].clientY);
-  };
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    onHandlePointerDown(e.clientY);
-
-    const onMouseMove = (moveEvent: MouseEvent) => {
-      const distance = dragStartY.current - moveEvent.clientY;
-      if (Math.abs(distance) > 10) didDrag.current = true;
-    };
-
-    const onMouseUp = (upEvent: MouseEvent) => {
-      finishDrag(upEvent.clientY);
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
-    };
-
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
-  };
-
-  const handleHandleClick = () => {
-    if (didDrag.current) {
-      didDrag.current = false;
-      return;
-    }
-    setSnap((s) => nextSnap(s));
-  };
+  const snapPoints = snaps.map((s) => s.point);
+  const active = snaps.find((s) => s.name === snap) ?? snaps[0];
+  const isFull = active.name === "full";
 
   return (
-    <div
-      className={cn(
-        "absolute bottom-0 left-0 right-0 z-20 flex flex-col overflow-hidden rounded-t-[24px] bg-[#08090a] shadow-[0_-10px_40px_rgba(0,0,0,0.4)] transition-[height] duration-300 ease-[cubic-bezier(.2,.8,.2,1)]",
-        sheetHeightClass(snap),
-      )}
+    <Drawer.Root
+      open
+      modal={false}
+      dismissible={false}
+      noBodyStyles
+      snapPoints={snapPoints}
+      activeSnapPoint={active.point}
+      setActiveSnapPoint={(point) => {
+        const next = snaps.find((s) => s.point === String(point));
+        if (next) setSnap(next.name);
+      }}
+      fadeFromIndex={snapPoints.length - 1}
     >
-      <button
-        type="button"
-        className="flex w-full shrink-0 cursor-grab items-center justify-center py-3 active:cursor-grabbing"
-        aria-label="Drag to resize drawer"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        onMouseDown={handleMouseDown}
-        onClick={handleHandleClick}
+      <Drawer.Content
+        aria-describedby={undefined}
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        className="fixed inset-x-0 z-20 mx-auto flex max-w-[480px] flex-col rounded-t-[24px] border-t border-[rgb(var(--pf-contrast-rgb)/0.06)] bg-[var(--pf-bg)] outline-none"
+        style={{
+          height: sheetHeight,
+          // Inline: Tailwind reads shadow-[var(..)] as a colour, not a box-shadow.
+          boxShadow: "var(--pf-sheet-shadow)",
+          bottom: "calc(64px + env(safe-area-inset-bottom, 0px))",
+        }}
       >
-        <div className="h-1 w-10 rounded-full bg-[#353c34]" />
-      </button>
+        <Drawer.Title className="sr-only">Nearby venues</Drawer.Title>
 
-      <DiscoverVenueClubTabs
-        activeTab={activeTab}
-        onTabChange={onTabChange}
-        nearbyCount={places.length}
-      />
+        {/* The always-visible bar: what stays on screen when collapsed. */}
+        <div ref={barRef} className="shrink-0">
+          <div className="flex justify-center pb-2 pt-3">
+            <Drawer.Handle
+              aria-label="Drag to resize"
+              className="!h-1 !w-10 !bg-[var(--pf-border-light)] !opacity-100"
+            />
+          </div>
 
-      <div
-        className={cn(
-          "min-h-0 flex-1",
-          snap === "peek" ? "overflow-hidden" : "overflow-y-auto",
-        )}
-      >
-        <div className={cn(snap === "peek" && "pb-2")}>
-          <DiscoverPlaceList
-            places={places}
-            tabType={activeTab}
-            sportKey={sportKey}
-            loading={loading}
+          <DiscoverVenueClubTabs
+            activeTab={activeTab}
+            onTabChange={onTabChange}
+            nearbyCount={places.length}
           />
         </div>
-      </div>
-    </div>
-  );
-}
 
-/** Single-venue detail sheet (map overlay flow) */
-interface VenueMarkerBottomSheetProps {
-  marker: MapMarker;
-  onClose: () => void;
-  onBook: () => void;
-}
-
-export function VenueMarkerBottomSheet({
-  marker,
-  onClose,
-  onBook,
-}: VenueMarkerBottomSheetProps) {
-  const [isVisible, setIsVisible] = useState(false);
-  const sports = marker.sports ?? [marker.sport];
-  const address = marker.address ?? marker.location;
-
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => setIsVisible(true));
-    return () => cancelAnimationFrame(frame);
-  }, []);
-
-  const handleClose = () => {
-    setIsVisible(false);
-    window.setTimeout(onClose, 300);
-  };
-
-  return (
-    <div className="fixed inset-0 z-40 mx-auto max-w-[600px]">
-      <button
-        type="button"
-        className="absolute inset-0 bg-black/50"
-        aria-label="Close venue details"
-        onClick={handleClose}
-      />
-      <div
-        className="absolute inset-x-0 bottom-[4.75rem] transition-transform duration-300 ease-out"
-        style={{
-          transform: isVisible ? "translateY(0)" : "translateY(100%)",
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="relative rounded-t-2xl bg-[#161616] px-4 pb-4 pt-3 shadow-2xl">
-          <div className="mb-3 flex justify-center">
-            <div className="h-1 rounded-full bg-[#444444]" style={{ width: 36 }} />
+        <div
+          className={cn(
+            "min-h-0 flex-1 overscroll-y-contain",
+            isFull ? "overflow-y-auto" : "overflow-hidden",
+          )}
+        >
+          {/* Bottom padding clears the bottom nav's raised "+" button. */}
+          <div className="pb-12">
+            <DiscoverPlaceList
+              places={places}
+              tabType={activeTab}
+              sportKey={sportKey}
+              loading={loading}
+            />
           </div>
-          <button
-            type="button"
-            onClick={handleClose}
-            className="absolute right-3 top-3 text-lg leading-none text-[#666666]"
-            aria-label="Close"
-          >
-            ✕
-          </button>
-          <h3 className="pr-8 text-base font-bold text-white">{marker.title}</h3>
-          <p className="mt-1 text-xs text-[#666666]">{address}</p>
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            {sports.map((sport) => (
-              <span
-                key={sport}
-                className="rounded-full border border-[#A1C217] px-2 py-0.5 text-[11px] font-medium text-[#A1C217]"
-              >
-                {sport}
-              </span>
-            ))}
-          </div>
-          <button
-            type="button"
-            onClick={onBook}
-            className="mt-4 w-full rounded-[10px] bg-[#A1C217] py-3 text-sm font-bold text-black"
-          >
-            Book / Info →
-          </button>
         </div>
-      </div>
-    </div>
+      </Drawer.Content>
+    </Drawer.Root>
   );
 }

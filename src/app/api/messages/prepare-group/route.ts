@@ -5,6 +5,7 @@ import {
   upsertStreamUsersMany,
 } from "@/lib/stream-messaging";
 import { z } from "zod";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 const prepareGroupSchema = z.object({
   memberIds: z.array(z.string().min(1)).min(2).max(49),
@@ -18,6 +19,9 @@ export async function POST(req: Request) {
     if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("group-chat", user.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     const { memberIds, name } = prepareGroupSchema.parse(await req.json());
     const uniqueMemberIds = Array.from(
@@ -55,6 +59,26 @@ export async function POST(req: Request) {
     if (blocks) {
       return Response.json(
         { error: "You can't start a group with someone you've blocked" },
+        { status: 403 },
+      );
+    }
+
+    // Groups can only include your teammates (mutual follows), so nobody can
+    // be dropped into a group chat by a stranger.
+    const nonTeammates = await prisma.user.count({
+      where: {
+        id: { in: uniqueMemberIds },
+        NOT: {
+          AND: [
+            { followers: { some: { followerId: user.id } } },
+            { following: { some: { followingId: user.id } } },
+          ],
+        },
+      },
+    });
+    if (nonTeammates > 0) {
+      return Response.json(
+        { error: "Groups can only include your teammates" },
         { status: 403 },
       );
     }

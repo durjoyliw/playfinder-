@@ -1,5 +1,6 @@
 "use client";
 
+import { BETA_CITY } from "@/lib/beta";
 import { useSession } from "@/app/(main)/SessionProvider";
 import CropImageDialog from "@/components/CropImageDialog";
 import { MapboxLocationAutocomplete } from "@/components/mapbox-location-autocomplete";
@@ -19,10 +20,9 @@ import {
   useUserSettings,
 } from "./settings-shared";
 
-const labelClassName =
-  "mb-1.5 block text-xs tracking-[0.5px] text-[#888888] uppercase";
+const labelClassName = "mb-1.5 block text-xs text-[var(--pf-c-ink-888888)]";
 const inputClassName =
-  "w-full rounded-[10px] border border-[#2a2a2a] bg-[#161616] p-3 text-[15px] text-[#f0f0f0] focus:border-[#A1C217] focus:outline-none";
+  "w-full rounded-[10px] border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] p-3 text-base text-[var(--pf-c-ink-f0f0f0)] lg:text-[15px] focus:border-[var(--pf-volt)] focus:outline-none pf-card";
 
 export function EditProfileForm() {
   const { toast } = useToast();
@@ -104,15 +104,15 @@ export function EditProfileForm() {
     <SettingsSubpageLayout title="Edit Profile">
       <div className="space-y-8">
         <section className="flex flex-col items-center gap-3">
-          <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-[#1a1a1a]">
+          <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-c-fill-1a1a1a)]">
             {avatarPreview ? (
               <UserAvatar
                 avatarUrl={avatarPreview}
                 size={80}
-                className="h-full w-full max-h-none max-w-none border-0"
+                className="h-full max-h-none w-full max-w-none border-0"
               />
             ) : (
-              <span className="text-lg font-semibold text-[#A1C217]">
+              <span className="text-lg font-semibold text-[var(--pf-volt-text)]">
                 {initials}
               </span>
             )}
@@ -127,7 +127,7 @@ export function EditProfileForm() {
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="rounded-[20px] border border-[#2a2a2a] bg-[#161616] px-5 py-2 text-[13px] text-[#A1C217] transition-colors hover:bg-[#1f1f1f]"
+            className="pf-card rounded-[20px] border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] px-5 py-2 text-[13px] text-[var(--pf-volt-text)] transition-colors hover:bg-[var(--pf-c-fill-1f1f1f)]"
           >
             Change photo
           </button>
@@ -159,24 +159,26 @@ export function EditProfileForm() {
           />
         </section>
 
-        <section>
-          <label htmlFor="location" className={labelClassName}>
-            Location
-          </label>
-          <MapboxLocationAutocomplete
-            id="location"
-            value={location}
-            onChange={setLocation}
-            onPlaceSelect={setLocation}
-            inputClassName={inputClassName}
-          />
-        </section>
+        {!BETA_CITY && (
+          <section>
+            <label htmlFor="location" className={labelClassName}>
+              Location
+            </label>
+            <MapboxLocationAutocomplete
+              id="location"
+              value={location}
+              onChange={setLocation}
+              onPlaceSelect={setLocation}
+              inputClassName={inputClassName}
+            />
+          </section>
+        )}
 
         <button
           type="button"
           onClick={() => mutation.mutate()}
           disabled={mutation.isPending || !displayName.trim()}
-          className="w-full rounded-xl bg-[#A1C217] py-3.5 text-[15px] font-bold text-[#0d0d0d] transition-opacity disabled:opacity-50"
+          className="w-full rounded-xl bg-[var(--pf-volt)] py-3.5 text-[15px] font-bold text-[var(--pf-on-accent)] transition-opacity disabled:opacity-50"
         >
           {mutation.isPending ? "Saving..." : "Save"}
         </button>

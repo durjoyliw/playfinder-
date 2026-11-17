@@ -7,15 +7,17 @@ import { getPostDataInclude } from "@/lib/types";
 import { getListingExpiresAt } from "@/lib/playfinder";
 import { createBroadcastSchema } from "@/lib/validation";
 import { PostIntent } from "@prisma/client";
+import { enforceRateLimit } from "@/lib/rate-limit";
 
 export async function submitBroadcast(input: unknown) {
   const { user } = await validateRequest();
 
   if (!user) throw new Error("Unauthorized");
+  await enforceRateLimit("post", user.id);
 
   const data = createBroadcastSchema.parse(input);
 
-  const expiresAt = getListingExpiresAt(data.intent);
+  const expiresAt = getListingExpiresAt(data.intent, data.startsAt);
 
   const authorPageId = await getAuthorPageIdForPost();
 

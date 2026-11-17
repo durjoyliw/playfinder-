@@ -4,11 +4,13 @@ import DeletePostDialog from "@/components/posts/DeletePostDialog";
 import { useToast } from "@/components/ui/use-toast";
 import { EditPostSheet } from "@/components/playfinder/edit-post-sheet";
 import kyInstance from "@/lib/ky";
+import { cn } from "@/lib/utils";
 import { PostData } from "@/lib/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MoreVertical, Pencil, Share2, Star, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useEscapeKey } from "@/hooks/use-escape-key";
 
 interface PostOptionsMenuProps {
   post: PostData;
@@ -20,12 +22,13 @@ interface PostOptionsMenuProps {
 export function PostOptionsMenu({
   post,
   redirectToFeedOnDelete = false,
-  triggerClassName = "rounded-full p-2 text-gray-400 hover:bg-[#262626] hover:text-white",
+  triggerClassName = "rounded-full p-2 text-[var(--pf-c-ink-9ca3af)] hover:bg-[var(--pf-c-fill-262626)] hover:text-[var(--pf-c-ink-ffffff)]",
 }: PostOptionsMenuProps) {
   const router = useRouter();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+  useEscapeKey(open, () => setOpen(false));
   const [editOpen, setEditOpen] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -82,7 +85,7 @@ export function PostOptionsMenu({
   };
 
   const menuItemClass =
-    "flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm text-white hover:bg-[#262626] first:rounded-t-xl last:rounded-b-xl";
+    "flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm text-[var(--pf-c-ink-ffffff)] hover:bg-[var(--pf-c-fill-262626)] first:rounded-t-xl last:rounded-b-xl";
 
   return (
     <>
@@ -90,7 +93,7 @@ export function PostOptionsMenu({
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className={triggerClassName}
+          className={cn("pf-hit-lg", triggerClassName)}
           aria-label="Post options"
           aria-expanded={open}
           aria-haspopup="menu"
@@ -101,7 +104,7 @@ export function PostOptionsMenu({
         {open && (
           <div
             role="menu"
-            className="absolute right-0 top-10 z-50 w-[180px] overflow-hidden rounded-xl border border-[#333] bg-[#1a1a1a] py-1 shadow-lg"
+            className="absolute right-0 top-10 z-50 w-[180px] overflow-hidden rounded-xl border border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1a1a1a)] py-1 shadow-lg pf-card"
           >
             <button
               type="button"
@@ -112,7 +115,7 @@ export function PostOptionsMenu({
                 setEditOpen(true);
               }}
             >
-              <Pencil className="h-4 w-4 shrink-0 text-gray-400" />
+              <Pencil className="h-4 w-4 shrink-0 text-[var(--pf-c-ink-9ca3af)]" />
               Edit
             </button>
             <button
@@ -122,7 +125,7 @@ export function PostOptionsMenu({
               onClick={() => highlightMutation.mutate()}
               disabled={highlightMutation.isPending}
             >
-              <Star className="h-4 w-4 shrink-0 text-gray-400" />
+              <Star className="h-4 w-4 shrink-0 text-[var(--pf-c-ink-9ca3af)]" />
               {post.isHighlight
                 ? "Remove from Highlights"
                 : "Add to Highlights"}
@@ -133,13 +136,13 @@ export function PostOptionsMenu({
               className={menuItemClass}
               onClick={share}
             >
-              <Share2 className="h-4 w-4 shrink-0 text-gray-400" />
+              <Share2 className="h-4 w-4 shrink-0 text-[var(--pf-c-ink-9ca3af)]" />
               Share
             </button>
             <button
               type="button"
               role="menuitem"
-              className={`${menuItemClass} text-red-400 hover:bg-[#262626]`}
+              className={`${menuItemClass} text-red-400 hover:bg-[var(--pf-c-fill-262626)]`}
               onClick={() => {
                 setOpen(false);
                 setShowDelete(true);

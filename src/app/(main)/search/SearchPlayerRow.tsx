@@ -74,7 +74,7 @@ function SearchTeammateAction({ userId }: { userId: string }) {
 
   if (data.isTeammate) {
     return (
-      <span className="flex-shrink-0 rounded-full border border-[rgba(161,194,23,0.4)] bg-[#1e1e1e] px-3 py-1.5 text-xs font-semibold text-[#A1C217]">
+      <span className="flex-shrink-0 rounded-full border border-[rgb(var(--pf-volt-rgb)/0.4)] bg-[var(--pf-c-fill-1e1e1e)] px-3 py-1.5 text-xs font-semibold text-[var(--pf-volt-text)]">
         Teammates ⚡
       </span>
     );
@@ -82,7 +82,7 @@ function SearchTeammateAction({ userId }: { userId: string }) {
 
   if (data.isFollowedByUser && !data.isFollowedByThem) {
     return (
-      <span className="flex-shrink-0 rounded-full border border-[#2a2a2a] bg-[#161616] px-3 py-1.5 text-xs font-semibold text-[#888888]">
+      <span className="flex-shrink-0 rounded-full border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] px-3 py-1.5 text-xs font-semibold text-[var(--pf-c-ink-888888)]">
         Requested
       </span>
     );
@@ -97,7 +97,7 @@ function SearchTeammateAction({ userId }: { userId: string }) {
         e.stopPropagation();
         follow();
       }}
-      className="flex-shrink-0 rounded-full bg-[#A1C217] px-3 py-1.5 text-xs font-bold text-black transition-colors hover:bg-[#aac62e] disabled:opacity-50"
+      className="flex-shrink-0 rounded-full bg-[var(--pf-volt)] px-3 py-1.5 text-xs font-bold text-[var(--pf-on-accent)] transition-colors hover:bg-[var(--pf-volt-hover)] disabled:opacity-50"
     >
       <span className="inline-flex items-center gap-1">
         <IconBolt className="h-3.5 w-3.5" stroke={2} />
@@ -124,9 +124,9 @@ export function SearchPlayerRow({ player, query }: SearchPlayerRowProps) {
     : null;
 
   return (
-    <div className="flex items-start gap-3 border-b border-[#111] px-4 py-3">
+    <div className="flex items-start gap-3 border-b border-[var(--pf-c-line-111111)] px-4 py-3">
       <Link href={`/users/${player.username}`} className="flex-shrink-0">
-        <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-sm font-bold text-black">
+        <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-sm font-bold text-[var(--pf-on-accent)]">
           {player.avatarUrl ? (
             <img
               src={player.avatarUrl}
@@ -142,13 +142,13 @@ export function SearchPlayerRow({ player, query }: SearchPlayerRowProps) {
       <div className="min-w-0 flex-1">
         <Link
           href={`/users/${player.username}`}
-          className="font-bold text-white hover:underline"
+          className="font-bold text-[var(--pf-c-ink-ffffff)] hover:underline"
         >
           {player.displayName}
         </Link>
-        <p className="text-xs text-[#666666]">@{player.username}</p>
+        <p className="text-xs text-[var(--pf-c-ink-666666)]">@{player.username}</p>
 
-        <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-[#666666]">
+        <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-[var(--pf-c-ink-666666)]">
           <span
             className={cn(
               "h-2 w-2 flex-shrink-0 rounded-full",
@@ -178,8 +178,8 @@ export function SearchPlayerRow({ player, query }: SearchPlayerRowProps) {
                   className={cn(
                     "rounded-full px-2 py-0.5 text-[10px] font-medium",
                     highlighted
-                      ? "bg-[#1f2d00] text-[#A1C217]"
-                      : "bg-[#1f1f1f] text-[#666666]",
+                      ? "bg-[var(--pf-volt-tint)] text-[var(--pf-volt-text)]"
+                      : "bg-[var(--pf-c-fill-1f1f1f)] text-[var(--pf-c-ink-666666)]",
                   )}
                 >
                   {sport.emoji} {sport.name}
@@ -196,7 +196,7 @@ export function SearchPlayerRow({ player, query }: SearchPlayerRowProps) {
           <button
             type="button"
             onClick={handleMessage}
-            className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#1e1e1e] text-[#888888] transition-colors hover:text-white"
+            className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[var(--pf-c-fill-1e1e1e)] text-[var(--pf-c-ink-888888)] transition-colors hover:text-[var(--pf-c-ink-ffffff)]"
             aria-label={`Message ${player.displayName}`}
           >
             <IconMessage className="h-4 w-4" stroke={1.75} />

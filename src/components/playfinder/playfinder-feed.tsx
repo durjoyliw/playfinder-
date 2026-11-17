@@ -7,6 +7,7 @@ import { filterActivePlayfinderPosts } from "@/lib/playfinder";
 import kyInstance from "@/lib/ky";
 import { PlayfinderPostsPage } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
+import { FeedEnd } from "@/components/system/feed-end";
 import { Loader2 } from "lucide-react";
 
 interface PlayFinderFeedProps {
@@ -14,7 +15,10 @@ interface PlayFinderFeedProps {
   feedTypeTab: FeedTypeTab;
 }
 
-export function PlayFinderFeed({ sportFilter, feedTypeTab }: PlayFinderFeedProps) {
+export function PlayFinderFeed({
+  sportFilter,
+  feedTypeTab,
+}: PlayFinderFeedProps) {
   const { data, status, isFetching } = useQuery({
     queryKey: ["post-feed", "playfinder", sportFilter, feedTypeTab],
     queryFn: () =>
@@ -37,7 +41,7 @@ export function PlayFinderFeed({ sportFilter, feedTypeTab }: PlayFinderFeedProps
   if (status === "pending") {
     return (
       <div className="flex justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-[#a1c217]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[var(--pf-volt-text)]" />
       </div>
     );
   }
@@ -57,7 +61,7 @@ export function PlayFinderFeed({ sportFilter, feedTypeTab }: PlayFinderFeedProps
       posts: "No posts yet. Share something with the community.",
     };
     return (
-      <p className="px-4 py-8 text-center text-sm text-[#7e8a7e]">
+      <p className="px-4 py-8 text-center text-sm text-[var(--pf-c-ink-7e8a7e)]">
         {emptyMessages[feedTypeTab]}
       </p>
     );
@@ -66,14 +70,10 @@ export function PlayFinderFeed({ sportFilter, feedTypeTab }: PlayFinderFeedProps
   const isSocial = feedTypeTab === "posts";
 
   return (
-    <div
-      className={
-    isSocial ? "pb-4" : "flex flex-col gap-3 px-4 pb-4 pt-3.5"
-      }
-    >
+    <div className={isSocial ? "pb-4" : "flex flex-col gap-3 px-4 pb-4 pt-3.5"}>
       {isFetching && (
         <div className="flex justify-center py-2">
-          <Loader2 className="h-4 w-4 animate-spin text-[#a1c217]" />
+          <Loader2 className="h-4 w-4 animate-spin text-[var(--pf-volt-text)]" />
         </div>
       )}
       {posts.map((post, index) => (
@@ -84,6 +84,14 @@ export function PlayFinderFeed({ sportFilter, feedTypeTab }: PlayFinderFeedProps
           cardIndex={index}
         />
       ))}
+      <FeedEnd
+        noun={isSocial ? "posts" : "games"}
+        action={
+          isSocial
+            ? { href: "/discover", label: "Find players near you" }
+            : { href: "/discover", label: "Look for more on Discover" }
+        }
+      />
     </div>
   );
 }

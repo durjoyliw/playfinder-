@@ -32,31 +32,31 @@ html body[data-scroll-locked] {
 }
 
 .pf-map-popup .mapboxgl-popup-content {
-  background: #161616;
-  border: 1px solid #2a2a2a;
+  background: var(--pf-c-fill-161616);
+  border: 1px solid var(--pf-c-line-2a2a2a);
   border-radius: 12px;
   padding: 0;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
 }
 
 .pf-map-popup.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
-  border-top-color: #161616;
+  border-top-color: var(--pf-c-fill-161616);
 }
 
 .pf-map-popup.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
-  border-bottom-color: #161616;
+  border-bottom-color: var(--pf-c-fill-161616);
 }
 
 .pf-map-popup.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
-  border-right-color: #161616;
+  border-right-color: var(--pf-c-fill-161616);
 }
 
 .pf-map-popup.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
-  border-left-color: #161616;
+  border-left-color: var(--pf-c-fill-161616);
 }
 
 .pf-map-popup .mapboxgl-popup-close-button {
-  color: #f0f0f0;
+  color: var(--pf-c-ink-f0f0f0);
   font-size: 18px;
   padding: 4px 8px;
   right: 2px;
@@ -65,7 +65,7 @@ html body[data-scroll-locked] {
 
 .pf-map-popup .mapboxgl-popup-close-button:hover {
   background: transparent;
-  color: #a1c217;
+  color: var(--pf-volt);
 }
 
 .pf-venue-popup {
@@ -79,25 +79,25 @@ html body[data-scroll-locked] {
   font-size: 14px;
   font-weight: 700;
   line-height: 1.3;
-  color: #f0f0f0;
+  color: var(--pf-c-ink-f0f0f0);
 }
 
 .pf-venue-popup__badge {
   display: inline-block;
   margin-bottom: 8px;
-  border: 1px solid #a1c217;
+  border: 1px solid var(--pf-volt);
   border-radius: 9999px;
   padding: 2px 8px;
   font-size: 10px;
   font-weight: 600;
-  color: #a1c217;
+  color: var(--pf-volt);
 }
 
 .pf-venue-popup__address {
   margin: 0 0 10px;
   font-size: 11px;
   line-height: 1.4;
-  color: #666666;
+  color: var(--pf-c-ink-666666);
 }
 
 .pf-venue-popup__cta {
@@ -105,17 +105,17 @@ html body[data-scroll-locked] {
   width: 100%;
   border: none;
   border-radius: 8px;
-  background: #a1c217;
+  background: var(--pf-volt);
   padding: 8px 12px;
   font-size: 12px;
   font-weight: 700;
-  color: #000000;
+  color: var(--pf-on-accent);
   cursor: pointer;
   transition: background-color 0.15s ease;
 }
 
 .pf-venue-popup__cta:hover {
-  background: #aac62e;
+  background: var(--pf-volt-hover);
 }
 
 @layer base {
@@ -133,8 +133,37 @@ html body[data-scroll-locked] {
     --pf-text-4: #5a635a;
     --pf-volt: #a1c217;
     --pf-volt-dim: #76930f;
-    --pf-volt-glow: rgba(161, 194, 23, 0.35);
+    /* Accent helpers: RGB channels for alpha variants
+       (rgb(var(--pf-volt-rgb) / 0.35)), a hover shade, and the text colour
+       that sits on top of the accent (button labels, active pills). */
+    --pf-volt-rgb: 161 194 23;
+    --pf-volt-hover: #aac62e;
+    --pf-volt-active: #93b314; /* darker hover/pressed shade */
+    /* Legacy near-volt shades kept exact for Noir + Volt: the bottom-nav
+       "+" and composer CTAs (#a0cc00) and their neon glow/tints (#c8ff00).
+       Every other accent sets these to the accent itself. */
+    --pf-volt-cta: #a0cc00;
+    --pf-volt-cta-rgb: 160 204 0;
+    --pf-volt-neon-rgb: 200 255 0;
+    --pf-on-accent: #0a0b0a;
+    --pf-volt-glow: rgb(var(--pf-volt-rgb) / 0.35);
     --pf-blue: #56ccf2;
+
+    /* Z-index scale. Page content stacks locally below 40.
+       nav < header < overlays (sheets, dialogs, confirms) < popovers
+       (menus that can open from an overlay) < full-screen composer < toasts. */
+    --pf-z-nav: 40;
+    --pf-z-header: 50;
+    --pf-z-banner: 55; /* cookie consent: over nav + header, under overlays */
+    --pf-z-overlay: 60;
+    --pf-z-popover: 120;
+    --pf-z-fullscreen: 200;
+    --pf-z-toast: 300;
+
+    /* Mobile app header height (header.tsx: 12px + 40px + 12px + 1px border,
+       plus the top safe area). Sticky bars below it use this as their top. */
+    --pf-header-h: calc(65px + env(safe-area-inset-top, 0px));
+
     --background: 0 0% 5.1%;
     --foreground: 0 0% 95%;
 
@@ -195,6 +224,422 @@ html body[data-scroll-locked] {
     --input: 0 0% 15%;
     --ring: 72 90% 53%;
   }
+}
+
+/* ------------------------------------------------------------------------
+   Appearance presets (Settings -> Appearance). Two independent dials on
+   <html>, set server-side from cookies (src/lib/appearance.ts):
+     data-theme  = background base  (noir | slate | offwhite | white)
+     data-accent = accent colour    (volt | optic | emerald | crimson |
+                                     coral | cyan | orange)
+   :root above IS Noir + Volt, so with no attribute (or the defaults) the
+   app looks exactly as before. Each base sets the --pf-* surface/text
+   tokens AND the shadcn HSL tokens so bg-background, text-foreground etc.
+   follow too. Components with hardcoded hex colours won't follow a base
+   change yet -- see the light-mode polish list.
+   ------------------------------------------------------------------------ */
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  :root[data-theme="slate"] {
+    --pf-bg: #2f353b;
+    --pf-bg-2: #282d32;
+    --pf-surface: #363d44;
+    --pf-surface-2: #3e464e;
+    --pf-surface-3: #475059;
+    --pf-border: #4a535c;
+    --pf-border-light: #58626c;
+    --pf-text: #f1f3f5;
+    --pf-text-2: #c3cad1;
+    --pf-text-3: #9aa4ae;
+    --pf-text-4: #76808a;
+
+    --background: 210 11% 21%;
+    --foreground: 210 17% 95%;
+    --card: 210 11% 24%;
+    --card-foreground: 210 17% 95%;
+    --popover: 210 11% 24%;
+    --popover-foreground: 210 17% 95%;
+    --secondary: 210 11% 27%;
+    --secondary-foreground: 210 17% 95%;
+    --muted: 210 11% 27%;
+    --muted-foreground: 210 11% 64%;
+    --accent: 210 11% 27%;
+    --accent-foreground: 210 17% 95%;
+    --border: 210 11% 33%;
+    --input: 210 11% 33%;
+  }
+
+  /* Light bases, Facebook-style: a soft grey page with white cards (Off-
+     white) or a white page with faint grey cards (White). Cards also get a
+     hairline + soft shadow via .pf-card (light bases only, see below).
+     Text: 14.9:1 body, >= 5.1:1 muted on every light surface. */
+  :root[data-theme="offwhite"],
+  :root[data-theme="white"] {
+    color-scheme: light;
+    --pf-text: #1c1e21;
+    --pf-text-2: #3e4042;
+    --pf-text-3: #65676b;
+    --pf-text-4: #8a8d91;
+    --pf-surface-2: #f0f2f5;
+    --pf-surface-3: #e4e6eb;
+    --pf-contrast-rgb: 0 0 0;
+    --pf-card-shadow:
+      0 0 0 1px rgb(0 0 0 / 0.05),
+      0 1px 2px rgb(0 0 0 / 0.06),
+      0 2px 8px rgb(0 0 0 / 0.04);
+
+    --foreground: 216 8% 12%;
+    --card-foreground: 216 8% 12%;
+    --popover-foreground: 216 8% 12%;
+    --secondary: 216 20% 95%;
+    --secondary-foreground: 216 8% 12%;
+    --muted: 216 20% 95%;
+    --muted-foreground: 220 3% 41%;
+    --accent: 216 20% 95%;
+    --accent-foreground: 216 8% 12%;
+    --destructive: 0 72% 51%;
+  }
+
+  :root[data-theme="offwhite"] {
+    --pf-bg: #f0f2f5;
+    --pf-bg-rgb: 240 242 245;
+    --pf-bg-2: #e9ebee;
+    --pf-surface: #ffffff;
+    --pf-surface-rgb: 255 255 255;
+    --pf-border: #dadde1;
+    --pf-border-light: #ccd0d5;
+
+    --background: 216 20% 95%;
+    --card: 0 0% 100%;
+    --popover: 0 0% 100%;
+    --border: 214 10% 87%;
+    --input: 214 10% 87%;
+  }
+
+  :root[data-theme="white"] {
+    --pf-bg: #ffffff;
+    --pf-bg-rgb: 255 255 255;
+    --pf-bg-2: #f7f8fa;
+    --pf-surface: #f7f8fa;
+    --pf-surface-rgb: 247 248 250;
+    --pf-border: #e4e6eb;
+    --pf-border-light: #d5d8dc;
+
+    --background: 0 0% 100%;
+    --card: 220 23% 97%;
+    --popover: 0 0% 100%;
+    --border: 223 15% 91%;
+    --input: 223 15% 91%;
+  }
+
+  /* Accents. --pf-on-accent is chosen by contrast: dark on every accent
+     except Crimson, where white reads better (5.0:1 vs 4.0:1). */
+  :root[data-accent="optic"] {
+    --pf-volt: #e5f33d;
+    --pf-volt-cta: #e5f33d;
+    --pf-volt-cta-rgb: 229 243 61;
+    --pf-volt-neon-rgb: 229 243 61;
+    --pf-volt-active: #d0dd38;
+    --pf-volt-rgb: 229 243 61;
+    --pf-volt-hover: #e7f44d;
+    --pf-volt-dim: #a7b12d;
+    --pf-on-accent: #0a0b0a;
+    --primary: 65 88% 60%;
+    --primary-foreground: 0 0% 5.1%;
+    --ring: 65 88% 60%;
+  }
+
+  :root[data-accent="emerald"] {
+    --pf-volt: #009b77;
+    --pf-volt-cta: #009b77;
+    --pf-volt-cta-rgb: 0 155 119;
+    --pf-volt-neon-rgb: 0 155 119;
+    --pf-volt-active: #008d6c;
+    --pf-volt-rgb: 0 155 119;
+    --pf-volt-hover: #14a382;
+    --pf-volt-dim: #007157;
+    --pf-on-accent: #0a0b0a;
+    --primary: 166 100% 30%;
+    --primary-foreground: 0 0% 5.1%;
+    --ring: 166 100% 30%;
+  }
+
+  :root[data-accent="crimson"] {
+    --pf-volt: #dc143c;
+    --pf-volt-cta: #dc143c;
+    --pf-volt-cta-rgb: 220 20 60;
+    --pf-volt-neon-rgb: 220 20 60;
+    --pf-volt-active: #c81237;
+    --pf-volt-rgb: 220 20 60;
+    --pf-volt-hover: #df274c;
+    --pf-volt-dim: #a10f2c;
+    --pf-on-accent: #ffffff;
+    --primary: 348 83% 47%;
+    --primary-foreground: 0 0% 100%;
+    --ring: 348 83% 47%;
+  }
+
+  :root[data-accent="coral"] {
+    --pf-volt: #ff6f61;
+    --pf-volt-cta: #ff6f61;
+    --pf-volt-cta-rgb: 255 111 97;
+    --pf-volt-neon-rgb: 255 111 97;
+    --pf-volt-active: #e86558;
+    --pf-volt-rgb: 255 111 97;
+    --pf-volt-hover: #ff7b6e;
+    --pf-volt-dim: #ba5147;
+    --pf-on-accent: #0a0b0a;
+    --primary: 5 100% 69%;
+    --primary-foreground: 0 0% 5.1%;
+    --ring: 5 100% 69%;
+  }
+
+  :root[data-accent="cyan"] {
+    --pf-volt: #00e5ff;
+    --pf-volt-cta: #00e5ff;
+    --pf-volt-cta-rgb: 0 229 255;
+    --pf-volt-neon-rgb: 0 229 255;
+    --pf-volt-active: #00d0e8;
+    --pf-volt-rgb: 0 229 255;
+    --pf-volt-hover: #14e7ff;
+    --pf-volt-dim: #00a7ba;
+    --pf-on-accent: #0a0b0a;
+    --primary: 186 100% 50%;
+    --primary-foreground: 0 0% 5.1%;
+    --ring: 186 100% 50%;
+  }
+
+  :root[data-accent="orange"] {
+    --pf-volt: #ff7a00;
+    --pf-volt-cta: #ff7a00;
+    --pf-volt-cta-rgb: 255 122 0;
+    --pf-volt-neon-rgb: 255 122 0;
+    --pf-volt-active: #e86f00;
+    --pf-volt-rgb: 255 122 0;
+    --pf-volt-hover: #ff8514;
+    --pf-volt-dim: #ba5900;
+    --pf-on-accent: #0a0b0a;
+    --primary: 29 100% 50%;
+    --primary-foreground: 0 0% 5.1%;
+    --ring: 29 100% 50%;
+  }
+}
+
+/* ------------------------------------------------------------------------
+   Component palette (--pf-c-<role>-<hex>). Generated by the light-theme
+   codemod from the colours components used to hardcode. On the dark bases
+   (Noir, Slate) each token IS its original colour, so dark rendering is
+   unchanged; on the light bases each maps to a role token:
+     fill  -> bg / surface tiers     line -> border tiers     ink -> text tiers
+   Retire a token by replacing its uses with the role token it maps to.
+   To make Slate adopt its own surfaces too, copy the light mapping block
+   below into :root[data-theme="slate"].
+   ------------------------------------------------------------------------ */
+@layer base {
+  :root {
+    /* Channels for alpha variants and the light/dark contrast overlay. */
+    --pf-bg-rgb: 8 9 10;
+    --pf-surface-rgb: 19 22 20;
+    --pf-contrast-rgb: 255 255 255; /* white/x hairlines + hover tints */
+    --pf-card-shadow: 0 0 #0000;
+
+    --pf-c-fill-08090a: #08090a;
+    --pf-c-fill-121212: #121212;
+    --pf-c-fill-121412: #121412;
+    --pf-c-fill-232323: #232323;
+    --pf-c-fill-252525: #252525;
+    --pf-c-ink-6b7280: #6b7280;
+    --pf-c-ink-8a8f86: #8a8f86;
+    --pf-c-ink-9ca3af: #9ca3af;
+    --pf-c-ink-c4c9bf: #c4c9bf;
+    --pf-c-ink-cccccc: #cccccc;
+    --pf-c-ink-d4d4d4: #d4d4d4;
+    --pf-c-ink-d1d5db: #d1d5db;
+    --pf-c-line-222222: #222222;
+    --pf-c-line-3a3a3a: #3a3a3a;
+    --pf-c-fill-0c0e0c: #0c0e0c;
+    --pf-c-fill-0d0d0d: #0d0d0d;
+    --pf-c-fill-0d0f0d: #0d0f0d;
+    --pf-c-fill-111111: #111111;
+    --pf-c-fill-131614: #131614;
+    --pf-c-fill-161616: #161616;
+    --pf-c-fill-161816: #161816;
+    --pf-c-fill-161a17: #161a17;
+    --pf-c-fill-1a1a1a: #1a1a1a;
+    --pf-c-fill-1a1e1b: #1a1e1b;
+    --pf-c-fill-1e1e1e: #1e1e1e;
+    --pf-c-fill-1e211e: #1e211e;
+    --pf-c-fill-1f1f1f: #1f1f1f;
+    --pf-c-fill-232824: #232824;
+    --pf-c-fill-262626: #262626;
+    --pf-c-fill-2a2a2a: #2a2a2a;
+    --pf-c-fill-2a2f2a: #2a2f2a;
+    --pf-c-fill-353c34: #353c34;
+    --pf-c-ink-555555: #555555;
+    --pf-c-ink-5a635a: #5a635a;
+    --pf-c-ink-666666: #666666;
+    --pf-c-ink-6b6b6b: #6b6b6b;
+    --pf-c-ink-7e8a7e: #7e8a7e;
+    --pf-c-ink-888888: #888888;
+    --pf-c-ink-a3a3a3: #a3a3a3;
+    --pf-c-ink-b4bcaf: #b4bcaf;
+    --pf-c-ink-f0f0f0: #f0f0f0;
+    --pf-c-ink-f2f5ef: #f2f5ef;
+    --pf-c-ink-ffffff: #ffffff;
+    --pf-c-line-08090a: #08090a;
+    --pf-c-line-0a0b0a: #0a0b0a; /* map pin ring */
+    --pf-c-line-111111: #111111;
+    --pf-c-line-131614: #131614;
+    --pf-c-line-1a1a1a: #1a1a1a;
+    --pf-c-line-1a1e1b: #1a1e1b;
+    --pf-c-line-1e1e1e: #1e1e1e;
+    --pf-c-line-1f1f1f: #1f1f1f;
+    --pf-c-line-262626: #262626;
+    --pf-c-line-2a2a2a: #2a2a2a;
+    --pf-c-line-2a2f2a: #2a2f2a;
+    --pf-c-line-333333: #333333;
+    --pf-c-line-353c34: #353c34;
+    --pf-c-line-444444: #444444;
+    --pf-c-fill-08090a-rgb: 8 9 10;
+    --pf-c-fill-0d0d0d-rgb: 13 13 13;
+    --pf-c-fill-0d0f0d-rgb: 13 15 13;
+    --pf-c-fill-131614-rgb: 19 22 20;
+    --pf-c-fill-161616-rgb: 22 22 22;
+  }
+
+  :root[data-theme="slate"] {
+    --pf-bg-rgb: 47 53 59;
+    --pf-surface-rgb: 54 61 68;
+  }
+
+  :root[data-theme="offwhite"],
+  :root[data-theme="white"] {
+    --pf-c-fill-08090a: var(--pf-bg);
+    --pf-c-fill-121212: var(--pf-bg);
+    --pf-c-fill-121412: var(--pf-bg);
+    --pf-c-fill-232323: var(--pf-surface-2);
+    --pf-c-fill-252525: var(--pf-surface-2);
+    --pf-c-ink-6b7280: var(--pf-text-3);
+    --pf-c-ink-8a8f86: var(--pf-text-3);
+    --pf-c-ink-9ca3af: var(--pf-text-3);
+    --pf-c-ink-c4c9bf: var(--pf-text-2);
+    --pf-c-ink-cccccc: var(--pf-text-2);
+    --pf-c-ink-d4d4d4: var(--pf-text-2);
+    --pf-c-ink-d1d5db: var(--pf-text-2);
+    --pf-c-line-222222: var(--pf-border);
+    --pf-c-line-3a3a3a: var(--pf-border-light);
+    --pf-c-fill-0c0e0c: var(--pf-bg);
+    --pf-c-fill-0d0d0d: var(--pf-bg);
+    --pf-c-fill-0d0f0d: var(--pf-bg);
+    --pf-c-fill-111111: var(--pf-bg);
+    --pf-c-fill-131614: var(--pf-surface);
+    --pf-c-fill-161616: var(--pf-surface);
+    --pf-c-fill-161816: var(--pf-surface);
+    --pf-c-fill-161a17: var(--pf-surface-2);
+    --pf-c-fill-1a1a1a: var(--pf-surface);
+    --pf-c-fill-1a1e1b: var(--pf-surface-2);
+    --pf-c-fill-1e1e1e: var(--pf-surface);
+    --pf-c-fill-1e211e: var(--pf-surface-2);
+    --pf-c-fill-1f1f1f: var(--pf-surface-2);
+    --pf-c-fill-232824: var(--pf-surface-3);
+    --pf-c-fill-262626: var(--pf-surface-3);
+    --pf-c-fill-2a2a2a: var(--pf-surface-3);
+    --pf-c-fill-2a2f2a: var(--pf-surface-3);
+    --pf-c-fill-353c34: var(--pf-border-light);
+    --pf-c-ink-555555: var(--pf-text-3);
+    --pf-c-ink-5a635a: var(--pf-text-4);
+    --pf-c-ink-666666: var(--pf-text-3);
+    --pf-c-ink-6b6b6b: var(--pf-text-3);
+    --pf-c-ink-7e8a7e: var(--pf-text-3);
+    --pf-c-ink-888888: var(--pf-text-3);
+    --pf-c-ink-a3a3a3: var(--pf-text-2);
+    --pf-c-ink-b4bcaf: var(--pf-text-2);
+    --pf-c-ink-f0f0f0: var(--pf-text);
+    --pf-c-ink-f2f5ef: var(--pf-text);
+    --pf-c-ink-ffffff: var(--pf-text);
+    --pf-c-line-08090a: var(--pf-bg);
+    --pf-c-line-0a0b0a: #ffffff;
+    --pf-c-line-111111: var(--pf-bg);
+    --pf-c-line-131614: var(--pf-border);
+    --pf-c-line-1a1a1a: var(--pf-border);
+    --pf-c-line-1a1e1b: var(--pf-border);
+    --pf-c-line-1e1e1e: var(--pf-border);
+    --pf-c-line-1f1f1f: var(--pf-border);
+    --pf-c-line-262626: var(--pf-border);
+    --pf-c-line-2a2a2a: var(--pf-border);
+    --pf-c-line-2a2f2a: var(--pf-border);
+    --pf-c-line-333333: var(--pf-border);
+    --pf-c-line-353c34: var(--pf-border-light);
+    --pf-c-line-444444: var(--pf-border-light);
+    --pf-c-fill-08090a-rgb: var(--pf-bg-rgb);
+    --pf-c-fill-0d0d0d-rgb: var(--pf-bg-rgb);
+    --pf-c-fill-0d0f0d-rgb: var(--pf-bg-rgb);
+    --pf-c-fill-131614-rgb: var(--pf-surface-rgb);
+    --pf-c-fill-161616-rgb: var(--pf-surface-rgb);
+  }
+}
+
+/* Accent tints: dark backgrounds tinted with the accent (selected sport
+   chips, shared-post card). Exact legacy values on Volt. */
+:root {
+  /* Unread badge label: white on Volt (as before), on-accent elsewhere. */
+  --pf-badge-text: #ffffff;
+  /* Accent used as TEXT/icon colour. Same as the accent on dark bases;
+     darkened on light bases so it stays readable (>= ~4.6:1 on white). */
+  --pf-volt-text: var(--pf-volt);
+  --pf-volt-tint: #1f2d00;
+  --pf-volt-tint-2: #161c0f;
+}
+:root[data-accent]:not([data-accent="volt"]) {
+  --pf-badge-text: var(--pf-on-accent);
+  --pf-volt-tint: color-mix(in srgb, var(--pf-volt) 20%, #000000);
+  --pf-volt-tint-2: color-mix(in srgb, var(--pf-volt) 10%, #0a0b0a);
+}
+:root[data-theme="offwhite"][data-accent],
+:root[data-theme="white"][data-accent] {
+  --pf-volt-text: color-mix(in srgb, var(--pf-volt) 50%, #000000);
+  --pf-volt-tint: color-mix(in srgb, var(--pf-volt) 18%, #ffffff);
+  --pf-volt-tint-2: color-mix(in srgb, var(--pf-volt) 10%, #ffffff);
+}
+
+/* Status colours (Open / Closed / closes-soon badges, destructive hovers)
+   and the Discover sheet shadow. Dark values are the original tints; light
+   bases get light tints with dark, readable text (>= 4.7:1). */
+:root {
+  --pf-status-success-bg: #1a2a1a;
+  --pf-status-success-fg: #4ade80;
+  --pf-status-danger-bg: #2a1a1a;
+  --pf-status-danger-fg: #f87171;
+  --pf-status-danger-hover: #2a1616;
+  --pf-status-warning-bg: #2a1a0a;
+  --pf-status-warning-fg: #fb923c;
+  --pf-status-amber-bg: #2a1a00;
+  --pf-status-amber-fg: #fbbf24;
+  --pf-sheet-shadow: 0 -10px 40px rgba(0, 0, 0, 0.4);
+}
+:root[data-theme="offwhite"],
+:root[data-theme="white"] {
+  --pf-status-success-bg: #e6f4ea;
+  --pf-status-success-fg: #137333;
+  --pf-status-danger-bg: #fdecea;
+  --pf-status-danger-fg: #c5221f;
+  --pf-status-danger-hover: #fdecea;
+  --pf-status-warning-bg: #fff1e3;
+  --pf-status-warning-fg: #b45309;
+  --pf-status-amber-bg: #fef3c7;
+  --pf-status-amber-fg: #92400e;
+  --pf-sheet-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 -4px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* Cards read as cards on light bases: hairline + soft shadow. No rules on
+   dark bases, so Noir/Slate are untouched. Uses box-shadow (not a border)
+   so it never shifts layout. */
+:root[data-theme="offwhite"] .pf-card,
+:root[data-theme="white"] .pf-card {
+  box-shadow: var(--pf-card-shadow);
 }
 
 @layer base {
@@ -307,7 +752,7 @@ html body[data-scroll-locked] {
   height: 28px;
   margin-left: -14px;
   place-items: center;
-  border: 2px solid #0a0b0a;
+  border: 2px solid var(--pf-c-line-0a0b0a);
   border-radius: 50% 50% 50% 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   transform: rotate(-45deg);
@@ -398,5 +843,217 @@ html body[data-scroll-locked] {
   [class*="animate-[pf-card-in"],
   [class*="animate-[pf-badge-in"] {
     animation: none !important;
+  }
+}
+
+/* Cookie consent banner (cookie-consent-banner.tsx). Clear of the notch /
+   home indicator everywhere; on mobile, lifted above the bottom nav and its
+   raised "+" (30px above the bar) whenever that nav is on screen. */
+body {
+  padding-bottom: var(--pf-consent-space, 0px);
+}
+
+.pf-consent {
+  left: calc(12px + env(safe-area-inset-left, 0px));
+  right: calc(12px + env(safe-area-inset-right, 0px));
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+}
+
+@media (max-width: 1023.98px) {
+  html:has([data-pf-bottom-nav]) .pf-consent {
+    bottom: calc(64px + 30px + 12px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (min-width: 1024px) {
+  .pf-consent {
+    left: 24px;
+    right: auto;
+    bottom: 24px;
+    width: 400px;
+  }
+}
+
+/* Mobile nav drawer (mobile-nav-drawer.tsx): an iOS-style deceleration
+   curve, slower in than out, with the backdrop fading on the same timing.
+   Plain CSS because Tailwind can't generate arbitrary ease-[cubic-bezier()]
+   classes in this project (they're flagged as ambiguous). */
+.pf-drawer[data-state="open"],
+.pf-drawer-overlay[data-state="open"] {
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.pf-drawer[data-state="closed"],
+.pf-drawer-overlay[data-state="closed"] {
+  animation-duration: 260ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-drawer,
+  .pf-drawer-overlay {
+    animation-duration: 1ms !important;
+  }
+}
+
+/* Save (bookmark) button pop, Twitter-style: a quick squash then an
+   overshooting bounce, plus a soft accent ring bursting outward. Plain CSS
+   because Tailwind can't generate the custom easing here. */
+@keyframes pf-save-pop {
+  0% { transform: scale(1); }
+  20% { transform: scale(0.72); }
+  55% { transform: scale(1.28); }
+  75% { transform: scale(0.94); }
+  100% { transform: scale(1); }
+}
+
+@keyframes pf-save-burst {
+  0% { opacity: 0.55; transform: scale(0.4); }
+  100% { opacity: 0; transform: scale(1.9); }
+}
+
+.pf-save-pop {
+  animation: pf-save-pop 460ms cubic-bezier(0.17, 0.89, 0.32, 1.28);
+}
+
+.pf-save-burst {
+  position: absolute;
+  inset: -6px;
+  border-radius: 9999px;
+  border: 2px solid var(--pf-volt);
+  pointer-events: none;
+  animation: pf-save-burst 480ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-save-pop,
+  .pf-save-burst {
+    animation: none;
+  }
+  .pf-save-burst {
+    display: none;
+  }
+}
+
+/* Bigger invisible tap area for small icon buttons (no visual change).
+   Sized so neighbours with gap-4 between them don't overlap. */
+@layer utilities {
+  .pf-hit {
+    position: relative;
+  }
+  .pf-hit::after {
+    content: "";
+    position: absolute;
+    inset: -6px -8px;
+  }
+  .pf-hit-lg {
+    position: relative;
+  }
+  .pf-hit-lg::after {
+    content: "";
+    position: absolute;
+    inset: -10px;
+  }
+}
+
+/* ── Touch feedback, iOS style ────────────────────────────────────────────
+   Press: shrink a touch at once (iOS reacts on touch-down, not on release).
+   Release: spring back with a little settle. Written with :where() so it has
+   zero specificity: any component that sets its own transition or
+   active:scale keeps it, and this only fills the gaps. */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:where(button, [role="button"], a, summary, label, input, select) {
+  touch-action: manipulation; /* no double-tap-zoom delay */
+}
+
+:where(
+    button:not(:disabled):not([class*="inset-0"]):not(.pf-row):not(.pf-tab),
+    [role="button"]:not([aria-disabled="true"]),
+    a[class*="bg-[var(--pf-volt"]
+  ) {
+  transition:
+    scale 420ms cubic-bezier(0.25, 1.4, 0.4, 1),
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    opacity 150ms ease,
+    filter 150ms ease;
+}
+
+:where(
+    button:not(:disabled):not([class*="inset-0"]):not(.pf-row):not(.pf-tab),
+    [role="button"]:not([aria-disabled="true"]),
+    a[class*="bg-[var(--pf-volt"]
+  ):active {
+  scale: 0.96;
+  transition-duration: 90ms;
+  transition-timing-function: ease-out;
+}
+
+/* List rows (Settings): highlight the row like a UITableView cell instead of
+   shrinking it. */
+.pf-row {
+  transition: background-color 350ms ease;
+}
+.pf-row:active {
+  background-color: var(--pf-c-fill-1f1f1f);
+  transition-duration: 0ms;
+}
+
+/* Tab bar: the icon dips on press and gives a small bounce when its tab
+   becomes the current one (like SF Symbols' bounce effect). */
+.pf-tab svg {
+  transition: scale 380ms cubic-bezier(0.25, 1.4, 0.4, 1);
+}
+.pf-tab:active svg {
+  scale: 0.8;
+  transition-duration: 90ms;
+}
+.pf-tab[aria-current="page"] svg {
+  animation: pf-tab-bounce 420ms cubic-bezier(0.25, 1.4, 0.4, 1);
+}
+@keyframes pf-tab-bounce {
+  0% {
+    scale: 0.78;
+  }
+  100% {
+    scale: 1;
+  }
+}
+
+/* Bottom sheets (composer): slide up on the iOS sheet curve, backdrop fades. */
+.pf-sheet {
+  animation: pf-sheet-in 420ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.pf-sheet-backdrop {
+  animation: pf-fade-in 250ms ease-out;
+}
+@keyframes pf-sheet-in {
+  from {
+    translate: 0 100%;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+@keyframes pf-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(button, [role="button"], a):active,
+  .pf-tab:active svg {
+    scale: none;
+  }
+  .pf-tab[aria-current="page"] svg,
+  .pf-sheet,
+  .pf-sheet-backdrop {
+    animation: none;
   }
 }

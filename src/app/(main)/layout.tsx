@@ -33,13 +33,16 @@ export default async function Layout({
     },
   });
 
-  if (
-    account &&
-    (account.status === "SUSPENDED" || account.status === "BANNED")
-  ) {
+  // A timed suspension ends on its own once suspendedUntil has passed (the
+  // write checks in lib/rate-limit.ts use the same rule).
+  const isSuspended =
+    account?.status === "SUSPENDED" &&
+    (!account.suspendedUntil || account.suspendedUntil > new Date());
+
+  if (account && (isSuspended || account.status === "BANNED")) {
     return (
       <RestrictedAccountView
-        status={account.status}
+        status={account.status === "BANNED" ? "BANNED" : "SUSPENDED"}
         suspendedUntil={account.suspendedUntil?.toISOString() ?? null}
         hasPendingAppeal={account.appeals.length > 0}
       />

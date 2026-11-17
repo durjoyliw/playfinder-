@@ -67,13 +67,16 @@ export function BottomNav() {
 
   const linkClass = (active: boolean) =>
     cn(
-      "relative flex h-full min-h-12 w-full flex-1 items-center justify-center transition-colors active:scale-90",
-      active ? "text-[#a1c217]" : "text-[#7e8a7e]",
+      "pf-tab relative flex h-full min-h-12 w-full flex-1 items-center justify-center transition-colors",
+      active ? "text-[var(--pf-volt-text)]" : "text-[var(--pf-c-ink-7e8a7e)]",
     );
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-[100] flex h-[calc(64px+env(safe-area-inset-bottom,0px))] shrink-0 items-stretch border-t border-white/[0.05] bg-[rgba(8,9,10,0.95)] pb-[env(safe-area-inset-bottom,0px)] font-grotesk backdrop-blur-[24px]">
-      <div className="flex h-full w-full items-stretch">
+    <nav
+      data-pf-bottom-nav
+      className="fixed bottom-0 left-0 right-0 z-[var(--pf-z-nav)] flex h-[calc(64px+env(safe-area-inset-bottom,0px))] shrink-0 items-stretch border-t border-[rgb(var(--pf-contrast-rgb)/0.05)] bg-[rgb(var(--pf-c-fill-08090a-rgb)/0.95)] pb-[env(safe-area-inset-bottom,0px)] font-grotesk backdrop-blur-[24px]"
+    >
+      <div className="mx-auto flex h-full w-full max-w-md items-stretch">
         {navItems.slice(0, 2).map((item) => {
           const active = item.isActive(pathname);
           return (
@@ -94,8 +97,8 @@ export function BottomNav() {
           <CreateMenu>
             <button
               type="button"
-              className="-mt-[30px] grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[#A0CC00] text-black transition-transform active:scale-90"
-              style={{ boxShadow: "0 0 16px rgba(200,255,0,0.5)" }}
+              className="-mt-[30px] grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[var(--pf-volt-cta)] text-[var(--pf-on-accent)] transition-transform active:scale-90"
+              style={{ boxShadow: "0 4px 12px rgb(0 0 0 / 0.35)" }}
               aria-label="Create"
             >
               <Plus className="h-[26px] w-[26px]" strokeWidth={2.5} />
@@ -112,16 +115,14 @@ export function BottomNav() {
               href={item.href}
               className={linkClass(active)}
               aria-label={
-                showBadge
-                  ? `Notifications, ${unreadCount} unread`
-                  : item.label
+                showBadge ? `Notifications, ${unreadCount} unread` : item.label
               }
               aria-current={active ? "page" : undefined}
             >
               <span className="relative inline-flex">
                 <item.icon className="h-6 w-6 shrink-0" />
                 {showBadge && (
-                  <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full border-2 border-[#08090a] bg-[#a1c217] px-1 font-dm-mono text-[9px] font-bold text-[#0a0b0a]">
+                  <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full border-2 border-[var(--pf-c-line-08090a)] bg-[var(--pf-volt)] px-1 font-dm-mono text-[9px] font-bold text-[var(--pf-on-accent)]">
                     {unreadCount > 9 ? "9+" : unreadCount}
                   </span>
                 )}

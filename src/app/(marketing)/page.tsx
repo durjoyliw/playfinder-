@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "PlayFinder — Find your game in Glasgow",
+  title: "PlayFinder | Find a game in Glasgow",
   description:
     "The local sports network for Glasgow. Connect with players, post a game, and never miss a match again.",
 };

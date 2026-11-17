@@ -1,5 +1,6 @@
 "use client";
 
+import { DateOfBirthInput } from "@/components/date-of-birth-input";
 import LoadingButton from "@/components/LoadingButton";
 import { PasswordInput } from "@/components/PasswordInput";
 import {
@@ -28,6 +29,7 @@ export default function SignUpForm() {
       email: "",
       username: "",
       password: "",
+      birthDate: "",
     },
   });
 
@@ -78,6 +80,28 @@ export default function SignUpForm() {
               <FormControl>
                 <PasswordInput placeholder="Password" {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="birthDate"
+          render={({ field, fieldState }) => (
+            <FormItem>
+              <FormLabel>Date of birth</FormLabel>
+              <FormControl>
+                <DateOfBirthInput
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  invalid={!!fieldState.error}
+                />
+              </FormControl>
+              <p className="text-xs text-muted-foreground">
+                You must be 18 or over. We don’t show your birthday on your
+                profile.
+              </p>
               <FormMessage />
             </FormItem>
           )}

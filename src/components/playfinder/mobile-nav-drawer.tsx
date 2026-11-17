@@ -13,31 +13,57 @@ import { useUserSettings } from "@/hooks/use-user-settings";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  BadgeCheck,
+  Bookmark,
+  ChevronRight,
   LayoutGrid,
   LogOut,
   Menu,
+  MessageSquareText,
   Settings,
+  Users,
+  type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-/**
- * Verified tick is NOT wired to real data — User has no emailVerified /
- * phoneVerified field. Shown as a static badge for now (Phase 1).
- */
-function StaticVerifiedTick({ className }: { className?: string }) {
-  return (
-    <BadgeCheck
-      className={cn(
-        "h-[18px] w-[18px] shrink-0 fill-[#3B82F6] text-[#3B82F6]",
-        className,
-      )}
-      aria-label="Verified"
-    />
-  );
+interface DrawerLink {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+  isActive: (pathname: string) => boolean;
 }
+
+const DRAWER_LINKS: DrawerLink[] = [
+  {
+    href: "/pages",
+    label: "Pages",
+    icon: LayoutGrid,
+    isActive: (path) => path === "/pages" || path.startsWith("/pages/"),
+  },
+  {
+    href: "/teammates",
+    label: "Teammates",
+    icon: Users,
+    isActive: (path) => path.startsWith("/teammates"),
+  },
+  {
+    href: "/saved",
+    label: "Saved",
+    icon: Bookmark,
+    isActive: (path) => path.startsWith("/saved"),
+  },
+  {
+    href: "/settings",
+    label: "Settings",
+    icon: Settings,
+    isActive: (path) => path.startsWith("/settings"),
+  },
+];
+
+/** Shared row styling: generous tap target, quiet pressed state. */
+const rowBase =
+  "group flex min-h-[56px] w-full items-center gap-3.5 rounded-2xl px-3 text-left outline-none transition-[background-color,transform] duration-150 active:scale-[0.98] active:bg-[var(--pf-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--pf-volt)]";
 
 interface MobileNavDrawerProps {
   triggerClassName?: string;
@@ -62,19 +88,13 @@ export function MobileNavDrawer({ triggerClassName }: MobileNavDrawerProps) {
     logout();
   };
 
-  const rowClass = (active: boolean) =>
-    cn(
-      "flex min-h-[52px] items-center gap-3.5 rounded-full px-3.5 py-4 text-[16px] font-semibold transition-colors active:bg-[#131614]",
-      active ? "text-[#f2f5ef]" : "text-[#b4bcaf]",
-    );
-
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <button
           type="button"
           className={cn(
-            "relative grid h-10 w-10 shrink-0 place-items-center rounded-xl text-[#7e8a7e] transition-all active:scale-90 active:bg-[#131614]",
+            "relative grid h-10 w-10 shrink-0 place-items-center rounded-xl text-[var(--pf-text-3)] outline-none transition-all focus-visible:ring-2 focus-visible:ring-[var(--pf-volt)] active:scale-90 active:bg-[var(--pf-surface)]",
             triggerClassName,
           )}
           aria-label="Open menu"
@@ -85,79 +105,126 @@ export function MobileNavDrawer({ triggerClassName }: MobileNavDrawerProps) {
 
       <SheetContent
         side="left"
-        className="flex flex-col gap-0 p-5 pb-[calc(16px+env(safe-area-inset-bottom,0px))] font-grotesk"
+        overlayClassName="pf-drawer-overlay bg-black/60"
+        className="pf-drawer flex h-[100dvh] w-[84%] max-w-[320px] flex-col gap-0 rounded-r-[24px] border-r border-[var(--pf-border)] bg-[var(--pf-bg-2)] p-0 font-grotesk shadow-[8px_0_40px_rgba(0,0,0,0.5)] outline-none"
         aria-describedby={undefined}
+        // Radix focuses the first non-link control on open, which is Log out --
+        // Safari then draws its blue focus ring on it. Focus the panel instead.
+        onOpenAutoFocus={(e) => {
+          e.preventDefault();
+          (e.currentTarget as HTMLElement | null)?.focus();
+        }}
       >
         <SheetTitle className="sr-only">Account menu</SheetTitle>
 
-        <Link
-          href={profileHref}
-          onClick={close}
-          className="flex flex-col gap-2.5 rounded-2xl p-1 transition-colors active:bg-[#131614]"
-        >
-          <div className="flex items-center gap-3">
+        {/* Scrolls on very short screens; the footer below never moves. */}
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain px-3 pt-[calc(20px+env(safe-area-inset-top,0px))]">
+          <Link
+            href={profileHref}
+            onClick={close}
+            aria-label={`View your profile, ${displayName}`}
+            className={cn(rowBase, "items-start gap-3 py-3")}
+          >
             <UserAvatar
               avatarUrl={user.avatarUrl}
-              size={64}
-              className="h-16 w-16 rounded-full border-2 border-[#2a2f2a]"
+              size={56}
+              className="h-14 w-14 shrink-0 rounded-full border-2 border-[var(--pf-border)]"
             />
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1 pt-0.5">
               <div className="flex items-center gap-1.5">
-                <span className="truncate text-lg font-bold tracking-[-0.03em] text-[#f2f5ef]">
+                <span className="truncate text-[17px] font-bold leading-tight tracking-[-0.02em] text-[var(--pf-text)]">
                   {displayName}
                 </span>
-                <StaticVerifiedTick />
               </div>
-              <p className="mt-0.5 truncate text-[13px] text-[#7e8a7e]">
+              <p className="mt-0.5 truncate text-[13px] text-[var(--pf-text-3)]">
                 @{user.username}
               </p>
+              {bio && (
+                <p className="mt-1.5 line-clamp-2 text-[13px] leading-snug text-[var(--pf-text-2)]">
+                  {bio}
+                </p>
+              )}
             </div>
-          </div>
-          {bio && (
-            <p className="truncate text-[13px] leading-snug text-[#b4bcaf]">
-              {bio}
-            </p>
-          )}
-        </Link>
-
-        <div className="my-3 h-px bg-[#2a2f2a]" />
-
-        <nav className="flex flex-col gap-1.5" aria-label="Drawer links">
-          <Link
-            href="/pages"
-            onClick={close}
-            className={rowClass(
-              pathname === "/pages" || pathname.startsWith("/pages/"),
-            )}
-          >
-            <LayoutGrid className="h-[22px] w-[22px] shrink-0 text-[#7e8a7e]" />
-            Pages
+            <ChevronRight className="mt-4 h-4 w-4 shrink-0 text-[var(--pf-text-4)]" />
           </Link>
+
+          <div className="mx-3 my-3 h-px bg-[var(--pf-border)]" />
+
+          <nav className="flex flex-col gap-1" aria-label="Menu">
+            {DRAWER_LINKS.map(({ href, label, icon: Icon, isActive }) => {
+              const active = isActive(pathname);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={close}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(rowBase, active && "bg-[var(--pf-surface)]")}
+                >
+                  <span
+                    className={cn(
+                      "grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[var(--pf-surface-2)]",
+                      active
+                        ? "text-[var(--pf-volt-text)]"
+                        : "text-[var(--pf-text-2)]",
+                    )}
+                  >
+                    <Icon className="h-[19px] w-[19px]" />
+                  </span>
+                  <span
+                    className={cn(
+                      "flex-1 text-[15px] font-semibold",
+                      active
+                        ? "text-[var(--pf-text)]"
+                        : "text-[var(--pf-text-2)]",
+                    )}
+                  >
+                    {label}
+                  </span>
+                  <ChevronRight className="h-4 w-4 shrink-0 text-[var(--pf-text-4)]" />
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Beta feedback: always one tap away, and it remembers the page. */}
+        <div className="shrink-0 px-3">
           <Link
-            href="/settings"
+            href={`/settings/feedback?from=${encodeURIComponent(pathname)}`}
             onClick={close}
-            className={rowClass(pathname.startsWith("/settings"))}
+            className="flex items-center gap-3 rounded-2xl border border-[rgb(var(--pf-volt-rgb)/0.35)] bg-[rgb(var(--pf-volt-rgb)/0.08)] px-3 py-3 transition-colors hover:bg-[rgb(var(--pf-volt-rgb)/0.12)] active:scale-[0.98]"
           >
-            <Settings className="h-[22px] w-[22px] shrink-0 text-[#7e8a7e]" />
-            Settings
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[var(--pf-volt)] text-[var(--pf-on-accent)]">
+              <MessageSquareText className="h-[18px] w-[18px]" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[15px] font-semibold text-[var(--pf-text)]">
+                Send feedback
+              </span>
+              <span className="block truncate text-[12px] text-[var(--pf-text-3)]">
+                Found a bug or have an idea? Tell us.
+              </span>
+            </span>
           </Link>
-        </nav>
+        </div>
 
-        <div className="min-h-6 flex-1" aria-hidden />
-
-        <div className="flex flex-col gap-2.5">
-          <div className="flex items-baseline justify-between gap-2 px-3 font-dm-mono text-[10px] font-medium uppercase tracking-[0.08em] text-[#5a635a]">
+        {/* Pinned footer: version label, then Log out -- always visible. */}
+        <div className="shrink-0 px-3 pb-[calc(12px+env(safe-area-inset-bottom,0px))] pt-3">
+          <div className="flex items-baseline justify-between px-3 pb-3 text-[12px] font-medium text-[var(--pf-text-4)]">
             <span>PlayFinder</span>
-            <span className="normal-case tracking-[0.04em]">v0.1</span>
+            <span className="normal-case tracking-[0.04em]">v0.1 beta</span>
           </div>
-          <div className="h-px bg-[#2a2f2a]" />
+          <div className="mx-3 mb-2 h-px bg-[var(--pf-border)]" />
           <button
             type="button"
             onClick={handleLogout}
-            className="flex min-h-[52px] items-center gap-3.5 rounded-full px-3.5 py-4 text-[16px] font-semibold text-[#f87171] transition-colors active:bg-[#131614]"
+            className={cn(rowBase, "text-[#f87171]")}
           >
-            <LogOut className="h-[22px] w-[22px] shrink-0" />
-            Log out
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[rgba(248,113,113,0.1)]">
+              <LogOut className="h-[19px] w-[19px]" />
+            </span>
+            <span className="text-[15px] font-semibold">Log out</span>
           </button>
         </div>
       </SheetContent>

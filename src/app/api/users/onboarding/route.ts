@@ -1,7 +1,10 @@
 import { validateRequest } from "@/auth";
+import { BETA_CITY } from "@/lib/beta";
+import { needsBirthDate } from "@/lib/age";
 import prisma from "@/lib/prisma";
 import { completeOnboardingSchema } from "@/lib/validation";
 import { revalidatePath } from "next/cache";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
@@ -9,6 +12,22 @@ export async function POST(req: Request) {
 
     if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const limit = await rateLimit("profile", user.id);
+    if (!limit.ok) return tooManyRequests(limit);
+
+    // Age gate: a new account can't finish onboarding (and so can't reach
+    // the app) until a date of birth is on file.
+    const account = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: { birthDate: true, completedOnboarding: true },
+    });
+    if (!account || needsBirthDate(account)) {
+      return Response.json(
+        { error: "Confirm your date of birth first" },
+        { status: 403 },
+      );
     }
 
     const body = completeOnboardingSchema.parse(await req.json());
@@ -31,7 +50,7 @@ export async function POST(req: Request) {
       return tx.user.update({
         where: { id: user.id },
         data: {
-          location: body.location,
+          location: BETA_CITY ?? body.location,
           profileIntent: body.profileIntent,
           completedOnboarding: true,
         },

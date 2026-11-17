@@ -18,6 +18,7 @@ import {
 } from "@/lib/validation";
 import { PageRole, PageType } from "@prisma/client";
 import { cookies } from "next/headers";
+import { enforceRateLimit } from "@/lib/rate-limit";
 
 export async function setActingIdentity(
   identity: ActingIdentity,
@@ -29,6 +30,7 @@ export async function setActingIdentity(
     if (!user || user.id !== identity.id) {
       throw new Error("Unauthorized");
     }
+    await enforceRateLimit("acting-identity", user.id);
   } else {
     throw new Error("Invalid acting identity");
   }
@@ -104,6 +106,7 @@ export async function getActingIdentityState(): Promise<ActingIdentityState> {
 export async function followPage(pageId: string): Promise<void> {
   const { user } = await validateRequest();
   if (!user) throw new Error("Unauthorized");
+  await enforceRateLimit("follow", user.id);
 
   await prisma.pageFollow.upsert({
     where: {
@@ -117,6 +120,7 @@ export async function followPage(pageId: string): Promise<void> {
 export async function unfollowPage(pageId: string): Promise<void> {
   const { user } = await validateRequest();
   if (!user) throw new Error("Unauthorized");
+  await enforceRateLimit("follow", user.id);
 
   await prisma.pageFollow.deleteMany({
     where: { pageId, userId: user.id },
@@ -132,6 +136,7 @@ export async function checkPageHandle(
 ): Promise<{ available: boolean }> {
   const { user } = await validateRequest();
   if (!user) throw new Error("Unauthorized");
+  await enforceRateLimit("page-handle-check", user.id);
 
   const normalized = normalizeHandle(handle);
   if (
@@ -156,6 +161,7 @@ export async function createPage(
 ): Promise<{ handle: string }> {
   const { user } = await validateRequest();
   if (!user) throw new Error("Unauthorized");
+  await enforceRateLimit("page-create", user.id);
 
   const data = createPageSchema.parse(input);
 

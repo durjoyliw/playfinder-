@@ -1,3 +1,4 @@
+import { checkBirthDate } from "@/lib/age";
 import { isValidSportKey } from "@/lib/onboarding-sports";
 import { PostIntent, ProfileIntent, SkillLevel, Sport } from "@prisma/client";
 import { z } from "zod";
@@ -11,9 +12,58 @@ export const signUpSchema = z.object({
     "Only letters, numbers, - and _ allowed",
   ),
   password: requiredString.min(8, "Must be at least 8 characters"),
+  /** "YYYY-MM-DD"; must be a real date and 18+ (see src/lib/age.ts). */
+  birthDate: requiredString.superRefine((value, ctx) => {
+    const check = checkBirthDate(value);
+    if (!check.ok) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: check.message });
+    }
+  }),
 });
 
 export type SignUpValues = z.infer<typeof signUpSchema>;
+
+/** Shared 18+ date-of-birth field ("YYYY-MM-DD"). */
+const birthDateField = requiredString.superRefine((value, ctx) => {
+  const check = checkBirthDate(value);
+  if (!check.ok) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: check.message });
+  }
+});
+
+/** Beta join: just a name to call you by, plus the 18+ gate. */
+export const joinBetaSchema = z.object({
+  name: requiredString
+    .min(2, "At least 2 characters")
+    .max(40, "Keep it under 40 characters")
+    .refine(
+      (value) => !/[<>@/\\]|https?:|www\./i.test(value),
+      "Just a name please, no links or symbols",
+    ),
+  birthDate: birthDateField,
+  acceptTerms: z.literal(true, {
+    errorMap: () => ({ message: "Please accept the terms to continue" }),
+  }),
+});
+
+export type JoinBetaValues = z.infer<typeof joinBetaSchema>;
+
+/** Beta accounts adding a username + password so they can log in anywhere. */
+export const secureAccountSchema = z
+  .object({
+    username: requiredString
+      .min(3, "At least 3 characters")
+      .max(30, "At most 30 characters")
+      .regex(/^[a-zA-Z0-9_-]+$/, "Only letters, numbers, - and _ allowed"),
+    password: requiredString.min(8, "Must be at least 8 characters").max(128),
+    confirmPassword: requiredString,
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
+
+export type SecureAccountValues = z.infer<typeof secureAccountSchema>;
 
 export const loginSchema = z.object({
   username: requiredString,
@@ -23,7 +73,7 @@ export const loginSchema = z.object({
 export type LoginValues = z.infer<typeof loginSchema>;
 
 export const createPostSchema = z.object({
-  content: requiredString,
+  content: requiredString.max(5000, "Keep it under 5,000 characters"),
   mediaIds: z.array(z.string()).max(5, "Cannot have more than 5 attachments"),
 });
 
@@ -34,6 +84,8 @@ export const createBroadcastSchema = z
     location: requiredString.max(200),
     timeLabel: z.string().max(100).optional(),
     expiresAt: z.string().datetime().nullable().optional(),
+    /** Kick-off time (ISO). Drives when the listing expires. */
+    startsAt: z.string().datetime({ offset: true }).optional(),
     content: requiredString.max(280),
     slotsNeeded: z.number().int().min(1).max(10).nullable().optional(),
     visibility: z.enum(["PUBLIC", "TEAMMATES_ONLY"]).default("PUBLIC"),
@@ -51,6 +103,8 @@ export const createBroadcastSchema = z
   );
 
 export type CreateBroadcastValues = z.infer<typeof createBroadcastSchema>;
+/** What a client sends (visibility is optional; the server defaults it). */
+export type CreateBroadcastInput = z.input<typeof createBroadcastSchema>;
 
 export const updateUserProfileSchema = z.object({
   displayName: requiredString,
@@ -87,10 +141,14 @@ export type PatchUserProfileValues = z.infer<typeof patchUserProfileSchema>;
 
 const userSportEntrySchema = z.object({
   sport: z.string().refine(isValidSportKey, "Invalid sport"),
-  skillLevel: z.preprocess(
-    (value) => (value === "" ? null : value),
-    z.nativeEnum(SkillLevel).nullish(),
-  ),
+  // skillLevel is NOT NULL in the database. A sport added without a level
+  // (possible from the settings form) used to crash the write; default it.
+  skillLevel: z
+    .preprocess(
+      (value) => (value === "" ? null : value),
+      z.nativeEnum(SkillLevel).nullish(),
+    )
+    .transform((value) => value ?? SkillLevel.BEGINNER),
 });
 
 export const updateUserSportsSchema = z.object({
@@ -108,7 +166,7 @@ export const completeOnboardingSchema = z.object({
 export type CompleteOnboardingValues = z.infer<typeof completeOnboardingSchema>;
 
 export const createCommentSchema = z.object({
-  content: requiredString,
+  content: requiredString.max(1000, "Keep comments under 1,000 characters"),
 });
 
 export const PAGE_HANDLE_REGEX = /^[a-z0-9][a-z0-9_-]{1,29}$/;

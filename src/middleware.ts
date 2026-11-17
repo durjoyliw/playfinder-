@@ -1,6 +1,7 @@
+import { isValidAdminSession } from "@/lib/admin/session-token";
 import { NextRequest, NextResponse } from "next/server";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (!pathname.startsWith("/admin")) {
@@ -12,9 +13,8 @@ export function middleware(request: NextRequest) {
   }
 
   const session = request.cookies.get("admin_session")?.value;
-  const secret = process.env.ADMIN_SECRET;
 
-  if (!secret || session !== secret) {
+  if (!(await isValidAdminSession(session))) {
     return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 

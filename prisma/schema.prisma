@@ -25,6 +25,8 @@ model User {
   avatarUrl             String?
   bio                   String?
   location              String?
+  /// Date of birth (UTC midnight). Null for accounts created before the 18+ age gate.
+  birthDate             DateTime?
   profileIntent         ProfileIntent?
   completedOnboarding   Boolean                @default(false)
   role                  UserRole               @default(USER)
@@ -53,6 +55,7 @@ model User {
   createdPages            Page[]           @relation("PageCreator")
   pageMemberships         PageMembership[]
   pageFollows             PageFollow[]
+  feedback                Feedback[]
 
   createdAt DateTime @default(now())
 
@@ -538,4 +541,34 @@ model PageFollow {
 
   @@unique([pageId, userId])
   @@map("page_follows")
+}
+
+/// Fixed-window rate-limit counters (src/lib/rate-limit.ts). One row per
+/// bucket + subject (e.g. "comment:<userId>", "login-ip:<ip>"). Not linked to
+/// any other model; stale rows are pruned opportunistically.
+model RateLimit {
+  key         String   @id
+  count       Int      @default(0)
+  windowStart DateTime @default(now())
+
+  @@index([windowStart])
+  @@map("rate_limits")
+}
+
+/// Beta feedback sent from the app (Settings / menu → Send feedback).
+/// Deleted with the account, like the rest of a user's data.
+model Feedback {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message   String
+  /// The in-app path the person came from, e.g. "/discover".
+  page      String?
+  userAgent String?
+  /// NEW or DONE (admin triage).
+  status    String   @default("NEW")
+  createdAt DateTime @default(now())
+
+  @@index([status, createdAt])
+  @@map("feedback")
 }

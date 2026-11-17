@@ -1,8 +1,7 @@
 "use client";
 
-import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
-import { Camera, ImageIcon, Loader2, Mic, Send } from "lucide-react";
+import { Camera, ImageIcon, Loader2, Send } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useChannelStateContext } from "stream-chat-react";
 import { useSession } from "../SessionProvider";
@@ -13,7 +12,6 @@ const MAX_TEXTAREA_LINES = 4;
 const LINE_HEIGHT_PX = 22;
 
 export default function ChatInput() {
-  const { toast } = useToast();
   const { user } = useSession();
   const { draft, clearDraft } = usePendingDmDraft();
   const { channel } = useChannelStateContext();
@@ -148,9 +146,9 @@ export default function ChatInput() {
 
   if (inputLocked) {
     return (
-      <div className="bg-[#0d0d0d] px-4 py-3">
-        <p className="w-full text-center text-sm text-[#888888]">
-          Request sent — waiting for a reply
+      <div className="bg-[var(--pf-bg)] px-4 py-3">
+        <p className="w-full text-center text-sm text-[var(--pf-c-ink-888888)]">
+          Request sent. Waiting for a reply.
         </p>
       </div>
     );
@@ -159,7 +157,7 @@ export default function ChatInput() {
   const hasText = text.trim().length > 0;
 
   return (
-    <div className="bg-[#0d0d0d] px-3 py-2.5">
+    <div className="bg-[var(--pf-bg)] px-3 py-2.5">
       <div className="flex items-end gap-2">
         <input
           ref={cameraInputRef}
@@ -198,15 +196,6 @@ export default function ChatInput() {
           >
             <ImageIcon className="h-5 w-5" />
           </IconButton>
-          <IconButton
-            label="Voice note"
-            onClick={() =>
-              toast({ description: "Voice notes coming soon" })
-            }
-            disabled={isSending}
-          >
-            <Mic className="h-5 w-5" />
-          </IconButton>
         </div>
 
         <textarea
@@ -217,7 +206,7 @@ export default function ChatInput() {
           onKeyDown={handleKeyDown}
           onBlur={() => channel.stopTyping().catch(() => {})}
           placeholder="Message..."
-          className="max-h-[108px] min-w-0 flex-1 resize-none rounded-full border-none bg-[#1a1a1a] px-4 py-2.5 text-sm leading-[22px] text-white outline-none placeholder:text-[#888888] focus:ring-0"
+          className="max-h-[108px] min-w-0 flex-1 resize-none rounded-full border-none bg-[var(--pf-c-fill-1a1a1a)] px-4 py-2.5 text-base leading-[22px] lg:text-sm text-[var(--pf-c-ink-ffffff)] outline-none placeholder:text-[var(--pf-c-ink-888888)] focus:ring-0"
         />
 
         {hasText ? (
@@ -225,7 +214,7 @@ export default function ChatInput() {
             type="button"
             onClick={sendText}
             disabled={isSending}
-            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#A1C217] text-black transition-colors hover:bg-[#aac62e] disabled:opacity-50"
+            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[var(--pf-volt)] text-[var(--pf-on-accent)] transition-colors hover:bg-[var(--pf-volt-hover)] disabled:opacity-50"
             aria-label="Send message"
           >
             {isSending ? (
@@ -239,7 +228,7 @@ export default function ChatInput() {
             type="button"
             onClick={sendFistBump}
             disabled={isSending}
-            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#A1C217] text-xl transition-colors hover:bg-[#aac62e] disabled:opacity-50"
+            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[var(--pf-volt)] text-xl transition-colors hover:bg-[var(--pf-volt-hover)] disabled:opacity-50"
             aria-label="Send fist bump"
           >
             {isSending ? (
@@ -272,7 +261,7 @@ function IconButton({
       disabled={disabled}
       aria-label={label}
       className={cn(
-        "flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-[#888888] transition-colors hover:text-white disabled:opacity-50",
+        "flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-[var(--pf-c-ink-888888)] transition-colors hover:text-[var(--pf-c-ink-ffffff)] disabled:opacity-50",
       )}
     >
       {children}

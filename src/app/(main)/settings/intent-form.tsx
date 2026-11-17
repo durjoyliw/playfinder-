@@ -52,7 +52,7 @@ export function IntentForm() {
 
   return (
     <SettingsSubpageLayout title="Intent Status">
-      <div className="space-y-4 rounded-xl bg-[#161616] p-4">
+      <div className="space-y-4 rounded-xl bg-[var(--pf-c-fill-161616)] p-4 pf-card">
         <p className="text-xs text-muted-foreground">
           Let others know what you&apos;re looking for on PlayFinder.
         </p>

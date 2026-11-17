@@ -57,16 +57,16 @@ export default function Page() {
   }
 
   return (
-    <div className="min-h-full bg-[#0d0d0d] pb-8">
-      <PageBackHeader title="Blocked Accounts" />
+    <div className="min-h-full bg-[var(--pf-bg)] pb-8">
+      <PageBackHeader title="Blocked Accounts" backHref="/settings" />
 
       {blocks === null ? (
         <div className="px-4 pt-6">
-          <p className="text-sm text-[#888888]">Loading…</p>
+          <p className="text-sm text-[var(--pf-c-ink-888888)]">Loading…</p>
         </div>
       ) : blockedUsers.length === 0 ? (
         <div className="px-4 pt-6">
-          <p className="text-sm text-[#888888]">
+          <p className="text-sm text-[var(--pf-c-ink-888888)]">
             You haven&apos;t blocked anyone
           </p>
         </div>
@@ -76,10 +76,10 @@ export default function Page() {
             {blockedUsers.map((b) => (
               <div
                 key={b.id}
-                className="flex items-center justify-between gap-3 rounded-2xl border border-[#1f1f1f] bg-[#121212] px-4 py-3"
+                className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--pf-c-line-1f1f1f)] bg-[var(--pf-c-fill-121212)] px-4 py-3"
               >
                 <div className="flex min-w-0 items-center gap-3">
-                  <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-sm font-bold text-black">
+                  <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-sm font-bold text-[var(--pf-on-accent)]">
                     {b.blocked.avatarUrl ? (
                       <img
                         src={b.blocked.avatarUrl}
@@ -92,10 +92,10 @@ export default function Page() {
                   </div>
 
                   <div className="min-w-0">
-                    <p className="truncate font-semibold text-white">
+                    <p className="truncate font-semibold text-[var(--pf-c-ink-ffffff)]">
                       {b.blocked.displayName}
                     </p>
-                    <p className="truncate text-sm text-[#888888]">
+                    <p className="truncate text-sm text-[var(--pf-c-ink-888888)]">
                       @{b.blocked.username}
                     </p>
                   </div>
@@ -107,8 +107,8 @@ export default function Page() {
                   className="flex-shrink-0"
                   style={{
                     background: "transparent",
-                    border: "1px solid #2a2a2a",
-                    color: "#f0f0f0",
+                    border: "1px solid var(--pf-c-line-2a2a2a)",
+                    color: "var(--pf-c-ink-f0f0f0)",
                     borderRadius: 20,
                     padding: "6px 16px",
                     fontSize: 14,

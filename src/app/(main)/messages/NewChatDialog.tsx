@@ -3,7 +3,9 @@
 import { useToast } from "@/components/ui/use-toast";
 import useDebounce from "@/hooks/useDebounce";
 import kyInstance from "@/lib/ky";
+import { openOrRequestDm } from "./open-dm";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { HTTPError } from "ky";
 import { ArrowLeft, Check, Loader2, Search, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -56,15 +58,20 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
 
   const startChatMutation = useMutation({
     mutationFn: async (recipient: SearchUser) => {
-      await kyInstance.post("/api/messages/prepare-dm", {
-        json: { recipientId: recipient.id },
+      // Same path as a profile's Message button: teammates get a chat,
+      // everyone else gets a message request.
+      const result = await openOrRequestDm({
+        client,
+        currentUserId: loggedInUser.id,
+        targetUserId: recipient.id,
       });
-
-      const channel = client.channel("messaging", {
-        members: [loggedInUser.id, recipient.id],
-      });
-      await channel.watch();
-      return channel;
+      if (result.type === "blocked") {
+        throw new Error("You can't message this player.");
+      }
+      if (result.type !== "channel") {
+        throw new Error("Could not start chat. Please try again.");
+      }
+      return result.channel;
     },
     onSuccess: (channel) => {
       onOpenChange(false);
@@ -72,24 +79,40 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
         router.push(`/messages/${encodeURIComponent(channel.id)}`);
       }
     },
-    onError() {
+    onError(error) {
       toast({
         variant: "destructive",
-        description: "Could not start chat. Please try again.",
+        description:
+          error instanceof Error && error.message
+            ? error.message
+            : "Could not start chat. Please try again.",
       });
     },
   });
 
   const createGroupMutation = useMutation({
     mutationFn: async () => {
-      const res = await kyInstance
-        .post("/api/messages/prepare-group", {
-          json: {
-            memberIds: selected.map((s) => s.id),
-            name: groupName.trim() || undefined,
-          },
-        })
-        .json<{ channelId?: string; error?: string }>();
+      let res: { channelId?: string; error?: string };
+      try {
+        res = await kyInstance
+          .post("/api/messages/prepare-group", {
+            json: {
+              memberIds: selected.map((s) => s.id),
+              name: groupName.trim() || undefined,
+            },
+          })
+          .json<{ channelId?: string; error?: string }>();
+      } catch (error) {
+        // Surface the server's reason (e.g. "Groups can only include your
+        // teammates") instead of ky's "Request failed with status 403".
+        if (error instanceof HTTPError) {
+          const body = (await error.response.json().catch(() => null)) as {
+            error?: string;
+          } | null;
+          throw new Error(body?.error ?? "Could not create group.");
+        }
+        throw error;
+      }
 
       if (!res.channelId)
         throw new Error(res.error ?? "Failed to create group");
@@ -139,20 +162,20 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
         aria-label="Close"
         onClick={() => onOpenChange(false)}
       />
-      <div className="relative z-10 w-full max-w-[400px] rounded-2xl bg-[#161616] p-5 shadow-xl">
+      <div className="pf-card relative z-10 w-full max-w-[400px] rounded-2xl bg-[var(--pf-c-fill-161616)] p-5 shadow-xl">
         {step === "select" ? (
           <>
             <div className="mb-4 flex items-center justify-between">
               <h2
                 id="new-message-title"
-                className="text-lg font-bold text-white"
+                className="text-lg font-bold text-[var(--pf-c-ink-ffffff)]"
               >
                 New Message
               </h2>
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}
-                className="rounded-full p-1 text-[#888888] hover:bg-[#1a1a1a] hover:text-white"
+                className="rounded-full p-1 text-[var(--pf-c-ink-888888)] hover:bg-[var(--pf-c-fill-1a1a1a)] hover:text-[var(--pf-c-ink-ffffff)]"
                 aria-label="Close"
               >
                 <X className="h-5 w-5" />
@@ -166,9 +189,9 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
                     key={s.id}
                     type="button"
                     onClick={() => toggleSelected(s)}
-                    className="flex items-center gap-1.5 rounded-full bg-[#A1C217]/15 py-1 pl-1 pr-2.5 text-xs font-semibold text-[#A1C217]"
+                    className="flex items-center gap-1.5 rounded-full bg-[rgb(var(--pf-volt-rgb)/0.15)] py-1 pl-1 pr-2.5 text-xs font-semibold text-[var(--pf-volt-text)]"
                   >
-                    <span className="flex h-5 w-5 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-[9px] font-bold text-black">
+                    <span className="flex h-5 w-5 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-[9px] font-bold text-[var(--pf-on-accent)]">
                       {s.avatarUrl ? (
                         <img
                           src={s.avatarUrl}
@@ -187,26 +210,26 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
             )}
 
             <div className="relative mb-4">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#888888]" />
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--pf-c-ink-888888)]" />
               <input
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="Search players..."
-                className="w-full rounded-full bg-[#1a1a1a] py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-[#888888] focus:outline-none"
+                className="w-full rounded-full bg-[var(--pf-c-fill-1a1a1a)] py-2.5 pl-10 pr-4 text-base text-[var(--pf-c-ink-ffffff)] placeholder:text-[var(--pf-c-ink-888888)] focus:outline-none lg:text-sm"
                 autoFocus
               />
             </div>
 
             <div className="max-h-72 overflow-y-auto overflow-x-hidden">
               {!searchDebounced.trim() && (
-                <p className="py-6 text-center text-sm text-[#888888]">
+                <p className="py-6 text-center text-sm text-[var(--pf-c-ink-888888)]">
                   Type a name to find players. Pick more than one to start a
                   group.
                 </p>
               )}
               {isFetching && (
                 <div className="flex justify-center py-8">
-                  <Loader2 className="h-6 w-6 animate-spin text-[#A1C217]" />
+                  <Loader2 className="h-6 w-6 animate-spin text-[var(--pf-volt-text)]" />
                 </div>
               )}
               {isError && (
@@ -221,9 +244,9 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
                     key={player.id}
                     type="button"
                     onClick={() => toggleSelected(player)}
-                    className="flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-left transition-colors hover:bg-[#1a1a1a]"
+                    className="flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-left transition-colors hover:bg-[var(--pf-c-fill-1a1a1a)]"
                   >
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-xs font-bold text-black">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-xs font-bold text-[var(--pf-on-accent)]">
                       {player.avatarUrl ? (
                         <img
                           src={player.avatarUrl}
@@ -235,27 +258,29 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
                       )}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate font-bold text-white">
+                      <p className="truncate font-bold text-[var(--pf-c-ink-ffffff)]">
                         {player.displayName}
                       </p>
-                      <p className="truncate text-sm text-[#888888]">
+                      <p className="truncate text-sm text-[var(--pf-c-ink-888888)]">
                         @{player.username}
                       </p>
                     </div>
                     <span
                       className={`flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border-2 ${
                         isSelected
-                          ? "border-[#A1C217] bg-[#A1C217]"
-                          : "border-[#444]"
+                          ? "border-[var(--pf-volt)] bg-[var(--pf-volt)]"
+                          : "border-[var(--pf-c-line-444444)]"
                       }`}
                     >
-                      {isSelected && <Check className="h-3 w-3 text-black" />}
+                      {isSelected && (
+                        <Check className="h-3 w-3 text-[var(--pf-on-accent)]" />
+                      )}
                     </span>
                   </button>
                 );
               })}
               {searchDebounced && !isFetching && data?.length === 0 && (
-                <p className="py-6 text-center text-sm text-[#888888]">
+                <p className="py-6 text-center text-sm text-[var(--pf-c-ink-888888)]">
                   No players found
                 </p>
               )}
@@ -265,7 +290,7 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
               type="button"
               disabled={selected.length === 0 || isPending}
               onClick={handlePrimaryAction}
-              className="mt-4 w-full rounded-full bg-[#A1C217] py-3 text-sm font-bold text-black transition-opacity disabled:opacity-40"
+              className="mt-4 w-full rounded-full bg-[var(--pf-volt)] py-3 text-sm font-bold text-[var(--pf-on-accent)] transition-opacity disabled:opacity-40"
             >
               {isPending ? (
                 <Loader2 className="mx-auto h-4 w-4 animate-spin" />
@@ -282,24 +307,26 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
               <button
                 type="button"
                 onClick={() => setStep("select")}
-                className="rounded-full p-1 text-[#888888] hover:bg-[#1a1a1a] hover:text-white"
+                className="rounded-full p-1 text-[var(--pf-c-ink-888888)] hover:bg-[var(--pf-c-fill-1a1a1a)] hover:text-[var(--pf-c-ink-ffffff)]"
                 aria-label="Back"
               >
                 <ArrowLeft className="h-5 w-5" />
               </button>
-              <h2 className="text-lg font-bold text-white">New Group</h2>
+              <h2 className="text-lg font-bold text-[var(--pf-c-ink-ffffff)]">
+                New Group
+              </h2>
             </div>
 
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[#888888]">
+            <p className="mb-2 text-xs font-semibold text-[var(--pf-c-ink-888888)]">
               {selected.length} people
             </p>
             <div className="mb-4 flex flex-wrap gap-1.5">
               {selected.map((s) => (
                 <span
                   key={s.id}
-                  className="flex items-center gap-1.5 rounded-full bg-[#1a1a1a] py-1 pl-1 pr-2.5 text-xs font-semibold text-white"
+                  className="flex items-center gap-1.5 rounded-full bg-[var(--pf-c-fill-1a1a1a)] py-1 pl-1 pr-2.5 text-xs font-semibold text-[var(--pf-c-ink-ffffff)]"
                 >
-                  <span className="flex h-5 w-5 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-[9px] font-bold text-black">
+                  <span className="flex h-5 w-5 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-[9px] font-bold text-[var(--pf-on-accent)]">
                     {s.avatarUrl ? (
                       <img
                         src={s.avatarUrl}
@@ -317,7 +344,7 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
 
             <label
               htmlFor="group-name"
-              className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[#888888]"
+              className="mb-1.5 block text-xs font-semibold text-[var(--pf-c-ink-888888)]"
             >
               Group name (optional)
             </label>
@@ -326,7 +353,7 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
               value={groupName}
               onChange={(e) => setGroupName(e.target.value)}
               placeholder={selected.map((s) => s.displayName).join(", ")}
-              className="mb-4 w-full rounded-xl bg-[#1a1a1a] px-4 py-2.5 text-sm text-white placeholder:text-[#666] focus:outline-none"
+              className="pf-card mb-4 w-full rounded-xl bg-[var(--pf-c-fill-1a1a1a)] px-4 py-2.5 text-base text-[var(--pf-c-ink-ffffff)] placeholder:text-[var(--pf-c-ink-666666)] focus:outline-none lg:text-sm"
               autoFocus
             />
 
@@ -334,7 +361,7 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
               type="button"
               disabled={isPending}
               onClick={() => createGroupMutation.mutate()}
-              className="w-full rounded-full bg-[#A1C217] py-3 text-sm font-bold text-black transition-opacity disabled:opacity-40"
+              className="w-full rounded-full bg-[var(--pf-volt)] py-3 text-sm font-bold text-[var(--pf-on-accent)] transition-opacity disabled:opacity-40"
             >
               {isPending ? (
                 <Loader2 className="mx-auto h-4 w-4 animate-spin" />

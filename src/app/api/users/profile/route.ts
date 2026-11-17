@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { BETA_CITY } from "@/lib/beta";
 import prisma from "@/lib/prisma";
 import type { UserSettingsData } from "@/lib/settings";
 import streamServerClient from "@/lib/stream";
@@ -8,6 +9,7 @@ import {
 } from "@/lib/validation";
 import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 const userProfileSelect = {
   username: true,
@@ -16,6 +18,8 @@ const userProfileSelect = {
   location: true,
   profileIntent: true,
   email: true,
+  passwordHash: true,
+  googleId: true,
   sports: {
     select: {
       sport: true,
@@ -35,15 +39,8 @@ export async function GET() {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const dbUser = await prisma.user.findFirst({
-      where: {
-        OR: [
-          { id: sessionUser.id },
-          ...(sessionUser.email
-            ? [{ email: sessionUser.email }]
-            : []),
-        ],
-      },
+    const dbUser = await prisma.user.findUnique({
+      where: { id: sessionUser.id },
       select: userProfileSelect,
     });
 
@@ -59,6 +56,9 @@ export async function GET() {
       profileIntent: dbUser.profileIntent,
       email: dbUser.email,
       sports: dbUser.sports,
+      // Only booleans leave the server; never the hash or Google id.
+      hasPassword: dbUser.passwordHash !== null,
+      hasGoogle: dbUser.googleId !== null,
     };
 
     return Response.json(data);
@@ -76,6 +76,9 @@ export async function PATCH(req: Request) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const limit = await rateLimit("profile", user.id);
+    if (!limit.ok) return tooManyRequests(limit);
+
     const body = patchUserProfileSchema.parse(await req.json());
 
     const updatedUser = await prisma.$transaction(async (tx) => {
@@ -87,7 +90,7 @@ export async function PATCH(req: Request) {
           }),
           ...(body.bio !== undefined && { bio: body.bio || null }),
           ...(body.location !== undefined && {
-            location: body.location || null,
+            location: BETA_CITY ?? (body.location || null),
           }),
           ...(body.profileIntent !== undefined && {
             profileIntent: body.profileIntent,
@@ -116,6 +119,8 @@ export async function PATCH(req: Request) {
       profileIntent: updatedUser.profileIntent,
       email: updatedUser.email,
       sports: updatedUser.sports,
+      hasPassword: updatedUser.passwordHash !== null,
+      hasGoogle: updatedUser.googleId !== null,
     };
 
     revalidatePath(`/users/${updatedUser.username}`);
@@ -135,6 +140,9 @@ export async function PUT(req: Request) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const limit = await rateLimit("profile", user.id);
+    if (!limit.ok) return tooManyRequests(limit);
+
     const { sports } = updateUserSportsSchema.parse(await req.json());
 
     await prisma.$transaction([
@@ -147,7 +155,7 @@ export async function PUT(req: Request) {
               data: sports.map((entry) => ({
                 userId: user.id,
                 sport: entry.sport,
-                skillLevel: entry.skillLevel ?? null,
+                skillLevel: entry.skillLevel,
               })),
             }),
           ]
@@ -171,6 +179,9 @@ export async function PUT(req: Request) {
       profileIntent: dbUser.profileIntent,
       email: dbUser.email,
       sports: dbUser.sports,
+      // Only booleans leave the server; never the hash or Google id.
+      hasPassword: dbUser.passwordHash !== null,
+      hasGoogle: dbUser.googleId !== null,
     };
 
     revalidatePath(`/users/${dbUser.username}`);

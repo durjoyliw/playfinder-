@@ -1,4 +1,5 @@
-import type { Channel, FormatMessageResponse, UserResponse } from "stream-chat";
+import type { Channel, UserResponse } from "stream-chat";
+import type { StreamMessage } from "stream-chat-react";
 import {
   format,
   formatDistanceToNowStrict,
@@ -182,8 +183,8 @@ export function isSameDay(a: Date | string, b: Date | string): boolean {
 }
 
 export function isConsecutiveMessage(
-  prev: FormatMessageResponse | undefined,
-  curr: FormatMessageResponse,
+  prev: StreamMessage | undefined,
+  curr: StreamMessage,
 ): boolean {
   if (!prev) return false;
   return (

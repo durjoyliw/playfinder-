@@ -91,12 +91,15 @@ export const ONBOARDING_SPORTS: OnboardingSport[] = [
   { id: "padel", name: "Padel", emoji: "🎾" },
 ];
 
+// Football first: five-a-side is the core use case in Glasgow.
 export const POPULAR_SPORT_IDS = [
+  "football",
+  "padel",
+  "badminton",
   "tennis",
-  "gym",
-  "running",
   "basketball",
-  "swimming",
+  "running",
+  "gym",
 ] as const;
 
 const sportById = new Map(ONBOARDING_SPORTS.map((s) => [s.id, s]));

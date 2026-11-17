@@ -1,6 +1,15 @@
+import { ConsentedAnalytics } from "@/components/consented-analytics";
+import { CookieConsentBanner } from "@/components/cookie-consent-banner";
 import { Toaster } from "@/components/ui/toaster";
+import {
+  ACCENT_COOKIE,
+  THEME_COOKIE,
+  parseAccent,
+  parseTheme,
+} from "@/lib/appearance";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { cookies } from "next/headers";
 import { ThemeProvider } from "next-themes";
 import { DM_Mono, Space_Grotesk } from "next/font/google";
 import localFont from "next/font/local";
@@ -33,6 +42,25 @@ export const metadata: Metadata = {
     default: "PlayFinder",
   },
   description: "Find players and games near you",
+  applicationName: "PlayFinder",
+  icons: {
+    icon: [{ url: "/icon-192.png", sizes: "192x192", type: "image/png" }],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
+  appleWebApp: {
+    capable: true,
+    title: "PlayFinder",
+    statusBarStyle: "black-translucent",
+  },
+};
+
+// `viewport-fit=cover` lets iOS report real safe-area insets, so the
+// env(safe-area-inset-*) padding on the header, bottom nav and drawer works.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#08090a",
 };
 
 export default function RootLayout({
@@ -40,8 +68,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Appearance is rendered server-side from cookies so the first paint is
+  // already in the chosen theme (no flash). Defaults = Noir + Volt.
+  const cookieStore = cookies();
+  const theme = parseTheme(cookieStore.get(THEME_COOKIE)?.value);
+  const accent = parseAccent(cookieStore.get(ACCENT_COOKIE)?.value);
+
   return (
-    <html lang="en">
+    <html lang="en" data-theme={theme} data-accent={accent}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${dmMono.variable} font-grotesk antialiased`}
       >
@@ -57,6 +91,8 @@ export default function RootLayout({
           </ThemeProvider>
         </ReactQueryProvider>
         <Toaster />
+        <CookieConsentBanner />
+        <ConsentedAnalytics />
       </body>
     </html>
   );

@@ -1,7 +1,7 @@
 "use client";
 
+import { EmptyState } from "@/components/system/empty-state";
 import InfiniteScrollContainer from "@/components/InfiniteScrollContainer";
-import { SlidingPillTabs } from "@/components/playfinder/sliding-pill-tabs";
 import PostsLoadingSkeleton from "@/components/posts/PostsLoadingSkeleton";
 import kyInstance from "@/lib/ky";
 import { NotificationsPage } from "@/lib/types";
@@ -10,20 +10,13 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Bell, Loader2 } from "lucide-react";
+import { useEffect } from "react";
 import Notification from "./Notification";
 
-type NotificationsFilterTab = "all" | "mentions";
-
-const FILTER_TABS = [
-  { id: "all" as const, label: "All" },
-  { id: "mentions" as const, label: "Mentions" },
-];
+// The Mentions tab is hidden until @-mentions exist (it was an empty stub).
 
 export default function Notifications() {
-  const [filterTab, setFilterTab] = useState<NotificationsFilterTab>("all");
-
   const {
     data,
     fetchNextPage,
@@ -66,18 +59,7 @@ export default function Notifications() {
 
   return (
     <div className="font-grotesk">
-      <div className="-mx-4">
-        <SlidingPillTabs
-          tabs={FILTER_TABS}
-          activeId={filterTab}
-          onTabChange={setFilterTab}
-          ariaLabel="Notification filter"
-        />
-      </div>
-
-      {filterTab === "mentions" ? (
-        <MentionsEmptyStub />
-      ) : (
+      <div className="pt-2">
         <AllNotificationsList
           notifications={notifications}
           status={status}
@@ -86,24 +68,7 @@ export default function Notifications() {
           isFetchingNextPage={isFetchingNextPage}
           fetchNextPage={fetchNextPage}
         />
-      )}
-    </div>
-  );
-}
-
-/**
- * Mentions is NOT wired to real data — NotificationType has no MENTION
- * (or tag) value. Empty stub only until a mention type ships.
- */
-function MentionsEmptyStub() {
-  return (
-    <div className="flex flex-col items-center px-4 py-16 text-center">
-      <p className="text-[15px] font-semibold tracking-[-0.02em] text-[#f2f5ef]">
-        No mentions yet
-      </p>
-      <p className="mt-2 max-w-[260px] text-[13px] leading-relaxed text-[#7e8a7e]">
-        When someone mentions you, it will show up here.
-      </p>
+      </div>
     </div>
   );
 }
@@ -129,9 +94,12 @@ function AllNotificationsList({
 
   if (status === "success" && !notifications.length && !hasNextPage) {
     return (
-      <p className="py-8 text-center text-[#7e8a7e]">
-        You don&apos;t have any notifications yet.
-      </p>
+      <EmptyState
+        icon={Bell}
+        title="No notifications yet"
+        body="When someone wants to join your game, accepts you, or comments on your post, it lands here."
+        action={{ href: "/home", label: "Find a game" }}
+      />
     );
   }
 

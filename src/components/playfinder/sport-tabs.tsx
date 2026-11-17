@@ -25,13 +25,16 @@ export function SportTabs({ tabs, activeTab, onTabChange }: SportTabsProps) {
         role="tablist"
         aria-label="Filter by sport"
         onMouseDown={onMouseDown}
-        className="flex select-none gap-[7px] overflow-x-auto px-4 pb-3.5 pt-2.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden cursor-grab active:cursor-grabbing"
+        className="flex cursor-grab select-none gap-[7px] overflow-x-auto px-4 pb-3.5 pt-2.5 [-ms-overflow-style:none] [scrollbar-width:none] active:cursor-grabbing [&::-webkit-scrollbar]:hidden"
       >
         {tabs.map((sport) => {
           const isActive = activeTab === sport.id;
           const SportIcon = getSportIcon(sport.id);
-          const chipColour =
-            sport.id === "all" ? "#a1c217" : getSportColour(sport.id);
+          // "All" follows the accent; sport chips keep their own fixed colours.
+          const isAllChip = sport.id === "all";
+          const chipColour = isAllChip
+            ? "var(--pf-volt)"
+            : getSportColour(sport.id);
 
           return (
             <button
@@ -44,19 +47,17 @@ export function SportTabs({ tabs, activeTab, onTabChange }: SportTabsProps) {
                 onTabChange(sport.id);
               }}
               className={cn(
-                "flex min-h-[34px] shrink-0 items-center gap-[5px] whitespace-nowrap rounded-full border px-[13px] py-2 text-xs font-semibold transition-all duration-200 ease-[cubic-bezier(.2,.8,.2,1)] active:scale-95",
+                "ease-[cubic-bezier(.2,.8,.2,1)] flex min-h-[34px] shrink-0 items-center gap-[5px] whitespace-nowrap rounded-full border px-[13px] py-2 text-xs font-semibold transition-all duration-200 active:scale-95",
                 isActive
-                  ? "border-transparent text-[#0a0b0a]"
-                  : "border-[#2a2f2a] bg-[#131614] text-[#7e8a7e] hover:-translate-y-0.5 hover:border-[#353c34]",
+                  ? cn(
+                      "border-transparent",
+                      isAllChip
+                        ? "text-[var(--pf-on-accent)]"
+                        : "text-[#0a0b0a]",
+                    )
+                  : "border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-7e8a7e)] hover:-translate-y-0.5 hover:border-[var(--pf-c-line-353c34)]",
               )}
-              style={
-                isActive
-                  ? {
-                      background: chipColour,
-                      boxShadow: `0 2px 12px ${chipColour}4d`,
-                    }
-                  : undefined
-              }
+              style={isActive ? { background: chipColour } : undefined}
             >
               {sport.id === "all" ? (
                 <Zap className="h-[15px] w-[15px]" />

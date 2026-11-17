@@ -5,19 +5,15 @@ import { useCallback, useEffect, useState } from "react";
 
 const ANIMATIONS = [
   [
-    "/animations/Badminton_Player_Character3.json",
     "/animation/Badminton_Player_Character3.json",
   ],
   [
-    "/animations/Soccer%20player%20kicking%20ball.json",
     "/animation/Soccer%20player%20kicking%20ball.json",
   ],
   [
-    "/animations/Volley_Ball_Player_Character1.json",
     "/animation/Volley_Ball_Player_Character1.json",
   ],
   [
-    "/animations/Volley_Ball_Player_Character3.json",
     "/animation/Volley_Ball_Player_Character3.json",
   ],
 ] as const;
@@ -74,7 +70,7 @@ export function SignupAnimationPanel() {
 
   return (
     <div
-      className="hidden h-full w-1/2 flex-col items-center justify-center bg-[#0d0d0d] md:flex"
+      className="hidden h-full w-1/2 flex-col items-center justify-center bg-[var(--pf-c-fill-0d0d0d)] md:flex"
       style={{ minHeight: "100%" }}
     >
       <div

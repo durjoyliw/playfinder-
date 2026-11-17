@@ -142,9 +142,9 @@ function filterEditSports(query: string) {
 const levelPillBaseClass =
   "rounded-[20px] border px-[14px] py-1.5 text-[13px] font-medium transition-colors";
 const levelPillInactiveClass =
-  "border-[#2a2a2a] bg-[#161616] text-[#888] hover:border-[#3a3a3a]";
+  "border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] text-[var(--pf-c-ink-888888)] hover:border-[var(--pf-c-line-3a3a3a)]";
 const levelPillActiveClass =
-  "border-[#A1C217] bg-[#A1C217] font-bold text-[#0d0d0d]";
+  "border-[var(--pf-volt)] bg-[var(--pf-volt)] font-bold text-[var(--pf-on-accent)]";
 
 export function SportsForm() {
   const { toast } = useToast();
@@ -250,10 +250,10 @@ export function SportsForm() {
 
   return (
     <SettingsSubpageLayout title="My Sports">
-      <div className="rounded-xl bg-[#161616] p-4">
+      <div className="rounded-xl bg-[var(--pf-c-fill-161616)] p-4 pf-card">
         <div ref={searchContainerRef} className="relative mb-4">
           <IconSearch
-            className="pointer-events-none absolute left-4 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-[#666666]"
+            className="pointer-events-none absolute left-4 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-[var(--pf-c-ink-666666)]"
             stroke={1.75}
           />
           <input
@@ -268,13 +268,13 @@ export function SportsForm() {
               if (search.trim().length > 0) setDropdownOpen(true);
             }}
             placeholder="Search sports..."
-            className="w-full rounded-[20px] border border-[#2a2a2a] bg-[#161616] py-2 pl-10 pr-4 text-[#f0f0f0] placeholder:text-[#666666] focus:border-[#A1C217] focus:outline-none"
+            className="w-full rounded-[20px] border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] py-2 pl-10 pr-4 text-[var(--pf-c-ink-f0f0f0)] placeholder:text-[var(--pf-c-ink-666666)] focus:border-[var(--pf-volt)] focus:outline-none pf-card"
           />
 
           {showDropdown && (
-            <ul className="absolute left-0 right-0 z-20 mt-1 max-h-[220px] overflow-y-auto rounded-xl border border-[#2a2a2a] bg-[#161616]">
+            <ul className="absolute left-0 right-0 z-20 mt-1 max-h-[220px] overflow-y-auto rounded-xl border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] pf-card">
               {filteredSports.length === 0 ? (
-                <li className="px-[14px] py-2.5 text-sm text-[#666666]">
+                <li className="px-[14px] py-2.5 text-sm text-[var(--pf-c-ink-666666)]">
                   No sports found
                 </li>
               ) : (
@@ -286,13 +286,13 @@ export function SportsForm() {
                         type="button"
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => selectSportFromSearch(sport.value)}
-                        className="flex w-full items-center gap-2.5 px-[14px] py-2.5 text-left text-[14px] text-[#f0f0f0] transition-colors hover:bg-[#1e1e1e]"
+                        className="flex w-full items-center gap-2.5 px-[14px] py-2.5 text-left text-[14px] text-[var(--pf-c-ink-f0f0f0)] transition-colors hover:bg-[var(--pf-c-fill-1e1e1e)]"
                       >
                         <span>{sport.emoji}</span>
                         <span className="min-w-0 flex-1">{sport.label}</span>
                         {isSelected && (
                           <IconCheck
-                            className="h-4 w-4 flex-shrink-0 text-[#A1C217]"
+                            className="h-4 w-4 flex-shrink-0 text-[var(--pf-volt-text)]"
                             stroke={2.5}
                           />
                         )}
@@ -316,14 +316,14 @@ export function SportsForm() {
                     <button
                       type="button"
                       onClick={() => removeSport(sportId)}
-                      className="text-[13px] text-[#888] transition-colors hover:text-[#f0f0f0]"
+                      className="text-[13px] text-[var(--pf-c-ink-888888)] transition-colors hover:text-[var(--pf-c-ink-f0f0f0)]"
                     >
                       {getSportLabel(sportId)}
                     </button>
                     <button
                       type="button"
                       onClick={() => removeSport(sportId)}
-                      className="cursor-pointer border-0 bg-transparent p-0 text-[14px] text-[#555] transition-colors hover:text-[#f0f0f0]"
+                      className="pf-hit-lg cursor-pointer border-0 bg-transparent p-0 text-[14px] text-[var(--pf-c-ink-555555)] transition-colors hover:text-[var(--pf-c-ink-f0f0f0)]"
                       aria-label={`Remove ${getSportLabel(sportId)}`}
                     >
                       <IconX size={14} stroke={2} />
@@ -356,7 +356,7 @@ export function SportsForm() {
           type="button"
           onClick={() => mutation.mutate()}
           disabled={mutation.isPending}
-          className="mt-4 w-full rounded-xl bg-[#A1C217] py-[14px] text-[15px] font-bold text-[#0d0d0d] transition-colors hover:bg-[#93b314] disabled:opacity-60"
+          className="mt-4 w-full rounded-xl bg-[var(--pf-volt)] py-[14px] text-[15px] font-bold text-[var(--pf-on-accent)] transition-colors hover:bg-[var(--pf-volt-active)] disabled:opacity-60"
         >
           {mutation.isPending ? "Saving..." : "Save"}
         </button>

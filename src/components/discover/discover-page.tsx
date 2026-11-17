@@ -18,7 +18,7 @@ import kyInstance from "@/lib/ky";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Zap } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export interface DiscoverUserSport {
   id: string;
@@ -34,6 +34,7 @@ export function DiscoverPage({ userSports }: DiscoverPageProps) {
     () => userSports[0]?.id ?? "running",
   );
   const [activeTab, setActiveTab] = useState<DiscoverTabType>("venues");
+  const mapAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (userSports.length === 0) return;
@@ -67,8 +68,8 @@ export function DiscoverPage({ userSports }: DiscoverPageProps) {
 
   if (userSports.length === 0) {
     return (
-      <div className="bg-[#08090a] px-4 py-8 text-center">
-        <p className="text-sm text-[#7e8a7e]">
+      <div className="bg-[var(--pf-c-fill-08090a)] px-4 py-8 text-center">
+        <p className="text-sm text-[var(--pf-c-ink-7e8a7e)]">
           Add sports in onboarding to discover venues near you.
         </p>
       </div>
@@ -76,14 +77,13 @@ export function DiscoverPage({ userSports }: DiscoverPageProps) {
   }
 
   return (
-    <div className="relative flex h-full w-full overflow-hidden bg-[#08090a]">
+    <div
+      ref={mapAreaRef}
+      className="relative flex h-full w-full overflow-hidden bg-[var(--pf-c-fill-08090a)]"
+    >
       {/* Desktop: results list column */}
-      <div className="hidden h-full w-[420px] shrink-0 flex-col border-r border-[#2a2f2a] lg:flex">
-        <div className="shrink-0 border-b border-[#2a2f2a] px-5 pb-4 pt-5">
-          <div className="mb-3 inline-flex items-center gap-1.5 rounded-[10px] border border-[#2a2f2a] bg-[rgba(19,22,20,0.6)] px-3 py-2 font-dm-mono text-[10px] font-semibold tracking-[0.1em] text-[#b4bcaf]">
-            <span className="h-[7px] w-[7px] animate-pf-status-pulse rounded-full bg-[#a1c217]" />
-            GLASGOW LIVE
-          </div>
+      <div className="hidden h-full w-[420px] shrink-0 flex-col border-r border-[var(--pf-c-line-2a2f2a)] lg:flex">
+        <div className="shrink-0 border-b border-[var(--pf-c-line-2a2f2a)] px-5 pb-4 pt-5">
           <DiscoverSportPills
             sports={userSports}
             activeSportId={activeSportId}
@@ -95,7 +95,7 @@ export function DiscoverPage({ userSports }: DiscoverPageProps) {
           onTabChange={setActiveTab}
           nearbyCount={places.length}
         />
-        <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain">
           <DiscoverPlaceList
             places={places}
             tabType={activeTab}
@@ -117,11 +117,8 @@ export function DiscoverPage({ userSports }: DiscoverPageProps) {
         />
 
         <div className="pointer-events-none absolute left-0 right-0 top-0 z-10 px-3 pt-3 lg:hidden">
+          {/* Only the sport filter pills sit on top of the map. */}
           <div className="pointer-events-auto">
-            <div className="mb-2.5 inline-flex items-center gap-1.5 rounded-[10px] border border-[#2a2f2a] bg-[rgba(13,15,13,0.85)] px-3 py-2 font-dm-mono text-[10px] font-semibold tracking-[0.1em] text-[#b4bcaf] backdrop-blur-[10px]">
-              <span className="h-[7px] w-[7px] animate-pf-status-pulse rounded-full bg-[#a1c217]" />
-              GLASGOW LIVE
-            </div>
             <DiscoverSportPills
               sports={userSports}
               activeSportId={activeSportId}
@@ -134,6 +131,7 @@ export function DiscoverPage({ userSports }: DiscoverPageProps) {
       {/* Mobile: draggable bottom sheet */}
       <div className="lg:hidden">
         <VenueBottomSheet
+          boundsRef={mapAreaRef}
           places={places}
           activeTab={activeTab}
           onTabChange={setActiveTab}
@@ -169,8 +167,14 @@ function DiscoverSportPills({
       {sports.map((sport) => {
         const isActive = sport.id === activeSportId;
         const SportIcon = getSportIcon(sport.id);
-        const chipColour =
-          sport.id === "all" ? "#a1c217" : getSportColour(sport.id);
+        // "All" follows the accent; sport chips keep their own fixed colours.
+        const isAllChip = sport.id === "all";
+        const chipColour = isAllChip
+          ? "var(--pf-volt)"
+          : getSportColour(sport.id);
+        const chipGlow = isAllChip
+          ? "rgb(var(--pf-volt-rgb) / 0.3)"
+          : `${chipColour}4d`;
         return (
           <button
             key={sport.id}
@@ -182,14 +186,17 @@ function DiscoverSportPills({
             className={cn(
               "flex min-h-[34px] shrink-0 items-center gap-[5px] whitespace-nowrap rounded-full border px-[13px] py-2 text-xs font-semibold backdrop-blur-md transition-all duration-200 active:scale-95",
               isActive
-                ? "border-transparent text-[#0a0b0a]"
-                : "border-[#2a2f2a] bg-[rgba(19,22,20,0.88)] text-[#7e8a7e] hover:border-[#353c34]",
+                ? cn(
+                    "border-transparent",
+                    isAllChip ? "text-[var(--pf-on-accent)]" : "text-[#0a0b0a]",
+                  )
+                : "border-[var(--pf-c-line-2a2f2a)] bg-[rgb(var(--pf-c-fill-131614-rgb)/0.88)] text-[var(--pf-c-ink-7e8a7e)] hover:border-[var(--pf-c-line-353c34)]",
             )}
             style={
               isActive
                 ? {
                     background: chipColour,
-                    boxShadow: `0 2px 12px ${chipColour}4d`,
+                    boxShadow: `0 2px 12px ${chipGlow}`,
                   }
                 : undefined
             }

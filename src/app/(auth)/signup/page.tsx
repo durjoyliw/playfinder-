@@ -1,6 +1,8 @@
 import { SignupAnimationPanel } from "@/components/auth/signup-animation-panel";
+import { BETA_OPEN_JOIN } from "@/lib/beta";
 import { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import SignUpForm from "./SignUpForm";
 
 export const metadata: Metadata = {
@@ -8,9 +10,12 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
+  // During the beta, new players join with just a name at /join.
+  if (BETA_OPEN_JOIN) redirect("/join");
+
   return (
-    <main className="flex h-screen items-center justify-center p-5">
-      <div className="flex h-full max-h-[40rem] w-full max-w-[64rem] overflow-hidden rounded-2xl bg-card shadow-2xl">
+    <main className="flex h-screen items-center justify-center p-5 pl-[max(1.25rem,env(safe-area-inset-left))] pr-[max(1.25rem,env(safe-area-inset-right))]">
+      <div className="flex h-full max-h-[40rem] w-full max-w-[64rem] overflow-hidden rounded-2xl bg-card shadow-2xl pf-card">
         <div className="w-full space-y-10 overflow-y-auto p-10 md:w-1/2">
           <div className="space-y-1 text-center">
             <h1 className="text-3xl font-bold">Sign up to PlayFinder</h1>
@@ -21,6 +26,33 @@ export default function Page() {
           </div>
           <div className="space-y-5">
             <SignUpForm />
+            <p className="text-center text-xs leading-relaxed text-muted-foreground">
+              By signing up, you agree to our{" "}
+              <Link
+                href="/terms"
+                target="_blank"
+                className="text-foreground underline underline-offset-2"
+              >
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link
+                href="/privacy"
+                target="_blank"
+                className="text-foreground underline underline-offset-2"
+              >
+                Privacy Policy
+              </Link>
+              , and to our use of cookies as described in our{" "}
+              <Link
+                href="/cookies"
+                target="_blank"
+                className="text-foreground underline underline-offset-2"
+              >
+                Cookie Policy
+              </Link>
+              .
+            </p>
             <Link href="/login" className="block text-center hover:underline">
               Already have an account? Log in
             </Link>

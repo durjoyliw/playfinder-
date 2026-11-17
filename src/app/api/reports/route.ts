@@ -1,5 +1,6 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 const ALLOWED_TARGET_TYPES = new Set(["POST", "USER"]);
 
@@ -10,6 +11,9 @@ export async function POST(req: Request) {
     if (!currentUser) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("report", currentUser.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     const body = await req.json().catch(() => null);
     const targetType =

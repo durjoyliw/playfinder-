@@ -7,6 +7,7 @@ import {
 } from "@/lib/stream-messaging";
 import { isTeammate } from "@/lib/teammate-server";
 import { z } from "zod";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 const sendSchema = z.object({
   recipientId: z.string().min(1),
@@ -22,6 +23,9 @@ export async function POST(
     if (!currentUser) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("share", currentUser.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     const { recipientId } = sendSchema.parse(await req.json());
 

@@ -1,6 +1,6 @@
 import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
 import { Google } from "arctic";
-import { Lucia, Session, User } from "lucia";
+import { Lucia, Session, TimeSpan, User } from "lucia";
 import { cookies } from "next/headers";
 import { cache } from "react";
 import prisma from "./lib/prisma";
@@ -8,8 +8,14 @@ import prisma from "./lib/prisma";
 const adapter = new PrismaAdapter(prisma.session, prisma.user);
 
 export const lucia = new Lucia(adapter, {
+  // Sliding 30-day sessions: Lucia extends a session once it's past half its
+  // lifetime (session.fresh), and validateRequest re-sets the cookie then.
+  sessionExpiresIn: new TimeSpan(30, "d"),
   sessionCookie: {
-    expires: false,
+    // A persistent cookie (Max-Age = the session lifetime). `false` made it a
+    // browser-session cookie, so people were logged out whenever the
+    // browser/app was closed.
+    expires: true,
     attributes: {
       secure: process.env.NODE_ENV === "production",
     },

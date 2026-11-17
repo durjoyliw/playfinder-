@@ -1,3 +1,4 @@
+import { getGameNotificationMessage } from "@/lib/game-notifications";
 import type {
   Notification,
   NotificationType,
@@ -7,7 +8,7 @@ import { sendPushToUser } from "@/lib/push";
 
 const STATIC_MESSAGES: Partial<Record<NotificationType, { title: string }>> = {
   MESSAGE_REQUEST: { title: "New message request" },
-  GAME_INTEREST: { title: "Game interest" },
+  GAME_INTEREST: { title: "Your game" },
   NEARBY_GAMES: { title: "Games near you" },
   INACTIVITY_NUDGE: { title: "We miss you" },
   TRENDING_POST: { title: "Trending now" },
@@ -16,8 +17,8 @@ const STATIC_MESSAGES: Partial<Record<NotificationType, { title: string }>> = {
 /**
  * Turns a just-created Notification row into a push payload and sends it.
  * Called from the prisma `notification.create` extension, so every
- * notification type -- event-driven (like/comment/follow/...) and the
- * system-generated ones (nearby games, inactivity, trending) -- gets a
+ * notification type — event-driven (like/comment/follow/...) and the
+ * system-generated ones (nearby games, inactivity, trending) — gets a
  * real device push for free, without touching each call site.
  */
 export async function sendPushForNotification(
@@ -32,16 +33,31 @@ export async function sendPushForNotification(
     : null;
   const name = issuer?.displayName ?? "Someone";
 
+  let gameMessage: string | null = null;
+  if (notification.type === "GAME_INTEREST") {
+    const post = notification.postId
+      ? await prismaClient.post.findUnique({
+          where: { id: notification.postId },
+          select: { userId: true },
+        })
+      : null;
+    gameMessage = getGameNotificationMessage({
+      recipientIsHost: post?.userId === notification.recipientId,
+      body: notification.body,
+      issuerName: name,
+    });
+  }
+
   const bodyByType: Record<NotificationType, string> = {
     LIKE: `${name} liked your post`,
     FOLLOW: `${name} wants to be teammates`,
     COMMENT: `${name} commented on your post`,
     TEAMMATE: `You and ${name} are now teammates`,
     MESSAGE_REQUEST: `${name} sent you a message request`,
-    GAME_INTEREST: `${name} is interested in your game`,
+    GAME_INTEREST: gameMessage ?? `${name} wants to join your game`,
     NEARBY_GAMES: notification.body ?? "New games near you this weekend",
     INACTIVITY_NUDGE:
-      notification.body ?? "It's been a while -- share what you're up to",
+      notification.body ?? "It's been a while. What are you playing this week?",
     TRENDING_POST: notification.body ?? "A post in your sport is trending",
   };
 

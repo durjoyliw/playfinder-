@@ -1,5 +1,14 @@
 "use client";
 
+import { BETA_CITY } from "@/lib/beta";
+import {
+  BroadcastArt,
+  CityArt,
+  LevelsArt,
+  PitchArt,
+  ProfileArt,
+  SportsArt,
+} from "@/components/illustrations/playfinder-art";
 import { MapboxLocationAutocomplete } from "@/components/mapbox-location-autocomplete";
 import { SportsSearchPicker } from "@/components/onboarding/sports-search-picker";
 import kyInstance from "@/lib/ky";
@@ -15,12 +24,22 @@ import {
 } from "@/lib/settings";
 import { ProfileIntent, SkillLevel } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, MapPin, MessageCircle, Trophy, Users, Zap } from "lucide-react";
+import {
+  ArrowLeft,
+  MapPin,
+  MessageCircle,
+  Trophy,
+  Users,
+  Zap,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
-const VOLT = "#A1C217";
+const VOLT = "var(--pf-volt)";
 const TOTAL_STEPS = 6;
+/** The "Where are you based?" step; skipped during the Glasgow-only beta. */
+const LOCATION_STEP = 3;
+const SKIPPED_STEPS: readonly number[] = BETA_CITY ? [LOCATION_STEP] : [];
 
 const INTENT_CARDS = [
   {
@@ -28,9 +47,9 @@ const INTENT_CARDS = [
     label: "Looking to Play",
     description: "Find casual games and playing partners",
     borderColor: VOLT,
-    bgClass: "bg-[#A1C217]/10",
+    bgClass: "bg-[rgb(var(--pf-volt-rgb)/0.1)]",
     icon: Zap,
-    iconClass: "text-[#A1C217]",
+    iconClass: "text-[var(--pf-volt-text)]",
   },
   {
     value: ProfileIntent.JOIN_A_TEAM,
@@ -146,7 +165,7 @@ function TopBar({
           type="button"
           onClick={onBack}
           aria-label="Back"
-          className="ob-back-btn flex h-9 w-9 items-center justify-center rounded-full border border-[#2a2a2a] bg-[#161616] text-white hover:bg-[#1f1f1f]"
+          className="ob-back-btn flex h-9 w-9 items-center justify-center rounded-full border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] text-[var(--pf-c-ink-ffffff)] hover:bg-[var(--pf-c-fill-1f1f1f)]"
         >
           <ArrowLeft className="h-[18px] w-[18px]" />
         </button>
@@ -154,16 +173,19 @@ function TopBar({
         <span />
       )}
       <div className="flex items-center justify-center gap-2">
-        {Array.from({ length: TOTAL_STEPS }, (_, i) => (
-          <div
-            key={i}
-            className="h-2 rounded-full transition-all duration-300"
-            style={{
-              width: i === step && !complete ? 24 : 8,
-              backgroundColor: complete || i <= step ? VOLT : "#2a2a2a",
-            }}
-          />
-        ))}
+        {Array.from({ length: TOTAL_STEPS }, (_, i) => i)
+          .filter((i) => !SKIPPED_STEPS.includes(i))
+          .map((i) => (
+            <div
+              key={i}
+              className="h-2 rounded-full transition-all duration-300"
+              style={{
+                width: i === step && !complete ? 24 : 8,
+                backgroundColor:
+                  complete || i <= step ? VOLT : "var(--pf-c-fill-2a2a2a)",
+              }}
+            />
+          ))}
       </div>
       <span />
     </div>
@@ -186,7 +208,7 @@ function PrimaryButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`w-full rounded-xl bg-[#A1C217] py-3.5 text-base font-bold text-black transition-colors hover:bg-[#aac62e] disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      className={`w-full rounded-xl bg-[var(--pf-volt)] py-3.5 text-base font-bold text-[var(--pf-on-accent)] transition-colors hover:bg-[var(--pf-volt-hover)] disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
     >
       {children}
     </button>
@@ -195,7 +217,10 @@ function PrimaryButton({
 
 function getIntentPillClass(intent: ProfileIntent): string {
   const option = PROFILE_INTENT_PROFILE_OPTIONS.find((o) => o.value === intent);
-  return option?.pillClassName ?? "bg-[#A1C217]/15 text-[#A1C217]";
+  return (
+    option?.pillClassName ??
+    "bg-[rgb(var(--pf-volt-rgb)/0.15)] text-[var(--pf-volt-text)]"
+  );
 }
 
 export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
@@ -204,10 +229,10 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
   const [step, setStep] = useState(0);
   const [direction, setDirection] = useState<"fwd" | "back">("fwd");
   const [selectedSports, setSelectedSports] = useState<string[]>([]);
-  const [skillLevels, setSkillLevels] = useState<Partial<Record<string, SkillLevel>>>(
-    {},
-  );
-  const [location, setLocation] = useState("");
+  const [skillLevels, setSkillLevels] = useState<
+    Partial<Record<string, SkillLevel>>
+  >({});
+  const [location, setLocation] = useState(BETA_CITY ?? "");
   const [profileIntent, setProfileIntent] = useState<ProfileIntent>(
     ProfileIntent.LOOKING_TO_PLAY,
   );
@@ -246,12 +271,20 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
       });
     }
     setDirection("fwd");
-    setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1));
+    setStep((s) => {
+      let next = Math.min(s + 1, TOTAL_STEPS - 1);
+      while (SKIPPED_STEPS.includes(next)) next += 1;
+      return next;
+    });
   };
 
   const goBack = () => {
     setDirection("back");
-    setStep((s) => Math.max(0, s - 1));
+    setStep((s) => {
+      let prev = Math.max(0, s - 1);
+      while (SKIPPED_STEPS.includes(prev)) prev -= 1;
+      return prev;
+    });
   };
 
   const handleComplete = async () => {
@@ -280,16 +313,17 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
         return (
           <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
             <span
-              className="ob-reveal mb-10 text-3xl font-bold italic leading-[1.15] pb-1"
+              className="ob-reveal mb-10 pb-1 text-3xl font-bold italic leading-[1.15]"
               style={{ color: VOLT }}
             >
               PlayFinder
             </span>
-            <h1 className="ob-reveal ob-reveal--1 text-3xl font-bold text-white">
-              Welcome, {firstName}!
+            <h1 className="ob-reveal ob-reveal--1 text-3xl font-bold text-[var(--pf-c-ink-ffffff)]">
+              {firstName}, welcome to the beta!
             </h1>
-            <p className="ob-reveal ob-reveal--1 mt-4 max-w-xs text-base leading-relaxed text-[#a3a3a3]">
-              Let&apos;s set up your athlete profile in 60 seconds.
+            <p className="ob-reveal ob-reveal--1 mt-4 max-w-xs text-base leading-relaxed text-[var(--pf-c-ink-a3a3a3)]">
+              You&apos;re one of the first players trying PlayFinder in Glasgow.
+              Setting up your profile takes about a minute.
             </p>
             <div className="mt-12 w-full">
               <PrimaryButton onClick={goNext}>Let&apos;s go</PrimaryButton>
@@ -300,8 +334,10 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
       case 1:
         return (
           <div className="flex min-h-0 flex-1 flex-col px-6 pb-8 pt-4">
-            <h1 className="ob-reveal text-2xl font-bold text-white">Choose your sports</h1>
-            <p className="ob-reveal ob-reveal--1 mt-2 text-sm text-[#a3a3a3]">
+            <h1 className="ob-reveal text-2xl font-bold text-[var(--pf-c-ink-ffffff)]">
+              Choose your sports
+            </h1>
+            <p className="ob-reveal ob-reveal--1 mt-2 text-sm text-[var(--pf-c-ink-a3a3a3)]">
               Search or pick popular sports. You can change these later.
             </p>
             <div className="mt-6 min-h-0 flex-1">
@@ -324,8 +360,10 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
       case 2:
         return (
           <div className="flex flex-1 flex-col px-6 pb-8 pt-4">
-            <h1 className="ob-reveal text-2xl font-bold text-white">Your skill levels</h1>
-            <p className="ob-reveal ob-reveal--1 mt-2 text-sm text-[#a3a3a3]">
+            <h1 className="ob-reveal text-2xl font-bold text-[var(--pf-c-ink-ffffff)]">
+              Your skill levels
+            </h1>
+            <p className="ob-reveal ob-reveal--1 mt-2 text-sm text-[var(--pf-c-ink-a3a3a3)]">
               Select one level for each sport.
             </p>
             <div className="mt-6 space-y-5">
@@ -336,9 +374,9 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
                 return (
                   <div
                     key={sportKey}
-                    className="rounded-xl border border-[#2a2a2a] bg-[#161616] p-4"
+                    className="pf-card rounded-xl border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] p-4"
                   >
-                    <p className="mb-3 text-sm font-semibold text-white">
+                    <p className="mb-3 text-sm font-semibold text-[var(--pf-c-ink-ffffff)]">
                       {sport?.emoji} {label}
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -349,8 +387,8 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
                           onClick={() => setSportSkill(sportKey, option.value)}
                           className={`ob-lift rounded-full border px-3 py-1.5 text-xs font-medium ${
                             level === option.value
-                              ? "border-[#A1C217] bg-[#A1C217] text-black"
-                              : "border-[#2a2a2a] bg-[#0d0d0d] text-[#a3a3a3] hover:text-white"
+                              ? "border-[var(--pf-volt)] bg-[var(--pf-volt)] text-[var(--pf-on-accent)]"
+                              : "border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-0d0d0d)] text-[var(--pf-c-ink-a3a3a3)] hover:text-[var(--pf-c-ink-ffffff)]"
                           }`}
                         >
                           {option.label}
@@ -372,8 +410,10 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
       case 3:
         return (
           <div className="flex flex-1 flex-col px-6 pb-8 pt-4">
-            <h1 className="ob-reveal text-2xl font-bold text-white">Where are you based?</h1>
-            <p className="ob-reveal ob-reveal--1 mt-2 text-sm text-[#a3a3a3]">
+            <h1 className="ob-reveal text-2xl font-bold text-[var(--pf-c-ink-ffffff)]">
+              Where are you based?
+            </h1>
+            <p className="ob-reveal ob-reveal--1 mt-2 text-sm text-[var(--pf-c-ink-a3a3a3)]">
               We use this to show you local games and players.
             </p>
             <div className="mt-8">
@@ -394,7 +434,7 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
       case 4:
         return (
           <div className="flex flex-1 flex-col px-6 pb-8 pt-4">
-            <h1 className="ob-reveal text-2xl font-bold text-white">
+            <h1 className="ob-reveal text-2xl font-bold text-[var(--pf-c-ink-ffffff)]">
               What are you looking for?
             </h1>
             <div className="mt-6 space-y-3">
@@ -422,8 +462,12 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
                       }}
                     >
                       <Icon className={`mb-3 h-6 w-6 ${iconClass}`} />
-                      <p className="text-base font-bold text-white">{label}</p>
-                      <p className="mt-1 text-sm text-[#a3a3a3]">{description}</p>
+                      <p className="text-base font-bold text-[var(--pf-c-ink-ffffff)]">
+                        {label}
+                      </p>
+                      <p className="mt-1 text-sm text-[var(--pf-c-ink-a3a3a3)]">
+                        {description}
+                      </p>
                     </button>
                   );
                 },
@@ -439,28 +483,30 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
         return (
           <div className="flex flex-1 flex-col px-6 pb-8 pt-4">
             <div className="flex flex-col items-center text-center">
-              <div className="ob-success-badge mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[#A1C217]">
-                <Trophy className="h-8 w-8 text-black" />
+              <div className="ob-success-badge mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--pf-volt)]">
+                <Trophy className="h-8 w-8 text-[var(--pf-on-accent)]" />
               </div>
-              <h1 className="ob-reveal text-2xl font-bold text-white">You&apos;re all set!</h1>
-              <p className="ob-reveal ob-reveal--1 mt-2 text-sm text-[#a3a3a3]">
-                Welcome to PlayFinder Glasgow. Your athlete profile is live.
+              <h1 className="ob-reveal text-2xl font-bold text-[var(--pf-c-ink-ffffff)]">
+                You&apos;re all set, {firstName}!
+              </h1>
+              <p className="ob-reveal ob-reveal--1 mt-2 text-sm text-[var(--pf-c-ink-a3a3a3)]">
+                Your athlete profile is live. Thanks for testing PlayFinder.
               </p>
             </div>
 
-            <div className="mt-8 grid grid-cols-2 gap-3">
-              <div className="rounded-xl bg-[#161616] p-4 text-center">
-                <p className="text-2xl font-bold text-[#A1C217]">247</p>
-                <p className="mt-1 text-xs text-gray-500">Players near you</p>
-              </div>
-              <div className="rounded-xl bg-[#161616] p-4 text-center">
-                <p className="text-2xl font-bold text-[#A1C217]">12</p>
-                <p className="mt-1 text-xs text-gray-500">Active games today</p>
-              </div>
+            <div className="mt-8 rounded-xl border border-[rgb(var(--pf-volt-rgb)/0.35)] bg-[rgb(var(--pf-volt-rgb)/0.08)] p-4">
+              <p className="text-sm font-semibold text-[var(--pf-c-ink-ffffff)]">
+                You&apos;re testing an early version
+              </p>
+              <p className="mt-1 text-sm leading-relaxed text-[var(--pf-c-ink-a3a3a3)]">
+                Some things will be rough. If anything breaks or feels off, open
+                the menu and tap <strong>Send feedback</strong>. It goes
+                straight to the person building this.
+              </p>
             </div>
 
-            <div className="mt-6 rounded-xl bg-[#161616] p-5">
-              <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <div className="pf-card mt-6 rounded-xl bg-[var(--pf-c-fill-161616)] p-5">
+              <p className="mb-4 text-xs font-semibold text-[var(--pf-c-ink-6b7280)]">
                 Your profile
               </p>
               <div className="mb-4 flex flex-wrap gap-2">
@@ -472,7 +518,7 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
                   return (
                     <span
                       key={sportKey}
-                      className="rounded-full bg-[#A1C217] px-3 py-1.5 text-xs font-medium text-black"
+                      className="rounded-full bg-[var(--pf-volt)] px-3 py-1.5 text-xs font-medium text-[var(--pf-on-accent)]"
                     >
                       {getOnboardingSportEmoji(sportKey)}{" "}
                       {getOnboardingSportLabel(sportKey)} {levelLabel}
@@ -482,13 +528,19 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
               </div>
               <div className="space-y-3 text-sm">
                 <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 flex-shrink-0 text-gray-500" />
-                  <span className="text-gray-500">Based in</span>
-                  <span className="font-bold text-white">{location.trim()}</span>
+                  <MapPin className="h-4 w-4 flex-shrink-0 text-[var(--pf-c-ink-6b7280)]" />
+                  <span className="text-[var(--pf-c-ink-6b7280)]">
+                    Based in
+                  </span>
+                  <span className="font-bold text-[var(--pf-c-ink-ffffff)]">
+                    {location.trim()}
+                  </span>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <Zap className="h-4 w-4 flex-shrink-0 text-gray-500" />
-                  <span className="text-gray-500">Looking for</span>
+                  <Zap className="h-4 w-4 flex-shrink-0 text-[var(--pf-c-ink-6b7280)]" />
+                  <span className="text-[var(--pf-c-ink-6b7280)]">
+                    Looking for
+                  </span>
                   <span
                     className={`rounded-full px-2.5 py-1 text-xs font-medium ${getIntentPillClass(profileIntent)}`}
                   >
@@ -502,10 +554,7 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
               <p className="mt-4 text-center text-sm text-red-400">{error}</p>
             )}
             <div className="mt-auto pt-8">
-              <PrimaryButton
-                onClick={handleComplete}
-                disabled={isSubmitting}
-              >
+              <PrimaryButton onClick={handleComplete} disabled={isSubmitting}>
                 {isSubmitting ? "Saving..." : "Find my first game →"}
               </PrimaryButton>
             </div>
@@ -518,40 +567,46 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
   })();
 
   return (
-    <div className="ob-flow flex min-h-screen w-full bg-[#0d0d0d]">
+    <div className="ob-flow flex min-h-screen w-full bg-[var(--pf-c-fill-0d0d0d)]">
       <OnboardingMotionStyles />
 
       {/* Desktop brand panel — hidden below md, shown as a split-screen from there up */}
       <div
-        className="relative hidden overflow-hidden border-r border-[#2a2a2a] md:flex md:w-[42%] md:min-w-[420px] md:flex-col md:justify-end md:p-12"
+        className="relative hidden overflow-hidden border-r border-[var(--pf-c-line-2a2a2a)] md:flex md:w-[42%] md:min-w-[420px] md:flex-col md:justify-end md:p-12"
         aria-hidden
       >
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url(https://picsum.photos/seed/playfinder-onboarding-${step}/900/1200)`,
-          }}
-        />
+        {(() => {
+          // One illustration per step (replaces the old random stock photos).
+          const PanelArt =
+            [PitchArt, SportsArt, LevelsArt, CityArt, BroadcastArt, ProfileArt][
+              step
+            ] ?? PitchArt;
+          return <PanelArt className="absolute inset-0 h-full w-full" />;
+        })()}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(180deg, rgba(13,13,13,0.25) 0%, rgba(13,13,13,0.95) 78%), radial-gradient(90% 60% at 15% 0%, rgba(161,194,23,0.16) 0%, rgba(13,13,13,0) 55%)",
+              "linear-gradient(180deg, rgb(var(--pf-c-fill-0d0d0d-rgb)/0.25) 0%, rgb(var(--pf-c-fill-0d0d0d-rgb)/0.95) 78%), radial-gradient(90% 60% at 15% 0%, rgb(var(--pf-volt-rgb)/0.16) 0%, rgb(var(--pf-c-fill-0d0d0d-rgb)/0) 55%)",
           }}
         />
         <span
-          className="absolute left-12 top-10 text-2xl font-bold italic leading-[1.15] pb-1.5"
+          className="absolute left-12 top-10 pb-1.5 text-2xl font-bold italic leading-[1.15]"
           style={{ color: VOLT }}
         >
           PlayFinder
         </span>
-        <p className="relative max-w-[340px] text-xl font-semibold leading-snug text-white">
+        <p className="relative max-w-[340px] text-xl font-semibold leading-snug text-[var(--pf-c-ink-ffffff)]">
           {BRAND_PANEL_LINES[step]}
         </p>
       </div>
 
       <div className="mx-auto flex min-h-screen w-full max-w-[480px] flex-col md:mx-0 md:max-w-none md:flex-1">
-        <TopBar step={step} complete={step === TOTAL_STEPS - 1} onBack={goBack} />
+        <TopBar
+          step={step}
+          complete={step === TOTAL_STEPS - 1}
+          onBack={goBack}
+        />
         <div
           key={step}
           className={`flex min-h-0 flex-1 flex-col ${direction === "fwd" ? "ob-step-fwd" : "ob-step-back"}`}

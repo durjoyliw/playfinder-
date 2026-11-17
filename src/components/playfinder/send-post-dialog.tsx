@@ -6,6 +6,7 @@ import kyInstance from "@/lib/ky";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Loader2, Search, Send, X } from "lucide-react";
 import { useState } from "react";
+import { useEscapeKey } from "@/hooks/use-escape-key";
 
 interface SendPostDialogProps {
   postId: string;
@@ -24,6 +25,7 @@ export function SendPostDialog({ postId, onOpenChange }: SendPostDialogProps) {
   const [sentTo, setSentTo] = useState<Set<string>>(new Set());
   const [sendErrorFor, setSendErrorFor] = useState<string | null>(null);
   const searchDebounced = useDebounce(searchInput);
+  useEscapeKey(true, () => onOpenChange(false));
 
   const { data, isFetching, isError } = useQuery({
     queryKey: ["teammates-search", searchDebounced],
@@ -67,15 +69,15 @@ export function SendPostDialog({ postId, onOpenChange }: SendPostDialogProps) {
         aria-label="Close"
         onClick={() => onOpenChange(false)}
       />
-      <div className="relative z-10 w-full max-w-[400px] rounded-2xl bg-[#161816] p-5 shadow-xl">
+      <div className="relative z-10 w-full max-w-[400px] rounded-2xl bg-[var(--pf-c-fill-161816)] p-5 shadow-xl pf-card">
         <div className="mb-4 flex items-center justify-between">
-          <h2 id="send-post-title" className="text-lg font-bold text-[#f2f5ef]">
+          <h2 id="send-post-title" className="text-lg font-bold text-[var(--pf-c-ink-f2f5ef)]">
             Send Post
           </h2>
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="rounded-full p-1 text-[#7e8a7e] hover:bg-[#1e211e] hover:text-[#f2f5ef]"
+            className="rounded-full p-1 text-[var(--pf-c-ink-7e8a7e)] hover:bg-[var(--pf-c-fill-1e211e)] hover:text-[var(--pf-c-ink-f2f5ef)]"
             aria-label="Close"
           >
             <X className="h-5 w-5" />
@@ -83,25 +85,25 @@ export function SendPostDialog({ postId, onOpenChange }: SendPostDialogProps) {
         </div>
 
         <div className="relative mb-4">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#7e8a7e]" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--pf-c-ink-7e8a7e)]" />
           <input
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Search teammates..."
-            className="w-full rounded-full bg-[#1e211e] py-2.5 pl-10 pr-4 text-sm text-[#f2f5ef] placeholder:text-[#7e8a7e] focus:outline-none"
+            className="w-full rounded-full bg-[var(--pf-c-fill-1e211e)] py-2.5 pl-10 pr-4 text-base text-[var(--pf-c-ink-f2f5ef)] lg:text-sm placeholder:text-[var(--pf-c-ink-7e8a7e)] focus:outline-none"
             autoFocus
           />
         </div>
 
         <div className="max-h-72 overflow-y-auto overflow-x-hidden">
           {!searchDebounced.trim() && (
-            <p className="py-6 text-center text-sm text-[#7e8a7e]">
+            <p className="py-6 text-center text-sm text-[var(--pf-c-ink-7e8a7e)]">
               Type a name to find a teammate to send this post to
             </p>
           )}
           {isFetching && (
             <div className="flex justify-center py-8">
-              <Loader2 className="h-6 w-6 animate-spin text-[#A1C217]" />
+              <Loader2 className="h-6 w-6 animate-spin text-[var(--pf-volt-text)]" />
             </div>
           )}
           {isError && (
@@ -118,9 +120,9 @@ export function SendPostDialog({ postId, onOpenChange }: SendPostDialogProps) {
                 type="button"
                 disabled={sendMutation.isPending || alreadySent}
                 onClick={() => sendMutation.mutate(recipient)}
-                className="flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-left transition-colors hover:bg-[#1e211e] disabled:opacity-60"
+                className="flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-left transition-colors hover:bg-[var(--pf-c-fill-1e211e)] disabled:opacity-60"
               >
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#A1C217] text-xs font-bold text-black">
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--pf-volt)] text-xs font-bold text-[var(--pf-on-accent)]">
                   {recipient.avatarUrl ? (
                     <img
                       src={recipient.avatarUrl}
@@ -132,29 +134,29 @@ export function SendPostDialog({ postId, onOpenChange }: SendPostDialogProps) {
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-bold text-[#f2f5ef]">
+                  <p className="truncate font-bold text-[var(--pf-c-ink-f2f5ef)]">
                     {recipient.displayName}
                   </p>
-                  <p className="truncate text-sm text-[#7e8a7e]">
+                  <p className="truncate text-sm text-[var(--pf-c-ink-7e8a7e)]">
                     {failedToSend
-                      ? "Could not send -- try again"
+                      ? "Couldn't send. Try again."
                       : `@${recipient.username}`}
                   </p>
                 </div>
                 {alreadySent ? (
-                  <span className="flex-shrink-0 text-xs font-semibold text-[#A1C217]">
+                  <span className="flex-shrink-0 text-xs font-semibold text-[var(--pf-volt-text)]">
                     Sent
                   </span>
                 ) : (
                   <Send
-                    className={`h-4 w-4 flex-shrink-0 ${failedToSend ? "text-red-400" : "text-[#7e8a7e]"}`}
+                    className={`h-4 w-4 flex-shrink-0 ${failedToSend ? "text-red-400" : "text-[var(--pf-c-ink-7e8a7e)]"}`}
                   />
                 )}
               </button>
             );
           })}
           {searchDebounced && !isFetching && data?.length === 0 && (
-            <p className="py-6 text-center text-sm text-[#7e8a7e]">
+            <p className="py-6 text-center text-sm text-[var(--pf-c-ink-7e8a7e)]">
               No teammates found
             </p>
           )}

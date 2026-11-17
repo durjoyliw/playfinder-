@@ -23,7 +23,11 @@ export function FeedTypeTabs({ activeTab, onTabChange }: FeedTypeTabsProps) {
       activeId={isArena ? "players" : "posts"}
       onTabChange={(id) => onTabChange(id)}
       ariaLabel="Feed type"
-      activePillClassName={isArena ? "bg-[#56ccf2]" : "bg-[#a1c217]"}
+      activePillClassName={isArena ? "bg-[#56ccf2]" : "bg-[var(--pf-volt)]"}
+      // Arena's pill is a fixed blue, so it keeps dark text on every accent.
+      activeTextClassName={
+        isArena ? "text-[#0a0b0a]" : "text-[var(--pf-on-accent)]"
+      }
     />
   );
 }

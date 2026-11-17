@@ -1,10 +1,6 @@
-import { SettingsPlaceholder } from "../settings-shared";
+import { redirect } from "next/navigation";
 
+// Legacy placeholder route — the real page now lives at /terms.
 export default function Page() {
-  return (
-    <SettingsPlaceholder
-      title="Terms of Use"
-      description="Terms of use will be published here soon."
-    />
-  );
+  redirect("/terms");
 }

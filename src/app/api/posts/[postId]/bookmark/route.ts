@@ -1,6 +1,7 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { BookmarkInfo } from "@/lib/types";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 export async function GET(
   req: Request,
@@ -44,6 +45,9 @@ export async function POST(
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const limit = await rateLimit("save", loggedInUser.id);
+    if (!limit.ok) return tooManyRequests(limit);
+
     await prisma.bookmark.upsert({
       where: {
         userId_postId: {
@@ -75,6 +79,9 @@ export async function DELETE(
     if (!loggedInUser) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const limit = await rateLimit("save", loggedInUser.id);
+    if (!limit.ok) return tooManyRequests(limit);
 
     await prisma.bookmark.deleteMany({
       where: {
