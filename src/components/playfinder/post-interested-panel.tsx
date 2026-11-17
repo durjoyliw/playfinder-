@@ -1,9 +1,11 @@
 "use client";
 
+import { useToast } from "@/components/ui/use-toast";
 import { formatSportLabel } from "@/lib/playfinder";
 import { getInitials } from "@/lib/settings";
 import kyInstance from "@/lib/ky";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { HTTPError } from "ky";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -38,6 +40,7 @@ export function PostInterestedPanel({
 }: PostInterestedPanelProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const { toast } = useToast();
   const [expanded, setExpanded] = useState(false);
 
   const isArenaPost = postType === "ARENA" || postType === "BROADCAST";
@@ -68,6 +71,19 @@ export function PostInterestedPanel({
       queryClient.invalidateQueries({ queryKey: ["post-interests", postId] });
       queryClient.invalidateQueries({ queryKey: ["post-feed"] });
       router.refresh();
+    },
+    onError: async (error) => {
+      let description = "Something went wrong. Please try again.";
+      if (error instanceof HTTPError) {
+        try {
+          const body = (await error.response.json()) as { error?: string };
+          if (body?.error) description = body.error;
+        } catch {
+          // not JSON
+        }
+      }
+      toast({ variant: "destructive", description });
+      queryClient.invalidateQueries({ queryKey: ["post-interests", postId] });
     },
   });
 
@@ -115,7 +131,7 @@ export function PostInterestedPanel({
             fontWeight: 600,
           }}
         >
-          + Add manually
+          + Filled a spot elsewhere
         </button>
       </div>
 
@@ -213,7 +229,7 @@ export function PostInterestedPanel({
                         }
                         className="rounded-lg bg-[var(--pf-c-fill-2a2a2a)] px-3 py-1.5 text-xs text-[var(--pf-c-ink-888888)]"
                       >
-                        Ignore
+                        Decline
                       </button>
                     </>
                   ) : null}

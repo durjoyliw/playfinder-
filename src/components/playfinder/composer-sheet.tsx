@@ -423,6 +423,8 @@ export function ComposerSheet({
       intent: selectedIntent,
       location,
       timeLabel: isBanter ? undefined : timeLabel,
+      startsAt:
+        !isBanter && gameAt ? new Date(gameAt).toISOString() : undefined,
       content: arenaContent,
       slotsNeeded: isLookingToPlay ? slotsNeeded : null,
       visibility: arenaVisibility,

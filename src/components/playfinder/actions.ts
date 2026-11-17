@@ -17,7 +17,7 @@ export async function submitBroadcast(input: unknown) {
 
   const data = createBroadcastSchema.parse(input);
 
-  const expiresAt = getListingExpiresAt(data.intent);
+  const expiresAt = getListingExpiresAt(data.intent, data.startsAt);
 
   const authorPageId = await getAuthorPageIdForPost();
 

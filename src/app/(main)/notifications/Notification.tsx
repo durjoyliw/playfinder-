@@ -1,4 +1,5 @@
 import UserAvatar from "@/components/UserAvatar";
+import { getGameNotificationMessage } from "@/lib/game-notifications";
 import { NotificationData } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { NotificationType } from "@prisma/client";
@@ -99,10 +100,12 @@ export default function Notification({ notification }: NotificationProps) {
   const entry =
     notification.type === "GAME_INTEREST"
       ? {
-          message:
-            notification.post?.userId === notification.recipientId
-              ? `${notification.issuer.displayName} is interested in joining your game`
-              : `${notification.issuer.displayName} accepted you for the game`,
+          message: getGameNotificationMessage({
+            recipientIsHost:
+              notification.post?.userId === notification.recipientId,
+            body: notification.body,
+            issuerName: notification.issuer.displayName,
+          }),
           icon: <MessageCircle className="size-7 text-[var(--pf-volt-text)]" />,
           href: notification.postId ? `/posts/${notification.postId}` : "/",
         }

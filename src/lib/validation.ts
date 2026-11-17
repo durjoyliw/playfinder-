@@ -84,6 +84,8 @@ export const createBroadcastSchema = z
     location: requiredString.max(200),
     timeLabel: z.string().max(100).optional(),
     expiresAt: z.string().datetime().nullable().optional(),
+    /** Kick-off time (ISO). Drives when the listing expires. */
+    startsAt: z.string().datetime({ offset: true }).optional(),
     content: requiredString.max(280),
     slotsNeeded: z.number().int().min(1).max(10).nullable().optional(),
     visibility: z.enum(["PUBLIC", "TEAMMATES_ONLY"]).default("PUBLIC"),

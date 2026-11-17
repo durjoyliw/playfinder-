@@ -142,6 +142,9 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
       intent,
       location,
       timeLabel: isBanter ? undefined : timeLabel,
+      // Only sent when the kick-off time was changed in this edit.
+      startsAt:
+        !isBanter && gameAt ? new Date(gameAt).toISOString() : undefined,
       content,
       slotsNeeded: isLookingToPlay ? slotsNeeded : null,
     });

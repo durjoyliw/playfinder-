@@ -2,6 +2,7 @@ import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { getPostDataInclude } from "@/lib/types";
 import { getListingExpiresAt } from "@/lib/playfinder";
+import { countAccepted } from "@/lib/post-interest-sync";
 import { createBroadcastSchema } from "@/lib/validation";
 import { PostIntent } from "@prisma/client";
 import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
@@ -22,10 +23,10 @@ export async function PATCH(
 
     const existing = await prisma.post.findUnique({
       where: { id: postId },
-      select: { userId: true },
+      select: { userId: true, intent: true, expiresAt: true, deletedAt: true },
     });
 
-    if (!existing) {
+    if (!existing || existing.deletedAt) {
       return Response.json({ error: "Post not found" }, { status: 404 });
     }
 
@@ -35,21 +36,30 @@ export async function PATCH(
 
     const data = createBroadcastSchema.parse(await req.json());
 
-    const expiresAt = getListingExpiresAt(data.intent);
+    // Keep the current expiry unless the kick-off time (or intent) changed;
+    // editing typos used to push a listing's expiry out by another 24h.
+    const expiresAt =
+      data.startsAt || data.intent !== existing.intent || !existing.expiresAt
+        ? getListingExpiresAt(data.intent, data.startsAt)
+        : existing.expiresAt;
+
+    const slotsNeeded =
+      data.intent === PostIntent.LOOKING_TO_PLAY ? data.slotsNeeded ?? null : null;
+    // Changing "players needed" must keep the Game full flag honest.
+    const accepted = await countAccepted(prisma, postId);
+    const isFull = slotsNeeded != null && slotsNeeded > 0 && accepted >= slotsNeeded;
 
     const updated = await prisma.post.update({
       where: { id: postId },
       data: {
+        isFull,
         content: data.content,
         sport: data.sport,
         intent: data.intent,
         location: data.location,
         timeLabel: data.intent === PostIntent.BANTER ? null : data.timeLabel ?? null,
         expiresAt,
-        slotsNeeded:
-          data.intent === PostIntent.LOOKING_TO_PLAY
-            ? data.slotsNeeded ?? null
-            : null,
+        slotsNeeded,
       },
       include: getPostDataInclude(user.id),
     });

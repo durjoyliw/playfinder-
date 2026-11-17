@@ -112,12 +112,33 @@ const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
 
 const LISTING_EXPIRY_MS = 24 * 60 * 60 * 1000;
 
-/** Feed listing TTL — not the scheduled game time (that lives in timeLabel). */
-export function getListingExpiresAt(intent: PostIntent): Date | null {
-  if (intent === PostIntent.LOOKING_TO_PLAY) {
-    return new Date(Date.now() + LISTING_EXPIRY_MS);
+/** How long after kick-off a "looking to play" listing stays up. */
+const AFTER_KICKOFF_MS = 3 * 60 * 60 * 1000;
+const MAX_SCHEDULE_AHEAD_MS = 60 * 24 * 60 * 60 * 1000;
+
+/**
+ * When a "looking to play" listing leaves the feed.
+ *
+ * With a kick-off time it stays up until 3h after the game starts — it used
+ * to vanish 24h after *posting*, so a Saturday game posted on Monday was gone
+ * by Tuesday. Without one (or with an implausible one) it falls back to 24h.
+ */
+export function getListingExpiresAt(
+  intent: PostIntent,
+  startsAt?: string | Date | null,
+  now: number = Date.now(),
+): Date | null {
+  if (intent !== PostIntent.LOOKING_TO_PLAY) return null;
+
+  const start = toPostDate(startsAt ?? null);
+  if (
+    start &&
+    start.getTime() > now - AFTER_KICKOFF_MS &&
+    start.getTime() < now + MAX_SCHEDULE_AHEAD_MS
+  ) {
+    return new Date(start.getTime() + AFTER_KICKOFF_MS);
   }
-  return null;
+  return new Date(now + LISTING_EXPIRY_MS);
 }
 
 export function toPostDate(
