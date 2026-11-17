@@ -105,7 +105,7 @@ export function DesktopSidebar({
       icon: Bell,
       href: "/notifications",
       isActive: (p) => p.startsWith("/notifications"),
-      badge: data.unreadCount,
+      badge: data?.unreadCount ?? 0,
     },
     {
       id: "profile",
