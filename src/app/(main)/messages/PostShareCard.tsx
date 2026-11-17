@@ -63,7 +63,7 @@ export default function PostShareCard({
               {snippet}
             </p>
           )}
-          <p className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--pf-volt-text)]">
+          <p className="mt-1 text-[12px] font-semibold text-[var(--pf-volt-text)]">
             View post
           </p>
         </div>

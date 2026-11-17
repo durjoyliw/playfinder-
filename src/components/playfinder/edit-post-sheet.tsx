@@ -62,7 +62,11 @@ function initFromPost(post: PostData) {
   };
 }
 
-export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) {
+export function EditPostSheet({
+  post,
+  open,
+  onOpenChange,
+}: EditPostSheetProps) {
   const { toast } = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -111,7 +115,9 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
 
   const mutation = useMutation({
     mutationFn: (values: CreateBroadcastInput) =>
-      kyInstance.patch(`/api/posts/${post.id}`, { json: values }).json<PostData>(),
+      kyInstance
+        .patch(`/api/posts/${post.id}`, { json: values })
+        .json<PostData>(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-feed"] });
       router.refresh();
@@ -176,7 +182,7 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
 
         <form onSubmit={handleSubmit} className="space-y-5 px-4 py-4 pb-8">
           <div>
-            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[var(--pf-c-ink-6b7280)]">
+            <label className="mb-2 block text-xs font-semibold text-[var(--pf-c-ink-6b7280)]">
               Sport
             </label>
             <div className="flex flex-wrap gap-2">
@@ -199,7 +205,7 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
           </div>
 
           <div>
-            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[var(--pf-c-ink-6b7280)]">
+            <label className="mb-2 block text-xs font-semibold text-[var(--pf-c-ink-6b7280)]">
               Intent
             </label>
             <div className="flex flex-wrap gap-2">
@@ -222,7 +228,7 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
           </div>
 
           <div>
-            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[var(--pf-c-ink-6b7280)]">
+            <label className="mb-2 block text-xs font-semibold text-[var(--pf-c-ink-6b7280)]">
               Location
             </label>
             <input
@@ -235,7 +241,7 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
 
           {!isBanter && (
             <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[var(--pf-c-ink-6b7280)]">
+              <label className="mb-2 block text-xs font-semibold text-[var(--pf-c-ink-6b7280)]">
                 Date & time
               </label>
               <input
@@ -250,7 +256,7 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
 
           {isLookingToPlay && (
             <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[var(--pf-c-ink-6b7280)]">
+              <label className="mb-2 block text-xs font-semibold text-[var(--pf-c-ink-6b7280)]">
                 Players needed
               </label>
               <input
@@ -270,7 +276,7 @@ export function EditPostSheet({ post, open, onOpenChange }: EditPostSheetProps) 
           )}
 
           <div>
-            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[var(--pf-c-ink-6b7280)]">
+            <label className="mb-2 block text-xs font-semibold text-[var(--pf-c-ink-6b7280)]">
               Details
             </label>
             <textarea

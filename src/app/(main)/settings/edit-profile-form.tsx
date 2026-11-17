@@ -19,8 +19,7 @@ import {
   useUserSettings,
 } from "./settings-shared";
 
-const labelClassName =
-  "mb-1.5 block text-xs tracking-[0.5px] text-[var(--pf-c-ink-888888)] uppercase";
+const labelClassName = "mb-1.5 block text-xs text-[var(--pf-c-ink-888888)]";
 const inputClassName =
   "w-full rounded-[10px] border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] p-3 text-base text-[var(--pf-c-ink-f0f0f0)] lg:text-[15px] focus:border-[var(--pf-volt)] focus:outline-none pf-card";
 
@@ -109,7 +108,7 @@ export function EditProfileForm() {
               <UserAvatar
                 avatarUrl={avatarPreview}
                 size={80}
-                className="h-full w-full max-h-none max-w-none border-0"
+                className="h-full max-h-none w-full max-w-none border-0"
               />
             ) : (
               <span className="text-lg font-semibold text-[var(--pf-volt-text)]">
@@ -127,7 +126,7 @@ export function EditProfileForm() {
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="rounded-[20px] border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] px-5 py-2 text-[13px] text-[var(--pf-volt-text)] transition-colors hover:bg-[var(--pf-c-fill-1f1f1f)] pf-card"
+            className="pf-card rounded-[20px] border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] px-5 py-2 text-[13px] text-[var(--pf-volt-text)] transition-colors hover:bg-[var(--pf-c-fill-1f1f1f)]"
           >
             Change photo
           </button>

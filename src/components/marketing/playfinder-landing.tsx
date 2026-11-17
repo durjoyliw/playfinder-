@@ -4,6 +4,7 @@ import {
   PitchArt,
   ProfileArt,
 } from "@/components/illustrations/playfinder-art";
+import { HERO_PHOTO } from "@/lib/landing-photo";
 import { JOIN_HREF } from "@/lib/beta";
 import { MapPin, MessageCircle, Radio, Trophy } from "lucide-react";
 import Link from "next/link";
@@ -73,7 +74,6 @@ export function PlayFinderLanding() {
           50% { opacity: 0.5; transform: scale(0.85); }
         }
         @media (prefers-reduced-motion: no-preference) {
-          .pf-pulse-dot { animation: pf-pulse 2.2s ease-in-out infinite; }
         }
 
         .pf-hero-grid { display: grid; grid-template-columns: 1fr 0.95fr; gap: 64px; align-items: center; }
@@ -191,33 +191,6 @@ export function PlayFinderLanding() {
         >
           <div className="pf-hero-grid">
             <div>
-              <div
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 9,
-                  padding: "7px 16px",
-                  borderRadius: 9999,
-                  backgroundColor: CARD,
-                  border: `1px solid ${BORDER}`,
-                  marginBottom: 28,
-                  fontSize: 13,
-                  color: MUTED,
-                }}
-              >
-                <span
-                  className="pf-pulse-dot"
-                  style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: "50%",
-                    backgroundColor: VOLT,
-                    display: "inline-block",
-                  }}
-                />
-                Beta · Live in Glasgow
-              </div>
-
               <h1
                 className="pf-h1"
                 style={{
@@ -229,19 +202,7 @@ export function PlayFinderLanding() {
                   color: "var(--pf-c-ink-ffffff)",
                 }}
               >
-                Find your game.
-                <br />
-                <span
-                  style={{
-                    color: "var(--pf-volt-text)",
-                    fontStyle: "italic",
-                    display: "inline-block",
-                    lineHeight: 1.15,
-                    paddingBottom: 6,
-                  }}
-                >
-                  Find your people.
-                </span>
+                Find a game in Glasgow tonight.
               </h1>
 
               <p
@@ -304,12 +265,42 @@ export function PlayFinderLanding() {
 
             <div className="pf-hero-visual" style={{ position: "relative" }}>
               <div className="pf-hero-photo" style={{ backgroundColor: CARD }}>
-                <PitchArt
-                  fit="contain"
-                  className="h-full w-full"
-                  title="A five-a-side pitch with two open spots waiting to be filled"
-                />
+                {HERO_PHOTO ? (
+                  <img
+                    src={HERO_PHOTO.src}
+                    alt={HERO_PHOTO.alt}
+                    className="h-full w-full object-cover"
+                    fetchPriority="high"
+                  />
+                ) : (
+                  <PitchArt
+                    fit="contain"
+                    className="h-full w-full"
+                    title="A five-a-side pitch with two open spots waiting to be filled"
+                  />
+                )}
               </div>
+              {HERO_PHOTO && (
+                <p
+                  style={{
+                    margin: "8px 4px 0",
+                    fontSize: 11,
+                    color: MUTED,
+                    textAlign: "right",
+                  }}
+                >
+                  Photo:{" "}
+                  <a
+                    href={HERO_PHOTO.sourceUrl}
+                    style={{ color: "inherit", textDecoration: "underline" }}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    {HERO_PHOTO.credit}
+                  </a>{" "}
+                  ({HERO_PHOTO.licence})
+                </p>
+              )}
               <div className="pf-hero-card">
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <div
@@ -582,18 +573,6 @@ export function PlayFinderLanding() {
               />
             </div>
             <div>
-              <p
-                style={{
-                  margin: "0 0 10px",
-                  fontFamily: "var(--font-dm-mono), ui-monospace, monospace",
-                  fontSize: 12,
-                  letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                  color: "var(--pf-volt-text)",
-                }}
-              >
-                Built in Glasgow
-              </p>
               <p
                 style={{
                   fontSize: 24,

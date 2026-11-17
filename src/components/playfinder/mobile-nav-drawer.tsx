@@ -27,7 +27,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-
 interface DrawerLink {
   href: string;
   label: string;
@@ -95,7 +94,7 @@ export function MobileNavDrawer({ triggerClassName }: MobileNavDrawerProps) {
         <button
           type="button"
           className={cn(
-            "relative grid h-10 w-10 shrink-0 place-items-center rounded-xl text-[var(--pf-text-3)] outline-none transition-all active:scale-90 active:bg-[var(--pf-surface)] focus-visible:ring-2 focus-visible:ring-[var(--pf-volt)]",
+            "relative grid h-10 w-10 shrink-0 place-items-center rounded-xl text-[var(--pf-text-3)] outline-none transition-all focus-visible:ring-2 focus-visible:ring-[var(--pf-volt)] active:scale-90 active:bg-[var(--pf-surface)]",
             triggerClassName,
           )}
           aria-label="Open menu"
@@ -160,10 +159,7 @@ export function MobileNavDrawer({ triggerClassName }: MobileNavDrawerProps) {
                   href={href}
                   onClick={close}
                   aria-current={active ? "page" : undefined}
-                  className={cn(
-                    rowBase,
-                    active && "bg-[var(--pf-surface)]",
-                  )}
+                  className={cn(rowBase, active && "bg-[var(--pf-surface)]")}
                 >
                   <span
                     className={cn(
@@ -197,7 +193,7 @@ export function MobileNavDrawer({ triggerClassName }: MobileNavDrawerProps) {
           <Link
             href={`/settings/feedback?from=${encodeURIComponent(pathname)}`}
             onClick={close}
-            className="flex items-center gap-3 rounded-2xl border border-[rgb(var(--pf-volt-rgb)/0.35)] bg-[rgb(var(--pf-volt-rgb)/0.08)] px-3 py-3 transition-colors active:scale-[0.98] hover:bg-[rgb(var(--pf-volt-rgb)/0.12)]"
+            className="flex items-center gap-3 rounded-2xl border border-[rgb(var(--pf-volt-rgb)/0.35)] bg-[rgb(var(--pf-volt-rgb)/0.08)] px-3 py-3 transition-colors hover:bg-[rgb(var(--pf-volt-rgb)/0.12)] active:scale-[0.98]"
           >
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[var(--pf-volt)] text-[var(--pf-on-accent)]">
               <MessageSquareText className="h-[18px] w-[18px]" />
@@ -215,7 +211,7 @@ export function MobileNavDrawer({ triggerClassName }: MobileNavDrawerProps) {
 
         {/* Pinned footer: version label, then Log out -- always visible. */}
         <div className="shrink-0 px-3 pb-[calc(12px+env(safe-area-inset-bottom,0px))] pt-3">
-          <div className="flex items-baseline justify-between px-3 pb-3 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-text-4)]">
+          <div className="flex items-baseline justify-between px-3 pb-3 text-[12px] font-medium text-[var(--pf-text-4)]">
             <span>PlayFinder</span>
             <span className="normal-case tracking-[0.04em]">v0.1 beta</span>
           </div>

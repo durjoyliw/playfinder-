@@ -164,7 +164,7 @@ export default function AthleteProfile({
             </div>
             {profile.isOnline && (
               <span className="absolute -right-1 bottom-2 grid h-5 w-5 place-items-center rounded-full border-2 border-[var(--pf-c-line-08090a)] bg-[var(--pf-c-fill-08090a)]">
-                <span className="h-2.5 w-2.5 rounded-full bg-[var(--pf-volt)] shadow-[0_0_8px_var(--pf-volt)]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[var(--pf-volt)]" />
               </span>
             )}
           </div>
@@ -199,13 +199,13 @@ export default function AthleteProfile({
       <div className="mx-4 mt-6 grid grid-cols-3 border-y border-[var(--pf-c-line-2a2f2a)] py-5">
         <div className="text-center">
           <p className="text-2xl font-bold">{profile.stats.games}</p>
-          <p className="mt-[7px] font-dm-mono text-[10px] font-medium uppercase tracking-[0.08em] text-[var(--pf-c-ink-7e8a7e)]">
+          <p className="mt-[7px] text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
             Games
           </p>
         </div>
         <div className="relative text-center before:absolute before:bottom-[20%] before:left-0 before:top-[20%] before:w-px before:bg-[var(--pf-c-fill-2a2f2a)]">
           <p className="text-2xl font-bold">{profile.stats.broadcasts}</p>
-          <p className="mt-[7px] font-dm-mono text-[10px] font-medium uppercase tracking-[0.08em] text-[var(--pf-c-ink-7e8a7e)]">
+          <p className="mt-[7px] text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
             Broadcasts
           </p>
         </div>
@@ -214,7 +214,7 @@ export default function AthleteProfile({
           className="relative text-center before:absolute before:bottom-[20%] before:left-0 before:top-[20%] before:w-px before:bg-[var(--pf-c-fill-2a2f2a)]"
         >
           <p className="text-2xl font-bold">{profile.stats.teammates}</p>
-          <p className="mt-[7px] font-dm-mono text-[10px] font-medium uppercase tracking-[0.08em] text-[var(--pf-c-ink-7e8a7e)]">
+          <p className="mt-[7px] text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
             Teammates
           </p>
         </Link>
@@ -272,7 +272,7 @@ export default function AthleteProfile({
                       ))}
                     </div>
                     <div
-                      className="mt-2 font-dm-mono text-[10px] font-medium uppercase tracking-[0.08em]"
+                      className="mt-2 text-[12px] font-medium"
                       style={{ color: colour }}
                     >
                       {sport.tier}

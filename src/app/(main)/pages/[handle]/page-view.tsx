@@ -118,7 +118,7 @@ export function PageView({ page }: PageViewProps) {
               </h1>
               <span
                 className={cn(
-                  "inline-flex h-[22px] items-center rounded-full border px-2 font-dm-mono text-[9px] font-medium uppercase tracking-[0.1em]",
+                  "inline-flex h-[22px] items-center rounded-full border px-2 text-[12px] font-medium",
                   page.type === PageType.VENUE
                     ? "border-[rgba(201,162,39,0.32)] bg-[rgba(201,162,39,0.1)] text-[#c9a227]"
                     : "border-[rgba(86,204,242,0.28)] bg-[rgba(86,204,242,0.1)] text-[#56ccf2]",
@@ -133,7 +133,9 @@ export function PageView({ page }: PageViewProps) {
                 />
               )}
             </div>
-            <p className="mt-2 text-[13px] text-[var(--pf-c-ink-b4bcaf)]">{metaLine}</p>
+            <p className="mt-2 text-[13px] text-[var(--pf-c-ink-b4bcaf)]">
+              {metaLine}
+            </p>
             {page.bio?.trim() && (
               <p className="mt-2 text-[15px] leading-relaxed text-[var(--pf-c-ink-b4bcaf)]">
                 {page.bio.trim()}
@@ -170,7 +172,7 @@ export function PageView({ page }: PageViewProps) {
       {/* Modules: mobile pills / desktop left rail */}
       <div className="lg:mt-2 lg:flex lg:gap-0 lg:border-t lg:border-[var(--pf-c-line-2a2f2a)]">
         <aside className="hidden w-[180px] shrink-0 flex-col gap-1 border-r border-[var(--pf-c-line-2a2f2a)] px-3 py-4 lg:flex">
-          <p className="mb-2 px-2 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-c-ink-7e8a7e)]">
+          <p className="mb-2 px-2 text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
             Modules
           </p>
           {PAGE_TABS.map((tab) => (
@@ -236,16 +238,17 @@ function PageAbout({ page }: { page: PageViewData }) {
   return (
     <div className="space-y-4 pb-4">
       <p className="whitespace-pre-line text-[15px] leading-relaxed text-[var(--pf-c-ink-b4bcaf)]">
-        {page.bio?.trim() || `${page.name} hasn\u2019t added a description yet.`}
+        {page.bio?.trim() ||
+          `${page.name} hasn\u2019t added a description yet.`}
       </p>
       {rows.length > 0 && (
-        <dl className="overflow-hidden rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] pf-card">
+        <dl className="pf-card overflow-hidden rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)]">
           {rows.map((row) => (
             <div
               key={row.label}
               className="flex items-center justify-between gap-4 border-b border-[var(--pf-c-line-2a2f2a)] px-4 py-3 last:border-b-0"
             >
-              <dt className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-c-ink-7e8a7e)]">
+              <dt className="text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
                 {row.label}
               </dt>
               <dd className="text-right text-[14px] font-semibold text-[var(--pf-c-ink-f2f5ef)]">
@@ -274,7 +277,10 @@ function PageShareButton({ name, handle }: { name: string; handle: string }) {
     } catch (error) {
       // Dismissing the share sheet throws AbortError; that's fine.
       if (error instanceof Error && error.name === "AbortError") return;
-      toast({ variant: "destructive", description: "Couldn\u2019t share this Page" });
+      toast({
+        variant: "destructive",
+        description: "Couldn\u2019t share this Page",
+      });
     }
   }
 
@@ -282,7 +288,7 @@ function PageShareButton({ name, handle }: { name: string; handle: string }) {
     <button
       type="button"
       onClick={share}
-      className="flex h-[42px] flex-1 items-center justify-center rounded-xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[14px] font-bold text-[var(--pf-c-ink-f2f5ef)] pf-card lg:flex-none lg:px-6"
+      className="pf-card flex h-[42px] flex-1 items-center justify-center rounded-xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[14px] font-bold text-[var(--pf-c-ink-f2f5ef)] lg:flex-none lg:px-6"
     >
       Share
     </button>
@@ -318,7 +324,7 @@ function PagePostsList({
       {posts.map((post) => (
         <article
           key={post.id}
-          className="rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-3.5 pf-card"
+          className="pf-card rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-3.5"
         >
           <div className="mb-2.5 flex items-center gap-2.5">
             {avatarUrl ? (

@@ -100,7 +100,7 @@ export default async function YourPagesPage() {
                         </span>
                         <span
                           className={cn(
-                            "inline-flex h-5 items-center rounded-full border px-2 font-dm-mono text-[9px] font-medium uppercase tracking-[0.1em]",
+                            "inline-flex h-5 items-center rounded-full border px-2 text-[12px] font-medium",
                             isVenue
                               ? "border-[rgba(201,162,39,0.32)] bg-[rgba(201,162,39,0.1)] text-[#c9a227]"
                               : "border-[rgba(86,204,242,0.28)] bg-[rgba(86,204,242,0.1)] text-[#56ccf2]",

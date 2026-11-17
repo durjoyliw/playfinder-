@@ -162,7 +162,7 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
         aria-label="Close"
         onClick={() => onOpenChange(false)}
       />
-      <div className="relative z-10 w-full max-w-[400px] rounded-2xl bg-[var(--pf-c-fill-161616)] p-5 shadow-xl pf-card">
+      <div className="pf-card relative z-10 w-full max-w-[400px] rounded-2xl bg-[var(--pf-c-fill-161616)] p-5 shadow-xl">
         {step === "select" ? (
           <>
             <div className="mb-4 flex items-center justify-between">
@@ -215,7 +215,7 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="Search players..."
-                className="w-full rounded-full bg-[var(--pf-c-fill-1a1a1a)] py-2.5 pl-10 pr-4 text-base text-[var(--pf-c-ink-ffffff)] lg:text-sm placeholder:text-[var(--pf-c-ink-888888)] focus:outline-none"
+                className="w-full rounded-full bg-[var(--pf-c-fill-1a1a1a)] py-2.5 pl-10 pr-4 text-base text-[var(--pf-c-ink-ffffff)] placeholder:text-[var(--pf-c-ink-888888)] focus:outline-none lg:text-sm"
                 autoFocus
               />
             </div>
@@ -272,7 +272,9 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
                           : "border-[var(--pf-c-line-444444)]"
                       }`}
                     >
-                      {isSelected && <Check className="h-3 w-3 text-[var(--pf-on-accent)]" />}
+                      {isSelected && (
+                        <Check className="h-3 w-3 text-[var(--pf-on-accent)]" />
+                      )}
                     </span>
                   </button>
                 );
@@ -310,10 +312,12 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
               >
                 <ArrowLeft className="h-5 w-5" />
               </button>
-              <h2 className="text-lg font-bold text-[var(--pf-c-ink-ffffff)]">New Group</h2>
+              <h2 className="text-lg font-bold text-[var(--pf-c-ink-ffffff)]">
+                New Group
+              </h2>
             </div>
 
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--pf-c-ink-888888)]">
+            <p className="mb-2 text-xs font-semibold text-[var(--pf-c-ink-888888)]">
               {selected.length} people
             </p>
             <div className="mb-4 flex flex-wrap gap-1.5">
@@ -340,7 +344,7 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
 
             <label
               htmlFor="group-name"
-              className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--pf-c-ink-888888)]"
+              className="mb-1.5 block text-xs font-semibold text-[var(--pf-c-ink-888888)]"
             >
               Group name (optional)
             </label>
@@ -349,7 +353,7 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
               value={groupName}
               onChange={(e) => setGroupName(e.target.value)}
               placeholder={selected.map((s) => s.displayName).join(", ")}
-              className="mb-4 w-full rounded-xl bg-[var(--pf-c-fill-1a1a1a)] px-4 py-2.5 text-base text-[var(--pf-c-ink-ffffff)] lg:text-sm placeholder:text-[var(--pf-c-ink-666666)] focus:outline-none pf-card"
+              className="pf-card mb-4 w-full rounded-xl bg-[var(--pf-c-fill-1a1a1a)] px-4 py-2.5 text-base text-[var(--pf-c-ink-ffffff)] placeholder:text-[var(--pf-c-ink-666666)] focus:outline-none lg:text-sm"
               autoFocus
             />
 

@@ -16,8 +16,7 @@ interface AppearanceFormProps {
   initialAccent: AccentId;
 }
 
-const groupLabelClass =
-  "mb-3 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-text-3)]";
+const groupLabelClass = "mb-3 text-[12px] font-medium text-[var(--pf-text-3)]";
 
 const swatchButtonClass =
   "group flex flex-col items-center gap-2 rounded-2xl outline-none transition-transform duration-150 active:scale-95 focus-visible:ring-2 focus-visible:ring-[var(--pf-volt)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--pf-bg)]";
@@ -170,7 +169,7 @@ export function AppearanceForm({
       {/* Live sample so the accent + on-accent pairing is easy to judge. */}
       <section>
         <h2 className={groupLabelClass}>Preview</h2>
-        <div className="space-y-3 rounded-2xl border border-[var(--pf-border)] bg-[var(--pf-surface)] p-4 pf-card">
+        <div className="pf-card space-y-3 rounded-2xl border border-[var(--pf-border)] bg-[var(--pf-surface)] p-4">
           <p className="text-[15px] font-semibold text-[var(--pf-text)]">
             5-a-side tonight, 2 spots left
           </p>

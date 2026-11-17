@@ -24,19 +24,19 @@ export function DateOfBirthForm() {
 
   return (
     <form onSubmit={submit}>
-      <p className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-text-3)]">
+      <p className="text-[12px] font-medium text-[var(--pf-text-3)]">
         One quick thing
       </p>
       <h1 className="mt-2 text-[26px] font-bold leading-tight tracking-[-0.03em] text-[var(--pf-text)]">
         Confirm your date of birth
       </h1>
       <p className="mt-2 text-[15px] leading-relaxed text-[var(--pf-text-2)]">
-        PlayFinder is for people aged {MINIMUM_AGE} and over. We don’t show
-        your birthday on your profile.
+        PlayFinder is for people aged {MINIMUM_AGE} and over. We don’t show your
+        birthday on your profile.
       </p>
 
       <label className="mt-8 block">
-        <span className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.12em] text-[var(--pf-text-3)]">
+        <span className="text-[12px] font-medium text-[var(--pf-text-3)]">
           Date of birth
         </span>
         <input
@@ -54,7 +54,11 @@ export function DateOfBirthForm() {
       </label>
 
       {error && (
-        <p id="dob-error" role="alert" className="mt-2 text-[13px] font-medium text-[#ef4444]">
+        <p
+          id="dob-error"
+          role="alert"
+          className="mt-2 text-[13px] font-medium text-[#ef4444]"
+        >
           {error}
         </p>
       )}

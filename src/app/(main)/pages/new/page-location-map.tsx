@@ -1,10 +1,7 @@
 "use client";
 
 import { GLASGOW_CENTER } from "@/lib/discover-places";
-import {
-  circlePolygon,
-  type GeocodedPlace,
-} from "@/lib/mapbox-geocode";
+import { circlePolygon, type GeocodedPlace } from "@/lib/mapbox-geocode";
 import { getMapboxToken, hasMapboxToken } from "@/lib/mapbox-token";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -133,11 +130,11 @@ export function PageLocationMap({ place, className }: PageLocationMapProps) {
       {tokenPresent ? (
         <div ref={containerRef} className="h-full w-full" />
       ) : (
-        <div className="flex h-full items-center justify-center px-4 text-center font-dm-mono text-[10px] uppercase tracking-[0.1em] text-[var(--pf-c-ink-7e8a7e)]">
+        <div className="flex h-full items-center justify-center px-4 text-center text-[12px] text-[var(--pf-c-ink-7e8a7e)]">
           Add NEXT_PUBLIC_MAPBOX_TOKEN to .env.local
         </div>
       )}
-      <span className="pointer-events-none absolute bottom-3 left-3 rounded-full border border-[var(--pf-c-line-2a2f2a)] bg-[rgb(var(--pf-c-fill-08090a-rgb)/0.72)] px-2.5 py-1 font-dm-mono text-[10px] uppercase tracking-[0.1em] text-[var(--pf-c-ink-7e8a7e)]">
+      <span className="pointer-events-none absolute bottom-3 left-3 rounded-full border border-[var(--pf-c-line-2a2f2a)] bg-[rgb(var(--pf-c-fill-08090a-rgb)/0.72)] px-2.5 py-1 text-[12px] text-[var(--pf-c-ink-7e8a7e)]">
         Map preview
       </span>
     </div>

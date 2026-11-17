@@ -57,7 +57,7 @@ export default function ProfileIntentPill({
 
   return (
     <div className="mt-5">
-      <p className="mb-2.5 font-dm-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--pf-c-ink-7e8a7e)]">
+      <p className="mb-2.5 text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
         Current status
       </p>
       {isOwnProfile ? (
@@ -72,7 +72,7 @@ export default function ProfileIntentPill({
                 disabled={mutation.isPending}
                 onClick={() => mutation.mutate(option.value)}
                 className={cn(
-                  "flex min-h-11 shrink-0 items-center gap-1.5 rounded-xl border px-3.5 py-2.5 text-[13px] font-semibold whitespace-nowrap transition-all active:scale-95",
+                  "flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border px-3.5 py-2.5 text-[13px] font-semibold transition-all active:scale-95",
                   selected
                     ? "text-[var(--pf-c-ink-f2f5ef)]"
                     : "border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-b4bcaf)]",

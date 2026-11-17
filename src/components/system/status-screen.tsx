@@ -21,9 +21,7 @@ export function StatusScreen({
 }: StatusScreenProps) {
   return (
     <main className="flex min-h-[70dvh] w-full flex-col items-center justify-center px-6 py-16 text-center font-grotesk">
-      <p className="font-dm-mono text-[11px] uppercase tracking-[0.16em] text-[var(--pf-volt-text)]">
-        {eyebrow}
-      </p>
+      <p className="text-[12px] text-[var(--pf-volt-text)]">{eyebrow}</p>
       <h1 className="mt-3 text-3xl font-bold tracking-[-0.02em] text-[var(--pf-c-ink-ffffff)]">
         {title}
       </h1>

@@ -35,9 +35,6 @@ export function SportTabs({ tabs, activeTab, onTabChange }: SportTabsProps) {
           const chipColour = isAllChip
             ? "var(--pf-volt)"
             : getSportColour(sport.id);
-          const chipGlow = isAllChip
-            ? "rgb(var(--pf-volt-rgb) / 0.3)"
-            : `${chipColour}4d`;
 
           return (
             <button
@@ -60,14 +57,7 @@ export function SportTabs({ tabs, activeTab, onTabChange }: SportTabsProps) {
                     )
                   : "border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-7e8a7e)] hover:-translate-y-0.5 hover:border-[var(--pf-c-line-353c34)]",
               )}
-              style={
-                isActive
-                  ? {
-                      background: chipColour,
-                      boxShadow: `0 2px 12px ${chipGlow}`,
-                    }
-                  : undefined
-              }
+              style={isActive ? { background: chipColour } : undefined}
             >
               {sport.id === "all" ? (
                 <Zap className="h-[15px] w-[15px]" />

@@ -74,7 +74,8 @@ export function BottomNav() {
   return (
     <nav
       data-pf-bottom-nav
-      className="fixed bottom-0 left-0 right-0 z-[var(--pf-z-nav)] flex h-[calc(64px+env(safe-area-inset-bottom,0px))] shrink-0 items-stretch border-t border-[rgb(var(--pf-contrast-rgb)/0.05)] bg-[rgb(var(--pf-c-fill-08090a-rgb)/0.95)] pb-[env(safe-area-inset-bottom,0px)] font-grotesk backdrop-blur-[24px]">
+      className="fixed bottom-0 left-0 right-0 z-[var(--pf-z-nav)] flex h-[calc(64px+env(safe-area-inset-bottom,0px))] shrink-0 items-stretch border-t border-[rgb(var(--pf-contrast-rgb)/0.05)] bg-[rgb(var(--pf-c-fill-08090a-rgb)/0.95)] pb-[env(safe-area-inset-bottom,0px)] font-grotesk backdrop-blur-[24px]"
+    >
       <div className="mx-auto flex h-full w-full max-w-md items-stretch">
         {navItems.slice(0, 2).map((item) => {
           const active = item.isActive(pathname);
@@ -97,7 +98,7 @@ export function BottomNav() {
             <button
               type="button"
               className="-mt-[30px] grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[var(--pf-volt-cta)] text-[var(--pf-on-accent)] transition-transform active:scale-90"
-              style={{ boxShadow: "0 0 16px rgb(var(--pf-volt-neon-rgb)/0.5)" }}
+              style={{ boxShadow: "0 4px 12px rgb(0 0 0 / 0.35)" }}
               aria-label="Create"
             >
               <Plus className="h-[26px] w-[26px]" strokeWidth={2.5} />
@@ -114,9 +115,7 @@ export function BottomNav() {
               href={item.href}
               className={linkClass(active)}
               aria-label={
-                showBadge
-                  ? `Notifications, ${unreadCount} unread`
-                  : item.label
+                showBadge ? `Notifications, ${unreadCount} unread` : item.label
               }
               aria-current={active ? "page" : undefined}
             >

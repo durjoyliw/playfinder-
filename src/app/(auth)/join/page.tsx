@@ -14,10 +14,10 @@ export default function Page() {
 
   return (
     <main className="flex min-h-[100dvh] items-center justify-center p-5 pl-[max(1.25rem,env(safe-area-inset-left))] pr-[max(1.25rem,env(safe-area-inset-right))]">
-      <div className="flex w-full max-w-[64rem] overflow-hidden rounded-2xl bg-card shadow-2xl pf-card md:h-[40rem]">
+      <div className="pf-card flex w-full max-w-[64rem] overflow-hidden rounded-2xl bg-card shadow-2xl md:h-[40rem]">
         <div className="w-full space-y-8 overflow-y-auto p-7 sm:p-10 md:w-1/2">
           <div className="space-y-3 text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[var(--pf-c-line-2a2a2a)] px-3 py-1 font-dm-mono text-[11px] uppercase tracking-[0.14em] text-[var(--pf-volt-text)]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[var(--pf-c-line-2a2a2a)] px-3 py-1 text-[12px] text-[var(--pf-volt-text)]">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--pf-volt)]" />
               Beta
             </span>

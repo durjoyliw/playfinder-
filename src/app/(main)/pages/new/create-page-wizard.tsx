@@ -64,7 +64,7 @@ const fieldInputClass =
   "h-10 rounded-[1rem] border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] px-3.5 text-base text-[var(--pf-c-ink-f2f5ef)] lg:text-[15px] placeholder:text-[var(--pf-c-ink-5a635a)] focus-visible:border-[var(--pf-volt)] focus-visible:ring-0 focus-visible:ring-offset-0 pf-card";
 
 const fieldLabelClass =
-  "mb-2 block font-dm-mono text-[10px] font-medium uppercase tracking-[0.12em] text-[var(--pf-c-ink-7e8a7e)]";
+  "mb-2 block text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]";
 
 const primaryButtonClass =
   "h-10 w-full rounded-xl bg-[var(--pf-volt)] text-sm font-semibold text-[var(--pf-on-accent)] hover:bg-[rgb(var(--pf-volt-rgb)/0.9)]";
@@ -264,7 +264,9 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                   <span
                     className={cn(
                       "mx-1.5 h-px flex-1",
-                      step > n ? "bg-[var(--pf-volt-dim)]" : "bg-[var(--pf-c-fill-2a2f2a)]",
+                      step > n
+                        ? "bg-[var(--pf-volt-dim)]"
+                        : "bg-[var(--pf-c-fill-2a2f2a)]",
                     )}
                   />
                 )}
@@ -308,7 +310,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                     {COMING_SOON.map((item) => (
                       <div
                         key={item.key}
-                        className="flex min-h-24 flex-col gap-2.5 rounded-[1rem] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-4 opacity-[0.42] pf-card"
+                        className="pf-card flex min-h-24 flex-col gap-2.5 rounded-[1rem] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-4 opacity-[0.42]"
                       >
                         <div className="grid h-9 w-9 place-items-center rounded-[10px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-1a1e1b)] text-[var(--pf-c-ink-b4bcaf)]">
                           <item.icon className="h-5 w-5" />
@@ -317,7 +319,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                           <p className="text-[16px] font-bold tracking-[-0.02em]">
                             {item.title}
                           </p>
-                          <p className="mt-1 font-dm-mono text-[9px] font-medium uppercase tracking-[0.1em] text-[var(--pf-c-ink-5a635a)]">
+                          <p className="mt-1 text-[12px] font-medium text-[var(--pf-c-ink-5a635a)]">
                             Coming soon
                           </p>
                         </div>
@@ -422,7 +424,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                     <Field>
                       <div className="mb-2 flex items-baseline justify-between">
                         <Label className={fieldLabelClass}>Home venue</Label>
-                        <span className="font-dm-mono text-[10px] uppercase tracking-[0.08em] text-[var(--pf-c-ink-5a635a)]">
+                        <span className="text-[12px] text-[var(--pf-c-ink-5a635a)]">
                           Optional
                         </span>
                       </div>
@@ -520,7 +522,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                       <button
                         type="button"
                         onClick={() => bannerInputRef.current?.click()}
-                        className="relative flex h-[132px] w-full items-center justify-center overflow-hidden rounded-[1rem] border border-dashed border-[var(--pf-c-line-353c34)] font-dm-mono text-[10px] uppercase tracking-[0.12em] text-[var(--pf-c-ink-7e8a7e)]"
+                        className="relative flex h-[132px] w-full items-center justify-center overflow-hidden rounded-[1rem] border border-dashed border-[var(--pf-c-line-353c34)] text-[12px] text-[var(--pf-c-ink-7e8a7e)]"
                         style={{
                           background: bannerPreview
                             ? undefined
@@ -567,7 +569,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                       <h3 className="text-[22px] font-bold tracking-[-0.03em]">
                         {name.trim() || "Your page"}
                       </h3>
-                      <span className="inline-flex h-[22px] items-center rounded-full border border-[rgba(86,204,242,0.28)] bg-[rgba(86,204,242,0.1)] px-2 font-dm-mono text-[9px] font-medium uppercase tracking-[0.1em] text-[#56ccf2]">
+                      <span className="inline-flex h-[22px] items-center rounded-full border border-[rgba(86,204,242,0.28)] bg-[rgba(86,204,242,0.1)] px-2 text-[12px] font-medium text-[#56ccf2]">
                         {type === "VENUE" ? "Venue" : "Club"}
                       </span>
                     </div>
@@ -582,7 +584,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                       <Label htmlFor="page-bio" className={fieldLabelClass}>
                         Bio
                       </Label>
-                      <span className="font-dm-mono text-[10px] uppercase tracking-[0.08em] text-[var(--pf-c-ink-5a635a)]">
+                      <span className="text-[12px] text-[var(--pf-c-ink-5a635a)]">
                         One line · optional
                       </span>
                     </div>
@@ -591,7 +593,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                       value={bio}
                       onChange={(event) => setBio(event.target.value)}
                       maxLength={80}
-                      className="min-h-[72px] rounded-[1rem] border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] px-3.5 py-3 text-base leading-relaxed lg:text-[15px] text-[var(--pf-c-ink-f2f5ef)] placeholder:text-[var(--pf-c-ink-5a635a)] focus-visible:border-[var(--pf-volt)] focus-visible:ring-0 focus-visible:ring-offset-0 pf-card"
+                      className="pf-card min-h-[72px] rounded-[1rem] border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] px-3.5 py-3 text-base leading-relaxed text-[var(--pf-c-ink-f2f5ef)] placeholder:text-[var(--pf-c-ink-5a635a)] focus-visible:border-[var(--pf-volt)] focus-visible:ring-0 focus-visible:ring-offset-0 lg:text-[15px]"
                     />
                   </Field>
                 </StepShell>
@@ -668,10 +670,10 @@ function PagePreviewCard({
 }) {
   return (
     <div>
-      <p className="mb-3 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-c-ink-7e8a7e)]">
+      <p className="mb-3 text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
         Live preview
       </p>
-      <div className="overflow-hidden rounded-[1.25rem] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] pf-card">
+      <div className="pf-card overflow-hidden rounded-[1.25rem] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)]">
         <div
           className="h-[92px] w-full"
           style={{
@@ -709,7 +711,7 @@ function PagePreviewCard({
             <p className="text-[17px] font-bold leading-tight tracking-[-0.02em]">
               {name.trim() || "Your page"}
             </p>
-            <span className="inline-flex h-5 items-center rounded-full border border-[rgba(86,204,242,0.28)] bg-[rgba(86,204,242,0.1)] px-2 font-dm-mono text-[9px] font-medium uppercase tracking-[0.1em] text-[#56ccf2]">
+            <span className="inline-flex h-5 items-center rounded-full border border-[rgba(86,204,242,0.28)] bg-[rgba(86,204,242,0.1)] px-2 text-[12px] font-medium text-[#56ccf2]">
               {type === "VENUE" ? "Venue" : "Club"}
             </span>
           </div>
@@ -744,13 +746,15 @@ function StepShell({
 }) {
   return (
     <div>
-      <p className="mb-2 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-c-ink-7e8a7e)]">
+      <p className="mb-2 text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
         {label}
       </p>
       <h2 className="mb-2 text-[24px] font-bold leading-tight tracking-[-0.03em] lg:text-[28px]">
         {title}
       </h2>
-      <p className="mb-7 text-[15px] leading-relaxed text-[var(--pf-c-ink-b4bcaf)]">{copy}</p>
+      <p className="mb-7 text-[15px] leading-relaxed text-[var(--pf-c-ink-b4bcaf)]">
+        {copy}
+      </p>
       {children}
     </div>
   );
@@ -792,7 +796,9 @@ function TypeCard({
       </div>
       <div>
         <p className="text-[16px] font-bold tracking-[-0.02em]">{title}</p>
-        <p className="mt-1 text-[13px] leading-snug text-[var(--pf-c-ink-7e8a7e)]">{copy}</p>
+        <p className="mt-1 text-[13px] leading-snug text-[var(--pf-c-ink-7e8a7e)]">
+          {copy}
+        </p>
       </div>
     </button>
   );
@@ -828,7 +834,7 @@ function HomeVenueDropdown({
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="start"
-        className="z-[120] max-h-60 w-[var(--radix-dropdown-menu-trigger-width)] overflow-y-auto rounded-[1rem] border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-1 text-[var(--pf-c-ink-f2f5ef)] pf-card"
+        className="pf-card z-[120] max-h-60 w-[var(--radix-dropdown-menu-trigger-width)] overflow-y-auto rounded-[1rem] border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-1 text-[var(--pf-c-ink-f2f5ef)]"
       >
         <DropdownMenuItem
           className="cursor-pointer rounded-xl px-3 py-2.5 text-[15px] text-[var(--pf-c-ink-7e8a7e)] focus:bg-[var(--pf-c-fill-1a1e1b)] focus:text-[var(--pf-c-ink-f2f5ef)]"

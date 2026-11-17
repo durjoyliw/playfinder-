@@ -23,7 +23,7 @@ function PageTypeChip({ type }: { type: PageType }) {
   return (
     <span
       className={cn(
-        "inline-flex h-[18px] shrink-0 items-center rounded-full border px-1.5 font-dm-mono text-[8px] font-medium uppercase tracking-[0.08em]",
+        "inline-flex h-[18px] shrink-0 items-center rounded-full border px-1.5 text-[8px] font-medium",
         isVenue
           ? "border-[rgba(201,162,39,0.32)] bg-[rgba(201,162,39,0.1)] text-[#c9a227]"
           : "border-[rgba(86,204,242,0.28)] bg-[rgba(86,204,242,0.1)] text-[#56ccf2]",
@@ -198,7 +198,9 @@ export function HomeFeedCard({
     <div className="mb-4 flex items-center gap-3 rounded-[14px] bg-black/20 p-3.5">
       <div className="min-w-0 flex-1">
         <div className="mb-1.5 text-xs text-[var(--pf-c-ink-7e8a7e)]">
-          <b className="text-[15px] font-bold text-[var(--pf-volt-text)]">{spotsLeft}</b>{" "}
+          <b className="text-[15px] font-bold text-[var(--pf-volt-text)]">
+            {spotsLeft}
+          </b>{" "}
           {spotsLeft === 1 ? "spot" : "spots"} available
         </div>
         <div className="h-[5px] overflow-hidden rounded-[3px] bg-[rgb(var(--pf-contrast-rgb)/0.08)]">
@@ -220,7 +222,11 @@ export function HomeFeedCard({
               i > 0 && "-ml-2.5",
             )}
           >
-            <IconCheck size={14} className="text-[var(--pf-volt-text)]" stroke={2.5} />
+            <IconCheck
+              size={14}
+              className="text-[var(--pf-volt-text)]"
+              stroke={2.5}
+            />
           </div>
         ))}
         {Array.from({ length: Math.min(spotsLeft, 3) }).map((_, i) => (
@@ -251,9 +257,9 @@ export function HomeFeedCard({
         <div className="h-[3px] w-full" style={{ background: sportColour }} />
         <div className="absolute right-3.5 top-3.5 z-10 flex items-center gap-2">
           {isHotTake && (
-            <div className="inline-flex items-center gap-1 rounded-md border border-[rgb(var(--pf-volt-rgb)/0.2)] bg-[rgb(var(--pf-volt-rgb)/0.1)] px-[9px] py-1.5 font-dm-mono text-[9px] font-semibold tracking-[0.1em] text-[var(--pf-volt-text)]">
+            <div className="inline-flex items-center gap-1 rounded-md border border-[rgb(var(--pf-volt-rgb)/0.2)] bg-[rgb(var(--pf-volt-rgb)/0.1)] px-[9px] py-1.5 text-[12px] font-semibold text-[var(--pf-volt-text)]">
               <IconFlame className="h-3 w-3" stroke={2} aria-hidden />
-              LIVE SOON
+              Live soon
             </div>
           )}
           <PostViewerMenu
@@ -317,7 +323,7 @@ export function HomeFeedCard({
             <div className="mb-4 grid grid-cols-2 gap-2.5">
               {timeLabel && (
                 <div className="rounded-[14px] border border-[rgb(var(--pf-contrast-rgb)/0.03)] bg-black/25 p-3.5">
-                  <div className="mb-2 flex items-center gap-1 font-dm-mono text-[9px] font-medium uppercase tracking-[0.1em] text-[var(--pf-c-ink-5a635a)]">
+                  <div className="mb-2 flex items-center gap-1 text-[12px] font-medium text-[var(--pf-c-ink-5a635a)]">
                     <Clock className="h-3 w-3" />
                     When
                   </div>
@@ -328,7 +334,7 @@ export function HomeFeedCard({
               )}
               {location && (
                 <div className="rounded-[14px] border border-[rgb(var(--pf-contrast-rgb)/0.03)] bg-black/25 p-3.5">
-                  <div className="mb-2 flex items-center gap-1 font-dm-mono text-[9px] font-medium uppercase tracking-[0.1em] text-[var(--pf-c-ink-5a635a)]">
+                  <div className="mb-2 flex items-center gap-1 text-[12px] font-medium text-[var(--pf-c-ink-5a635a)]">
                     <MapPin className="h-3 w-3" />
                     Where
                   </div>

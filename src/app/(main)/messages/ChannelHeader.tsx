@@ -166,7 +166,9 @@ export default function ChannelHeader() {
         </div>
 
         <div className="min-w-0 flex-1">
-          <p className="truncate font-bold text-[var(--pf-c-ink-ffffff)]">{displayName}</p>
+          <p className="truncate font-bold text-[var(--pf-c-ink-ffffff)]">
+            {displayName}
+          </p>
           <p className="text-xs text-[var(--pf-c-ink-888888)]">
             {isGroup
               ? `${otherMembers.length + 1} members`
@@ -185,7 +187,7 @@ export default function ChannelHeader() {
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 top-10 z-50 min-w-[180px] overflow-hidden rounded-xl border border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1a1a1a)] py-1 shadow-lg pf-card">
+            <div className="pf-card absolute right-0 top-10 z-50 min-w-[180px] overflow-hidden rounded-xl border border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1a1a1a)] py-1 shadow-lg">
               {isGroup ? (
                 <button
                   type="button"
@@ -255,8 +257,10 @@ export default function ChannelHeader() {
 
       {blockConfirmOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 px-6">
-          <div className="w-full max-w-sm rounded-2xl border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] p-5 pf-card">
-            <p className="text-lg font-bold text-[var(--pf-c-ink-ffffff)]">Block {displayName}?</p>
+          <div className="pf-card w-full max-w-sm rounded-2xl border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] p-5">
+            <p className="text-lg font-bold text-[var(--pf-c-ink-ffffff)]">
+              Block {displayName}?
+            </p>
             <p className="mt-2 text-sm text-[var(--pf-c-ink-888888)]">
               They won&apos;t be able to see your profile or posts.
             </p>
@@ -301,11 +305,13 @@ export default function ChannelHeader() {
           onClick={() => setGroupInfoOpen(false)}
         >
           <div
-            className="w-full max-w-sm rounded-2xl border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] p-5 pf-card"
+            className="pf-card w-full max-w-sm rounded-2xl border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] p-5"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-4 flex items-center justify-between">
-              <p className="text-lg font-bold text-[var(--pf-c-ink-ffffff)]">{displayName}</p>
+              <p className="text-lg font-bold text-[var(--pf-c-ink-ffffff)]">
+                {displayName}
+              </p>
               <button
                 type="button"
                 onClick={() => setGroupInfoOpen(false)}
@@ -315,7 +321,7 @@ export default function ChannelHeader() {
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--pf-c-ink-888888)]">
+            <p className="mb-2 text-xs font-semibold text-[var(--pf-c-ink-888888)]">
               {otherMembers.length + 1} members
             </p>
             <div className="max-h-72 space-y-1 overflow-y-auto">
@@ -331,7 +337,9 @@ export default function ChannelHeader() {
                     getInitials(sessionUser.displayName)
                   )}
                 </div>
-                <p className="truncate text-sm font-semibold text-[var(--pf-c-ink-ffffff)]">You</p>
+                <p className="truncate text-sm font-semibold text-[var(--pf-c-ink-ffffff)]">
+                  You
+                </p>
               </div>
               {otherMembers.map((member) => (
                 <Link

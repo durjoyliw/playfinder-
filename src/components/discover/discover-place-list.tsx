@@ -47,20 +47,20 @@ function OpenStatusBadge({ status }: { status: OpenStatus | string }) {
   const normalized = status as OpenStatus;
   if (normalized === "open") {
     return (
-      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-[var(--pf-status-success-bg)] text-[var(--pf-status-success-fg)]">
+      <span className="rounded bg-[var(--pf-status-success-bg)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--pf-status-success-fg)]">
         Open
       </span>
     );
   }
   if (normalized === "closes_soon") {
     return (
-      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-[var(--pf-status-danger-bg)] text-[var(--pf-status-danger-fg)]">
+      <span className="rounded bg-[var(--pf-status-danger-bg)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--pf-status-danger-fg)]">
         Closes soon
       </span>
     );
   }
   return (
-    <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-[var(--pf-status-danger-bg)] text-[var(--pf-status-danger-fg)]">
+    <span className="rounded bg-[var(--pf-status-danger-bg)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--pf-status-danger-fg)]">
       Closed
     </span>
   );
@@ -81,7 +81,7 @@ export function DiscoverPlaceList({
     return (
       <div>
         <div className="mb-3.5 px-4">
-          <div className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-c-ink-7e8a7e)]">
+          <div className="text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
             Glasgow · within 5 mi
           </div>
           <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[var(--pf-c-ink-f2f5ef)]">
@@ -92,7 +92,7 @@ export function DiscoverPlaceList({
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="mx-4 mb-2.5 h-[96px] animate-pulse rounded-2xl bg-[var(--pf-c-fill-131614)] pf-card"
+              className="pf-card mx-4 mb-2.5 h-[96px] animate-pulse rounded-2xl bg-[var(--pf-c-fill-131614)]"
             />
           ))}
         </div>
@@ -104,7 +104,7 @@ export function DiscoverPlaceList({
     return (
       <div className="px-4">
         <div className="mb-3.5">
-          <div className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-c-ink-7e8a7e)]">
+          <div className="text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
             Glasgow · within 5 mi
           </div>
           <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[var(--pf-c-ink-f2f5ef)]">
@@ -121,7 +121,7 @@ export function DiscoverPlaceList({
   return (
     <div>
       <div className="mb-3.5 px-4">
-        <div className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-c-ink-7e8a7e)]">
+        <div className="text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
           Glasgow · within 5 mi
         </div>
         <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[var(--pf-c-ink-f2f5ef)]">
@@ -133,7 +133,7 @@ export function DiscoverPlaceList({
         {places.map((place) => (
           <div
             key={place.id}
-            className="mb-2.5 flex gap-3 rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-3 transition-transform active:scale-[0.98] pf-card"
+            className="pf-card mb-2.5 flex gap-3 rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-3 transition-transform active:scale-[0.98]"
           >
             <a
               href={`https://maps.google.com/?q=${place.lat},${place.lng}`}
@@ -164,7 +164,10 @@ export function DiscoverPlaceList({
                   </>
                 ) : (
                   <div className="grid h-full w-full place-items-center">
-                    <IconUsers className="h-6 w-6 text-[#56ccf2]" stroke={1.75} />
+                    <IconUsers
+                      className="h-6 w-6 text-[#56ccf2]"
+                      stroke={1.75}
+                    />
                   </div>
                 )}
               </div>
@@ -186,8 +189,8 @@ export function DiscoverPlaceList({
                     <OpenStatusBadge status={place.openStatus} />
                   )}
                   {place.bookable && (
-                    <span className="ml-auto rounded-md border border-[#56ccf2]/20 bg-[rgba(86,204,242,0.1)] px-2 py-1 font-dm-mono text-[8px] font-semibold tracking-[0.08em] text-[#56ccf2]">
-                      BOOKABLE
+                    <span className="ml-auto rounded-md border border-[#56ccf2]/20 bg-[rgba(86,204,242,0.1)] px-2 py-1 text-[11px] font-semibold text-[#56ccf2]">
+                      Bookable
                     </span>
                   )}
                 </div>
@@ -199,7 +202,7 @@ export function DiscoverPlaceList({
                 href={safeHttpUrl(place.website) ?? undefined}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="pf-hit-lg self-center shrink-0 text-xs font-semibold text-[var(--pf-volt-text)] hover:underline"
+                className="pf-hit-lg shrink-0 self-center text-xs font-semibold text-[var(--pf-volt-text)] hover:underline"
                 onClick={(e) => e.stopPropagation()}
               >
                 Visit →

@@ -42,7 +42,7 @@ export function LegalPage({
       </header>
 
       <main className="mx-auto w-full max-w-[480px] px-4 pb-20 pt-10 lg:max-w-[600px]">
-        <p className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-text-3)]">
+        <p className="text-[12px] font-medium text-[var(--pf-text-3)]">
           {eyebrow}
         </p>
         <h1 className="mt-2 text-[30px] font-bold leading-tight tracking-[-0.03em] text-[var(--pf-c-ink-ffffff)]">
@@ -62,7 +62,7 @@ export function LegalPage({
           aria-label="Legal documents"
           className="mt-16 border-t border-[var(--pf-border)] pt-8"
         >
-          <p className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-text-3)]">
+          <p className="text-[12px] font-medium text-[var(--pf-text-3)]">
             Policies
           </p>
           <ul className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm">

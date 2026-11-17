@@ -22,7 +22,8 @@ export function DeleteAccountForm() {
   const [isPending, startTransition] = useTransition();
 
   const matches =
-    typed.trim().replace(/^@/, "").toLowerCase() === user.username.toLowerCase();
+    typed.trim().replace(/^@/, "").toLowerCase() ===
+    user.username.toLowerCase();
   const canDelete = matches && acknowledged && !isPending;
 
   const handleDelete = () => {
@@ -55,8 +56,8 @@ export function DeleteAccountForm() {
         </div>
       </div>
 
-      <section className="rounded-2xl bg-[var(--pf-surface)] p-4 pf-card">
-        <h2 className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-text-3)]">
+      <section className="pf-card rounded-2xl bg-[var(--pf-surface)] p-4">
+        <h2 className="text-[12px] font-medium text-[var(--pf-text-3)]">
           What gets deleted
         </h2>
         <ul className={listClass}>
@@ -68,10 +69,12 @@ export function DeleteAccountForm() {
           <li>Your comments, likes, saved posts and “I’m in” requests</li>
           <li>Your followers, following, teammates, blocks and mutes</li>
           <li>Your messages and chats, and your notifications</li>
-          <li>Push notification subscriptions, reports you filed, and appeals</li>
+          <li>
+            Push notification subscriptions, reports you filed, and appeals
+          </li>
         </ul>
 
-        <h2 className="mt-5 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-text-3)]">
+        <h2 className="mt-5 text-[12px] font-medium text-[var(--pf-text-3)]">
           What stays
         </h2>
         <ul className={listClass}>
@@ -85,7 +88,7 @@ export function DeleteAccountForm() {
         </ul>
       </section>
 
-      <section className="space-y-4 rounded-2xl bg-[var(--pf-surface)] p-4 pf-card">
+      <section className="pf-card space-y-4 rounded-2xl bg-[var(--pf-surface)] p-4">
         <label className="block">
           <span className="text-[13px] font-medium text-[var(--pf-text-2)]">
             Type your username{" "}

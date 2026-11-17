@@ -1,17 +1,48 @@
 import UserAvatar from "@/components/UserAvatar";
-import { getGameNotificationMessage } from "@/lib/game-notifications";
+import {
+  GAME_EVENT,
+  getGameNotificationMessage,
+} from "@/lib/game-notifications";
 import { NotificationData } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { NotificationType } from "@prisma/client";
 import {
   Bell,
   Calendar,
+  CircleCheck,
+  CircleSlash,
   Flame,
+  Hand,
   Heart,
+  Mail,
   MessageCircle,
-  User2,
+  UserMinus,
+  UserPlus,
+  Users,
 } from "lucide-react";
 import Link from "next/link";
+
+/** One icon per game event, so a join request doesn't look like a comment. */
+function gameEventIcon(
+  recipientIsHost: boolean,
+  body: string | null | undefined,
+) {
+  if (recipientIsHost) {
+    return body === GAME_EVENT.LEFT ? (
+      <UserMinus className="size-7 text-[var(--pf-c-ink-7e8a7e)]" />
+    ) : (
+      <Hand className="size-7 text-[var(--pf-volt-text)]" />
+    );
+  }
+  switch (body) {
+    case GAME_EVENT.DECLINED:
+      return <CircleSlash className="size-7 text-[var(--pf-c-ink-7e8a7e)]" />;
+    case GAME_EVENT.REMOVED:
+      return <UserMinus className="size-7 text-[var(--pf-c-ink-7e8a7e)]" />;
+    default:
+      return <CircleCheck className="size-7 text-[var(--pf-volt-text)]" />;
+  }
+}
 
 interface NotificationProps {
   notification: NotificationData;
@@ -44,7 +75,7 @@ export default function Notification({ notification }: NotificationProps) {
       <Link href={href} className="block">
         <article
           className={cn(
-            "flex gap-3 rounded-2xl bg-card p-5 shadow-sm transition-colors hover:bg-card/70 pf-card",
+            "pf-card flex gap-3 rounded-2xl bg-card p-5 shadow-sm transition-colors hover:bg-card/70",
             !notification.read && "bg-primary/10",
           )}
         >
@@ -72,17 +103,17 @@ export default function Notification({ notification }: NotificationProps) {
   > = {
     FOLLOW: {
       message: `${notification.issuer.displayName} followed you`,
-      icon: <User2 className="size-7 text-primary" />,
+      icon: <UserPlus className="size-7 text-primary" />,
       href: `/users/${notification.issuer.username}`,
     },
     TEAMMATE: {
       message: `You and ${notification.issuer.displayName} are now Teammates ⚡`,
-      icon: <User2 className="size-7 text-[var(--pf-volt-text)]" />,
+      icon: <Users className="size-7 text-[var(--pf-volt-text)]" />,
       href: `/users/${notification.issuer.username}`,
     },
     COMMENT: {
       message: `${notification.issuer.displayName} commented on your post`,
-      icon: <MessageCircle className="size-7 fill-primary text-primary" />,
+      icon: <MessageCircle className="size-7 text-primary" />,
       href: `/posts/${notification.postId}`,
     },
     LIKE: {
@@ -92,7 +123,7 @@ export default function Notification({ notification }: NotificationProps) {
     },
     MESSAGE_REQUEST: {
       message: `${notification.issuer.displayName} sent you a message request`,
-      icon: <MessageCircle className="size-7 text-primary" />,
+      icon: <Mail className="size-7 text-primary" />,
       href: `/messages`,
     },
   };
@@ -106,7 +137,10 @@ export default function Notification({ notification }: NotificationProps) {
             body: notification.body,
             issuerName: notification.issuer.displayName,
           }),
-          icon: <MessageCircle className="size-7 text-[var(--pf-volt-text)]" />,
+          icon: gameEventIcon(
+            notification.post?.userId === notification.recipientId,
+            notification.body,
+          ),
           href: notification.postId ? `/posts/${notification.postId}` : "/",
         }
       : notificationTypeMap[notification.type];
@@ -120,7 +154,7 @@ export default function Notification({ notification }: NotificationProps) {
     <Link href={href} className="block">
       <article
         className={cn(
-          "flex gap-3 rounded-2xl bg-card p-5 shadow-sm transition-colors hover:bg-card/70 pf-card",
+          "pf-card flex gap-3 rounded-2xl bg-card p-5 shadow-sm transition-colors hover:bg-card/70",
           !notification.read && "bg-primary/10",
         )}
       >

@@ -115,7 +115,7 @@ export function FeedCard({
   const typeBadge = getPostTypeBadge(postType ?? null);
 
   return (
-    <div className="overflow-hidden rounded-xl bg-[var(--pf-c-fill-1a1a1a)] pf-card">
+    <div className="pf-card overflow-hidden rounded-xl bg-[var(--pf-c-fill-1a1a1a)]">
       <div
         className="h-[3px]"
         style={{ backgroundColor: cardAccentColors[type] }}
@@ -158,7 +158,7 @@ export function FeedCard({
                   {authorPageType && (
                     <span
                       className={cn(
-                        "inline-flex h-[18px] shrink-0 items-center rounded-full border px-1.5 font-dm-mono text-[8px] font-medium uppercase tracking-[0.08em]",
+                        "inline-flex h-[18px] shrink-0 items-center rounded-full border px-1.5 text-[8px] font-medium",
                         authorPageType === PageType.VENUE
                           ? "border-[rgba(201,162,39,0.32)] bg-[rgba(201,162,39,0.1)] text-[#c9a227]"
                           : "border-[rgba(86,204,242,0.28)] bg-[rgba(86,204,242,0.1)] text-[#56ccf2]",
@@ -202,7 +202,9 @@ export function FeedCard({
           </span>
         )}
 
-        <p className="mb-3 text-sm leading-relaxed text-[var(--pf-c-ink-ffffff)]">{content}</p>
+        <p className="mb-3 text-sm leading-relaxed text-[var(--pf-c-ink-ffffff)]">
+          {content}
+        </p>
 
         {showSpots && (
           <div
@@ -227,7 +229,11 @@ export function FeedCard({
                   background: "transparent",
                 }}
               >
-                <IconCheck size={14} className="text-[var(--pf-volt-text)]" stroke={2.5} />
+                <IconCheck
+                  size={14}
+                  className="text-[var(--pf-volt-text)]"
+                  stroke={2.5}
+                />
               </div>
             ))}
             {Array.from({ length: slotsRemaining }).map((_, i) => (
@@ -242,7 +248,13 @@ export function FeedCard({
                 }}
               />
             ))}
-            <span style={{ fontSize: 13, color: "var(--pf-volt-text)", fontWeight: 600 }}>
+            <span
+              style={{
+                fontSize: 13,
+                color: "var(--pf-volt-text)",
+                fontWeight: 600,
+              }}
+            >
               {slotsRemaining > 0
                 ? `${slotsRemaining} spot${slotsRemaining > 1 ? "s" : ""} left`
                 : "Full"}

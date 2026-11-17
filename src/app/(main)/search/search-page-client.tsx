@@ -101,7 +101,9 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
     queryKey: ["search", "players", "preview", debouncedDraftQuery],
     queryFn: () =>
       kyInstance
-        .get("/api/search/players", { searchParams: { q: debouncedDraftQuery } })
+        .get("/api/search/players", {
+          searchParams: { q: debouncedDraftQuery },
+        })
         .json<{ players: SearchPlayerResult[] }>(),
     enabled: isTyping && debouncedDraftQuery.length > 0,
   });
@@ -186,14 +188,14 @@ export function SearchPageClient({ initialQuery }: SearchPageClientProps) {
     filter === "all"
       ? allCount
       : filter === "profiles"
-      ? players.length
-      : filter === "posts"
-        ? socialPosts.length
-        : filter === "arena"
-          ? arenaPosts.length
-          : filter === "venues"
-            ? venues.length
-            : clubs.length;
+        ? players.length
+        : filter === "posts"
+          ? socialPosts.length
+          : filter === "arena"
+            ? arenaPosts.length
+            : filter === "venues"
+              ? venues.length
+              : clubs.length;
 
   const resultsLabel = (() => {
     switch (filter) {
@@ -466,7 +468,7 @@ function AllResultsSection({
   return (
     <section className="border-b border-[var(--pf-border)] pb-1 pt-3 last:border-b-0">
       <div className="flex items-baseline justify-between px-4 pb-1.5">
-        <h2 className="font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-text-3)]">
+        <h2 className="text-[12px] font-medium text-[var(--pf-text-3)]">
           {title}
         </h2>
         <button
