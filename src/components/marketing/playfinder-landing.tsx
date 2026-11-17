@@ -102,7 +102,6 @@ export function PlayFinderLanding() {
         @media (max-width: 860px) {
           .pf-nav-inner { padding-left: 20px !important; padding-right: 20px !important; }
           .pf-hero-grid { grid-template-columns: 1fr; gap: 40px; }
-          .pf-hero-visual { order: -1; }
           .pf-hero-photo { height: 280px; }
           .pf-hero-card { position: static; width: 100%; margin-top: 16px; }
           .pf-h1 { font-size: 34px !important; }
