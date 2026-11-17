@@ -1,5 +1,6 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
+import { isTeammate } from "@/lib/teammate-server";
 import {
   ensureDirectMessageChannel,
   upsertStreamUsers,
@@ -38,6 +39,41 @@ export async function POST(req: Request) {
 
     if (!recipient) {
       return Response.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // Direct chats are for teammates (mutual follows) or people who accepted
+    // a message request — never across a block. Everyone else goes through
+    // /api/messages/request. (This route used to open a DM with anyone,
+    // including people who had blocked you.)
+    const blocked = await prisma.block.findFirst({
+      where: {
+        OR: [
+          { blockerId: user.id, blockedId: recipient.id },
+          { blockerId: recipient.id, blockedId: user.id },
+        ],
+      },
+      select: { id: true },
+    });
+    if (blocked) {
+      return Response.json({ error: "blocked" }, { status: 403 });
+    }
+
+    const allowed =
+      (await isTeammate(user.id, recipient.id)) ||
+      (await prisma.messageRequest.count({
+        where: {
+          status: "ACCEPTED",
+          OR: [
+            { fromUserId: user.id, toUserId: recipient.id },
+            { fromUserId: recipient.id, toUserId: user.id },
+          ],
+        },
+      })) > 0;
+    if (!allowed) {
+      return Response.json(
+        { error: "Send a message request first" },
+        { status: 403 },
+      );
     }
 
     await upsertStreamUsers(

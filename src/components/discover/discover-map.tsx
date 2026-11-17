@@ -1,5 +1,6 @@
 "use client";
 
+import { safeHttpUrl } from "@/lib/safe-url";
 import {
   GLASGOW_CENTER,
   type DiscoverPlace,
@@ -154,11 +155,11 @@ export function DiscoverMap({
         <p style="color:var(--pf-c-ink-f2f5ef);font-weight:700;font-size:14px;margin:0 20px 4px 0;">${escapeHtml(place.name)}</p>
         ${place.address ? `<p style="color:var(--pf-c-ink-7e8a7e);font-size:12px;margin:0 0 6px;">${escapeHtml(place.address)}</p>` : ""}
         ${place.sports?.length ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;">${place.sports.map((s) => `<span style="background:var(--pf-volt);color:var(--pf-on-accent);font-weight:700;font-size:11px;border-radius:4px;padding:2px 8px;">${escapeHtml(s)}</span>`).join("")}</div>` : ""}
-        <p style="color:var(--pf-volt-text);font-weight:700;font-size:12px;margin:0 0 6px;">${place.distanceMiles} mi</p>
+        <p style="color:var(--pf-volt-text);font-weight:700;font-size:12px;margin:0 0 6px;">${Number(place.distanceMiles)} mi</p>
         ${openStatusHtml}
         <div style="display:flex;gap:8px;margin-top:10px;">
-          <a href="https://maps.google.com/?q=${place.lat},${place.lng}" target="_blank" rel="noopener noreferrer" style="background:var(--pf-c-fill-1a1e1b);border:1px solid var(--pf-c-line-2a2f2a);border-radius:8px;padding:7px 12px;font-size:12px;color:var(--pf-c-ink-f2f5ef);text-decoration:none;">Get directions</a>
-          ${place.website ? `<a href="${escapeHtml(place.website)}" target="_blank" rel="noopener noreferrer" style="background:var(--pf-volt);border-radius:8px;padding:7px 12px;font-size:12px;color:var(--pf-on-accent);font-weight:700;text-decoration:none;">Visit website</a>` : ""}
+          <a href="https://maps.google.com/?q=${Number(place.lat)},${Number(place.lng)}" target="_blank" rel="noopener noreferrer" style="background:var(--pf-c-fill-1a1e1b);border:1px solid var(--pf-c-line-2a2f2a);border-radius:8px;padding:7px 12px;font-size:12px;color:var(--pf-c-ink-f2f5ef);text-decoration:none;">Get directions</a>
+          ${safeHttpUrl(place.website) ? `<a href="${escapeHtml(safeHttpUrl(place.website) ?? "")}" target="_blank" rel="noopener noreferrer" style="background:var(--pf-volt);border-radius:8px;padding:7px 12px;font-size:12px;color:var(--pf-on-accent);font-weight:700;text-decoration:none;">Visit website</a>` : ""}
         </div>
       </div>
     `,
@@ -241,5 +242,6 @@ function escapeHtml(text: string): string {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }

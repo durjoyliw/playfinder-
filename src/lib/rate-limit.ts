@@ -59,6 +59,12 @@ export type RateLimitBucket = keyof typeof RATE_LIMITS;
 
 export interface RateLimitResult {
   ok: boolean;
+  /**
+   * Set when the request is refused because of the account's moderation
+   * status (banned, suspended, read-only, messaging/creation disabled)
+   * rather than because of the rate limit. Holds the message to show.
+   */
+  blocked?: string;
   limit: number;
   remaining: number;
   /** Seconds until the window resets. */
@@ -68,10 +74,99 @@ export interface RateLimitResult {
 export const RATE_LIMIT_MESSAGE =
   "You're doing that too often. Please wait a moment and try again.";
 
+/** The message to show for a refused request (rate limit or moderation). */
+export function limitMessage(result: RateLimitResult): string {
+  return result.blocked ?? RATE_LIMIT_MESSAGE;
+}
+
 export class RateLimitError extends Error {
   constructor(public readonly result: RateLimitResult) {
-    super(RATE_LIMIT_MESSAGE);
+    super(limitMessage(result));
     this.name = "RateLimitError";
+  }
+}
+
+// --- Moderation enforcement -------------------------------------------------
+//
+// Every user write in the app passes through rateLimit(bucket, user.id), so
+// account restrictions are enforced here once, for every API route and
+// server action. (Before this, suspended/banned accounts were only blocked by
+// the page layout: their session still worked against the API.)
+
+/** Subjects are IPs/usernames, not user ids. */
+const AUTH_BUCKETS: readonly RateLimitBucket[] = [
+  "login-ip",
+  "login-user",
+  "signup-ip",
+  "admin-login-ip",
+];
+
+/** Allowed even for banned/suspended/read-only accounts. */
+const ALWAYS_ALLOWED: readonly RateLimitBucket[] = [
+  "account-delete", // erasure can't be blocked
+  "data-export",
+  "appeal",
+  "report", // safety: anyone can report abuse
+  "block-mute", // safety: anyone can block a harasser
+  "mark-read",
+  "push",
+  "stream-sync",
+  "acting-identity",
+  "page-handle-check",
+  "birth-date",
+  "secure-account",
+];
+
+const MESSAGING_BUCKETS: readonly RateLimitBucket[] = [
+  "dm",
+  "group-chat",
+  "message-request",
+  "share",
+];
+
+const CREATION_BUCKETS: readonly RateLimitBucket[] = ["post", "page-create"];
+
+export const ACCOUNT_LOCKED_MESSAGE =
+  "Your account is suspended, so you can't do that right now.";
+const READ_ONLY_MESSAGE = "Your account is read-only for now.";
+const MESSAGING_DISABLED_MESSAGE = "Messaging is turned off for your account.";
+const CREATION_DISABLED_MESSAGE =
+  "Creating posts and games is turned off for your account.";
+
+async function moderationBlock(
+  bucket: RateLimitBucket,
+  userId: string,
+): Promise<string | null> {
+  if (AUTH_BUCKETS.includes(bucket) || ALWAYS_ALLOWED.includes(bucket)) {
+    return null;
+  }
+  try {
+    const account = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { status: true, suspendedUntil: true },
+    });
+    if (!account) return null;
+    const suspended =
+      account.status === "SUSPENDED" &&
+      (!account.suspendedUntil || account.suspendedUntil > new Date());
+    if (account.status === "BANNED" || suspended) return ACCOUNT_LOCKED_MESSAGE;
+    if (account.status === "RESTRICTED") return READ_ONLY_MESSAGE;
+    if (
+      account.status === "MESSAGING_DISABLED" &&
+      MESSAGING_BUCKETS.includes(bucket)
+    ) {
+      return MESSAGING_DISABLED_MESSAGE;
+    }
+    if (
+      account.status === "EVENT_CREATION_DISABLED" &&
+      CREATION_BUCKETS.includes(bucket)
+    ) {
+      return CREATION_DISABLED_MESSAGE;
+    }
+    return null;
+  } catch (error) {
+    console.error(`moderationBlock(${bucket}) failed`, error);
+    return null;
   }
 }
 
@@ -81,6 +176,11 @@ export async function rateLimit(
 ): Promise<RateLimitResult> {
   const { limit, windowSec } = RATE_LIMITS[bucket];
   const key = `${bucket}:${subject.toLowerCase()}`;
+
+  const blocked = await moderationBlock(bucket, subject);
+  if (blocked) {
+    return { ok: false, blocked, limit, remaining: 0, retryAfter: 0 };
+  }
 
   try {
     // Start a new window if the old one has elapsed, else count up. Times
@@ -127,8 +227,11 @@ export async function enforceRateLimit(
   if (!result.ok) throw new RateLimitError(result);
 }
 
-/** Standard 429 response for API routes. */
+/** Standard refusal for API routes: 403 for moderation, 429 for the limit. */
 export function tooManyRequests(result: RateLimitResult): Response {
+  if (result.blocked) {
+    return Response.json({ error: result.blocked }, { status: 403 });
+  }
   return Response.json(
     { error: RATE_LIMIT_MESSAGE },
     {

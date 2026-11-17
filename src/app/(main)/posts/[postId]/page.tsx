@@ -1,5 +1,6 @@
 import { validateRequest } from "@/auth";
 import { PostDetailView } from "@/components/playfinder/post-detail-view";
+import { visiblePostsWhere } from "@/lib/post-access";
 import prisma from "@/lib/prisma";
 import { getPostDataInclude } from "@/lib/types";
 import { Metadata } from "next";
@@ -11,8 +12,10 @@ interface PageProps {
 }
 
 const getPost = cache(async (postId: string, loggedInUserId: string) => {
-  const post = await prisma.post.findUnique({
-    where: { id: postId },
+  // Deleted, hidden, teammates-only (for non-teammates) and blocked posts
+  // all 404, rather than only blocked ones.
+  const post = await prisma.post.findFirst({
+    where: { AND: [{ id: postId }, visiblePostsWhere(loggedInUserId)] },
     include: getPostDataInclude(loggedInUserId),
   });
 

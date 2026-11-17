@@ -1,3 +1,4 @@
+import { visiblePostsWhere } from "@/lib/post-access";
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { getPostDataInclude, PostsPage } from "@/lib/types";
@@ -17,14 +18,10 @@ export async function GET(req: NextRequest) {
 
     const posts = await prisma.post.findMany({
       where: {
-        deletedAt: null,
-        user: {
-          followers: {
-            some: {
-              followerId: user.id,
-            },
-          },
-        },
+        AND: [
+          visiblePostsWhere(user.id),
+          { user: { followers: { some: { followerId: user.id } } } },
+        ],
       },
       orderBy: { createdAt: "desc" },
       take: pageSize + 1,

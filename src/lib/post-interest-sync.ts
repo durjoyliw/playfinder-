@@ -41,8 +41,9 @@ export async function syncPostIsFull(
  * can't overfill it.
  */
 export async function lockPost(
-  tx: Pick<typeof prisma, "$executeRaw">,
+  tx: Pick<typeof prisma, "$queryRaw">,
   postId: string,
 ) {
-  await tx.$executeRaw`SELECT 1 FROM "posts" WHERE "id" = ${postId} FOR UPDATE`;
+  // $queryRaw (not $executeRaw) because it's a SELECT that returns rows.
+  await tx.$queryRaw`SELECT 1 FROM "posts" WHERE "id" = ${postId} FOR UPDATE`;
 }

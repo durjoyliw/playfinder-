@@ -3,7 +3,9 @@
 import { useToast } from "@/components/ui/use-toast";
 import useDebounce from "@/hooks/useDebounce";
 import kyInstance from "@/lib/ky";
+import { openOrRequestDm } from "./open-dm";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { HTTPError } from "ky";
 import { ArrowLeft, Check, Loader2, Search, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -56,15 +58,20 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
 
   const startChatMutation = useMutation({
     mutationFn: async (recipient: SearchUser) => {
-      await kyInstance.post("/api/messages/prepare-dm", {
-        json: { recipientId: recipient.id },
+      // Same path as a profile's Message button: teammates get a chat,
+      // everyone else gets a message request.
+      const result = await openOrRequestDm({
+        client,
+        currentUserId: loggedInUser.id,
+        targetUserId: recipient.id,
       });
-
-      const channel = client.channel("messaging", {
-        members: [loggedInUser.id, recipient.id],
-      });
-      await channel.watch();
-      return channel;
+      if (result.type === "blocked") {
+        throw new Error("You can't message this player.");
+      }
+      if (result.type !== "channel") {
+        throw new Error("Could not start chat. Please try again.");
+      }
+      return result.channel;
     },
     onSuccess: (channel) => {
       onOpenChange(false);
@@ -72,24 +79,40 @@ export default function NewChatDialog({ onOpenChange }: NewChatDialogProps) {
         router.push(`/messages/${encodeURIComponent(channel.id)}`);
       }
     },
-    onError() {
+    onError(error) {
       toast({
         variant: "destructive",
-        description: "Could not start chat. Please try again.",
+        description:
+          error instanceof Error && error.message
+            ? error.message
+            : "Could not start chat. Please try again.",
       });
     },
   });
 
   const createGroupMutation = useMutation({
     mutationFn: async () => {
-      const res = await kyInstance
-        .post("/api/messages/prepare-group", {
-          json: {
-            memberIds: selected.map((s) => s.id),
-            name: groupName.trim() || undefined,
-          },
-        })
-        .json<{ channelId?: string; error?: string }>();
+      let res: { channelId?: string; error?: string };
+      try {
+        res = await kyInstance
+          .post("/api/messages/prepare-group", {
+            json: {
+              memberIds: selected.map((s) => s.id),
+              name: groupName.trim() || undefined,
+            },
+          })
+          .json<{ channelId?: string; error?: string }>();
+      } catch (error) {
+        // Surface the server's reason (e.g. "Groups can only include your
+        // teammates") instead of ky's "Request failed with status 403".
+        if (error instanceof HTTPError) {
+          const body = (await error.response.json().catch(() => null)) as {
+            error?: string;
+          } | null;
+          throw new Error(body?.error ?? "Could not create group.");
+        }
+        throw error;
+      }
 
       if (!res.channelId)
         throw new Error(res.error ?? "Failed to create group");

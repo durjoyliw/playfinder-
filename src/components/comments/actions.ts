@@ -1,6 +1,7 @@
 "use server";
 
 import { validateRequest } from "@/auth";
+import { visiblePostsWhere } from "@/lib/post-access";
 import prisma from "@/lib/prisma";
 import { getCommentDataInclude, PostData } from "@/lib/types";
 import { createCommentSchema } from "@/lib/validation";
@@ -20,22 +21,30 @@ export async function submitComment({
 
   const { content: contentValidated } = createCommentSchema.parse({ content });
 
+  // Never trust the post object from the client: look it up (and check the
+  // caller may see it) server-side, and notify its real author.
+  const target = await prisma.post.findFirst({
+    where: { AND: [{ id: post.id }, visiblePostsWhere(user.id)] },
+    select: { id: true, userId: true },
+  });
+  if (!target) throw new Error("Post not found");
+
   const [newComment] = await prisma.$transaction([
     prisma.comment.create({
       data: {
         content: contentValidated,
-        postId: post.id,
+        postId: target.id,
         userId: user.id,
       },
       include: getCommentDataInclude(user.id),
     }),
-    ...(post.user.id !== user.id
+    ...(target.userId !== user.id
       ? [
           prisma.notification.create({
             data: {
               issuerId: user.id,
-              recipientId: post.user.id,
-              postId: post.id,
+              recipientId: target.userId,
+              postId: target.id,
               type: "COMMENT",
             },
           }),

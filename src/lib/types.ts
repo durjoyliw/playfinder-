@@ -134,7 +134,17 @@ export function getPlayfinderFeedPostInclude(loggedInUserId: string) {
         userId: true,
       },
     },
+    // Only the accepted roster, the viewer's own request, and — on the
+    // viewer's own posts — every request. Other people's pending/declined
+    // requests used to be sent to everyone who saw the post.
     interests: {
+      where: {
+        OR: [
+          { status: "ACCEPTED" },
+          { userId: loggedInUserId },
+          { post: { userId: loggedInUserId } },
+        ],
+      },
       select: { userId: true, status: true, id: true },
     },
     _count: {
@@ -179,7 +189,17 @@ export function getPostDataInclude(loggedInUserId: string) {
         userId: true,
       },
     },
+    // Only the accepted roster, the viewer's own request, and — on the
+    // viewer's own posts — every request. Other people's pending/declined
+    // requests used to be sent to everyone who saw the post.
     interests: {
+      where: {
+        OR: [
+          { status: "ACCEPTED" },
+          { userId: loggedInUserId },
+          { post: { userId: loggedInUserId } },
+        ],
+      },
       select: { userId: true, status: true, id: true },
     },
     _count: {

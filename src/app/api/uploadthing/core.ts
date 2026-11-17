@@ -1,5 +1,5 @@
 import { validateRequest } from "@/auth";
-import { rateLimit, RATE_LIMIT_MESSAGE } from "@/lib/rate-limit";
+import { limitMessage, rateLimit } from "@/lib/rate-limit";
 import { getUploadThingFileKey } from "@/lib/uploadthing-file-key";
 import prisma from "@/lib/prisma";
 import streamServerClient from "@/lib/stream";
@@ -17,7 +17,7 @@ export const fileRouter = {
 
       if (!user) throw new UploadThingError("Unauthorized");
       const limit = await rateLimit("upload", user.id);
-      if (!limit.ok) throw new UploadThingError(RATE_LIMIT_MESSAGE);
+      if (!limit.ok) throw new UploadThingError(limitMessage(limit));
 
       return { user };
     })
@@ -56,7 +56,7 @@ export const fileRouter = {
 
       if (!user) throw new UploadThingError("Unauthorized");
       const limit = await rateLimit("upload", user.id);
-      if (!limit.ok) throw new UploadThingError(RATE_LIMIT_MESSAGE);
+      if (!limit.ok) throw new UploadThingError(limitMessage(limit));
 
       return {};
     })
@@ -78,7 +78,7 @@ export const fileRouter = {
 
       if (!user) throw new UploadThingError("Unauthorized");
       const limit = await rateLimit("upload", user.id);
-      if (!limit.ok) throw new UploadThingError(RATE_LIMIT_MESSAGE);
+      if (!limit.ok) throw new UploadThingError(limitMessage(limit));
 
       return { user };
     })

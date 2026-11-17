@@ -2,7 +2,7 @@
 
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
-import { rateLimit, RATE_LIMIT_MESSAGE } from "@/lib/rate-limit";
+import { limitMessage, rateLimit } from "@/lib/rate-limit";
 import streamServerClient from "@/lib/stream";
 import { isUsernameTaken } from "@/lib/username";
 import { secureAccountSchema, SecureAccountValues } from "@/lib/validation";
@@ -26,7 +26,7 @@ export async function secureAccount(
     if (!user) return { ok: false, error: "You're not signed in." };
 
     const limit = await rateLimit("secure-account", user.id);
-    if (!limit.ok) return { ok: false, error: RATE_LIMIT_MESSAGE };
+    if (!limit.ok) return { ok: false, error: limitMessage(limit) };
 
     const parsed = secureAccountSchema.safeParse(values);
     if (!parsed.success) {

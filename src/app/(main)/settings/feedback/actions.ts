@@ -2,7 +2,7 @@
 
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
-import { rateLimit, RATE_LIMIT_MESSAGE } from "@/lib/rate-limit";
+import { limitMessage, rateLimit } from "@/lib/rate-limit";
 import { headers } from "next/headers";
 import { z } from "zod";
 
@@ -32,7 +32,7 @@ export async function submitFeedback(input: {
     if (!user) return { ok: false, error: "You're not signed in." };
 
     const limit = await rateLimit("feedback", user.id);
-    if (!limit.ok) return { ok: false, error: RATE_LIMIT_MESSAGE };
+    if (!limit.ok) return { ok: false, error: limitMessage(limit) };
 
     const parsed = feedbackSchema.safeParse(input);
     if (!parsed.success) {

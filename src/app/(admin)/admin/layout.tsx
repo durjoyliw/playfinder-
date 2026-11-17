@@ -1,4 +1,5 @@
 import { ADMIN_COOKIE_NAME } from "@/lib/admin/auth";
+import { isValidAdminSession } from "@/lib/admin/session-token";
 import prisma from "@/lib/prisma";
 import { cookies } from "next/headers";
 import { AdminShell } from "./admin-shell";
@@ -10,7 +11,7 @@ export default async function AdminLayout({
 }) {
   const cookieStore = await cookies();
   const session = cookieStore.get(ADMIN_COOKIE_NAME)?.value;
-  const isAdmin = Boolean(process.env.ADMIN_SECRET && session === process.env.ADMIN_SECRET);
+  const isAdmin = await isValidAdminSession(session);
 
   let pendingAppeals = 0;
   if (isAdmin) {

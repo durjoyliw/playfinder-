@@ -1,5 +1,6 @@
 "use client";
 
+import { safeHttpUrl } from "@/lib/safe-url";
 import {
   formatDistanceMiles,
   type DiscoverPlace,
@@ -193,9 +194,9 @@ export function DiscoverPlaceList({
               </div>
             </a>
 
-            {place.website != null && place.website !== "" && (
+            {safeHttpUrl(place.website) && (
               <a
-                href={place.website}
+                href={safeHttpUrl(place.website) ?? undefined}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="self-center shrink-0 text-xs font-semibold text-[var(--pf-volt-text)] hover:underline"

@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { isValidAdminSession } from "./session-token";
 
 export const ADMIN_COOKIE_NAME = "admin_session";
 export const ADMIN_ACTOR_ID = "playfinder_admin";
@@ -17,9 +18,8 @@ export function getAdminCookieOptions(maxAge: number) {
 export async function requireAdmin() {
   const cookieStore = await cookies();
   const session = cookieStore.get(ADMIN_COOKIE_NAME)?.value;
-  const secret = process.env.ADMIN_SECRET;
 
-  if (!secret || session !== secret) {
+  if (!(await isValidAdminSession(session))) {
     redirect("/admin/login");
   }
 }

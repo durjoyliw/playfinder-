@@ -73,7 +73,7 @@ export const loginSchema = z.object({
 export type LoginValues = z.infer<typeof loginSchema>;
 
 export const createPostSchema = z.object({
-  content: requiredString,
+  content: requiredString.max(5000, "Keep it under 5,000 characters"),
   mediaIds: z.array(z.string()).max(5, "Cannot have more than 5 attachments"),
 });
 
@@ -166,7 +166,7 @@ export const completeOnboardingSchema = z.object({
 export type CompleteOnboardingValues = z.infer<typeof completeOnboardingSchema>;
 
 export const createCommentSchema = z.object({
-  content: requiredString,
+  content: requiredString.max(1000, "Keep comments under 1,000 characters"),
 });
 
 export const PAGE_HANDLE_REGEX = /^[a-z0-9][a-z0-9_-]{1,29}$/;

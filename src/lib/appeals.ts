@@ -3,7 +3,7 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { rateLimit, RATE_LIMIT_MESSAGE } from "@/lib/rate-limit";
+import { limitMessage, rateLimit } from "@/lib/rate-limit";
 
 export async function submitAppeal(
   formData: FormData,
@@ -14,7 +14,7 @@ export async function submitAppeal(
   }
 
   const limit = await rateLimit("appeal", user.id);
-  if (!limit.ok) return { error: RATE_LIMIT_MESSAGE };
+  if (!limit.ok) return { error: limitMessage(limit) };
 
   const account = await prisma.user.findUnique({
     where: { id: user.id },

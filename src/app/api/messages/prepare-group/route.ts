@@ -63,6 +63,26 @@ export async function POST(req: Request) {
       );
     }
 
+    // Groups can only include your teammates (mutual follows), so nobody can
+    // be dropped into a group chat by a stranger.
+    const nonTeammates = await prisma.user.count({
+      where: {
+        id: { in: uniqueMemberIds },
+        NOT: {
+          AND: [
+            { followers: { some: { followerId: user.id } } },
+            { following: { some: { followingId: user.id } } },
+          ],
+        },
+      },
+    });
+    if (nonTeammates > 0) {
+      return Response.json(
+        { error: "Groups can only include your teammates" },
+        { status: 403 },
+      );
+    }
+
     await upsertStreamUsersMany([
       { id: user.id, displayName: user.displayName, username: user.username },
       ...members,

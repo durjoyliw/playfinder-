@@ -44,6 +44,28 @@ const nextConfig = {
       },
     ],
   },
+  // Baseline security headers on every response. (No full CSP yet: Mapbox,
+  // Stream and UploadThing need a careful allow-list; frame-ancestors alone
+  // is safe and stops clickjacking.)
+  headers: async () => [
+    {
+      source: "/:path*",
+      headers: [
+        { key: "X-Content-Type-Options", value: "nosniff" },
+        { key: "X-Frame-Options", value: "DENY" },
+        { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+        { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+        {
+          key: "Permissions-Policy",
+          value: "camera=(self), microphone=(), geolocation=(self), payment=()",
+        },
+        {
+          key: "Strict-Transport-Security",
+          value: "max-age=63072000; includeSubDomains",
+        },
+      ],
+    },
+  ],
   rewrites: () => {
     return [
       {

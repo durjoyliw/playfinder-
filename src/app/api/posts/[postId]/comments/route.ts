@@ -1,4 +1,5 @@
 import { validateRequest } from "@/auth";
+import { visiblePostsWhere } from "@/lib/post-access";
 import prisma from "@/lib/prisma";
 import { CommentsPage, getCommentDataInclude } from "@/lib/types";
 import { createCommentSchema } from "@/lib/validation";
@@ -21,8 +22,8 @@ export async function POST(
 
     const { content } = createCommentSchema.parse(await req.json());
 
-    const post = await prisma.post.findUnique({
-      where: { id: postId },
+    const post = await prisma.post.findFirst({
+      where: { AND: [{ id: postId }, visiblePostsWhere(user.id)] },
       select: { id: true, userId: true },
     });
 
@@ -73,6 +74,13 @@ export async function GET(
 
     if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const visible = await prisma.post.count({
+      where: { AND: [{ id: postId }, visiblePostsWhere(user.id)] },
+    });
+    if (!visible) {
+      return Response.json({ error: "Post not found" }, { status: 404 });
     }
 
     const comments = await prisma.comment.findMany({
