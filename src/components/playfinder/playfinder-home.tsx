@@ -36,13 +36,15 @@ export function PlayFinderHome({ feedSportTabs }: PlayFinderHomeProps) {
 
   return (
     <div className="bg-[var(--pf-c-fill-08090a)]">
+      <SportTabs
+        tabs={feedSportTabs}
+        activeTab={sportFilter}
+        onTabChange={setSportFilter}
+      />
+      <ComposeRow onBroadcast={() => openComposer()} />
+      {/* Only the Social/Arena tabs stay pinned: pinning the filters and the
+          compose card as well covered half the screen on small phones. */}
       <div className="sticky top-[var(--pf-header-h)] z-20 border-b border-[rgb(var(--pf-contrast-rgb)/0.04)] bg-[rgb(var(--pf-c-fill-08090a-rgb)/0.92)] backdrop-blur-[20px] lg:top-0">
-        <SportTabs
-          tabs={feedSportTabs}
-          activeTab={sportFilter}
-          onTabChange={setSportFilter}
-        />
-        <ComposeRow onBroadcast={() => openComposer()} />
         <FeedTypeTabs activeTab={feedTypeTab} onTabChange={setFeedTypeTab} />
       </div>
       {feedTypeTab === "players" && <LiveActivityBar />}

@@ -41,7 +41,7 @@ export function Header({
         <span className="truncate text-[22px] font-bold leading-none tracking-[-0.04em] text-[var(--pf-c-ink-ffffff)]">
           PlayFinder
         </span>
-        <BetaBadge />
+        <BetaBadge className="max-[359px]:hidden" />
       </Link>
 
       <button

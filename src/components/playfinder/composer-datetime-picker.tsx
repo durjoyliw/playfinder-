@@ -81,6 +81,12 @@ export function ComposerDateTimePicker({
       fallback.setHours(fallback.getHours() + 2, 0, 0, 0);
       next.setHours(fallback.getHours(), 0, 0, 0);
     }
+    // Never schedule a game in the past: snap to the next half-hour.
+    if (next.getTime() <= Date.now()) {
+      const soon = new Date();
+      soon.setMinutes(soon.getMinutes() < 30 ? 30 : 60, 0, 0);
+      next.setTime(soon.getTime());
+    }
     onChange(toDatetimeLocalValue(next));
   };
 
@@ -104,7 +110,13 @@ export function ComposerDateTimePicker({
         className="w-full text-left text-[15px] text-[var(--pf-c-ink-ffffff)]"
         aria-expanded={open}
       >
-        <span className={selected ? "text-[var(--pf-c-ink-ffffff)]" : "text-[var(--pf-c-ink-888888)]"}>
+        <span
+          className={
+            selected
+              ? "text-[var(--pf-c-ink-ffffff)]"
+              : "text-[var(--pf-c-ink-888888)]"
+          }
+        >
           {label}
         </span>
       </button>
@@ -167,15 +179,19 @@ export function ComposerDateTimePicker({
               const active =
                 selected?.getHours() === slot.hours &&
                 selected?.getMinutes() === slot.minutes;
+              const slotDate = new Date(selected ?? today);
+              slotDate.setHours(slot.hours, slot.minutes, 0, 0);
+              const past = slotDate.getTime() <= Date.now();
               return (
                 <button
                   key={`${slot.hours}-${slot.minutes}`}
                   type="button"
+                  disabled={past}
                   onClick={() =>
                     apply(selected ?? new Date(), slot.hours, slot.minutes)
                   }
                   className={cn(
-                    "shrink-0 whitespace-nowrap rounded-[10px] border px-3 py-2 text-xs font-semibold",
+                    "shrink-0 whitespace-nowrap rounded-[10px] border px-3 py-2 text-xs font-semibold disabled:opacity-30",
                     active
                       ? "border-[var(--pf-volt-cta)] bg-[var(--pf-volt-cta)] text-[var(--pf-on-accent)]"
                       : "border-[var(--pf-c-line-2a2f2a)] text-[var(--pf-c-ink-b4bcaf)]",

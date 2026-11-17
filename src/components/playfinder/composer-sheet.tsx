@@ -36,10 +36,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { ComposerDateTimePicker } from "./composer-datetime-picker";
 import { submitBroadcast } from "./actions";
-import {
-  IdentitySwitcher,
-  useActingIdentityState,
-} from "./identity-switcher";
+import { IdentitySwitcher, useActingIdentityState } from "./identity-switcher";
 
 export type ComposerTab = "social" | "arena";
 
@@ -57,8 +54,7 @@ const fieldInputClassName =
 
 const ARENA_INTENTS = POST_INTENTS.filter(
   (o) =>
-    o.value === PostIntent.LOOKING_TO_PLAY ||
-    o.value === PostIntent.RECRUITING,
+    o.value === PostIntent.LOOKING_TO_PLAY || o.value === PostIntent.RECRUITING,
 );
 
 /** Normalises profile sport keys (kebab, snake, PascalCase, legacy enum) to onboarding id form. */
@@ -87,9 +83,7 @@ function normalizeProfileSportKey(raw: string): string {
     return trimmed.toLowerCase();
   }
   if (/[A-Z]/.test(trimmed)) {
-    return trimmed
-      .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
-      .toLowerCase();
+    return trimmed.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
   }
 
   return trimmed.toLowerCase();
@@ -231,7 +225,7 @@ function FieldRow({
   return (
     <div
       className={cn(
-        "flex min-h-[52px] items-center gap-2.5 rounded-[14px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] px-4 py-3.5 pf-card",
+        "pf-card flex min-h-[52px] items-center gap-2.5 rounded-[14px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] px-4 py-3.5",
         className,
       )}
     >
@@ -270,7 +264,9 @@ export function ComposerSheet({
 
   // —— Arena state ——
   const [selectedSport, setSelectedSport] = useState<string | null>(null);
-  const [selectedIntent, setSelectedIntent] = useState<PostIntent | null>(null);
+  const [selectedIntent, setSelectedIntent] = useState<PostIntent | null>(
+    PostIntent.LOOKING_TO_PLAY,
+  );
   const [location, setLocation] = useState("");
   const [gameAt, setGameAt] = useState("");
   const [timeLabel, setTimeLabel] = useState("");
@@ -306,12 +302,21 @@ export function ComposerSheet({
 
   const { data: profile } = useQuery({
     queryKey: ["user-settings"],
-    queryFn: () => kyInstance.get("/api/users/profile").json<UserSettingsData>(),
+    queryFn: () =>
+      kyInstance.get("/api/users/profile").json<UserSettingsData>(),
     enabled: open,
     staleTime: 60_000,
   });
 
   const userSports = useMemo(() => profile?.sports ?? [], [profile?.sports]);
+
+  // Arena posts need a sport: start with the person's first one picked, so
+  // the Post button isn't greyed out for no visible reason.
+  useEffect(() => {
+    if (activeTab !== "arena" || selectedSport || !userSports.length) return;
+    const first = normalizeProfileSportKey(userSports[0].sport);
+    if (first) setSelectedSport(first);
+  }, [activeTab, selectedSport, userSports]);
 
   const { data: actingState } = useActingIdentityState();
   const actingPage =
@@ -320,12 +325,12 @@ export function ComposerSheet({
       : null;
   const postingAsName = actingPage
     ? actingPage.name
-    : (profile?.displayName ?? user.displayName);
+    : profile?.displayName ?? user.displayName;
   const areaChip = getDisplayArea(profile?.location);
 
   const resetArenaForm = () => {
     setSelectedSport(null);
-    setSelectedIntent(null);
+    setSelectedIntent(PostIntent.LOOKING_TO_PLAY);
     setLocation("");
     setGameAt("");
     setTimeLabel("");
@@ -367,7 +372,9 @@ export function ComposerSheet({
   const arenaMutation = useMutation({
     mutationFn: (values: CreateBroadcastValues) => submitBroadcast(values),
     onSuccess: async (newPost) => {
-      await queryClient.cancelQueries({ queryKey: ["post-feed", "playfinder"] });
+      await queryClient.cancelQueries({
+        queryKey: ["post-feed", "playfinder"],
+      });
       queryClient.setQueriesData<PostsPage>(
         { queryKey: ["post-feed", "playfinder"] },
         (oldData) =>
@@ -414,7 +421,8 @@ export function ComposerSheet({
     if (!enumSport) {
       toast({
         variant: "destructive",
-        description: "Could not map the selected sport. Try updating your sports in Settings.",
+        description:
+          "Could not map the selected sport. Try updating your sports in Settings.",
       });
       return;
     }
@@ -440,16 +448,13 @@ export function ComposerSheet({
   const handleGifPick = () => photoInputRef.current?.click();
 
   const socialSportChipLabel = selectedSportIds.length
-    ? selectedSportIds
-        .map((id) => getComposerSportDisplay(id).name)
-        .join(", ")
+    ? selectedSportIds.map((id) => getComposerSportDisplay(id).name).join(", ")
     : "Sport tag";
 
   if (!mounted || !open) return null;
 
   const sportChips = userSports.map((entry, index) => {
-    const sportKey =
-      normalizeProfileSportKey(entry.sport) || `sport-${index}`;
+    const sportKey = normalizeProfileSportKey(entry.sport) || `sport-${index}`;
     const { name, emoji } = getComposerSportDisplay(entry.sport);
     const selected =
       activeTab === "social"
@@ -562,7 +567,9 @@ export function ComposerSheet({
         }
         className={cn(
           composerSubmitButtonClassName,
-          activeTab === "arena" && !arenaValid && "cursor-not-allowed opacity-40",
+          activeTab === "arena" &&
+            !arenaValid &&
+            "cursor-not-allowed opacity-40",
         )}
       >
         {activeTab === "social" ? "Post" : "Post Arena"}
@@ -581,13 +588,16 @@ export function ComposerSheet({
       />
 
       <div
-        className="relative z-10 max-h-[90%] w-full max-w-[480px] overflow-y-auto rounded-t-[24px] border border-[var(--pf-c-line-2a2f2a)] border-b-0 bg-[var(--pf-c-fill-161616)] px-4 pb-[calc(24px+env(safe-area-inset-bottom,0px))] pt-4 text-[var(--pf-c-ink-ffffff)] shadow-[0_-10px_40px_rgba(0,0,0,0.5)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="relative z-10 max-h-[90%] w-full max-w-[480px] overflow-y-auto rounded-t-[24px] border border-b-0 border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-161616)] px-4 pb-[calc(24px+env(safe-area-inset-bottom,0px))] pt-4 text-[var(--pf-c-ink-ffffff)] shadow-[0_-10px_40px_rgba(0,0,0,0.5)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         role="dialog"
         aria-modal="true"
         aria-labelledby="composer-sheet-title"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mx-auto mb-4 h-1 w-10 rounded-sm bg-[var(--pf-c-fill-353c34)]" aria-hidden />
+        <div
+          className="mx-auto mb-4 h-1 w-10 rounded-sm bg-[var(--pf-c-fill-353c34)]"
+          aria-hidden
+        />
 
         <div className="mb-[18px] flex items-center justify-between">
           <h2
@@ -626,7 +636,9 @@ export function ComposerSheet({
             <div
               className={cn(
                 "mb-1 text-[15px] font-bold",
-                activeTab === "social" ? "text-[var(--pf-volt-cta)]" : "text-[var(--pf-c-ink-ffffff)]",
+                activeTab === "social"
+                  ? "text-[var(--pf-volt-cta)]"
+                  : "text-[var(--pf-c-ink-ffffff)]",
               )}
             >
               Social
@@ -650,7 +662,9 @@ export function ComposerSheet({
             <div
               className={cn(
                 "mb-1 text-[15px] font-bold",
-                activeTab === "arena" ? "text-[var(--pf-volt-cta)]" : "text-[var(--pf-c-ink-ffffff)]",
+                activeTab === "arena"
+                  ? "text-[var(--pf-volt-cta)]"
+                  : "text-[var(--pf-c-ink-ffffff)]",
               )}
             >
               Arena
@@ -677,7 +691,9 @@ export function ComposerSheet({
             )}
             <p className="min-w-0 flex-1 text-[13px] font-semibold text-[var(--pf-volt-text)]">
               Posting as{" "}
-              <span className="text-[var(--pf-c-ink-f2f5ef)]">{actingPage.name}</span>
+              <span className="text-[var(--pf-c-ink-f2f5ef)]">
+                {actingPage.name}
+              </span>
             </p>
           </div>
         )}
@@ -685,7 +701,8 @@ export function ComposerSheet({
         <div className="mb-3.5 flex items-center gap-2.5 text-[13px] text-[var(--pf-c-ink-7e8a7e)]">
           <IdentitySwitcher />
           <span className="min-w-0 flex-1">
-            Posting as <b className="text-[var(--pf-c-ink-ffffff)]">{postingAsName}</b>
+            Posting as{" "}
+            <b className="text-[var(--pf-c-ink-ffffff)]">{postingAsName}</b>
           </span>
         </div>
 
@@ -829,7 +846,9 @@ export function ComposerSheet({
                   >
                     <Plus className="h-4 w-4" />
                   </button>
-                  <span className="text-xs text-[var(--pf-c-ink-7e8a7e)]">players needed</span>
+                  <span className="text-xs text-[var(--pf-c-ink-7e8a7e)]">
+                    players needed
+                  </span>
                 </div>
               </FieldRow>
 
