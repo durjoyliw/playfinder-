@@ -80,7 +80,7 @@ export function PlayFinderLanding() {
         .pf-hero-photo { width: 100%; height: 460px; border-radius: 20px; display: block; overflow: hidden; border: 1px solid ${BORDER}; }
         .pf-hero-card { position: absolute; left: -28px; bottom: -28px; width: 300px; background: ${CARD}; border: 1px solid ${BORDER}; border-radius: 20px; padding: 18px; box-shadow: 0 20px 48px rgba(0,0,0,0.45); }
 
-        .pf-features-grid { display: grid; grid-template-columns: 1.35fr 1fr; grid-template-rows: repeat(3, 1fr); gap: 16px; }
+        .pf-features-grid { display: grid; grid-template-columns: 1.35fr 1fr; grid-template-rows: repeat(3, auto); gap: 16px; }
         .pf-feature-card--tall { grid-row: span 3; min-height: 480px; }
 
         .pf-steps-row { display: flex; align-items: flex-start; position: relative; }
