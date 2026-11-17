@@ -49,7 +49,7 @@ const steps = [
     number: "1",
     title: "Tell us your name",
     description:
-      "No email or password during the beta. Add your sports and area.",
+      "No email or password during the beta. Pick your sports and you're in.",
   },
   {
     number: "2",
@@ -63,7 +63,11 @@ const steps = [
   },
 ] as const;
 
-const betaFacts = ["Free during the beta", "Glasgow first", "18+"] as const;
+const betaFacts = [
+  "Free during the beta",
+  "Glasgow only for now",
+  "18+",
+] as const;
 
 export function PlayFinderLanding() {
   return (
@@ -113,7 +117,7 @@ export function PlayFinderLanding() {
           .pf-step-circle { margin-right: 16px !important; margin-bottom: 0 !important; }
           .pf-testimonial-grid { grid-template-columns: 1fr; gap: 28px; }
           .pf-testimonial-photo { height: 220px; }
-          .pf-cta-band { flex-direction: column; align-items: flex-start; }
+          .pf-cta-band { flex-direction: column; align-items: flex-start; gap: 24px; padding: 32px 24px !important; }
           .pf-footer-inner { flex-direction: column; align-items: flex-start; }
         }
       `}</style>
@@ -447,7 +451,10 @@ export function PlayFinderLanding() {
                       borderBottom: `1px solid ${BORDER}`,
                     }}
                   >
-                    <Art className="absolute inset-0 h-full w-full" />
+                    <Art
+                      fit="contain"
+                      className="absolute inset-0 h-full w-full"
+                    />
                   </div>
                 )}
                 <Icon
@@ -567,6 +574,7 @@ export function PlayFinderLanding() {
               style={{ backgroundColor: CARD }}
             >
               <CityArt
+                fit="contain"
                 className="h-full w-full"
                 title="Map of Glasgow with pins in Partick, the West End, Dennistoun, Govan and the Southside"
               />

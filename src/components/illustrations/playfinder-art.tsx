@@ -39,6 +39,7 @@ function Frame({
         fit === "contain" ? "xMidYMid meet" : "xMidYMid slice"
       }
       xmlns="http://www.w3.org/2000/svg"
+      overflow="hidden"
     >
       {title ? <title>{title}</title> : null}
       {children}
@@ -46,12 +47,23 @@ function Frame({
   );
 }
 
-/** Soft accent glow + faint dot grid behind every scene. */
+/**
+ * Soft accent glow + faint dot grid behind every scene. Drawn well past the
+ * viewBox so that with fit="contain" the backdrop fills the whole frame
+ * (no visible box edges around the drawing).
+ */
 function Backdrop({ w, h, id }: { w: number; h: number; id: string }) {
+  const bleed = { x: -w * 3, y: -h * 3, width: w * 7, height: h * 7 };
   return (
     <>
       <defs>
-        <radialGradient id={`${id}-glow`} cx="30%" cy="15%" r="80%">
+        <radialGradient
+          id={`${id}-glow`}
+          gradientUnits="userSpaceOnUse"
+          cx={w * 0.3}
+          cy={h * 0.15}
+          r={Math.max(w, h) * 0.8}
+        >
           <stop style={{ stopColor: ACCENT }} offset="0%" stopOpacity="0.22" />
           <stop style={{ stopColor: ACCENT }} offset="60%" stopOpacity="0" />
         </radialGradient>
@@ -64,14 +76,9 @@ function Backdrop({ w, h, id }: { w: number; h: number; id: string }) {
           <circle style={{ fill: LINE }} cx="2" cy="2" r="1.1" />
         </pattern>
       </defs>
-      <rect style={{ fill: SURFACE }} width={w} height={h} />
-      <rect
-        style={{ fill: `url(#${id}-dots)` }}
-        width={w}
-        height={h}
-        opacity="0.7"
-      />
-      <rect style={{ fill: `url(#${id}-glow)` }} width={w} height={h} />
+      <rect style={{ fill: SURFACE }} {...bleed} />
+      <rect style={{ fill: `url(#${id}-dots)` }} {...bleed} opacity="0.7" />
+      <rect style={{ fill: `url(#${id}-glow)` }} {...bleed} />
     </>
   );
 }
@@ -209,13 +216,18 @@ export function PitchArt({ className, title, fit }: ArtProps) {
 }
 
 /** Feature: a broadcast pinging out to nearby players. */
-export function BroadcastArt({ className, title }: ArtProps) {
+export function BroadcastArt({ className, title, fit }: ArtProps) {
   const W = 640;
   const H = 960;
   const cx = 320;
   const cy = 420;
   return (
-    <Frame className={className} title={title} viewBox={`0 0 ${W} ${H}`}>
+    <Frame
+      fit={fit}
+      className={className}
+      title={title}
+      viewBox={`0 0 ${W} ${H}`}
+    >
       <Backdrop w={W} h={H} id="broadcast" />
       {[90, 170, 250, 330].map((r, i) => (
         <circle
@@ -254,11 +266,16 @@ export function BroadcastArt({ className, title }: ArtProps) {
 }
 
 /** Feature: an athlete profile card. */
-export function ProfileArt({ className, title }: ArtProps) {
+export function ProfileArt({ className, title, fit }: ArtProps) {
   const W = 640;
   const H = 480;
   return (
-    <Frame className={className} title={title} viewBox={`0 0 ${W} ${H}`}>
+    <Frame
+      fit={fit}
+      className={className}
+      title={title}
+      viewBox={`0 0 ${W} ${H}`}
+    >
       <Backdrop w={W} h={H} id="profile" />
       <g transform="translate(150 70)">
         <rect
@@ -349,7 +366,7 @@ export function ProfileArt({ className, title }: ArtProps) {
 }
 
 /** Glasgow-flavoured map: the Clyde and a few neighbourhood pins. */
-export function CityArt({ className, title }: ArtProps) {
+export function CityArt({ className, title, fit }: ArtProps) {
   const W = 800;
   const H = 700;
   const pins: Array<[number, number, string]> = [
@@ -360,7 +377,12 @@ export function CityArt({ className, title }: ArtProps) {
     [230, 470, "Govan"],
   ];
   return (
-    <Frame className={className} title={title} viewBox={`0 0 ${W} ${H}`}>
+    <Frame
+      fit={fit}
+      className={className}
+      title={title}
+      viewBox={`0 0 ${W} ${H}`}
+    >
       <Backdrop w={W} h={H} id="city" />
       {/* Street grid */}
       <g style={{ stroke: LINE }} strokeWidth="2" opacity="0.8">
