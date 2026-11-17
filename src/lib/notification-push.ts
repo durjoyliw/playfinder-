@@ -17,8 +17,8 @@ const STATIC_MESSAGES: Partial<Record<NotificationType, { title: string }>> = {
 /**
  * Turns a just-created Notification row into a push payload and sends it.
  * Called from the prisma `notification.create` extension, so every
- * notification type -- event-driven (like/comment/follow/...) and the
- * system-generated ones (nearby games, inactivity, trending) -- gets a
+ * notification type — event-driven (like/comment/follow/...) and the
+ * system-generated ones (nearby games, inactivity, trending) — gets a
  * real device push for free, without touching each call site.
  */
 export async function sendPushForNotification(
@@ -57,7 +57,7 @@ export async function sendPushForNotification(
     GAME_INTEREST: gameMessage ?? `${name} wants to join your game`,
     NEARBY_GAMES: notification.body ?? "New games near you this weekend",
     INACTIVITY_NUDGE:
-      notification.body ?? "It's been a while -- share what you're up to",
+      notification.body ?? "It's been a while — share what you're up to",
     TRENDING_POST: notification.body ?? "A post in your sport is trending",
   };
 

@@ -149,7 +149,7 @@ export function PostViewerMenu({
         json: { targetType: "POST", targetId: postId, reason },
       }),
     onSuccess: () => {
-      toast({ description: "Thanks -- we'll take a look." });
+      toast({ description: "Thanks — we'll take a look." });
     },
     onError: () => {
       toast({

@@ -1,5 +1,6 @@
 "use client";
 
+import { EmptyState } from "@/components/system/empty-state";
 import InfiniteScrollContainer from "@/components/InfiniteScrollContainer";
 import PostsLoadingSkeleton from "@/components/posts/PostsLoadingSkeleton";
 import kyInstance from "@/lib/ky";
@@ -9,7 +10,7 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
+import { Bell, Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import Notification from "./Notification";
 
@@ -93,9 +94,12 @@ function AllNotificationsList({
 
   if (status === "success" && !notifications.length && !hasNextPage) {
     return (
-      <p className="py-8 text-center text-[var(--pf-c-ink-7e8a7e)]">
-        You don&apos;t have any notifications yet.
-      </p>
+      <EmptyState
+        icon={Bell}
+        title="No notifications yet"
+        body="When someone wants to join your game, accepts you, or comments on your post, it lands here."
+        action={{ href: "/home", label: "Find a game" }}
+      />
     );
   }
 

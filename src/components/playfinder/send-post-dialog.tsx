@@ -139,7 +139,7 @@ export function SendPostDialog({ postId, onOpenChange }: SendPostDialogProps) {
                   </p>
                   <p className="truncate text-sm text-[var(--pf-c-ink-7e8a7e)]">
                     {failedToSend
-                      ? "Could not send -- try again"
+                      ? "Could not send — try again"
                       : `@${recipient.username}`}
                   </p>
                 </div>

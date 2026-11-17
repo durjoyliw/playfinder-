@@ -19,7 +19,7 @@ function capitalize(word: string): string {
 
 /**
  * Top 5 trending topics, one per sport the viewer plays. Computed from
- * PlayFinder's own recent posts (not an external sports database -- see
+ * PlayFinder's own recent posts (not an external sports database — see
  * /api/discover/trending), so it reflects real local activity instead of
  * generic world sports news.
  */
@@ -47,7 +47,7 @@ export function TrendingWidget() {
       </p>
       {topics.length === 0 ? (
         <p className="py-1.5 text-xs text-[var(--pf-c-ink-7e8a7e)]">
-          Nothing trending yet -- check back once there&apos;s more activity in
+          Nothing trending yet — check back once there&apos;s more activity in
           your sports.
         </p>
       ) : (

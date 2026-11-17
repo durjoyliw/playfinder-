@@ -1,5 +1,7 @@
 "use client";
 
+import { EmptyState } from "@/components/system/empty-state";
+import { Users } from "lucide-react";
 import { getInitials } from "@/lib/settings";
 import { formatTeammateSportLabels, type TeammateUser } from "@/lib/teammate";
 import kyInstance from "@/lib/ky";
@@ -34,9 +36,12 @@ export function TeammatesList({
 
   if (!teammates.length) {
     return (
-      <p className="px-4 py-12 text-center text-sm text-[var(--pf-c-ink-888888)]">
-        No teammates yet. Follow players back when they follow you.
-      </p>
+      <EmptyState
+        icon={Users}
+        title="No teammates yet"
+        body="Teammates are players you follow who follow you back. They can see your teammates-only games and message you."
+        action={{ href: "/discover", label: "Find players near you" }}
+      />
     );
   }
 
@@ -86,7 +91,7 @@ export function TeammatesList({
                     e.stopPropagation();
                     setConfirmingId(teammate.id);
                   }}
-                  className="flex-shrink-0 rounded-[20px] border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] px-3.5 py-1.5 text-sm text-[var(--pf-c-ink-888888)] transition-colors hover:bg-[var(--pf-c-fill-1f1f1f)] pf-card"
+                  className="pf-card flex-shrink-0 rounded-[20px] border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-161616)] px-3.5 py-1.5 text-sm text-[var(--pf-c-ink-888888)] transition-colors hover:bg-[var(--pf-c-fill-1f1f1f)]"
                 >
                   Remove
                 </button>

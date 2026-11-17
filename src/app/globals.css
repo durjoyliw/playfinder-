@@ -956,3 +956,104 @@ body {
     inset: -10px;
   }
 }
+
+/* ── Touch feedback, iOS style ────────────────────────────────────────────
+   Press: shrink a touch at once (iOS reacts on touch-down, not on release).
+   Release: spring back with a little settle. Written with :where() so it has
+   zero specificity: any component that sets its own transition or
+   active:scale keeps it, and this only fills the gaps. */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:where(button, [role="button"], a, summary, label, input, select) {
+  touch-action: manipulation; /* no double-tap-zoom delay */
+}
+
+:where(
+    button:not(:disabled):not([class*="inset-0"]):not(.pf-row):not(.pf-tab),
+    [role="button"]:not([aria-disabled="true"]),
+    a[class*="bg-[var(--pf-volt"]
+  ) {
+  transition:
+    scale 420ms cubic-bezier(0.25, 1.4, 0.4, 1),
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    opacity 150ms ease,
+    filter 150ms ease;
+}
+
+:where(
+    button:not(:disabled):not([class*="inset-0"]):not(.pf-row):not(.pf-tab),
+    [role="button"]:not([aria-disabled="true"]),
+    a[class*="bg-[var(--pf-volt"]
+  ):active {
+  scale: 0.96;
+  transition-duration: 90ms;
+  transition-timing-function: ease-out;
+}
+
+/* List rows (Settings): highlight the row like a UITableView cell instead of
+   shrinking it. */
+.pf-row {
+  transition: background-color 350ms ease;
+}
+.pf-row:active {
+  background-color: var(--pf-c-fill-1f1f1f);
+  transition-duration: 0ms;
+}
+
+/* Tab bar: the icon dips on press and gives a small bounce when its tab
+   becomes the current one (like SF Symbols' bounce effect). */
+.pf-tab svg {
+  transition: scale 380ms cubic-bezier(0.25, 1.4, 0.4, 1);
+}
+.pf-tab:active svg {
+  scale: 0.8;
+  transition-duration: 90ms;
+}
+.pf-tab[aria-current="page"] svg {
+  animation: pf-tab-bounce 420ms cubic-bezier(0.25, 1.4, 0.4, 1);
+}
+@keyframes pf-tab-bounce {
+  0% {
+    scale: 0.78;
+  }
+  100% {
+    scale: 1;
+  }
+}
+
+/* Bottom sheets (composer): slide up on the iOS sheet curve, backdrop fades. */
+.pf-sheet {
+  animation: pf-sheet-in 420ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.pf-sheet-backdrop {
+  animation: pf-fade-in 250ms ease-out;
+}
+@keyframes pf-sheet-in {
+  from {
+    translate: 0 100%;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+@keyframes pf-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(button, [role="button"], a):active,
+  .pf-tab:active svg {
+    scale: none;
+  }
+  .pf-tab[aria-current="page"] svg,
+  .pf-sheet,
+  .pf-sheet-backdrop {
+    animation: none;
+  }
+}

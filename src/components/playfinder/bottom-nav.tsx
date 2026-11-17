@@ -67,7 +67,7 @@ export function BottomNav() {
 
   const linkClass = (active: boolean) =>
     cn(
-      "relative flex h-full min-h-12 w-full flex-1 items-center justify-center transition-colors active:scale-90",
+      "pf-tab relative flex h-full min-h-12 w-full flex-1 items-center justify-center transition-colors",
       active ? "text-[var(--pf-volt-text)]" : "text-[var(--pf-c-ink-7e8a7e)]",
     );
 

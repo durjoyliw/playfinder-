@@ -67,7 +67,7 @@ type SettingsRowProps = {
 );
 
 const settingsRowClassName =
-  "flex w-full items-center gap-3 border-b border-[var(--pf-c-line-2a2a2a)] px-4 py-3.5 text-left transition-colors last:border-b-0 hover:bg-[var(--pf-c-fill-1f1f1f)]";
+  "pf-row flex w-full items-center gap-3 border-b border-[var(--pf-c-line-2a2a2a)] px-4 py-3.5 text-left last:border-b-0 hover:bg-[var(--pf-c-fill-1f1f1f)]";
 
 export function SettingsRow({ href, onClick, icon, label, value }: SettingsRowProps) {
   const content = (

@@ -96,7 +96,7 @@ export default function AthleteProfile({
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"
-                className="z-[60] min-w-[180px] rounded-xl border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-1.5 text-[var(--pf-c-ink-f2f5ef)] pf-card"
+                className="pf-card z-[60] min-w-[180px] rounded-xl border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-1.5 text-[var(--pf-c-ink-f2f5ef)]"
               >
                 <DropdownMenuItem
                   className="cursor-pointer gap-2.5 rounded-lg px-3 py-2.5 text-[14px] font-semibold text-[var(--pf-c-ink-f2f5ef)] focus:bg-[var(--pf-c-fill-1a1e1b)] focus:text-[var(--pf-c-ink-f2f5ef)]"
@@ -147,14 +147,14 @@ export default function AthleteProfile({
       </div>
 
       <div className="relative px-4">
-        <div className="relative mb-3.5 -mt-12">
+        <div className="relative -mt-12 mb-3.5">
           <div className="relative inline-block">
             <div className="flex h-[88px] w-[88px] items-center justify-center overflow-hidden rounded-full border-4 border-[var(--pf-c-line-08090a)] bg-[var(--pf-c-fill-1a1e1b)]">
               {profile.avatarUrl ? (
                 <UserAvatar
                   avatarUrl={profile.avatarUrl}
                   size={88}
-                  className="h-full w-full max-h-none max-w-none border-0"
+                  className="h-full max-h-none w-full max-w-none border-0"
                 />
               ) : (
                 <span className="text-2xl font-bold text-[var(--pf-volt-text)]">
@@ -163,7 +163,7 @@ export default function AthleteProfile({
               )}
             </div>
             {profile.isOnline && (
-              <span className="absolute bottom-2 -right-1 grid h-5 w-5 place-items-center rounded-full border-2 border-[var(--pf-c-line-08090a)] bg-[var(--pf-c-fill-08090a)]">
+              <span className="absolute -right-1 bottom-2 grid h-5 w-5 place-items-center rounded-full border-2 border-[var(--pf-c-line-08090a)] bg-[var(--pf-c-fill-08090a)]">
                 <span className="h-2.5 w-2.5 rounded-full bg-[var(--pf-volt)] shadow-[0_0_8px_var(--pf-volt)]" />
               </span>
             )}
@@ -173,7 +173,9 @@ export default function AthleteProfile({
         <h1 className="text-[26px] font-bold tracking-[-0.03em] text-[var(--pf-c-ink-ffffff)]">
           {profile.displayName}
         </h1>
-        <p className="mt-[3px] text-sm text-[var(--pf-c-ink-7e8a7e)]">@{profile.username}</p>
+        <p className="mt-[3px] text-sm text-[var(--pf-c-ink-7e8a7e)]">
+          @{profile.username}
+        </p>
         <div className="mt-2.5 flex flex-wrap items-center gap-1.5 text-[13px] text-[var(--pf-c-ink-b4bcaf)]">
           <MapPin className="h-[13px] w-[13px]" />
           <span>{profile.location}</span>
@@ -221,9 +223,6 @@ export default function AthleteProfile({
       <div className="mt-7 px-4">
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <p className="mb-1 font-dm-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--pf-c-ink-7e8a7e)]">
-              Athlete ID
-            </p>
             <h2 className="text-[22px] font-bold tracking-[-0.03em]">
               Sports Resume
             </h2>
@@ -231,7 +230,7 @@ export default function AthleteProfile({
           {profile.isOwnProfile && (
             <Link
               href="/settings/sports"
-              className="grid h-10 w-10 place-items-center rounded-xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-7e8a7e)] pf-card"
+              className="pf-card grid h-10 w-10 place-items-center rounded-xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-7e8a7e)]"
               aria-label="Edit sports"
             >
               <Pencil className="h-[17px] w-[17px]" />
@@ -247,7 +246,7 @@ export default function AthleteProfile({
               return (
                 <div
                   key={sport.name}
-                  className="relative flex min-h-[130px] flex-col justify-between overflow-hidden rounded-[18px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-[18px] pf-card"
+                  className="pf-card relative flex min-h-[130px] flex-col justify-between overflow-hidden rounded-[18px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-[18px]"
                 >
                   <div
                     className="pointer-events-none absolute -right-[30px] -top-[30px] h-[100px] w-[100px] rounded-full opacity-[0.06] blur-[30px]"
@@ -265,7 +264,9 @@ export default function AthleteProfile({
                           className="h-1 flex-1 rounded-sm"
                           style={{
                             background:
-                              i < pips ? colour : "rgb(var(--pf-contrast-rgb)/0.08)",
+                              i < pips
+                                ? colour
+                                : "rgb(var(--pf-contrast-rgb)/0.08)",
                           }}
                         />
                       ))}
@@ -300,7 +301,7 @@ export default function AthleteProfile({
             Add a sport
           </Link>
         ) : (
-          <p className="rounded-[18px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-4 text-center text-sm text-[var(--pf-c-ink-7e8a7e)] pf-card">
+          <p className="pf-card rounded-[18px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-4 text-center text-sm text-[var(--pf-c-ink-7e8a7e)]">
             No sports added yet.
           </p>
         )}

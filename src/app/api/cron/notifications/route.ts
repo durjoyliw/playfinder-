@@ -6,7 +6,7 @@ import {
   unauthorizedCronResponse,
 } from "@/lib/cron-auth";
 
-// Batch caps so one run can't run away on a large table -- generous for
+// Batch caps so one run can't run away on a large table — generous for
 // where this app is today, revisit if the user base outgrows a single
 // daily pass.
 const MAX_USERS_PER_RUN = 2000;
@@ -172,7 +172,7 @@ export async function GET(req: Request) {
             data: {
               recipientId: user.id,
               type: "INACTIVITY_NUDGE",
-              body: "You haven't posted in a while -- share what you're up to",
+              body: "You haven't posted in a while — share what you're up to",
             },
           });
           created += 1;

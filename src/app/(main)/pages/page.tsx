@@ -45,7 +45,7 @@ export default async function YourPagesPage() {
           </span>
           <span>
             Create a Page
-            <span className="mt-0.5 block font-dm-mono text-[10px] font-medium uppercase tracking-[0.08em] text-[color-mix(in_srgb,var(--pf-on-accent)_70%,transparent)]">
+            <span className="mt-0.5 block text-[12px] font-medium text-[color-mix(in_srgb,var(--pf-on-accent)_70%,transparent)]">
               Club or venue
             </span>
           </span>
@@ -53,21 +53,16 @@ export default async function YourPagesPage() {
 
         {pages.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-[var(--pf-c-line-353c34)] px-5 py-12 text-center">
-            <div className="mx-auto mb-3.5 grid h-14 w-14 place-items-center rounded-[14px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-5a635a)] pf-card">
+            <div className="pf-card mx-auto mb-3.5 grid h-14 w-14 place-items-center rounded-[14px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] text-[var(--pf-c-ink-5a635a)]">
               <LayoutGrid className="h-6 w-6" />
             </div>
             <h2 className="text-[16px] font-bold tracking-[-0.02em]">
               No pages yet
             </h2>
-            <p className="mt-1.5 text-[13px] leading-relaxed text-[var(--pf-c-ink-7e8a7e)]">
-              No pages yet — create your first
+            <p className="mx-auto mt-1.5 max-w-[280px] text-[13px] leading-relaxed text-[var(--pf-c-ink-7e8a7e)]">
+              Run a club or a venue? A Page lets you post games and updates as
+              the club, not as yourself.
             </p>
-            <Link
-              href="/pages/new"
-              className="mt-5 inline-flex h-10 items-center justify-center rounded-xl bg-[var(--pf-volt)] px-5 text-[14px] font-bold text-[var(--pf-on-accent)] transition-[filter] hover:brightness-110"
-            >
-              Create a Page
-            </Link>
           </div>
         ) : (
           <ul className="flex flex-col gap-2">
@@ -78,7 +73,7 @@ export default async function YourPagesPage() {
                 <li key={page.id}>
                   <Link
                     href={`/pages/${page.handle}`}
-                    className="flex items-center gap-3 rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-3 transition-colors hover:bg-[var(--pf-c-fill-1a1e1b)] active:scale-[0.99] pf-card"
+                    className="pf-card flex items-center gap-3 rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-3 transition-colors hover:bg-[var(--pf-c-fill-1a1e1b)] active:scale-[0.99]"
                   >
                     {page.avatarUrl ? (
                       <UserAvatar
@@ -90,7 +85,9 @@ export default async function YourPagesPage() {
                       <div
                         className={cn(
                           "grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[var(--pf-c-fill-232824)] text-[15px] font-bold",
-                          isVenue ? "text-[#c9a227]" : "text-[var(--pf-volt-text)]",
+                          isVenue
+                            ? "text-[#c9a227]"
+                            : "text-[var(--pf-volt-text)]",
                         )}
                       >
                         {initials}

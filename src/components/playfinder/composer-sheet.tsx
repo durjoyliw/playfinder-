@@ -607,13 +607,13 @@ export function ComposerSheet({
     <div className="fixed inset-0 z-[var(--pf-z-fullscreen)] flex items-end justify-center">
       <button
         type="button"
-        className="absolute inset-0 bg-black/70 backdrop-blur-[6px]"
+        className="pf-sheet-backdrop absolute inset-0 bg-black/70 backdrop-blur-[6px]"
         aria-label="Close composer"
         onClick={() => onOpenChange(false)}
       />
 
       <div
-        className="relative z-10 max-h-[90%] w-full max-w-[480px] overflow-y-auto rounded-t-[24px] border border-b-0 border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-161616)] px-4 pb-[calc(24px+env(safe-area-inset-bottom,0px))] pt-4 text-[var(--pf-c-ink-ffffff)] shadow-[0_-10px_40px_rgba(0,0,0,0.5)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="pf-sheet relative z-10 max-h-[90%] w-full max-w-[480px] overflow-y-auto rounded-t-[24px] border border-b-0 border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-161616)] px-4 pb-[calc(24px+env(safe-area-inset-bottom,0px))] pt-4 text-[var(--pf-c-ink-ffffff)] shadow-[0_-10px_40px_rgba(0,0,0,0.5)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         role="dialog"
         aria-modal="true"
         aria-labelledby="composer-sheet-title"
