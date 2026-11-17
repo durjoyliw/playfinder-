@@ -148,7 +148,7 @@ export default function ChatInput() {
     return (
       <div className="bg-[var(--pf-bg)] px-4 py-3">
         <p className="w-full text-center text-sm text-[var(--pf-c-ink-888888)]">
-          Request sent — waiting for a reply
+          Request sent. Waiting for a reply.
         </p>
       </div>
     );

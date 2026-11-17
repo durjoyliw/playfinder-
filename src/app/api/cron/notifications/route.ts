@@ -172,7 +172,7 @@ export async function GET(req: Request) {
             data: {
               recipientId: user.id,
               type: "INACTIVITY_NUDGE",
-              body: "You haven't posted in a while — share what you're up to",
+              body: "You haven't posted in a while. What are you playing this week?",
             },
           });
           created += 1;

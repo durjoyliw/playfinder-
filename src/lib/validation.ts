@@ -38,7 +38,7 @@ export const joinBetaSchema = z.object({
     .max(40, "Keep it under 40 characters")
     .refine(
       (value) => !/[<>@/\\]|https?:|www\./i.test(value),
-      "Just a name please — no links or symbols",
+      "Just a name please, no links or symbols",
     ),
   birthDate: birthDateField,
   acceptTerms: z.literal(true, {

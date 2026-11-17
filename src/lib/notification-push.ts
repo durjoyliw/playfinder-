@@ -57,7 +57,7 @@ export async function sendPushForNotification(
     GAME_INTEREST: gameMessage ?? `${name} wants to join your game`,
     NEARBY_GAMES: notification.body ?? "New games near you this weekend",
     INACTIVITY_NUDGE:
-      notification.body ?? "It's been a while — share what you're up to",
+      notification.body ?? "It's been a while. What are you playing this week?",
     TRENDING_POST: notification.body ?? "A post in your sport is trending",
   };
 

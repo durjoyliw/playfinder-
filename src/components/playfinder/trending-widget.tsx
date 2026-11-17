@@ -47,7 +47,7 @@ export function TrendingWidget() {
       </p>
       {topics.length === 0 ? (
         <p className="py-1.5 text-xs text-[var(--pf-c-ink-7e8a7e)]">
-          Nothing trending yet — check back once there&apos;s more activity in
+          Nothing trending yet. Check back once more people are posting in
           your sports.
         </p>
       ) : (

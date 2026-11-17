@@ -60,7 +60,7 @@ export function getProfileIntentDisplay(intent: ProfileIntent | null) {
 
   return {
     ...option,
-    summary: `${option.label} — ${option.description}`,
+    summary: `${option.label}: ${option.description}`,
   };
 }
 

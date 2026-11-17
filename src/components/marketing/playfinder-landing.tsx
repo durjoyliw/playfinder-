@@ -242,7 +242,7 @@ export function PlayFinderLanding() {
                     textDecoration: "none",
                   }}
                 >
-                  Join the beta — it&apos;s free
+                  Join the free beta
                 </Link>
 
                 <Link
@@ -601,8 +601,8 @@ export function PlayFinderLanding() {
                   maxWidth: 460,
                 }}
               >
-                PlayFinder is in beta. Some things will be rough — when you spot
-                one, send feedback from the app menu and it gets fixed.
+                PlayFinder is in beta, so some things will be rough. If you spot
+                one, send feedback from the app menu and it&apos;ll get fixed.
               </p>
             </div>
           </div>

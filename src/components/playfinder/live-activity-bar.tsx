@@ -18,6 +18,9 @@ export function LiveActivityBar() {
 
   const count = data?.count ?? 0;
 
+  // Nobody active is not worth a banner.
+  if (count === 0) return null;
+
   return (
     <div
       className="relative mx-4 mb-2 mt-3 flex items-center gap-3.5 overflow-hidden rounded-2xl border border-[var(--pf-c-line-2a2f2a)] px-[18px] py-3.5"
@@ -40,13 +43,12 @@ export function LiveActivityBar() {
         </div>
         <div className="mt-1 text-[13px] leading-snug text-[var(--pf-c-ink-b4bcaf)]">
           <strong className="font-semibold text-[var(--pf-c-ink-f2f5ef)]">
-            athletes active
+            {count === 1 ? "athlete" : "athletes"} active
           </strong>{" "}
           nearby
           {area !== "your area" ? ` in ${area}` : ""}
         </div>
       </div>
-      <div className="pf-live-orb" aria-hidden />
     </div>
   );
 }

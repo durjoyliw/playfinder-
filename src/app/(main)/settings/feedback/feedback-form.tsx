@@ -43,7 +43,7 @@ export function FeedbackForm() {
           <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-[var(--pf-volt-text)]" />
           <div>
             <p className="text-sm font-semibold text-[var(--pf-c-ink-ffffff)]">
-              Thanks — got it
+              Thanks, got it
             </p>
             <p className="mt-1 text-sm text-muted-foreground">
               Every message gets read. Feedback like this is what shapes
@@ -71,7 +71,7 @@ export function FeedbackForm() {
     <form onSubmit={onSubmit} className="space-y-4">
       <p className="text-sm leading-relaxed text-muted-foreground">
         You&apos;re testing an early version of PlayFinder. Tell us what broke,
-        what confused you, or what you wish it did — it goes straight to the
+        what confused you, or what you wish it did. It goes straight to the
         person building it.
       </p>
       <div className="flex flex-wrap gap-2">

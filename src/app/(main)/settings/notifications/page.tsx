@@ -120,7 +120,7 @@ export default function NotificationsSettingsPage() {
               <p className="font-semibold text-[var(--pf-c-ink-ffffff)]">Push notifications</p>
               <p className="mt-0.5 text-sm text-muted-foreground">
                 Get notified on this device for likes, comments, teammate
-                requests, messages, and updates about games near you — even
+                requests, messages, and updates about games near you, even
                 when PlayFinder isn&apos;t open.
               </p>
 

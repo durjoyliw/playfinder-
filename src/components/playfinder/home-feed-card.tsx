@@ -405,9 +405,9 @@ export function HomeFeedCard({
           </p>
         </div>
         {isHotTake && (
-          <span className="bg-[#ef9f27]/12 inline-flex shrink-0 items-center gap-1 rounded-md border border-[#ef9f27]/25 px-1.5 py-0.5 font-dm-mono text-[9px] font-bold tracking-wide text-[#EF9F27]">
+          <span className="bg-[#ef9f27]/12 inline-flex shrink-0 items-center gap-1 rounded-md border border-[#ef9f27]/25 px-1.5 py-0.5 text-[12px] font-semibold text-[#EF9F27]">
             <IconFlame className="h-3 w-3" stroke={2} aria-hidden />
-            HOT TAKE
+            Hot take
           </span>
         )}
         <PostViewerMenu

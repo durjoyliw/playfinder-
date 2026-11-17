@@ -64,8 +64,8 @@ export function SavedPosts() {
           Nothing saved yet
         </h2>
         <p className="mt-2 max-w-[280px] text-sm leading-relaxed text-[var(--pf-text-3)]">
-          Tap the bookmark on any post to keep it here — games you might join,
-          banter worth rereading.
+          Tap the bookmark on any post to keep it here, like a game you might
+          want to join later.
         </p>
         <Link
           href="/home"

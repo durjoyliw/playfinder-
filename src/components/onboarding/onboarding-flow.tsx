@@ -318,16 +318,12 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
             >
               PlayFinder
             </span>
-            <span className="ob-reveal ob-reveal--1 mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--pf-c-line-2a2a2a)] px-3 py-1 text-[12px] text-[var(--pf-volt-text)]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--pf-volt)]" />
-              Beta tester
-            </span>
             <h1 className="ob-reveal ob-reveal--1 text-3xl font-bold text-[var(--pf-c-ink-ffffff)]">
               {firstName}, welcome to the beta!
             </h1>
             <p className="ob-reveal ob-reveal--1 mt-4 max-w-xs text-base leading-relaxed text-[var(--pf-c-ink-a3a3a3)]">
               You&apos;re one of the first players trying PlayFinder in Glasgow.
-              Let&apos;s set up your profile — it takes about a minute.
+              Setting up your profile takes about a minute.
             </p>
             <div className="mt-12 w-full">
               <PrimaryButton onClick={goNext}>Let&apos;s go</PrimaryButton>
@@ -504,7 +500,7 @@ export function OnboardingFlow({ firstName }: OnboardingFlowProps) {
               </p>
               <p className="mt-1 text-sm leading-relaxed text-[var(--pf-c-ink-a3a3a3)]">
                 Some things will be rough. If anything breaks or feels off, open
-                the menu and tap <strong>Send feedback</strong> — it goes
+                the menu and tap <strong>Send feedback</strong>. It goes
                 straight to the person building this.
               </p>
             </div>

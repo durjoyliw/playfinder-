@@ -16,9 +16,9 @@ export default function Error({
 
   return (
     <StatusScreen
-      eyebrow="Something broke"
-      title="That didn't load"
-      description="Sorry — this is a beta and you've found a rough edge. Try again, and if it keeps happening, send us feedback from the menu."
+      eyebrow="Error"
+      title="This page didn't load"
+      description="Try again. If it keeps happening, send us feedback from the menu so we can fix it."
       homeHref="/home"
       homeLabel="Back to the feed"
       action={

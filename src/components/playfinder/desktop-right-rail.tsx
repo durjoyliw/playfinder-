@@ -42,34 +42,35 @@ export function DesktopRightRail() {
     <div className="sticky top-0 hidden h-screen w-[350px] shrink-0 flex-col gap-4 px-6 py-3 font-grotesk xl:flex">
       <DesktopSearchBox />
 
-      <div className="relative overflow-hidden rounded-2xl border border-[var(--pf-c-line-2a2f2a)] p-4">
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(circle at 85% 50%, var(--pf-volt-glow), transparent 60%)",
-            opacity: 0.12,
-          }}
-        />
-        <p className="relative mb-3 text-[17px] font-bold text-[var(--pf-c-ink-f2f5ef)]">
-          Live{area !== "your area" ? ` in ${area}` : " near you"}
-        </p>
-        <div className="relative flex items-center gap-3.5">
-          <div className="text-[28px] font-bold leading-none text-[var(--pf-volt-text)]">
-            {count}
+      {count > 0 && (
+        <div className="relative overflow-hidden rounded-2xl border border-[var(--pf-c-line-2a2f2a)] p-4">
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(circle at 85% 50%, var(--pf-volt-glow), transparent 60%)",
+              opacity: 0.12,
+            }}
+          />
+          <p className="relative mb-3 text-[17px] font-bold text-[var(--pf-c-ink-f2f5ef)]">
+            Live{area !== "your area" ? ` in ${area}` : " near you"}
+          </p>
+          <div className="relative flex items-center gap-3.5">
+            <div className="text-[28px] font-bold leading-none text-[var(--pf-volt-text)]">
+              {count}
+            </div>
+            <div className="text-[13px] leading-snug text-[var(--pf-c-ink-b4bcaf)]">
+              <strong className="font-semibold text-[var(--pf-c-ink-f2f5ef)]">
+                {count === 1 ? "athlete" : "athletes"} active
+              </strong>{" "}
+              nearby
+            </div>
           </div>
-          <div className="text-[13px] leading-snug text-[var(--pf-c-ink-b4bcaf)]">
-            <strong className="font-semibold text-[var(--pf-c-ink-f2f5ef)]">
-              athletes active
-            </strong>{" "}
-            nearby
-          </div>
-          <div className="pf-live-orb ml-auto" aria-hidden />
         </div>
-      </div>
+      )}
 
       {openGames.length > 0 && (
-        <div className="rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-4 pf-card">
+        <div className="pf-card rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-4">
           <p className="mb-3 text-[17px] font-bold text-[var(--pf-c-ink-f2f5ef)]">
             Open games near you
           </p>

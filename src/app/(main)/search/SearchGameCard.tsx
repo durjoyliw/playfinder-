@@ -42,7 +42,7 @@ export function SearchGameCard({ post }: SearchGameCardProps) {
   const handleImIn = () => {
     if (isOwn) return;
     const sportLabelText = sportLabel ?? "your game";
-    const draft = `I'm in! 👋 Saw your post about ${sportLabelText} — still need players?`;
+    const draft = `I'm in! Saw your post about ${sportLabelText}. Still need players?`;
     router.push(
       `/messages?to=${encodeURIComponent(post.user.id)}&draft=${encodeURIComponent(draft)}`,
     );

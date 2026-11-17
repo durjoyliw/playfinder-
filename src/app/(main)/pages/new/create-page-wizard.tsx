@@ -487,7 +487,7 @@ export function CreatePageWizard({ venues }: CreatePageWizardProps) {
                 <StepShell
                   label="Step 5 of 5 · Identity"
                   title="Make it look like you."
-                  copy="Rounded-square avatar — that is how a Page reads as a Page."
+                  copy="Pages use a rounded-square photo so they stand out from people."
                 >
                   <div className="mb-8">
                     <input
