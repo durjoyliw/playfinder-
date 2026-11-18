@@ -57,6 +57,12 @@ export default function Page() {
             <LegalTerm>Push notifications:</LegalTerm> if enabled, a push
             subscription token.
           </li>
+          <li>
+            <LegalTerm>Waitlist:</LegalTerm> if you join the launch waitlist,
+            the email address you give us. We use it only to tell you about
+            PlayFinder, and delete it when you leave the list or delete your
+            account.
+          </li>
         </LegalList>
       </LegalSection>
 

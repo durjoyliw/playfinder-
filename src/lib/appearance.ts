@@ -16,19 +16,13 @@ const ONE_YEAR_SECONDS = 60 * 60 * 24 * 365;
 
 export const THEMES = [
   { id: "noir", label: "Noir", bg: "#08090a", surface: "#131614", text: "#f2f5ef" },
-  { id: "slate", label: "Slate", bg: "#2f353b", surface: "#3e464e", text: "#f1f3f5" },
-  { id: "offwhite", label: "Off-white", bg: "#f8f9fa", surface: "#ffffff", text: "#14171a" },
   { id: "white", label: "White", bg: "#ffffff", surface: "#f1f3f5", text: "#111418" },
 ] as const;
 
 export const ACCENTS = [
   { id: "volt", label: "Volt Green", color: "#a1c217", onAccent: "#0a0b0a" },
-  { id: "optic", label: "Optic Yellow", color: "#e5f33d", onAccent: "#0a0b0a" },
-  { id: "emerald", label: "Emerald", color: "#009b77", onAccent: "#0a0b0a" },
   { id: "crimson", label: "Crimson", color: "#dc143c", onAccent: "#ffffff" },
   { id: "coral", label: "Neon Coral", color: "#ff6f61", onAccent: "#0a0b0a" },
-  { id: "cyan", label: "Electric Cyan", color: "#00e5ff", onAccent: "#0a0b0a" },
-  { id: "orange", label: "Orange", color: "#ff7a00", onAccent: "#0a0b0a" },
 ] as const;
 
 export type ThemeId = (typeof THEMES)[number]["id"];
@@ -38,15 +32,25 @@ export const DEFAULT_THEME: ThemeId = "noir";
 export const DEFAULT_ACCENT: AccentId = "volt";
 
 /** Bases with a light background (dark text). */
-export const LIGHT_THEMES: readonly ThemeId[] = ["offwhite", "white"];
+export const LIGHT_THEMES: readonly ThemeId[] = ["white"];
 
 export function isLightTheme(theme: string | undefined | null): boolean {
   return LIGHT_THEMES.includes(theme as ThemeId);
 }
 
+/**
+ * Options we removed, mapped to the closest one we kept, so people who
+ * picked them don't jump to something unrelated.
+ */
+const RETIRED_THEMES: Record<string, ThemeId> = {
+  offwhite: "white",
+  slate: "noir",
+};
+
 /** Unknown or missing cookie values fall back to the defaults. */
 export function parseTheme(raw: string | undefined | null): ThemeId {
-  return THEMES.some((t) => t.id === raw) ? (raw as ThemeId) : DEFAULT_THEME;
+  if (THEMES.some((t) => t.id === raw)) return raw as ThemeId;
+  return (raw && RETIRED_THEMES[raw]) || DEFAULT_THEME;
 }
 
 export function parseAccent(raw: string | undefined | null): AccentId {

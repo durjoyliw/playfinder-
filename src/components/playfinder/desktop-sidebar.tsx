@@ -17,14 +17,19 @@ import { cn } from "@/lib/utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Bell,
+  Bookmark,
   Compass,
   Home,
   LayoutGrid,
   LogOut,
+  Mail,
   MessageCircle,
+  MessageSquareText,
   MoreVertical,
+  Search,
   Settings,
   User,
+  Users,
   Zap,
 } from "lucide-react";
 import Link from "next/link";
@@ -76,21 +81,40 @@ export function DesktopSidebar({
     logout();
   };
 
+  // Same two extras as the mobile menu: the waitlist, and beta feedback
+  // (which remembers the page you were on).
+  const extraItems: NavItem[] = [
+    {
+      id: "waitlist",
+      label: "Join the waitlist",
+      icon: Mail,
+      href: "/waitlist",
+      isActive: (p) => p.startsWith("/waitlist"),
+    },
+    {
+      id: "feedback",
+      label: "Send feedback",
+      icon: MessageSquareText,
+      href: `/settings/feedback?from=${encodeURIComponent(pathname)}`,
+      isActive: (p) => p.startsWith("/settings/feedback"),
+    },
+  ];
+
   const navItems: NavItem[] = [
     { id: "home", label: "Home", icon: Home, href: "/home", isActive: (p) => p === "/home" },
+    {
+      id: "search",
+      label: "Search",
+      icon: Search,
+      href: "/search",
+      isActive: (p) => p.startsWith("/search"),
+    },
     {
       id: "discover",
       label: "Discover",
       icon: Compass,
       href: "/discover",
       isActive: (p) => p.startsWith("/discover"),
-    },
-    {
-      id: "pages",
-      label: "Pages",
-      icon: LayoutGrid,
-      href: "/pages",
-      isActive: (p) => p === "/pages" || p.startsWith("/pages/"),
     },
     {
       id: "messages",
@@ -106,6 +130,27 @@ export function DesktopSidebar({
       href: "/notifications",
       isActive: (p) => p.startsWith("/notifications"),
       badge: data?.unreadCount ?? 0,
+    },
+    {
+      id: "saved",
+      label: "Saved",
+      icon: Bookmark,
+      href: "/saved",
+      isActive: (p) => p.startsWith("/saved"),
+    },
+    {
+      id: "teammates",
+      label: "Teammates",
+      icon: Users,
+      href: "/teammates",
+      isActive: (p) => p.startsWith("/teammates"),
+    },
+    {
+      id: "pages",
+      label: "Pages",
+      icon: LayoutGrid,
+      href: "/pages",
+      isActive: (p) => p === "/pages" || p.startsWith("/pages/"),
     },
     {
       id: "profile",
@@ -125,7 +170,7 @@ export function DesktopSidebar({
 
   if (collapsed) {
     return (
-      <div className="sticky top-0 hidden h-screen w-[88px] shrink-0 flex-col items-center py-3 font-grotesk lg:flex">
+      <div className="sticky top-0 hidden h-screen w-[88px] shrink-0 flex-col items-center overflow-y-auto py-3 font-grotesk [scrollbar-width:none] lg:flex [&::-webkit-scrollbar]:hidden">
         <Link
           href="/home"
           className="mb-2 flex items-center justify-center rounded-full p-2.5 transition-colors hover:bg-[var(--pf-c-fill-131614)]"
@@ -146,7 +191,7 @@ export function DesktopSidebar({
                 title={item.label}
                 aria-label={item.label}
                 className={cn(
-                  "grid h-12 w-12 place-items-center rounded-full transition-colors hover:bg-[var(--pf-c-fill-131614)]",
+                  "grid h-11 w-11 place-items-center rounded-full transition-colors hover:bg-[var(--pf-c-fill-131614)]",
                   active ? "text-[var(--pf-c-ink-f2f5ef)]" : "text-[var(--pf-c-ink-b4bcaf)]",
                 )}
               >
@@ -173,6 +218,20 @@ export function DesktopSidebar({
           <Zap className="h-6 w-6" fill="currentColor" />
         </button>
 
+        <nav className="mt-4 flex flex-col items-center gap-1 border-t border-[var(--pf-c-line-2a2f2a)] pt-3" aria-label="More">
+          {extraItems.map((item) => (
+            <Link
+              key={item.id}
+              href={item.href}
+              title={item.label}
+              aria-label={item.label}
+              className="grid h-11 w-11 place-items-center rounded-full text-[var(--pf-c-ink-b4bcaf)] transition-colors hover:bg-[var(--pf-c-fill-131614)]"
+            >
+              <item.icon className="h-5 w-5" />
+            </Link>
+          ))}
+        </nav>
+
         <Link
           href={profileHref}
           title={user.displayName}
@@ -192,7 +251,7 @@ export function DesktopSidebar({
   }
 
   return (
-    <div className="sticky top-0 hidden h-screen w-[275px] shrink-0 flex-col py-3 pl-6 pr-3 font-grotesk lg:flex">
+    <div className="sticky top-0 hidden h-screen w-[275px] shrink-0 flex-col overflow-y-auto py-3 pl-6 pr-3 font-grotesk [scrollbar-width:none] lg:flex [&::-webkit-scrollbar]:hidden">
       <Link
         href="/home"
         className="mb-2 flex w-fit items-center gap-2.5 rounded-full p-2.5 transition-colors hover:bg-[var(--pf-c-fill-131614)]"
@@ -212,7 +271,7 @@ export function DesktopSidebar({
               key={item.id}
               href={item.href}
               className={cn(
-                "flex items-center gap-4 rounded-full px-3 py-3 text-[17px] font-semibold transition-colors hover:bg-[var(--pf-c-fill-131614)]",
+                "flex items-center gap-4 rounded-full px-3 py-2.5 text-[17px] font-semibold transition-colors hover:bg-[var(--pf-c-fill-131614)]",
                 active ? "text-[var(--pf-c-ink-f2f5ef)]" : "text-[var(--pf-c-ink-b4bcaf)]",
               )}
             >
@@ -237,6 +296,25 @@ export function DesktopSidebar({
       >
         Broadcast
       </button>
+
+      <nav className="mt-4 flex flex-col gap-0.5 border-t border-[var(--pf-c-line-2a2f2a)] pt-3" aria-label="More">
+        {extraItems.map((item) => {
+          const active = item.isActive(pathname);
+          return (
+            <Link
+              key={item.id}
+              href={item.href}
+              className={cn(
+                "flex items-center gap-3 rounded-full px-3 py-2 text-[14px] font-semibold transition-colors hover:bg-[var(--pf-c-fill-131614)]",
+                active ? "text-[var(--pf-c-ink-f2f5ef)]" : "text-[var(--pf-c-ink-b4bcaf)]",
+              )}
+            >
+              <item.icon className="h-[18px] w-[18px]" />
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
 
       <div className="mt-auto flex items-center gap-1 rounded-full p-1.5 transition-colors hover:bg-[var(--pf-c-fill-131614)]">
         <Link

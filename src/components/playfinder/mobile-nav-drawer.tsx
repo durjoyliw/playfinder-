@@ -17,6 +17,7 @@ import {
   ChevronRight,
   LayoutGrid,
   LogOut,
+  Mail,
   Menu,
   MessageSquareText,
   Settings,
@@ -189,7 +190,24 @@ export function MobileNavDrawer({ triggerClassName }: MobileNavDrawerProps) {
         </div>
 
         {/* Beta feedback: always one tap away, and it remembers the page. */}
-        <div className="shrink-0 px-3">
+        <div className="shrink-0 space-y-2 px-3">
+          <Link
+            href="/waitlist"
+            onClick={close}
+            className="flex items-center gap-3 rounded-2xl border border-[var(--pf-border)] bg-[var(--pf-surface)] px-3 py-3 transition-colors hover:bg-[var(--pf-surface-2)] active:scale-[0.98]"
+          >
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[var(--pf-surface-2)] text-[var(--pf-volt-text)]">
+              <Mail className="h-[18px] w-[18px]" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[15px] font-semibold text-[var(--pf-text)]">
+                Join the waitlist
+              </span>
+              <span className="block truncate text-[12px] text-[var(--pf-text-3)]">
+                Hear first when the full version launches.
+              </span>
+            </span>
+          </Link>
           <Link
             href={`/settings/feedback?from=${encodeURIComponent(pathname)}`}
             onClick={close}
