@@ -6,7 +6,14 @@ import {
 } from "@/components/illustrations/playfinder-art";
 import { HERO_PHOTO } from "@/lib/landing-photo";
 import { JOIN_HREF } from "@/lib/beta";
-import { MapPin, MessageCircle, Radio, Trophy } from "lucide-react";
+import {
+  Heart,
+  MessageCircle,
+  MessageSquare,
+  Radio,
+  Trophy,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 
 const VOLT = "var(--pf-volt)";
@@ -18,28 +25,30 @@ const BORDER = "var(--pf-c-line-2a2a2a)";
 const features = [
   {
     icon: Radio,
-    title: "Broadcast a game instantly",
+    title: "Find a game near you",
     description:
-      "Need one more player? Post a broadcast and get responses in minutes.",
+      "Need one more for tonight? Post it, and people nearby tap I'm in.",
     Art: BroadcastArt,
   },
   {
-    icon: MapPin,
-    title: "Find players near you",
-    description: "Filter by sport and skill level. Find your match in seconds.",
+    icon: MessageSquare,
+    title: "Talk sport",
+    description:
+      "Post about the match, your new PB or Sunday's game. Comment, like and follow.",
     Art: null,
   },
   {
-    icon: MessageCircle,
-    title: "Chat and organise",
-    description: "DM players directly and coordinate everything in one place.",
+    icon: Users,
+    title: "Find your people",
+    description:
+      "Follow people into the same sports, message them, and keep playing together.",
     Art: null,
   },
   {
     icon: Trophy,
-    title: "Your athlete profile",
+    title: "Your sports profile",
     description:
-      "Your sports, skill levels, and what you're looking for. All in one place.",
+      "Your sports, your level and what you're up for. All in one place.",
     Art: ProfileArt,
   },
 ] as const;
@@ -53,21 +62,17 @@ const steps = [
   },
   {
     number: "2",
-    title: "Browse the local feed",
-    description: "Filter by sport and see who's looking to play near you.",
+    title: "Join the conversation",
+    description: "Follow people, post and comment in your local feed.",
   },
   {
     number: "3",
-    title: "Broadcast or join a game",
-    description: "Post your own, or tap I'm in and DM to lock in the details.",
+    title: "Get playing",
+    description: "Post a game, or tap I'm in on someone else's.",
   },
 ] as const;
 
-const betaFacts = [
-  "Free during the beta",
-  "Glasgow only for now",
-  "18+",
-] as const;
+const betaFacts = ["Free during the beta", "18+"] as const;
 
 export function PlayFinderLanding() {
   return (
@@ -83,6 +88,7 @@ export function PlayFinderLanding() {
         .pf-hero-grid { display: grid; grid-template-columns: 1fr 0.95fr; gap: 64px; align-items: center; }
         .pf-hero-photo { width: 100%; height: 460px; border-radius: 20px; display: block; overflow: hidden; border: 1px solid ${BORDER}; }
         .pf-hero-card { position: absolute; left: -28px; bottom: -28px; width: 300px; background: ${CARD}; border: 1px solid ${BORDER}; border-radius: 20px; padding: 18px; box-shadow: 0 20px 48px rgba(0,0,0,0.45); }
+        .pf-hero-post { position: absolute; right: -20px; top: -24px; width: 290px; background: ${CARD}; border: 1px solid ${BORDER}; border-radius: 20px; padding: 16px 18px; box-shadow: 0 20px 48px rgba(0,0,0,0.45); }
 
         .pf-features-grid { display: grid; grid-template-columns: 1.35fr 1fr; grid-template-rows: repeat(3, auto); gap: 16px; }
         .pf-feature-card--tall { grid-row: span 3; min-height: 480px; }
@@ -107,8 +113,9 @@ export function PlayFinderLanding() {
           .pf-nav-inner { padding-left: 20px !important; padding-right: 20px !important; }
           .pf-hero-grid { grid-template-columns: 1fr; gap: 40px; }
           .pf-hero-photo { height: 280px; }
-          .pf-hero-card { position: static; width: 100%; margin-top: 16px; }
-          .pf-h1 { font-size: 34px !important; }
+          .pf-hero-card { position: static; width: 100%; margin-top: 12px; }
+          .pf-hero-post { position: static; width: 100%; margin-top: 16px; }
+          .pf-h1 { font-size: clamp(28px, 8.4vw, 34px) !important; }
           .pf-features-grid { grid-template-columns: 1fr; grid-template-rows: none; }
           .pf-feature-card--tall { grid-row: auto; min-height: 220px; }
           .pf-steps-row { flex-direction: column; gap: 28px; }
@@ -205,7 +212,9 @@ export function PlayFinderLanding() {
                   color: "var(--pf-c-ink-ffffff)",
                 }}
               >
-                Find a game in Glasgow tonight.
+                <span style={{ whiteSpace: "nowrap" }}>Find your game.</span>{" "}
+                <br />
+                <span style={{ whiteSpace: "nowrap" }}>Find your people.</span>
               </h1>
 
               <p
@@ -217,8 +226,7 @@ export function PlayFinderLanding() {
                   color: MUTED,
                 }}
               >
-                The local sports network for Glasgow. Post a game, find players,
-                and never miss a match.
+                Your local sports social network.
               </p>
 
               <div
@@ -304,6 +312,76 @@ export function PlayFinderLanding() {
                   ({HERO_PHOTO.licence})
                 </p>
               )}
+              {/* A normal post, so the hero shows the social side too. */}
+              <div className="pf-hero-post">
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div
+                    aria-hidden
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: "50%",
+                      backgroundColor: "var(--pf-c-fill-232824)",
+                      color: "var(--pf-c-ink-ffffff)",
+                      display: "grid",
+                      placeItems: "center",
+                      fontSize: 13,
+                      fontWeight: 800,
+                      flexShrink: 0,
+                    }}
+                  >
+                    A
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: "var(--pf-c-ink-ffffff)",
+                    }}
+                  >
+                    Aisha{" "}
+                    <span style={{ fontWeight: 400, color: MUTED }}>· 2h</span>
+                  </div>
+                </div>
+                <p
+                  style={{
+                    margin: "10px 0 0",
+                    fontSize: 14,
+                    lineHeight: 1.45,
+                    color: "var(--pf-c-ink-ffffff)",
+                  }}
+                >
+                  That last-minute winner though. Who else was at the game?
+                </p>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 16,
+                    marginTop: 12,
+                    fontSize: 12,
+                    color: MUTED,
+                  }}
+                >
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 5,
+                    }}
+                  >
+                    <Heart size={14} aria-hidden /> 24
+                  </span>
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 5,
+                    }}
+                  >
+                    <MessageCircle size={14} aria-hidden /> 9 comments
+                  </span>
+                </div>
+              </div>
               <div className="pf-hero-card">
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <div
@@ -331,10 +409,10 @@ export function PlayFinderLanding() {
                         color: "var(--pf-c-ink-ffffff)",
                       }}
                     >
-                      Fraser is broadcasting
+                      Fraser needs 2 more
                     </div>
                     <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>
-                      5-a-side, Kelvingrove Park · Tonight, 7pm
+                      5-a-side at the park · Tonight, 7pm
                     </div>
                   </div>
                 </div>
@@ -418,7 +496,7 @@ export function PlayFinderLanding() {
               color: "var(--pf-c-ink-ffffff)",
             }}
           >
-            Everything you need to play more
+            More than finding a game
           </h2>
           <div className="pf-features-grid">
             {features.map(({ icon: Icon, title, description, Art }, i) => (
@@ -564,7 +642,7 @@ export function PlayFinderLanding() {
           </div>
         </section>
 
-        {/* Built in Glasgow */}
+        {/* Origin story */}
         <section
           style={{ padding: "8px 56px 88px", maxWidth: 1352, margin: "0 auto" }}
         >
@@ -576,7 +654,7 @@ export function PlayFinderLanding() {
               <CityArt
                 fit="contain"
                 className="h-full w-full"
-                title="Map of Glasgow with pins in Partick, the West End, Dennistoun, Govan and the Southside"
+                title="Map of a city with pins on local pitches, courts and clubs"
               />
             </div>
             <div>
@@ -641,8 +719,8 @@ export function PlayFinderLanding() {
                   maxWidth: 420,
                 }}
               >
-                Join the beta and help shape Glasgow&apos;s local sports
-                network. Free while we&apos;re testing.
+                Join the beta and help shape your local sports social network.
+                Free while we&apos;re testing.
               </p>
             </div>
             <Link

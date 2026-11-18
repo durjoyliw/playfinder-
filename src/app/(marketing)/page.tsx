@@ -4,9 +4,9 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "PlayFinder | Find a game in Glasgow",
+  title: { absolute: "PlayFinder | Your local sports social network" },
   description:
-    "The local sports network for Glasgow. Connect with players, post a game, and never miss a match again.",
+    "Find your game. Find your people. Talk sport with people near you, and find a game when you want to play.",
 };
 
 export default async function MarketingPage() {
