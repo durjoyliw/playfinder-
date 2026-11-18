@@ -254,7 +254,7 @@ export function DesktopSidebar({
     <div className="sticky top-0 hidden h-screen w-[275px] shrink-0 flex-col overflow-y-auto py-3 pl-6 pr-3 font-grotesk [scrollbar-width:none] lg:flex [&::-webkit-scrollbar]:hidden">
       <Link
         href="/home"
-        className="mb-2 flex w-fit items-center gap-2.5 rounded-full p-2.5 transition-colors hover:bg-[var(--pf-c-fill-131614)]"
+        className="mb-2 flex w-fit items-center gap-2.5 rounded-full p-2.5 transition-colors hover:bg-[var(--pf-c-fill-131614)] [@media(max-height:820px)]:mb-0"
         aria-label="PlayFinder home"
       >
         <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[11px] bg-[var(--pf-volt)] text-[var(--pf-on-accent)]">
