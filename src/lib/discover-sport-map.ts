@@ -36,8 +36,8 @@ export const SPORT_MAP: Record<string, string[]> = {
   Lacrosse: ["lacrosse"],
   Handball: ["handball"],
   Futsal: ["futsal", "football"],
-  Padel: ["padel", "tennis"],
-  Pickleball: ["pickleball", "tennis"],
+  Padel: ["padel"],
+  Pickleball: ["pickleball"],
   Snooker: ["billiards", "snooker"],
   Darts: ["darts"],
   "Ice Hockey": ["ice_hockey"],
@@ -83,28 +83,71 @@ export const SPORT_MAP: Record<string, string[]> = {
   "Muay Thai": ["martial_arts"],
   "Brazilian Jiu Jitsu": ["martial_arts"],
   CrossFit: ["fitness", "crossfit"],
+  // Added so every sport people can pick has map tags (beta, Nov 2026).
+  Snowboarding: ["skiing", "snowboard"],
+  Athletics: ["athletics", "running"],
+  "Long Jump": ["athletics"],
+  "High Jump": ["athletics"],
+  Javelin: ["athletics"],
+  Discus: ["athletics"],
+  "Shot Put": ["athletics"],
+  "Field Hockey": ["field_hockey", "hockey"],
+  Bobsled: ["bobsleigh"],
+  Bowling: ["10pin", "9pin", "bowling"],
+  Pool: ["billiards", "pool"],
+  Paddleboarding: ["canoe", "sup", "paddleboarding"],
+  Calisthenics: ["calisthenics", "fitness"],
+  Powerlifting: ["powerlifting", "weightlifting", "fitness"],
+  BJJ: ["bjj", "brazilian_jiu_jitsu", "jiu_jitsu", "martial_arts"],
+  Kickboxing: ["kickboxing", "boxing", "martial_arts"],
+  Capoeira: ["capoeira", "martial_arts"],
+  Floorball: ["floorball"],
+  "Gaelic Football": ["gaelic_games"],
+  Hurling: ["hurling", "gaelic_games"],
+  Shinty: ["shinty"],
 };
 
-const FITNESS_CENTRE_HINTS = new Set([
-  "fitness",
-  "gymnastics",
-  "crossfit",
-  "pilates",
-  "yoga",
-  "weightlifting",
-]);
+/**
+ * Venue types that host a sport even when OpenStreetMap doesn't tag it with
+ * a sport= value (a gym is a fitness_centre, a bowling alley is a
+ * bowling_alley). Keyed by OSM sport tag.
+ */
+const GENERIC_VENUES_BY_TAG: Record<string, string[]> = {
+  fitness: ['["leisure"="fitness_centre"]', '["leisure"="fitness_station"]'],
+  calisthenics: ['["leisure"="fitness_station"]'],
+  crossfit: ['["leisure"="fitness_centre"]'],
+  "10pin": ['["leisure"="bowling_alley"]'],
+  skating: ['["leisure"="ice_rink"]'],
+  ice_hockey: ['["leisure"="ice_rink"]'],
+  swimming: ['["leisure"="swimming_pool"]["access"!="private"]', '["leisure"="water_park"]'],
+  golf: ['["leisure"="golf_course"]'],
+  climbing: ['["sport"="climbing"]'],
+  dance: ['["leisure"="dance"]'],
+};
 
-const ELEMENT_TYPES = ["node", "way", "relation"] as const;
-export const DISCOVER_SEARCH_RADIUS_M = 5000;
-const MAX_OVERPASS_ELEMENTS = 30;
+/** Search out to 10 miles; the route prefers results within 5. */
+export const DISCOVER_NEAR_MILES = 5;
+export const DISCOVER_FAR_MILES = 10;
+const DISCOVER_SEARCH_RADIUS_M = Math.round(DISCOVER_FAR_MILES * 1609.34);
+const MAX_OVERPASS_ELEMENTS = 200;
 
 /** Resolve sport query param (display name) to OSM tags, or null if unknown. */
-export function resolveOsmSportTags(sportDisplayName: string): string[] | null {
-  const trimmed = sportDisplayName.trim();
+/** "table-tennis", "Table Tennis", "table_tennis" -> "table tennis". */
+function sportLookupKey(value: string): string {
+  return value.trim().toLowerCase().replace(/[-_]+/g, " ").replace(/\s+/g, " ");
+}
+
+/**
+ * Resolve a sport id ("table-tennis") or display name ("Table Tennis") to
+ * OSM tags, or null if unknown.
+ */
+export function resolveOsmSportTags(sport: string): string[] | null {
+  const trimmed = sport.trim();
   if (SPORT_MAP[trimmed]) return SPORT_MAP[trimmed];
 
+  const wanted = sportLookupKey(trimmed);
   const matchKey = Object.keys(SPORT_MAP).find(
-    (key) => key.toLowerCase() === trimmed.toLowerCase(),
+    (key) => sportLookupKey(key) === wanted,
   );
   if (matchKey) return SPORT_MAP[matchKey];
 
@@ -116,102 +159,89 @@ export function matchesOsmSportTags(
   osmSportTags: string[] | null,
 ): boolean {
   if (osmSportTags === null) return true;
-  const osmSport = tags.sport?.toLowerCase();
-  if (!osmSport) return true;
-  return osmSportTags.some(
-    (v) =>
-      osmSport === v ||
-      osmSport.includes(v) ||
-      v.includes(osmSport),
-  );
+  const values = (tags.sport ?? "")
+    .toLowerCase()
+    .split(";")
+    .map((v) => v.trim())
+    .filter(Boolean);
+  if (values.some((v) => osmSportTags.includes(v))) return true;
+  // Untagged gyms, bowling alleys, ice rinks... that host this sport.
+  return genericVenueMatch(tags, osmSportTags);
 }
 
-function includesFitnessCentre(osmTags: string[]): boolean {
-  return osmTags.some((t) => FITNESS_CENTRE_HINTS.has(t));
+function genericVenueMatch(
+  tags: Record<string, string>,
+  osmSportTags: string[],
+): boolean {
+  const leisure = tags.leisure?.toLowerCase();
+  if (!leisure) return false;
+  return osmSportTags.some((tag) =>
+    (GENERIC_VENUES_BY_TAG[tag] ?? []).some((filter) =>
+      filter.includes(`"leisure"="${leisure}"`),
+    ),
+  );
 }
 
 function aroundClause(lat: number, lng: number): string {
   return `(around:${DISCOVER_SEARCH_RADIUS_M},${lat},${lng})`;
 }
 
+/** Matches the tag alone or inside a multi-value tag: "padel;tennis". */
 function sportRegexPattern(osmTags: string[]): string {
   const escaped = osmTags.map((t) =>
     t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
   );
-  return `^(${escaped.join("|")})$`;
+  return `(^|;) *(${escaped.join("|")}) *(;|$)`;
 }
 
-function appendElementLines(
-  lines: string[],
-  filter: string,
-  around: string,
-): void {
-  for (const el of ELEMENT_TYPES) {
-    lines.push(`  ${el}${filter}${around};`);
-  }
+function wrapQuery(lines: string[]): string {
+  return `
+[out:json][timeout:25];
+(
+${lines.join("\n")}
+);
+out center ${MAX_OVERPASS_ELEMENTS};
+`.trim();
 }
 
+/**
+ * Named places to play this sport: anything tagged with it (pitches,
+ * courts, sports centres, halls), plus venue types that host it untagged.
+ * Returns null for a sport we can't map, so callers skip OpenStreetMap.
+ */
 export function buildVenuesOverpassQuery(
   lat: number,
   lng: number,
-  sportDisplayName: string,
-): string {
+  sport: string,
+): string | null {
+  const osmTags = resolveOsmSportTags(sport);
+  if (!osmTags) return null;
   const around = aroundClause(lat, lng);
-  const osmTags = resolveOsmSportTags(sportDisplayName);
-  const lines: string[] = [];
-
-  if (osmTags) {
-    const sportFilter = `["sport"~"${sportRegexPattern(osmTags)}",i]`;
-    appendElementLines(lines, `["leisure"="pitch"]${sportFilter}`, around);
-    appendElementLines(lines, `["leisure"="sports_centre"]`, around);
-    appendElementLines(lines, `["amenity"="sports_centre"]`, around);
-    if (includesFitnessCentre(osmTags)) {
-      appendElementLines(lines, `["leisure"="fitness_centre"]`, around);
-    }
-  } else {
-    appendElementLines(lines, `["leisure"="pitch"]`, around);
-    appendElementLines(lines, `["leisure"="sports_centre"]`, around);
-    appendElementLines(lines, `["amenity"="sports_centre"]`, around);
+  const sportFilter = `["sport"~"${sportRegexPattern(osmTags)}",i]`;
+  const lines = [
+    `  nwr["leisure"]${sportFilter}["name"]${around};`,
+    `  nwr["amenity"]${sportFilter}["name"]${around};`,
+  ];
+  const generic = new Set(osmTags.flatMap((t) => GENERIC_VENUES_BY_TAG[t] ?? []));
+  for (const filter of generic) {
+    lines.push(`  nwr${filter}["name"]${around};`);
   }
-
-  return `
-[out:json][timeout:25];
-(
-${lines.join("\n")}
-);
-out center ${MAX_OVERPASS_ELEMENTS};
-`.trim();
+  return wrapQuery(lines);
 }
 
+/** Named sports clubs for this sport. Null for a sport we can't map. */
 export function buildClubsOverpassQuery(
   lat: number,
   lng: number,
-  sportDisplayName: string,
-): string {
+  sport: string,
+): string | null {
+  const osmTags = resolveOsmSportTags(sport);
+  if (!osmTags) return null;
   const around = aroundClause(lat, lng);
-  const osmTags = resolveOsmSportTags(sportDisplayName);
-  const lines: string[] = [];
-
-  if (osmTags) {
-    const sportFilter = `["sport"~"${sportRegexPattern(osmTags)}",i]`;
-    appendElementLines(lines, `["leisure"="club"]${sportFilter}`, around);
-    appendElementLines(
-      lines,
-      `["sport"~"${sportRegexPattern(osmTags)}",i]["name"]`,
-      around,
-    );
-    appendElementLines(lines, `["club"="sport"]`, around);
-  } else {
-    appendElementLines(lines, `["leisure"="club"]`, around);
-    appendElementLines(lines, `["sport"]["name"]`, around);
-    appendElementLines(lines, `["club"="sport"]`, around);
-  }
-
-  return `
-[out:json][timeout:25];
-(
-${lines.join("\n")}
-);
-out center ${MAX_OVERPASS_ELEMENTS};
-`.trim();
+  const sportFilter = `["sport"~"${sportRegexPattern(osmTags)}",i]`;
+  return wrapQuery([
+    `  nwr["club"="sport"]${sportFilter}["name"]${around};`,
+    `  nwr["leisure"="club"]${sportFilter}["name"]${around};`,
+    `  nwr["club"]${sportFilter}["name"]${around};`,
+  ]);
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useSession } from "@/app/(main)/SessionProvider";
+import { ArenaCard } from "@/components/playfinder/arena-card";
 import { FeedCardImInButton } from "@/components/playfinder/feed-card-im-in-button";
 import { FeedCardLikeButton } from "@/components/playfinder/feed-card-like-button";
 import { FeedCardSaveButton } from "@/components/playfinder/feed-card-save-button";
@@ -148,54 +149,47 @@ export function HomeFeedCard({
     </div>
   );
 
+  // Five actions spread across the card (X / Instagram style): bigger,
+  // easier targets, and the row lines up from card to card.
   const actionRow = (
-    <div className="flex items-center justify-between gap-4">
-      <div className="flex flex-shrink-0 items-center gap-4">
-        <FeedCardLikeButton
-          postId={postId}
-          initialState={{ likes, isLikedByUser }}
-          className="pf-hit min-h-9 gap-[7px] text-[13px] font-medium"
-        />
-        <Link
-          href={postHref}
-          className="pf-hit flex min-h-9 items-center gap-1.5 text-[13px] font-medium text-[var(--pf-c-ink-7e8a7e)] transition-transform hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
-          aria-label="View comments"
-        >
-          <MessageCircle className="h-5 w-5" />
-          {replies}
-        </Link>
-        <FeedCardShareButton
-          postId={postId}
-          iconOnly
-          className="pf-hit min-h-9 text-[var(--pf-c-ink-7e8a7e)] hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
-        />
-        <button
-          type="button"
-          onClick={() => setSendDialogOpen(true)}
-          className="pf-hit flex min-h-9 items-center text-[var(--pf-c-ink-7e8a7e)] transition-transform hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
-          aria-label="Send as message"
-        >
-          <Send className="h-[18px] w-[18px]" />
-        </button>
-        <FeedCardSaveButton
-          postId={postId}
-          initialState={{ isBookmarkedByUser }}
-          iconSize={19}
-          className="pf-hit active:scale-90"
-        />
-      </div>
-
-      {!isArenaLayout && location && (
-        <span className="flex min-w-0 items-center gap-1.5 text-[13px] text-[var(--pf-c-ink-7e8a7e)]">
-          <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
-          <span className="truncate">{location}</span>
-        </span>
-      )}
+    <div className="-mx-1.5 flex items-center justify-between">
+      <FeedCardLikeButton
+        postId={postId}
+        initialState={{ likes, isLikedByUser }}
+        className="pf-hit min-h-9 gap-[7px] text-[13px] font-medium"
+      />
+      <Link
+        href={postHref}
+        className="pf-hit flex min-h-9 items-center gap-1.5 text-[13px] font-medium text-[var(--pf-c-ink-7e8a7e)] transition-transform hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
+        aria-label="View comments"
+      >
+        <MessageCircle className="h-5 w-5" />
+        {replies}
+      </Link>
+      <FeedCardShareButton
+        postId={postId}
+        iconOnly
+        className="pf-hit min-h-9 text-[var(--pf-c-ink-7e8a7e)] hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
+      />
+      <button
+        type="button"
+        onClick={() => setSendDialogOpen(true)}
+        className="pf-hit flex min-h-9 items-center text-[var(--pf-c-ink-7e8a7e)] transition-transform hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
+        aria-label="Send as message"
+      >
+        <Send className="h-[18px] w-[18px]" />
+      </button>
+      <FeedCardSaveButton
+        postId={postId}
+        initialState={{ isBookmarkedByUser }}
+        iconSize={19}
+        className="pf-hit active:scale-90"
+      />
     </div>
   );
 
   const spotsRow = showSpots && (
-    <div className="mb-4 flex items-center gap-3 rounded-[14px] bg-black/20 p-3.5">
+    <div className="mb-4 flex items-center gap-3 rounded-[14px] bg-[var(--pf-inset)] p-3.5">
       <div className="min-w-0 flex-1">
         <div className="mb-1.5 text-xs text-[var(--pf-c-ink-7e8a7e)]">
           <b className="text-[15px] font-bold text-[var(--pf-volt-text)]">
@@ -246,127 +240,37 @@ export function HomeFeedCard({
 
   if (isArenaLayout) {
     return (
-      <article
-        className="relative animate-[pf-card-in_500ms_ease-in-out_backwards] overflow-hidden rounded-[18px] border border-[var(--pf-c-line-2a2f2a)] transition-transform active:scale-[0.98]"
-        style={{
-          background:
-            "linear-gradient(160deg, var(--pf-surface-2), var(--pf-surface))",
-          animationDelay: `${(cardIndex % 8) * 40}ms`,
-        }}
-      >
-        <div className="h-[3px] w-full" style={{ background: sportColour }} />
-        <div className="absolute right-3.5 top-3.5 z-10 flex items-center gap-2">
-          {isHotTake && (
-            <div className="inline-flex items-center gap-1 rounded-md border border-[rgb(var(--pf-volt-rgb)/0.2)] bg-[rgb(var(--pf-volt-rgb)/0.1)] px-[9px] py-1.5 text-[12px] font-semibold text-[var(--pf-volt-text)]">
-              <IconFlame className="h-3 w-3" stroke={2} aria-hidden />
-              Live soon
-            </div>
-          )}
-          <PostViewerMenu
-            postId={postId}
-            authorId={authorId}
-            authorUsername={username}
-            authorName={name}
-          />
-        </div>
-
-        <div className="p-[18px]">
-          <div className="mb-3.5 flex items-start gap-3">
-            <div className="min-w-0 flex-1">
-              <div className="text-[17px] font-bold leading-snug tracking-[-0.02em] text-[var(--pf-c-ink-f2f5ef)]">
-                {content}
-              </div>
-              <div className="mt-1.5 flex flex-wrap items-center gap-x-1 text-xs text-[var(--pf-c-ink-7e8a7e)]">
-                by{" "}
-                <Link
-                  href={profileHref}
-                  className="inline-flex items-center gap-1.5 font-semibold text-[var(--pf-c-ink-b4bcaf)] hover:underline"
-                >
-                  {name}
-                  {authorPageType && <PageTypeChip type={authorPageType} />}
-                </Link>
-                <span className="text-[var(--pf-c-ink-5a635a)]" aria-hidden>
-                  ·
-                </span>
-                <span>{timestamp}</span>
-                {metaExtras}
-              </div>
-            </div>
-            {sport && (
-              <div
-                className="flex shrink-0 items-center gap-1 rounded-[9px] px-2.5 py-1.5 text-xs font-semibold"
-                style={{
-                  color: sportColour,
-                  background: `${sportColour}1f`,
-                }}
-              >
-                {sportEmoji} {sport}
-              </div>
-            )}
-          </div>
-
-          {imageUrl && (
-            <Link
-              href={postHref}
-              className="relative mb-4 block aspect-[16/10] overflow-hidden rounded-2xl"
-            >
-              <img
-                src={imageUrl}
-                alt=""
-                className="h-full w-full object-cover"
-              />
-              <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 to-transparent to-50%" />
-            </Link>
-          )}
-
-          {(timeLabel || location) && (
-            <div className="mb-4 grid grid-cols-2 gap-2.5">
-              {timeLabel && (
-                <div className="rounded-[14px] border border-[rgb(var(--pf-contrast-rgb)/0.03)] bg-black/25 p-3.5">
-                  <div className="mb-2 flex items-center gap-1 text-[12px] font-medium text-[var(--pf-c-ink-5a635a)]">
-                    <Clock className="h-3 w-3" />
-                    When
-                  </div>
-                  <div className="text-sm font-semibold text-[var(--pf-c-ink-f2f5ef)]">
-                    {timeLabel}
-                  </div>
-                </div>
-              )}
-              {location && (
-                <div className="rounded-[14px] border border-[rgb(var(--pf-contrast-rgb)/0.03)] bg-black/25 p-3.5">
-                  <div className="mb-2 flex items-center gap-1 text-[12px] font-medium text-[var(--pf-c-ink-5a635a)]">
-                    <MapPin className="h-3 w-3" />
-                    Where
-                  </div>
-                  <div className="text-sm font-semibold text-[var(--pf-volt-text)]">
-                    {location}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {spotsRow}
-
-          {showImInButton && isLookingToPlay && !isOwnPost && (
-            <div className="mb-4 [&_button]:min-h-[52px] [&_button]:rounded-[14px] [&_button]:text-[15px] [&_button]:font-bold">
-              <FeedCardImInButton
-                postId={postId}
-                authorId={authorId}
-                isFull={isFull}
-                userInterestStatus={userInterestStatus}
-                fullWidth
-              />
-            </div>
-          )}
-
-          {actionRow}
-        </div>
-
-        {sendDialogOpen && (
-          <SendPostDialog postId={postId} onOpenChange={setSendDialogOpen} />
-        )}
-      </article>
+      <ArenaCard
+        postId={postId}
+        authorId={authorId}
+        username={username}
+        name={name}
+        profileHref={profileHref}
+        postHref={postHref}
+        authorPageType={authorPageType}
+        intent={intent}
+        sport={sport}
+        sportEmoji={sportEmoji}
+        sportColour={sportColour}
+        content={content}
+        timeLabel={timeLabel}
+        location={location}
+        timestamp={timestamp}
+        imageUrl={imageUrl}
+        replies={replies}
+        isHotTake={isHotTake}
+        metaExtras={metaExtras}
+        cardIndex={cardIndex}
+        isOwnPost={isOwnPost}
+        isLookingToPlay={isLookingToPlay}
+        showImInButton={showImInButton}
+        showSpots={showSpots}
+        acceptedCount={acceptedCount}
+        spotsLeft={spotsLeft}
+        isFull={isFull}
+        userInterestStatus={userInterestStatus}
+        isBookmarkedByUser={isBookmarkedByUser}
+      />
     );
   }
 

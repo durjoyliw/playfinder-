@@ -76,6 +76,7 @@ export async function GET() {
         reports: { select: { reason: true, createdAt: true } },
         appeals: { select: { reason: true, status: true, createdAt: true } },
         feedback: { select: { message: true, page: true, createdAt: true } },
+        waitlistEntry: { select: { email: true, createdAt: true } },
       },
     });
 

@@ -229,14 +229,15 @@ html body[data-scroll-locked] {
 /* ------------------------------------------------------------------------
    Appearance presets (Settings -> Appearance). Two independent dials on
    <html>, set server-side from cookies (src/lib/appearance.ts):
-     data-theme  = background base  (noir | slate | offwhite | white)
-     data-accent = accent colour    (volt | optic | emerald | crimson |
-                                     coral | cyan | orange)
+     data-theme  = background base  (noir | white offered; slate and
+                                     offwhite kept for old cookies, which
+                                     parseTheme maps to noir / white)
+     data-accent = accent colour    (volt | crimson | coral offered)
    :root above IS Noir + Volt, so with no attribute (or the defaults) the
    app looks exactly as before. Each base sets the --pf-* surface/text
    tokens AND the shadcn HSL tokens so bg-background, text-foreground etc.
-   follow too. Components with hardcoded hex colours won't follow a base
-   change yet -- see the light-mode polish list.
+   follow too. Don't hardcode dark colours in components: use these
+   tokens (or --pf-inset / --pf-veil) so White stays fully light.
    ------------------------------------------------------------------------ */
 @layer base {
   :root {
@@ -632,6 +633,19 @@ html body[data-scroll-locked] {
   --pf-status-amber-bg: #fef3c7;
   --pf-status-amber-fg: #92400e;
   --pf-sheet-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 -4px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* Inset panels inside cards (When / Where / spots left) and the map's
+   loading veil. Dark tints on dark bases; soft greys on light bases, so
+   nothing reads as a dark patch on White. */
+:root {
+  --pf-inset: rgb(0 0 0 / 0.22);
+  --pf-veil: rgb(0 0 0 / 0.3);
+}
+:root[data-theme="offwhite"],
+:root[data-theme="white"] {
+  --pf-inset: var(--pf-surface-2);
+  --pf-veil: rgb(255 255 255 / 0.5);
 }
 
 /* Cards read as cards on light bases: hairline + soft shadow. No rules on

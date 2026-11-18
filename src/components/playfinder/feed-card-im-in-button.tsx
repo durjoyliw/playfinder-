@@ -14,6 +14,8 @@ interface FeedCardImInButtonProps {
   isFull?: boolean;
   userInterestStatus?: string | null;
   fullWidth?: boolean;
+  /** Small pill for the Arena card's bottom-right corner. */
+  compact?: boolean;
 }
 
 async function errorMessage(error: unknown, fallback: string) {
@@ -34,6 +36,7 @@ export function FeedCardImInButton({
   isFull = false,
   userInterestStatus = null,
   fullWidth = false,
+  compact = false,
 }: FeedCardImInButtonProps) {
   const { user } = useSession();
   const { toast } = useToast();
@@ -87,7 +90,9 @@ export function FeedCardImInButton({
     return null;
   }
 
-  const baseClass = fullWidth
+  const baseClass = compact
+    ? "flex h-[30px] shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-[12.5px] font-semibold transition-colors"
+    : fullWidth
     ? "flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-colors"
     : "flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold transition-colors";
 
@@ -107,12 +112,12 @@ export function FeedCardImInButton({
 
   if ((isPending || isAccepted) && confirming) {
     return (
-      <div className="flex w-full gap-2">
+      <div className={compact ? "flex gap-1.5" : "flex w-full gap-2"}>
         <button
           type="button"
           onClick={() => setConfirming(false)}
           disabled={withdrawMutation.isPending}
-          className={`${baseClass} flex-1 border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-1a1a1a)] text-[var(--pf-c-ink-888888)] hover:bg-[var(--pf-c-fill-1f1f1f)]`}
+          className={`${baseClass} ${compact ? "" : "flex-1"} border border-[var(--pf-c-line-2a2a2a)] bg-[var(--pf-c-fill-1a1a1a)] text-[var(--pf-c-ink-888888)] hover:bg-[var(--pf-c-fill-1f1f1f)]`}
         >
           Keep
         </button>
@@ -120,13 +125,15 @@ export function FeedCardImInButton({
           type="button"
           onClick={() => withdrawMutation.mutate()}
           disabled={withdrawMutation.isPending}
-          className={`${baseClass} flex-1 bg-[#ef4444] text-white hover:bg-[#dc2626]`}
+          className={`${baseClass} ${compact ? "" : "flex-1"} bg-[#ef4444] text-white hover:bg-[#dc2626]`}
         >
           {withdrawMutation.isPending
             ? "..."
             : isAccepted
               ? "Drop out"
-              : "Cancel request"}
+              : compact
+                ? "Cancel"
+                : "Cancel request"}
         </button>
       </div>
     );
@@ -141,7 +148,7 @@ export function FeedCardImInButton({
         style={successStyle}
         aria-label="You're in this game. Tap to drop out."
       >
-        You&apos;re in ✓
+        {compact ? "✓ You're in" : <>You&apos;re in ✓</>}
       </button>
     );
   }
@@ -155,7 +162,7 @@ export function FeedCardImInButton({
         style={successStyle}
         aria-label="Request sent. Tap to cancel it."
       >
-        Request sent ✓
+        {compact ? "✓ Requested" : "Request sent ✓"}
       </button>
     );
   }
@@ -163,7 +170,7 @@ export function FeedCardImInButton({
   if (status === INTEREST_STATUS.DECLINED) {
     return (
       <button type="button" disabled className={baseClass} style={mutedStyle}>
-        Not this time
+        {compact ? "Declined" : "Not this time"}
       </button>
     );
   }
@@ -171,7 +178,7 @@ export function FeedCardImInButton({
   if (status === INTEREST_STATUS.REMOVED) {
     return (
       <button type="button" disabled className={baseClass} style={mutedStyle}>
-        Removed by host
+        {compact ? "Removed" : "Removed by host"}
       </button>
     );
   }
@@ -184,7 +191,7 @@ export function FeedCardImInButton({
         className={baseClass}
         style={{ ...mutedStyle, cursor: "not-allowed" }}
       >
-        Game full
+        {compact ? "Full" : "Game full"}
       </button>
     );
   }
@@ -196,7 +203,7 @@ export function FeedCardImInButton({
       disabled={expressMutation.isPending}
       className={`${baseClass} bg-[var(--pf-volt)] text-[var(--pf-on-accent)] hover:bg-[var(--pf-volt-hover)] disabled:opacity-70`}
     >
-      {expressMutation.isPending ? "..." : "I'm in 🤙"}
+      {expressMutation.isPending ? "..." : compact ? "I'm in" : "I'm in 🤙"}
     </button>
   );
 }

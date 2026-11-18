@@ -25,22 +25,13 @@ interface FeedCardSaveButtonProps {
 }
 
 /**
- * Save (bookmark) toggle for post cards. Outline when unsaved, filled in the
- * accent when saved, with a Twitter-style pop on save. Optimistic: the icon
- * flips instantly and rolls back if the request fails. Shares its cache key
- * with every other card showing the same post.
+ * Saved state for one post, shared with every card showing it. Optimistic:
+ * flips instantly and rolls back if the request fails.
  */
-export function FeedCardSaveButton({
-  postId,
-  initialState,
-  className,
-  iconSize = 18,
-}: FeedCardSaveButtonProps) {
+export function usePostBookmark(postId: string, initialState: BookmarkInfo) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const queryKey: QueryKey = ["bookmark-info", postId];
-  // Bumped on each save so the pop animation restarts on every tap.
-  const [popKey, setPopKey] = useState(0);
 
   const { data } = useQuery({
     queryKey,
@@ -49,8 +40,6 @@ export function FeedCardSaveButton({
     initialData: initialState,
     staleTime: Infinity,
   });
-
-  const saved = data.isBookmarkedByUser;
 
   const { mutate } = useMutation({
     mutationFn: (nextSaved: boolean) =>
@@ -77,6 +66,25 @@ export function FeedCardSaveButton({
       void queryClient.invalidateQueries({ queryKey: SAVED_POSTS_QUERY_KEY });
     },
   });
+
+  return { saved: data.isBookmarkedByUser, setSaved: mutate };
+}
+
+/**
+ * Save (bookmark) toggle for post cards. Outline when unsaved, filled in the
+ * accent when saved, with a Twitter-style pop on save. Optimistic: the icon
+ * flips instantly and rolls back if the request fails. Shares its cache key
+ * with every other card showing the same post.
+ */
+export function FeedCardSaveButton({
+  postId,
+  initialState,
+  className,
+  iconSize = 18,
+}: FeedCardSaveButtonProps) {
+  const { saved, setSaved: mutate } = usePostBookmark(postId, initialState);
+  // Bumped on each save so the pop animation restarts on every tap.
+  const [popKey, setPopKey] = useState(0);
 
   return (
     <button

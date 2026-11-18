@@ -3,6 +3,7 @@
 import { pageViewRightRailSlotId } from "@/app/(main)/pages/[handle]/page-desktop-right-rail";
 import { BottomNav } from "@/components/playfinder/bottom-nav";
 import { DesktopRightRail } from "@/components/playfinder/desktop-right-rail";
+import { WaitlistPrompt } from "@/components/waitlist/waitlist-prompt";
 import { DesktopSidebar } from "@/components/playfinder/desktop-sidebar";
 import { Header } from "@/components/playfinder/header";
 import { ProfileDesktopRightRail } from "@/components/playfinder-profile/profile-desktop-right-rail";
@@ -15,6 +16,8 @@ import { useEffect, useRef } from "react";
 interface MainAppShellProps {
   children: React.ReactNode;
   initialUnreadNotificationCount: number;
+  /** Whether this account is already on the launch waitlist. */
+  onWaitlist: boolean;
 }
 
 /**
@@ -29,7 +32,8 @@ function hasOwnMobileHeader(pathname: string) {
     pathname.startsWith("/pages/new") ||
     pathname.startsWith("/teammates") ||
     pathname.startsWith("/saved") ||
-    pathname.startsWith("/search")
+    pathname.startsWith("/search") ||
+    pathname.startsWith("/waitlist")
   );
 }
 
@@ -50,6 +54,7 @@ function hasOwnMobileHeader(pathname: string) {
 export function MainAppShell({
   children,
   initialUnreadNotificationCount,
+  onWaitlist,
 }: MainAppShellProps) {
   const pathname = usePathname();
   const isMessagesRoute = pathname.startsWith("/messages");
@@ -140,6 +145,8 @@ export function MainAppShell({
           <BottomNav />
         </div>
       )}
+
+      <WaitlistPrompt onWaitlist={onWaitlist} />
     </div>
   );
 }

@@ -30,6 +30,7 @@ export default async function Layout({
         select: { id: true },
         take: 1,
       },
+      waitlistEntry: { select: { id: true } },
     },
   });
 
@@ -61,6 +62,7 @@ export default async function Layout({
       <PlayFinderProvider>
         <MainAppShell
           initialUnreadNotificationCount={unreadNotificationCount}
+          onWaitlist={!!account?.waitlistEntry}
         >
           {children}
         </MainAppShell>

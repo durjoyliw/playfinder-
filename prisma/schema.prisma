@@ -56,6 +56,7 @@ model User {
   pageMemberships         PageMembership[]
   pageFollows             PageFollow[]
   feedback                Feedback[]
+  waitlistEntry           WaitlistEntry?
 
   createdAt DateTime @default(now())
 
@@ -557,6 +558,24 @@ model RateLimit {
 
 /// Beta feedback sent from the app (Settings / menu → Send feedback).
 /// Deleted with the account, like the rest of a user's data.
+/// People who asked to hear when the full version launches. Beta accounts
+/// have no email address, so this is the only place we hold one.
+model WaitlistEntry {
+  id        String   @id @default(cuid())
+  /// Lowercased.
+  email     String   @unique
+  /// One entry per account; deleting the account deletes the entry.
+  userId    String?  @unique
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// Where they joined from: "page" or "prompt".
+  source    String   @default("page")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt])
+  @@map("waitlist")
+}
+
 model Feedback {
   id        String   @id @default(cuid())
   userId    String?

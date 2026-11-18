@@ -22,6 +22,7 @@ import {
   Pencil,
   Share2,
 } from "lucide-react";
+import { OFFICIAL_ACCOUNT_ID } from "@/lib/official-account";
 import Link from "next/link";
 import { useSafeBack } from "@/hooks/use-safe-back";
 import { AthleteProfileData, SkillTier } from "./types";
@@ -51,6 +52,7 @@ export default function AthleteProfile({
 }: AthleteProfileProps) {
   const goBack = useSafeBack("/home");
   const { toast } = useToast();
+  const isOfficial = user.id === OFFICIAL_ACCOUNT_ID;
 
   const handleShare = async () => {
     const url =
@@ -187,12 +189,27 @@ export default function AthleteProfile({
           <span>{profile.joinedDate}</span>
         </div>
 
-        <ProfileIntentPill
-          profileIntent={profile.profileIntent}
-          isOwnProfile={profile.isOwnProfile}
-        />
+        {isOfficial ? (
+          <p className="mt-3 text-[13px] text-[var(--pf-c-ink-b4bcaf)]">
+            Official account. For questions or ideas, use{" "}
+            <Link
+              href={`/settings/feedback?from=${encodeURIComponent(`/users/${profile.username}`)}`}
+              className="font-semibold text-[var(--pf-volt-text)] hover:underline"
+            >
+              Send feedback
+            </Link>
+            .
+          </p>
+        ) : (
+          <ProfileIntentPill
+            profileIntent={profile.profileIntent}
+            isOwnProfile={profile.isOwnProfile}
+          />
+        )}
 
-        {!profile.isOwnProfile && (
+        {/* Nobody reads the official account's messages, so no Message
+            or Add Teammate there. */}
+        {!profile.isOwnProfile && !isOfficial && (
           <div className="mt-4 flex w-full gap-2">
             <ProfileActions user={user} followerInfo={followerInfo} />
           </div>

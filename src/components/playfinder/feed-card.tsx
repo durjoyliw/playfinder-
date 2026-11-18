@@ -334,42 +334,32 @@ export function FeedCard({
                 />
               )}
 
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex flex-shrink-0 items-center gap-4">
-                  <FeedCardLikeButton
-                    postId={postId}
-                    initialState={likeState}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setCommentsOpen((open) => !open)}
-                    className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-[var(--pf-c-ink-ffffff)]"
-                    aria-label={commentsOpen ? "Hide replies" : "Show replies"}
-                  >
-                    <MessageCircle className="h-4 w-4" />
-                    {replies > 0 && <span className="text-sm">{replies}</span>}
-                  </button>
-                  <FeedCardShareButton postId={postId} />
-                  <button
-                    type="button"
-                    onClick={() => setSendDialogOpen(true)}
-                    className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-[var(--pf-c-ink-ffffff)]"
-                    aria-label="Send as message"
-                  >
-                    <Send className="h-4 w-4" />
-                  </button>
-                  <FeedCardSaveButton
-                    postId={postId}
-                    initialState={{ isBookmarkedByUser }}
-                    iconSize={16}
-                    className="min-h-0"
-                  />
-                </div>
-
-                <span className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
-                  <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
-                  <span className="truncate">{location}</span>
-                </span>
+              <div className="-mx-1.5 flex items-center justify-between">
+                <FeedCardLikeButton postId={postId} initialState={likeState} />
+                <button
+                  type="button"
+                  onClick={() => setCommentsOpen((open) => !open)}
+                  className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-[var(--pf-c-ink-ffffff)]"
+                  aria-label={commentsOpen ? "Hide replies" : "Show replies"}
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  {replies > 0 && <span className="text-sm">{replies}</span>}
+                </button>
+                <FeedCardShareButton postId={postId} />
+                <button
+                  type="button"
+                  onClick={() => setSendDialogOpen(true)}
+                  className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-[var(--pf-c-ink-ffffff)]"
+                  aria-label="Send as message"
+                >
+                  <Send className="h-4 w-4" />
+                </button>
+                <FeedCardSaveButton
+                  postId={postId}
+                  initialState={{ isBookmarkedByUser }}
+                  iconSize={16}
+                  className="min-h-0"
+                />
               </div>
             </div>
 

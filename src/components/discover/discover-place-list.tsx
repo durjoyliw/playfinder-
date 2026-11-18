@@ -10,7 +10,9 @@ import {
 import { getSportIcon } from "@/lib/discover-sport-icons";
 import { getSportEmoji } from "@/lib/sports";
 import { getSportColour } from "@/lib/sport-visuals";
+import { getSportDisplay } from "@/lib/onboarding-sports";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import { IconUsers } from "@tabler/icons-react";
 
 interface DiscoverPlaceListProps {
@@ -76,6 +78,9 @@ export function DiscoverPlaceList({
   const SportIcon = getSportIcon(sportKey);
   const sportColour = getSportColour(sportKey);
   const sportEmoji = getSportEmoji(sportKey);
+  const sportName = getSportDisplay(sportKey).name;
+  // The API widens to 10 miles when nothing is within 5.
+  const radiusMiles = places.some((p) => p.distanceMiles > 5) ? 10 : 5;
 
   if (loading) {
     return (
@@ -101,19 +106,28 @@ export function DiscoverPlaceList({
   }
 
   if (places.length === 0) {
+    // Compact, so it fits above the bottom bar when the sheet is lowered.
     return (
-      <div className="px-4">
-        <div className="mb-3.5">
-          <div className="text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
-            Glasgow · within 5 mi
+      <div className="px-4 pb-2">
+        <div className="flex items-center gap-3 rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] px-3.5 py-3 pf-card">
+          <div className="min-w-0 flex-1">
+            <p className="text-[14px] font-semibold leading-snug text-[var(--pf-c-ink-f2f5ef)]">
+              No {sportName.toLowerCase()} {isVenues ? "venues" : "clubs"} on
+              the map yet
+            </p>
+            <p className="mt-0.5 text-[13px] text-[var(--pf-c-ink-7e8a7e)]">
+              Know one? Tell us and we&apos;ll add it.
+            </p>
           </div>
-          <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[var(--pf-c-ink-f2f5ef)]">
-            {isVenues ? "Play near you" : "Local clubs"}
-          </div>
+          <Link
+            href={`/settings/feedback?from=${encodeURIComponent("/discover")}&message=${encodeURIComponent(
+              `Missing ${isVenues ? "venue" : "club"} for ${sportName}: `,
+            )}`}
+            className="pf-hit inline-flex h-10 shrink-0 items-center rounded-xl bg-[var(--pf-volt)] px-4 text-sm font-bold text-[var(--pf-on-accent)]"
+          >
+            Tell us
+          </Link>
         </div>
-        <p className="py-5 text-center text-sm text-[var(--pf-c-ink-7e8a7e)]">
-          Try a different sport or check back later
-        </p>
       </div>
     );
   }
@@ -122,7 +136,7 @@ export function DiscoverPlaceList({
     <div>
       <div className="mb-3.5 px-4">
         <div className="text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
-          Glasgow · within 5 mi
+          Glasgow · within {radiusMiles} mi
         </div>
         <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[var(--pf-c-ink-f2f5ef)]">
           {isVenues ? "Play near you" : "Local clubs"}

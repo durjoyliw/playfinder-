@@ -6,6 +6,7 @@ import { getMapboxToken, hasMapboxToken } from "@/lib/mapbox-token";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useRef, type MutableRefObject } from "react";
+import { readIsLight } from "@/hooks/use-is-light-base";
 
 const DEFAULT_CENTER: [number, number] = [
   GLASGOW_CENTER.lng,
@@ -32,7 +33,7 @@ interface PageLocationMapProps {
 
 /**
  * Compact Mapbox preview for Create-a-Page step 3.
- * Reuses Discover's token, dark-v11 style, and `.pf-map-marker` pin markup.
+ * Reuses Discover's token, its light/dark map style, and `.pf-map-marker` pin markup.
  */
 export function PageLocationMap({ place, className }: PageLocationMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -59,7 +60,9 @@ export function PageLocationMap({ place, className }: PageLocationMapProps) {
 
     const map = new mapboxgl.Map({
       container: containerRef.current,
-      style: "mapbox://styles/mapbox/dark-v11",
+      style: readIsLight()
+        ? "mapbox://styles/mapbox/light-v11"
+        : "mapbox://styles/mapbox/dark-v11",
       center: DEFAULT_CENTER,
       zoom: DEFAULT_ZOOM,
       attributionControl: false,

@@ -52,6 +52,7 @@ export const RATE_LIMITS = {
   "birth-date": { limit: 10, windowSec: 60 * 60 },
   "secure-account": { limit: 10, windowSec: 60 * 60 },
   feedback: { limit: 10, windowSec: 60 * 60 },
+  waitlist: { limit: 10, windowSec: 60 * 60 },
   "data-export": { limit: 5, windowSec: 60 * 60 },
 } as const;
 
