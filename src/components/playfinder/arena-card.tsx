@@ -1,20 +1,24 @@
 "use client";
 
-import { FeedCardImInButton } from "@/components/playfinder/feed-card-im-in-button";
-import { usePostBookmark } from "@/components/playfinder/feed-card-save-button";
+import {
+  ArenaDateTile,
+  ArenaMainAction,
+  ArenaSpotPips,
+  spotsText,
+} from "@/components/playfinder/arena-parts";
+import { FeedCardLikeButton } from "@/components/playfinder/feed-card-like-button";
+import { FeedCardSaveButton } from "@/components/playfinder/feed-card-save-button";
+import { FeedCardShareButton } from "@/components/playfinder/feed-card-share-button";
 import { PostViewerMenu } from "@/components/playfinder/post-viewer-menu";
 import { SendPostDialog } from "@/components/playfinder/send-post-dialog";
-import { useToast } from "@/components/ui/use-toast";
 import { parseArenaWhen } from "@/lib/arena-when";
 import { cn } from "@/lib/utils";
 import { PageType } from "@prisma/client";
 import { IconFlame } from "@tabler/icons-react";
-import { Bookmark, Link2, MessageCircle, Send } from "lucide-react";
+import { MessageCircle, Send } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo, useState, type ReactNode } from "react";
-
-/** More pips than this and the row just shows the count. */
-const MAX_PIPS = 10;
 
 interface ArenaCardProps {
   postId: string;
@@ -24,7 +28,6 @@ interface ArenaCardProps {
   profileHref: string;
   postHref: string;
   authorPageType: PageType | null;
-  intent?: string;
   sport?: string;
   sportEmoji: string;
   sportColour: string;
@@ -32,17 +35,20 @@ interface ArenaCardProps {
   timeLabel?: string;
   location: string;
   timestamp: string;
+  createdAt?: string;
   imageUrl?: string;
+  likes: number;
+  isLikedByUser: boolean;
   replies: number;
   isHotTake: boolean;
   metaExtras: ReactNode;
   cardIndex: number;
   isOwnPost: boolean;
   isLookingToPlay: boolean;
-  showImInButton: boolean;
   showSpots: boolean;
   acceptedCount: number;
   spotsLeft: number;
+  pendingCount: number;
   isFull: boolean;
   userInterestStatus: string | null;
   isBookmarkedByUser: boolean;
@@ -54,9 +60,13 @@ const dot = (
   </span>
 );
 
+const iconBtn =
+  "pf-hit flex min-h-8 items-center gap-1 text-[var(--pf-c-ink-7e8a7e)] transition-colors hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90 [&_span]:text-[12px] [&_svg]:h-[17px] [&_svg]:w-[17px]";
+
 /**
- * Compact Arena card: a date tile, the game in two lines, and one action.
- * Save / Share / Send live in the ⋯ menu so the card stays short.
+ * Arena card: date tile, the game in three short lines, then like /
+ * comment / share / send / save and one main action. Tapping anywhere
+ * else on the card opens the game page.
  */
 export function ArenaCard({
   postId,
@@ -73,180 +83,46 @@ export function ArenaCard({
   timeLabel,
   location,
   timestamp,
+  createdAt,
   imageUrl,
+  likes,
+  isLikedByUser,
   replies,
   isHotTake,
   metaExtras,
   cardIndex,
   isOwnPost,
   isLookingToPlay,
-  showImInButton,
   showSpots,
   acceptedCount,
   spotsLeft,
+  pendingCount,
   isFull,
   userInterestStatus,
   isBookmarkedByUser,
 }: ArenaCardProps) {
-  const { toast } = useToast();
+  const router = useRouter();
   const [sendDialogOpen, setSendDialogOpen] = useState(false);
-  const { saved, setSaved } = usePostBookmark(postId, { isBookmarkedByUser });
-  const when = useMemo(() => parseArenaWhen(timeLabel), [timeLabel]);
-  const timeText = when ? when.time : timeLabel;
-  const spotsTotal = acceptedCount + spotsLeft;
-  const isRecruiting = !isLookingToPlay;
-
-  const copyLink = async () => {
-    try {
-      await navigator.clipboard.writeText(
-        `${window.location.origin}/posts/${postId}`,
-      );
-      toast({ description: "Link copied!", duration: 2000 });
-    } catch {
-      toast({ variant: "destructive", description: "Failed to copy link." });
-    }
-  };
-
-  const menuItems = [
-    {
-      label: saved ? "Remove from Saved" : "Save",
-      icon: (
-        <Bookmark
-          className={cn(saved && "fill-[var(--pf-volt)] text-[var(--pf-volt)]")}
-        />
-      ),
-      onSelect: () => setSaved(!saved),
-    },
-    { label: "Copy link", icon: <Link2 />, onSelect: copyLink },
-    {
-      label: "Send as message",
-      icon: <Send />,
-      onSelect: () => setSendDialogOpen(true),
-    },
-  ];
-
-  const tile = when ? (
-    <div
-      className="flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-[10px] bg-[var(--pf-inset)]"
-      aria-label={timeLabel}
-    >
-      <span
-        className={cn(
-          "text-[9px] font-semibold uppercase leading-none tracking-[0.04em]",
-          when.isToday
-            ? "text-[var(--pf-volt-text)]"
-            : "text-[var(--pf-c-ink-7e8a7e)]",
-        )}
-      >
-        {when.dayLabel}
-      </span>
-      <span
-        className={cn(
-          "mt-[3px] font-bold leading-none text-[var(--pf-c-ink-f2f5ef)]",
-          when.date.length > 2 ? "text-[12px]" : "text-[17px]",
-        )}
-      >
-        {when.date}
-      </span>
-    </div>
-  ) : (
-    <div
-      className="grid h-11 w-11 shrink-0 place-items-center rounded-[10px] text-[19px]"
-      style={{ background: `${sportColour}1f` }}
-      aria-hidden
-    >
-      {sportEmoji || "🏅"}
-    </div>
+  const when = useMemo(
+    () => parseArenaWhen(timeLabel, new Date(), createdAt),
+    [timeLabel, createdAt],
   );
+  const timeText = when ? when.time : timeLabel;
+  const isRecruiting = !isLookingToPlay;
+  const spotsTotal = acceptedCount + spotsLeft;
 
-  const pillClass =
-    "flex h-[30px] shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3.5 text-[12.5px] font-semibold transition-colors";
-
-  let action: ReactNode = null;
-  if (isOwnPost) {
-    action = (
-      <Link
-        href={postHref}
-        className={cn(
-          pillClass,
-          "border border-[var(--pf-c-line-2a2f2a)] text-[var(--pf-c-ink-f2f5ef)] hover:bg-[var(--pf-c-fill-1e211e)]",
-        )}
-      >
-        Manage
-      </Link>
-    );
-  } else if (isRecruiting) {
-    const draft = `Hi, I'm interested in joining ${name}. Can you tell me more about trials or joining?`;
-    action = (
-      <Link
-        href={`/messages?to=${encodeURIComponent(authorId)}&draft=${encodeURIComponent(draft)}`}
-        className={cn(
-          pillClass,
-          "border border-[var(--pf-c-line-2a2f2a)] text-[var(--pf-c-ink-f2f5ef)] hover:bg-[var(--pf-c-fill-1e211e)]",
-        )}
-      >
-        Message
-      </Link>
-    );
-  } else if (showImInButton) {
-    action = (
-      <FeedCardImInButton
-        postId={postId}
-        authorId={authorId}
-        isFull={isFull}
-        userInterestStatus={userInterestStatus}
-        compact
-      />
-    );
-  }
-
-  let status: ReactNode = null;
-  if (isRecruiting) {
-    status = (
-      <span
-        className="inline-flex h-[22px] items-center rounded-md px-2 text-[11px] font-semibold"
-        style={{ color: sportColour, background: `${sportColour}1f` }}
-      >
-        Recruiting
-      </span>
-    );
-  } else if (showSpots) {
-    status = (
-      <div className="flex min-w-0 items-center gap-2">
-        {spotsTotal <= MAX_PIPS && (
-          <div className="flex shrink-0 gap-[3px]" aria-hidden>
-            {Array.from({ length: spotsTotal }).map((_, i) => (
-              <span
-                key={i}
-                className={cn(
-                  "h-[7px] w-[7px] rounded-full",
-                  i < acceptedCount
-                    ? "bg-[var(--pf-volt)]"
-                    : "border border-[rgb(var(--pf-contrast-rgb)/0.25)]",
-                )}
-              />
-            ))}
-          </div>
-        )}
-        <span
-          className={cn(
-            "truncate text-[12px] font-medium",
-            isFull || spotsLeft === 0
-              ? "text-[var(--pf-c-ink-7e8a7e)]"
-              : "text-[var(--pf-c-ink-b4bcaf)]",
-          )}
-        >
-          {isFull || spotsLeft === 0
-            ? "Full"
-            : `${spotsLeft} ${spotsLeft === 1 ? "spot" : "spots"} left`}
-        </span>
-      </div>
-    );
+  // Tap anywhere that isn't a link/button → the game page.
+  function onCardClick(e: React.MouseEvent<HTMLElement>) {
+    const target = e.target as HTMLElement;
+    if (!e.currentTarget.contains(target)) return; // portals (dialogs)
+    if (target.closest("a,button,input,textarea,[role=menu]")) return;
+    router.push(postHref);
   }
 
   return (
     <article
-      className="relative animate-[pf-card-in_500ms_ease-in-out_backwards] rounded-[14px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-surface)] px-3 py-2"
+      onClick={onCardClick}
+      className="relative animate-[pf-card-in_500ms_ease-in-out_backwards] cursor-pointer rounded-[14px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-surface)] px-3 pb-1.5 pt-2.5"
       style={{ animationDelay: `${(cardIndex % 8) * 40}ms` }}
     >
       <PostViewerMenu
@@ -254,21 +130,25 @@ export function ArenaCard({
         authorId={authorId}
         authorUsername={username}
         authorName={name}
-        extraItems={menuItems}
         className="!absolute right-1.5 top-1.5 z-10 has-[[aria-expanded=true]]:z-40"
       />
 
       <div className="flex gap-2.5">
-        {tile}
+        <ArenaDateTile
+          when={when}
+          label={timeLabel}
+          sportEmoji={sportEmoji}
+          sportColour={sportColour}
+        />
         <div className="min-w-0 flex-1">
           <Link
             href={postHref}
-            className="line-clamp-2 pr-6 text-[14px] font-semibold leading-[1.28] tracking-[-0.01em] text-[var(--pf-c-ink-f2f5ef)] [word-break:break-word] hover:underline"
+            className="line-clamp-2 pr-6 text-[14px] font-semibold leading-[1.28] tracking-[-0.01em] text-[var(--pf-c-ink-f2f5ef)] [word-break:break-word]"
           >
             {content}
           </Link>
 
-          <p className="mt-0.5 flex min-w-0 items-center gap-1 text-[11.5px] leading-[1.35] text-[var(--pf-c-ink-7e8a7e)]">
+          <p className="mt-0.5 flex min-w-0 items-center gap-1 text-[11.5px] leading-[1.4] text-[var(--pf-c-ink-7e8a7e)]">
             {sport && (
               <>
                 <span
@@ -295,32 +175,44 @@ export function ArenaCard({
             )}
           </p>
 
-          <p className="flex min-w-0 flex-wrap items-center gap-x-1 text-[11.5px] leading-[1.35] text-[var(--pf-c-ink-7e8a7e)]">
+          <p className="flex min-w-0 flex-wrap items-center gap-x-1 text-[11.5px] leading-[1.4] text-[var(--pf-c-ink-7e8a7e)]">
             by
             <Link
               href={profileHref}
               className="inline-flex items-center gap-1 font-semibold text-[var(--pf-c-ink-b4bcaf)] hover:underline"
             >
-              {name}
-              {authorPageType && (
-                <span className="text-[11px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
-                  ({authorPageType === PageType.VENUE ? "Venue" : "Club"})
-                </span>
-              )}
+              {isOwnPost ? "You" : name}
             </Link>
+            {isOwnPost ? (
+              <span className="rounded px-1.5 py-px text-[10.5px] font-semibold text-[var(--pf-volt-text)] bg-[rgb(var(--pf-volt-rgb)/0.14)]">
+                Your game
+              </span>
+            ) : (
+              authorPageType && (
+                <span className="rounded bg-[rgb(var(--pf-contrast-rgb)/0.07)] px-1.5 py-px text-[10.5px] font-semibold text-[var(--pf-c-ink-b4bcaf)]">
+                  {authorPageType === PageType.VENUE ? "Venue" : "Club"}
+                </span>
+              )
+            )}
             {dot}
             <span>{timestamp}</span>
-            {replies > 0 && (
+            {isOwnPost && !isRecruiting && pendingCount > 0 && (
               <>
                 {dot}
-                <Link
-                  href={`${postHref}#comments`}
-                  className="inline-flex items-center gap-0.5 hover:text-[var(--pf-c-ink-f2f5ef)]"
-                  aria-label={`${replies} comments`}
-                >
-                  <MessageCircle className="h-3 w-3" aria-hidden />
-                  {replies}
-                </Link>
+                <span className="font-medium text-[var(--pf-volt-text)]">
+                  {pendingCount} interested
+                </span>
+              </>
+            )}
+            {!isRecruiting && showSpots && (
+              <>
+                {dot}
+                <span className="inline-flex items-center gap-1">
+                  <ArenaSpotPips accepted={acceptedCount} total={spotsTotal} />
+                  <span className="font-medium text-[var(--pf-c-ink-b4bcaf)]">
+                    {spotsText(spotsLeft, isFull)}
+                  </span>
+                </span>
               </>
             )}
             {isHotTake && (
@@ -334,24 +226,62 @@ export function ArenaCard({
             )}
             {metaExtras}
           </p>
+
+          {imageUrl && (
+            <Link
+              href={postHref}
+              className="mt-2 block aspect-[5/2] overflow-hidden rounded-[10px]"
+            >
+              <img src={imageUrl} alt="" className="h-full w-full object-cover" />
+            </Link>
+          )}
+
+          <div className="mt-1 flex items-center justify-between gap-2">
+            <div className="-ml-0.5 flex items-center gap-3.5">
+              <FeedCardLikeButton
+                postId={postId}
+                initialState={{ likes, isLikedByUser }}
+                className={cn(iconBtn, "gap-1")}
+              />
+              <Link
+                href={`${postHref}#comments`}
+                className={iconBtn}
+                aria-label="Comments"
+              >
+                <MessageCircle />
+                <span className="font-medium tabular-nums">{replies}</span>
+              </Link>
+              <FeedCardShareButton postId={postId} iconOnly className={iconBtn} />
+              <button
+                type="button"
+                onClick={() => setSendDialogOpen(true)}
+                className={iconBtn}
+                aria-label="Send as message"
+              >
+                <Send />
+              </button>
+              <FeedCardSaveButton
+                postId={postId}
+                initialState={{ isBookmarkedByUser }}
+                iconSize={17}
+                className="pf-hit min-h-8 active:scale-90"
+              />
+            </div>
+            <ArenaMainAction
+              postId={postId}
+              authorId={authorId}
+              name={name}
+              sport={sport}
+              isPage={Boolean(authorPageType)}
+              postHref={postHref}
+              isOwnPost={isOwnPost}
+              isRecruiting={isRecruiting}
+              isFull={isFull}
+              userInterestStatus={userInterestStatus}
+            />
+          </div>
         </div>
       </div>
-
-      {imageUrl && (
-        <Link
-          href={postHref}
-          className="mt-2 block aspect-[5/2] overflow-hidden rounded-[10px]"
-        >
-          <img src={imageUrl} alt="" className="h-full w-full object-cover" />
-        </Link>
-      )}
-
-      {(status || action) && (
-        <div className="mt-1.5 flex min-h-[30px] items-center justify-between gap-3">
-          <div className="min-w-0">{status}</div>
-          {action}
-        </div>
-      )}
 
       {sendDialogOpen && (
         <SendPostDialog postId={postId} onOpenChange={setSendDialogOpen} />

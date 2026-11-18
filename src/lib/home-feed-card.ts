@@ -39,6 +39,10 @@ export interface HomeFeedCardProps {
   /** When set, author is a Page — link to /pages/[handle] */
   authorPageHandle?: string | null;
   authorPageType?: PageType | null;
+  /** ISO time the post was made (reads "Tonight 7pm" against the right day). */
+  createdAt?: string;
+  /** Requests waiting on the viewer's own game (0 for anyone else's). */
+  pendingCount?: number;
 }
 
 export function mapPostToHomeFeedCard(
@@ -47,6 +51,11 @@ export function mapPostToHomeFeedCard(
 ): HomeFeedCardProps {
   const image = post.attachments.find((a) => a.type === MediaType.IMAGE);
   const page = post.authorPage;
+  const createdAt = new Date(post.createdAt).toISOString();
+  // Only the author's own posts carry other people's requests.
+  const pendingCount = (post.interests ?? []).filter(
+    (i) => i.status === "PENDING" && i.userId !== post.user.id,
+  ).length;
 
   if (page) {
     return {
@@ -77,6 +86,8 @@ export function mapPostToHomeFeedCard(
       userInterestStatus: post.userInterestStatus,
       authorPageHandle: page.handle,
       authorPageType: page.type,
+      createdAt,
+      pendingCount,
     };
   }
 
@@ -108,5 +119,7 @@ export function mapPostToHomeFeedCard(
     userInterestStatus: post.userInterestStatus,
     authorPageHandle: null,
     authorPageType: null,
+    createdAt,
+    pendingCount,
   };
 }
