@@ -139,7 +139,10 @@ export function ArenaCard({
           </Link>
           <p className="mt-1 flex min-w-0 items-center gap-x-1.5 text-xs text-[var(--pf-c-ink-7e8a7e)]">
             {sport && (
-              <span className="shrink-0 font-medium" style={{ color: sportColour }}>
+              <span
+                className="shrink-0 font-medium"
+                style={{ color: sportColour }}
+              >
                 {sportEmoji} {sport}
               </span>
             )}
@@ -266,18 +269,21 @@ export function ArenaCard({
             className="pf-hit active:scale-90"
           />
         </div>
-        <ArenaMainAction
-          postId={postId}
-          authorId={authorId}
-          name={name}
-          sport={sport}
-          isPage={Boolean(authorPageType)}
-          postHref={postHref}
-          isOwnPost={isOwnPost}
-          isRecruiting={isRecruiting}
-          isFull={isFull}
-          userInterestStatus={userInterestStatus}
-        />
+        {/* Fixed slot, so the icons line up on every row. */}
+        <div className="flex w-[104px] shrink-0 justify-end">
+          <ArenaMainAction
+            postId={postId}
+            authorId={authorId}
+            name={name}
+            sport={sport}
+            isPage={Boolean(authorPageType)}
+            postHref={postHref}
+            isOwnPost={isOwnPost}
+            isRecruiting={isRecruiting}
+            isFull={isFull}
+            userInterestStatus={userInterestStatus}
+          />
+        </div>
       </div>
 
       {sendDialogOpen && (
