@@ -2,7 +2,6 @@
 
 import {
   ArenaDateTile,
-  ArenaMainAction,
   ArenaSpotPips,
   spotsText,
 } from "@/components/playfinder/arena-parts";
@@ -107,6 +106,12 @@ export function ArenaCard({
   const timeText = when ? when.time : timeLabel;
   const isRecruiting = !isLookingToPlay;
   const spotsTotal = acceptedCount + spotsLeft;
+  const joinTag =
+    userInterestStatus === "ACCEPTED"
+      ? "✓ You're in"
+      : userInterestStatus === "PENDING"
+        ? "✓ Requested"
+        : null;
 
   // Tap anywhere that isn't a link/button → the game page.
   function onCardClick(e: React.MouseEvent<HTMLElement>) {
@@ -180,6 +185,11 @@ export function ArenaCard({
                 </span>
               )
             )}
+            {!isOwnPost && !isRecruiting && joinTag && (
+              <span className="rounded bg-[rgb(var(--pf-volt-rgb)/0.14)] px-1.5 py-px text-[11px] font-semibold text-[var(--pf-volt-text)]">
+                {joinTag}
+              </span>
+            )}
             {dot}
             <span>{timestamp}</span>
             {isOwnPost && !isRecruiting && pendingCount > 0 && (
@@ -233,8 +243,8 @@ export function ArenaCard({
         </Link>
       )}
 
-      {/* Same icon row as a Social post, with the one main button at the end. */}
-      <div className="flex items-center gap-5">
+      {/* Same icon row as a Social post. Joining happens on the game page. */}
+      <div className="flex items-center">
         <div className="-mx-1.5 flex flex-1 items-center justify-between">
           <FeedCardLikeButton
             postId={postId}
@@ -267,21 +277,6 @@ export function ArenaCard({
             initialState={{ isBookmarkedByUser }}
             iconSize={19}
             className="pf-hit active:scale-90"
-          />
-        </div>
-        {/* Fixed slot, so the icons line up on every row. */}
-        <div className="flex w-[104px] shrink-0 justify-end">
-          <ArenaMainAction
-            postId={postId}
-            authorId={authorId}
-            name={name}
-            sport={sport}
-            isPage={Boolean(authorPageType)}
-            postHref={postHref}
-            isOwnPost={isOwnPost}
-            isRecruiting={isRecruiting}
-            isFull={isFull}
-            userInterestStatus={userInterestStatus}
           />
         </div>
       </div>
