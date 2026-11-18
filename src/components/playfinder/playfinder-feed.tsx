@@ -112,7 +112,7 @@ export function PlayFinderFeed({
           {games.map(renderCard)}
           {recruiting.length > 0 && (
             <div className={games.length > 0 ? "mt-2" : undefined}>
-              {sectionHeading("Clubs recruiting", recruiting.length)}
+              {sectionHeading("Recruiting", recruiting.length)}
             </div>
           )}
           {recruiting.map((post, i) => renderCard(post, games.length + i))}

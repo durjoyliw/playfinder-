@@ -54,6 +54,8 @@ function sameDay(a: Date, b: Date) {
 export function parseArenaWhen(
   label: string | null | undefined,
   now: Date = new Date(),
+  /** When the post was made. "Tonight" is only trusted against that day. */
+  postedAt?: string | Date | null,
 ): ArenaWhen | null {
   if (!label) return null;
 
@@ -62,13 +64,26 @@ export function parseArenaWhen(
   if (relative) {
     const word = relative[1].toLowerCase();
     const time = shortTime(relative[2]);
-    if (!time) return null;
-    return {
-      dayLabel: word === "tomorrow" ? "TMRW" : word.toUpperCase(),
-      date: time,
-      time: "",
-      isToday: word !== "tomorrow",
-    };
+    const posted = postedAt ? new Date(postedAt) : null;
+    if (!time || !posted || Number.isNaN(posted.getTime())) return null;
+    // The day the label points at: the posting day, or the day after.
+    const target = new Date(posted);
+    if (word === "tomorrow") target.setDate(target.getDate() + 1);
+    const tomorrow = new Date(now);
+    tomorrow.setDate(now.getDate() + 1);
+    if (sameDay(target, now)) {
+      return {
+        dayLabel: word === "tonight" ? "TONIGHT" : "TODAY",
+        date: time,
+        time: "",
+        isToday: true,
+      };
+    }
+    if (sameDay(target, tomorrow)) {
+      return { dayLabel: "TMRW", date: time, time: "", isToday: false };
+    }
+    // Written days ago: we can't tell which day it meant.
+    return null;
   }
 
   const match = LABEL_RE.exec(label);

@@ -30,6 +30,9 @@ interface PostInterestedPanelProps {
   authorId: string;
   postType: string | null;
   initialPendingCount?: number;
+  /** Arena game page: one big "Review requests" button + Filled / Edit. */
+  variant?: "default" | "arena";
+  onEdit?: () => void;
 }
 
 export function PostInterestedPanel({
@@ -37,6 +40,8 @@ export function PostInterestedPanel({
   authorId,
   postType,
   initialPendingCount = 0,
+  variant = "default",
+  onEdit,
 }: PostInterestedPanelProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -99,8 +104,49 @@ export function PostInterestedPanel({
     patchMutation.mutate({ interestId: "manual", action: "MANUAL_FILL" });
   };
 
+  const isArenaVariant = variant === "arena";
+
   return (
     <div className="mb-4">
+      {isArenaVariant ? (
+        <div className="space-y-2">
+          <button
+            type="button"
+            onClick={() => setExpanded((v) => !v)}
+            aria-expanded={expanded}
+            className={
+              pendingCount > 0
+                ? "flex h-11 w-full items-center justify-center rounded-xl bg-[var(--pf-volt)] text-[15px] font-bold text-[var(--pf-on-accent)] transition-colors hover:bg-[var(--pf-volt-hover)]"
+                : "flex h-11 w-full items-center justify-center rounded-xl border border-[var(--pf-c-line-2a2f2a)] text-[15px] font-semibold text-[var(--pf-c-ink-f2f5ef)] transition-colors hover:bg-[var(--pf-c-fill-1e211e)]"
+            }
+          >
+            {expanded
+              ? "Hide players"
+              : pendingCount > 0
+                ? `Review requests (${pendingCount})`
+                : "See players"}
+          </button>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={handleManualFill}
+              disabled={patchMutation.isPending}
+              className="flex h-10 flex-1 items-center justify-center rounded-xl border border-[var(--pf-c-line-2a2f2a)] text-[13px] font-semibold text-[var(--pf-c-ink-f2f5ef)] transition-colors hover:bg-[var(--pf-c-fill-1e211e)] disabled:opacity-55"
+            >
+              + Filled a spot elsewhere
+            </button>
+            {onEdit && (
+              <button
+                type="button"
+                onClick={onEdit}
+                className="flex h-10 flex-1 items-center justify-center rounded-xl border border-[var(--pf-c-line-2a2f2a)] text-[13px] font-semibold text-[var(--pf-c-ink-f2f5ef)] transition-colors hover:bg-[var(--pf-c-fill-1e211e)]"
+              >
+                Edit
+              </button>
+            )}
+          </div>
+        </div>
+      ) : (
       <div className="flex flex-wrap gap-2">
         <button
           type="button"
@@ -134,6 +180,7 @@ export function PostInterestedPanel({
           + Filled a spot elsewhere
         </button>
       </div>
+      )}
 
       {expanded && (
         <div className="mt-3 space-y-2">
@@ -188,9 +235,11 @@ export function PostInterestedPanel({
                   {interest.status === "ACCEPTED" ? (
                     <>
                       <span className="text-xs font-medium text-[var(--pf-volt-text)]">
-                        Accepted ✓
+                        {interest.userId === authorId
+                          ? "Filled elsewhere"
+                          : "Accepted ✓"}
                       </span>
-                      {interest.userId !== authorId && (
+                      {(interest.userId !== authorId || isArenaVariant) && (
                         <button
                           type="button"
                           onClick={() =>

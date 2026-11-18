@@ -64,6 +64,8 @@ export function HomeFeedCard({
   userInterestStatus = null,
   authorPageHandle = null,
   authorPageType = null,
+  createdAt,
+  pendingCount = 0,
 }: HomeFeedCardProps) {
   const { user } = useSession();
   const [sendDialogOpen, setSendDialogOpen] = useState(false);
@@ -248,7 +250,6 @@ export function HomeFeedCard({
         profileHref={profileHref}
         postHref={postHref}
         authorPageType={authorPageType}
-        intent={intent}
         sport={sport}
         sportEmoji={sportEmoji}
         sportColour={sportColour}
@@ -256,17 +257,20 @@ export function HomeFeedCard({
         timeLabel={timeLabel}
         location={location}
         timestamp={timestamp}
+        createdAt={createdAt}
         imageUrl={imageUrl}
+        likes={likes}
+        isLikedByUser={isLikedByUser}
         replies={replies}
         isHotTake={isHotTake}
         metaExtras={metaExtras}
         cardIndex={cardIndex}
         isOwnPost={isOwnPost}
         isLookingToPlay={isLookingToPlay}
-        showImInButton={showImInButton}
         showSpots={showSpots}
         acceptedCount={acceptedCount}
         spotsLeft={spotsLeft}
+        pendingCount={pendingCount}
         isFull={isFull}
         userInterestStatus={userInterestStatus}
         isBookmarkedByUser={isBookmarkedByUser}

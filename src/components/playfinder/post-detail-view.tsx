@@ -1,10 +1,10 @@
 "use client";
 
+import { ArenaPostDetail } from "@/components/playfinder/arena-post-detail";
 import { FeedCardComments } from "@/components/playfinder/feed-card-comments";
 import { FeedCardImInButton } from "@/components/playfinder/feed-card-im-in-button";
 import { FeedCardLikeButton } from "@/components/playfinder/feed-card-like-button";
 import { FeedCardSaveButton } from "@/components/playfinder/feed-card-save-button";
-import { FeedCardMessageClubButton } from "@/components/playfinder/feed-card-message-club-button";
 import { FeedCardShareButton } from "@/components/playfinder/feed-card-share-button";
 import { PostInterestedPanel } from "@/components/playfinder/post-interested-panel";
 import { SendPostDialog } from "@/components/playfinder/send-post-dialog";
@@ -90,6 +90,11 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
     const interest = acceptedInterests[spotIndex];
     if (!interest) return;
     removeSpotMutation.mutate(interest.id);
+  }
+
+  // Games and recruiting posts get the Arena game page.
+  if (isLooking || card.type === "recruiting") {
+    return <ArenaPostDetail post={post} loggedInUserId={loggedInUserId} />;
   }
 
   return (
@@ -291,16 +296,6 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
                 authorId={card.authorId}
                 isFull={card.isFull}
                 userInterestStatus={card.userInterestStatus}
-              />
-            </div>
-          )}
-
-          {card.type === "recruiting" && (
-            <div className="mb-4">
-              <FeedCardMessageClubButton
-                fullWidth
-                authorId={card.authorId}
-                clubName={card.name}
               />
             </div>
           )}
