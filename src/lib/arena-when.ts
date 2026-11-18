@@ -22,10 +22,21 @@ const MONTHS = [
 const LABEL_RE =
   /^\s*(mon|tue|wed|thu|fri|sat|sun)[a-z]*\.?\s+(\d{1,2})\s+([a-z]{3})[a-z]*\.?,?\s*(.*)$/i;
 
+const RELATIVE_RE = /^\s*(tonight|today|tomorrow)\b[\s,@-]*(?:at\s+)?(.*)$/i;
+const TIME_RE = /^(\d{1,2})(?:[:.](\d{2}))?\s*(am|pm)?$/i;
+
+/** "7 PM" -> "7pm", "19:30" -> "19:30"; anything else -> null. */
+function shortTime(text: string): string | null {
+  const m = TIME_RE.exec(text.trim());
+  if (!m) return null;
+  const [, h, min, ampm] = m;
+  return `${h}${min ? `:${min}` : ""}${ampm ? ampm.toLowerCase() : ""}`;
+}
+
 export interface ArenaWhen {
-  /** "SAT", or "TODAY" / "TMRW" when it's that close. */
+  /** "SAT", or "TODAY" / "TMRW" / "TONIGHT" when it's that close. */
   dayLabel: string;
-  /** Day of the month, "21". */
+  /** Day of the month ("21"), or the time ("7pm") for "Tonight 7pm". */
   date: string;
   /** Time part, "7:30 am" ("" if the label had none). */
   time: string;
@@ -45,6 +56,21 @@ export function parseArenaWhen(
   now: Date = new Date(),
 ): ArenaWhen | null {
   if (!label) return null;
+
+  // Written times like "Tonight 7 PM" / "Tomorrow 10am".
+  const relative = RELATIVE_RE.exec(label);
+  if (relative) {
+    const word = relative[1].toLowerCase();
+    const time = shortTime(relative[2]);
+    if (!time) return null;
+    return {
+      dayLabel: word === "tomorrow" ? "TMRW" : word.toUpperCase(),
+      date: time,
+      time: "",
+      isToday: word !== "tomorrow",
+    };
+  }
+
   const match = LABEL_RE.exec(label);
   if (!match) return null;
 

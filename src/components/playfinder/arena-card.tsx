@@ -127,12 +127,12 @@ export function ArenaCard({
 
   const tile = when ? (
     <div
-      className="flex h-[52px] w-12 shrink-0 flex-col items-center justify-center rounded-xl bg-[var(--pf-inset)]"
+      className="flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-[10px] bg-[var(--pf-inset)]"
       aria-label={timeLabel}
     >
       <span
         className={cn(
-          "text-[10px] font-semibold uppercase leading-none tracking-[0.04em]",
+          "text-[9px] font-semibold uppercase leading-none tracking-[0.04em]",
           when.isToday
             ? "text-[var(--pf-volt-text)]"
             : "text-[var(--pf-c-ink-7e8a7e)]",
@@ -140,13 +140,18 @@ export function ArenaCard({
       >
         {when.dayLabel}
       </span>
-      <span className="mt-1 text-[20px] font-bold leading-none text-[var(--pf-c-ink-f2f5ef)]">
+      <span
+        className={cn(
+          "mt-[3px] font-bold leading-none text-[var(--pf-c-ink-f2f5ef)]",
+          when.date.length > 2 ? "text-[12px]" : "text-[17px]",
+        )}
+      >
         {when.date}
       </span>
     </div>
   ) : (
     <div
-      className="grid h-[52px] w-12 shrink-0 place-items-center rounded-xl text-[22px]"
+      className="grid h-11 w-11 shrink-0 place-items-center rounded-[10px] text-[19px]"
       style={{ background: `${sportColour}1f` }}
       aria-hidden
     >
@@ -155,7 +160,7 @@ export function ArenaCard({
   );
 
   const pillClass =
-    "flex h-9 shrink-0 items-center justify-center whitespace-nowrap rounded-full px-4 text-[13px] font-semibold transition-colors";
+    "flex h-8 shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3.5 text-[13px] font-semibold transition-colors";
 
   let action: ReactNode = null;
   if (isOwnPost) {
@@ -199,7 +204,7 @@ export function ArenaCard({
   if (isRecruiting) {
     status = (
       <span
-        className="inline-flex h-6 items-center rounded-full px-2.5 text-[12px] font-semibold"
+        className="inline-flex h-[22px] items-center rounded-md px-2 text-[11px] font-semibold"
         style={{ color: sportColour, background: `${sportColour}1f` }}
       >
         Recruiting
@@ -214,7 +219,7 @@ export function ArenaCard({
               <span
                 key={i}
                 className={cn(
-                  "h-2 w-2 rounded-full",
+                  "h-[7px] w-[7px] rounded-full",
                   i < acceptedCount
                     ? "bg-[var(--pf-volt)]"
                     : "border border-[rgb(var(--pf-contrast-rgb)/0.25)]",
@@ -225,7 +230,7 @@ export function ArenaCard({
         )}
         <span
           className={cn(
-            "truncate text-[13px] font-medium",
+            "truncate text-[12px] font-medium",
             isFull || spotsLeft === 0
               ? "text-[var(--pf-c-ink-7e8a7e)]"
               : "text-[var(--pf-c-ink-b4bcaf)]",
@@ -241,7 +246,7 @@ export function ArenaCard({
 
   return (
     <article
-      className="relative animate-[pf-card-in_500ms_ease-in-out_backwards] rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-surface)] p-3"
+      className="relative animate-[pf-card-in_500ms_ease-in-out_backwards] rounded-[14px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-surface)] px-3 py-2.5"
       style={{ animationDelay: `${(cardIndex % 8) * 40}ms` }}
     >
       <PostViewerMenu
@@ -250,24 +255,24 @@ export function ArenaCard({
         authorUsername={username}
         authorName={name}
         extraItems={menuItems}
-        className="!absolute right-2 top-2 z-10 has-[[aria-expanded=true]]:z-40"
+        className="!absolute right-1.5 top-1.5 z-10 has-[[aria-expanded=true]]:z-40"
       />
 
-      <div className="flex gap-3">
+      <div className="flex gap-2.5">
         {tile}
         <div className="min-w-0 flex-1">
           <Link
             href={postHref}
-            className="line-clamp-2 pr-7 text-base font-semibold leading-snug tracking-[-0.01em] text-[var(--pf-c-ink-f2f5ef)] [word-break:break-word] hover:underline"
+            className="line-clamp-2 pr-6 text-[14.5px] font-semibold leading-[1.3] tracking-[-0.01em] text-[var(--pf-c-ink-f2f5ef)] [word-break:break-word] hover:underline"
           >
             {content}
           </Link>
 
-          <p className="mt-1 flex min-w-0 items-center gap-1 text-[13px] text-[var(--pf-c-ink-7e8a7e)]">
+          <p className="mt-0.5 flex min-w-0 items-center gap-1 text-[12px] leading-[1.35] text-[var(--pf-c-ink-7e8a7e)]">
             {sport && (
               <>
                 <span
-                  className="h-2 w-2 shrink-0 rounded-full"
+                  className="h-1.5 w-1.5 shrink-0 rounded-full"
                   style={{ background: sportColour }}
                   aria-hidden
                 />
@@ -290,7 +295,7 @@ export function ArenaCard({
             )}
           </p>
 
-          <p className="mt-0.5 flex min-w-0 flex-wrap items-center gap-x-1 text-[12px] text-[var(--pf-c-ink-7e8a7e)]">
+          <p className="flex min-w-0 flex-wrap items-center gap-x-1 text-[12px] leading-[1.35] text-[var(--pf-c-ink-7e8a7e)]">
             by
             <Link
               href={profileHref}
@@ -335,14 +340,14 @@ export function ArenaCard({
       {imageUrl && (
         <Link
           href={postHref}
-          className="mt-3 block aspect-[2/1] overflow-hidden rounded-xl"
+          className="mt-2 block aspect-[5/2] overflow-hidden rounded-[10px]"
         >
           <img src={imageUrl} alt="" className="h-full w-full object-cover" />
         </Link>
       )}
 
       {(status || action) && (
-        <div className="mt-3 flex min-h-9 items-center justify-between gap-3">
+        <div className="mt-2 flex min-h-8 items-center justify-between gap-3">
           <div className="min-w-0">{status}</div>
           {action}
         </div>

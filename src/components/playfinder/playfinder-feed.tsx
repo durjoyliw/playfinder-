@@ -89,7 +89,7 @@ export function PlayFinderFeed({
     ? []
     : posts.filter((post) => !isLookingToPlayIntent(post.intent));
   const sectionHeading = (label: string, count: number) => (
-    <h2 className="flex items-baseline justify-between px-0.5 pt-1 text-[13px] font-semibold text-[var(--pf-c-ink-b4bcaf)]">
+    <h2 className="flex items-baseline justify-between px-0.5 text-[12px] font-semibold text-[var(--pf-c-ink-b4bcaf)]">
       {label}
       <span className="text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
         {count}
@@ -98,7 +98,7 @@ export function PlayFinderFeed({
   );
 
   return (
-    <div className={isSocial ? "pb-4" : "flex flex-col gap-2.5 px-4 pb-4 pt-3.5"}>
+    <div className={isSocial ? "pb-4" : "flex flex-col gap-2 px-4 pb-4 pt-3"}>
       {isFetching && (
         <div className="flex justify-center py-2">
           <Loader2 className="h-4 w-4 animate-spin text-[var(--pf-volt-text)]" />
