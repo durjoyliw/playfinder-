@@ -250,7 +250,7 @@ export function ArenaCard({
         authorUsername={username}
         authorName={name}
         extraItems={menuItems}
-        className="!absolute right-2 top-2 z-10"
+        className="!absolute right-2 top-2 z-10 has-[[aria-expanded=true]]:z-40"
       />
 
       <div className="flex gap-3">
