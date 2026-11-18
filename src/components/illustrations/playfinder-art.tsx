@@ -365,16 +365,16 @@ export function ProfileArt({ className, title, fit }: ArtProps) {
   );
 }
 
-/** Glasgow-flavoured map: the Clyde and a few neighbourhood pins. */
+/** A generic city map: a river and pins on local places to play. */
 export function CityArt({ className, title, fit }: ArtProps) {
   const W = 800;
   const H = 700;
   const pins: Array<[number, number, string]> = [
-    [190, 250, "Partick"],
-    [330, 200, "West End"],
-    [520, 300, "Dennistoun"],
-    [420, 520, "Southside"],
-    [230, 470, "Govan"],
+    [190, 250, "Park pitch"],
+    [330, 200, "Padel courts"],
+    [520, 300, "Sports hall"],
+    [420, 520, "Running club"],
+    [230, 470, "5-a-side"],
   ];
   return (
     <Frame
