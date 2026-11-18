@@ -23,15 +23,12 @@ export function ArenaDateTile({
   sportColour: string;
   size?: "sm" | "lg";
 }) {
-  const box = size === "lg" ? "h-[52px] w-[52px] rounded-xl" : "h-11 w-11 rounded-[10px]";
+  // Same footprint as a profile picture (44px), so rows line up with Social.
+  const box = "h-11 w-11 rounded-[12px]";
   if (!when) {
     return (
       <div
-        className={cn(
-          "grid shrink-0 place-items-center",
-          box,
-          size === "lg" ? "text-[22px]" : "text-[19px]",
-        )}
+        className={cn("grid shrink-0 place-items-center", box, "text-[19px]")}
         style={{ background: `${sportColour}1f` }}
         aria-hidden
       >
@@ -43,7 +40,7 @@ export function ArenaDateTile({
   return (
     <div
       className={cn(
-        "flex shrink-0 flex-col items-center justify-center bg-[var(--pf-inset)]",
+        "flex shrink-0 flex-col items-center justify-center bg-[var(--pf-c-fill-232824)]",
         box,
       )}
       aria-label={label}
@@ -51,7 +48,7 @@ export function ArenaDateTile({
       <span
         className={cn(
           "font-semibold uppercase leading-none tracking-[0.04em]",
-          size === "lg" ? "text-[10px]" : "text-[9px]",
+          "text-[9px]",
           when.isToday
             ? "text-[var(--pf-volt-text)]"
             : "text-[var(--pf-c-ink-7e8a7e)]",
@@ -62,13 +59,7 @@ export function ArenaDateTile({
       <span
         className={cn(
           "mt-[3px] font-bold leading-none text-[var(--pf-c-ink-f2f5ef)]",
-          isTime
-            ? size === "lg"
-              ? "text-[13px]"
-              : "text-[12px]"
-            : size === "lg"
-              ? "text-[20px]"
-              : "text-[17px]",
+          isTime ? "text-[12px]" : "text-[17px]",
         )}
       >
         {when.date}
@@ -93,7 +84,10 @@ export function ArenaSpotPips({
   const dot = size === "lg" ? "h-2.5 w-2.5" : "h-1.5 w-1.5";
   return (
     <span
-      className={cn("inline-flex shrink-0", size === "lg" ? "gap-1" : "gap-[2px]")}
+      className={cn(
+        "inline-flex shrink-0",
+        size === "lg" ? "gap-1" : "gap-[2px]",
+      )}
       aria-hidden
     >
       {Array.from({ length: total }).map((_, i) => (
@@ -186,7 +180,12 @@ export function ArenaMainAction({
     return (
       <Link
         href={arenaMessageHref({ authorId, name, isPage, sport })}
-        className={cn(pill, size === "lg" ? "bg-[var(--pf-volt)] text-[var(--pf-on-accent)]" : outline)}
+        className={cn(
+          pill,
+          size === "lg"
+            ? "bg-[var(--pf-volt)] text-[var(--pf-on-accent)]"
+            : outline,
+        )}
       >
         Message
       </Link>

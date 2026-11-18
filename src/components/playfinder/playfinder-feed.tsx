@@ -89,7 +89,7 @@ export function PlayFinderFeed({
     ? []
     : posts.filter((post) => !isLookingToPlayIntent(post.intent));
   const sectionHeading = (label: string, count: number) => (
-    <h2 className="flex items-baseline justify-between px-0.5 text-[12px] font-semibold text-[var(--pf-c-ink-b4bcaf)]">
+    <h2 className="flex items-baseline justify-between border-b border-[rgb(var(--pf-contrast-rgb)/0.04)] px-4 pb-2 pt-4 text-[12px] font-semibold uppercase tracking-[0.05em] text-[var(--pf-c-ink-7e8a7e)]">
       {label}
       <span className="text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
         {count}
@@ -98,7 +98,7 @@ export function PlayFinderFeed({
   );
 
   return (
-    <div className={isSocial ? "pb-4" : "flex flex-col gap-2 px-4 pb-4 pt-3"}>
+    <div className="pb-4">
       {isFetching && (
         <div className="flex justify-center py-2">
           <Loader2 className="h-4 w-4 animate-spin text-[var(--pf-volt-text)]" />
@@ -111,9 +111,7 @@ export function PlayFinderFeed({
           {games.length > 0 && sectionHeading("Games", games.length)}
           {games.map(renderCard)}
           {recruiting.length > 0 && (
-            <div className={games.length > 0 ? "mt-2" : undefined}>
-              {sectionHeading("Recruiting", recruiting.length)}
-            </div>
+            sectionHeading("Recruiting", recruiting.length)
           )}
           {recruiting.map((post, i) => renderCard(post, games.length + i))}
         </>
