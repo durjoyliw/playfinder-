@@ -9,6 +9,7 @@ const NAV = [
   { href: "/admin/reports", label: "Reports" },
   { href: "/admin/feedback", label: "Feedback" },
   { href: "/admin/waitlist", label: "Waitlist" },
+  { href: "/admin/starter-posts", label: "Starter posts" },
   { href: "/admin/appeals", label: "Appeals", badgeKey: "appeals" as const },
   { href: "/admin/feature-flags", label: "Feature flags" },
   { href: "/admin/audit-log", label: "Audit log" },
