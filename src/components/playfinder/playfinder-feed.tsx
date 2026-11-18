@@ -3,7 +3,10 @@
 import { HomeFeedCard } from "@/components/playfinder/home-feed-card";
 import { postMatchesFeedTypeTab, type FeedTypeTab } from "@/lib/feed-type-tabs";
 import { mapPostToHomeFeedCard } from "@/lib/home-feed-card";
-import { filterActivePlayfinderPosts } from "@/lib/playfinder";
+import {
+  filterActivePlayfinderPosts,
+  isLookingToPlayIntent,
+} from "@/lib/playfinder";
 import kyInstance from "@/lib/ky";
 import { PlayfinderPostsPage } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
@@ -69,21 +72,52 @@ export function PlayFinderFeed({
 
   const isSocial = feedTypeTab === "posts";
 
+  const renderCard = (post: (typeof posts)[number], index: number) => (
+    <HomeFeedCard
+      key={post.id}
+      {...mapPostToHomeFeedCard(post, showImIn)}
+      fromTab={isSocial ? "social" : "arena"}
+      cardIndex={index}
+    />
+  );
+
+  // Arena: games first, then clubs recruiting, each under a small heading.
+  const games = isSocial
+    ? []
+    : posts.filter((post) => isLookingToPlayIntent(post.intent));
+  const recruiting = isSocial
+    ? []
+    : posts.filter((post) => !isLookingToPlayIntent(post.intent));
+  const sectionHeading = (label: string, count: number) => (
+    <h2 className="flex items-baseline justify-between px-0.5 pt-1 text-[13px] font-semibold text-[var(--pf-c-ink-b4bcaf)]">
+      {label}
+      <span className="text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
+        {count}
+      </span>
+    </h2>
+  );
+
   return (
-    <div className={isSocial ? "pb-4" : "flex flex-col gap-3 px-4 pb-4 pt-3.5"}>
+    <div className={isSocial ? "pb-4" : "flex flex-col gap-2.5 px-4 pb-4 pt-3.5"}>
       {isFetching && (
         <div className="flex justify-center py-2">
           <Loader2 className="h-4 w-4 animate-spin text-[var(--pf-volt-text)]" />
         </div>
       )}
-      {posts.map((post, index) => (
-        <HomeFeedCard
-          key={post.id}
-          {...mapPostToHomeFeedCard(post, showImIn)}
-          fromTab={feedTypeTab === "posts" ? "social" : "arena"}
-          cardIndex={index}
-        />
-      ))}
+      {isSocial ? (
+        posts.map(renderCard)
+      ) : (
+        <>
+          {games.length > 0 && sectionHeading("Games", games.length)}
+          {games.map(renderCard)}
+          {recruiting.length > 0 && (
+            <div className={games.length > 0 ? "mt-2" : undefined}>
+              {sectionHeading("Clubs recruiting", recruiting.length)}
+            </div>
+          )}
+          {recruiting.map((post, i) => renderCard(post, games.length + i))}
+        </>
+      )}
       <FeedEnd
         noun={isSocial ? "posts" : "games"}
         action={

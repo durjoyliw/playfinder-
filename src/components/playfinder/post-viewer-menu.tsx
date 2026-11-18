@@ -12,7 +12,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { Ban, Flag, MoreHorizontal, UserPlus, VolumeX } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useEscapeKey } from "@/hooks/use-escape-key";
 
 interface PostViewerMenuProps {
@@ -21,6 +21,17 @@ interface PostViewerMenuProps {
   authorUsername: string;
   authorName: string;
   className?: string;
+  /**
+   * Extra actions listed first (the Arena card puts Save / Share / Send
+   * here). With these, the menu also shows on your own posts.
+   */
+  extraItems?: PostMenuItem[];
+}
+
+export interface PostMenuItem {
+  label: string;
+  icon: ReactNode;
+  onSelect: () => void;
 }
 
 const REPORT_REASONS = [
@@ -37,6 +48,7 @@ export function PostViewerMenu({
   authorUsername,
   authorName,
   className,
+  extraItems,
 }: PostViewerMenuProps) {
   const { user: sessionUser } = useSession();
   const { toast } = useToast();
@@ -163,7 +175,7 @@ export function PostViewerMenu({
     },
   });
 
-  if (isOwnPost) return null;
+  if (isOwnPost && !extraItems?.length) return null;
 
   const menuItemClass =
     "flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-[13px] font-medium text-[var(--pf-c-ink-f2f5ef)] transition-colors hover:bg-[var(--pf-c-fill-1e211e)]";
@@ -186,6 +198,28 @@ export function PostViewerMenu({
           role="menu"
           className="absolute right-0 top-9 z-50 w-[220px] overflow-hidden rounded-xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-161816)] py-1 shadow-lg pf-card"
         >
+          {extraItems?.map((item) => (
+            <button
+              key={item.label}
+              type="button"
+              role="menuitem"
+              className={menuItemClass}
+              onClick={() => {
+                setOpen(false);
+                item.onSelect();
+              }}
+            >
+              <span className="grid h-4 w-4 shrink-0 place-items-center text-[var(--pf-c-ink-7e8a7e)] [&_svg]:h-4 [&_svg]:w-4">
+                {item.icon}
+              </span>
+              {item.label}
+            </button>
+          ))}
+          {extraItems?.length && !isOwnPost ? (
+            <div className="my-1 h-px bg-[var(--pf-c-line-2a2f2a)]" aria-hidden />
+          ) : null}
+          {!isOwnPost && (
+          <>
           <button
             type="button"
             role="menuitem"
@@ -239,6 +273,8 @@ export function PostViewerMenu({
             <Flag className="h-4 w-4 shrink-0" />
             Report post
           </button>
+          </>
+          )}
         </div>
       )}
 
