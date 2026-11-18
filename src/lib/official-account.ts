@@ -1,2 +1,2 @@
-/** The official PlayFinder account (see lib/admin/starter-posts.ts). */
+/** The official PlayFinder account (created by scripts/publish-starter-posts.mjs). */
 export const OFFICIAL_ACCOUNT_ID = "playfinder-official";
