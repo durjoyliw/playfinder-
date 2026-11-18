@@ -115,7 +115,7 @@ export function PlayFinderLanding() {
           .pf-hero-photo { height: 280px; }
           .pf-hero-card { position: static; width: 100%; margin-top: 12px; }
           .pf-hero-post { position: static; width: 100%; margin-top: 16px; }
-          .pf-h1 { font-size: 34px !important; }
+          .pf-h1 { font-size: clamp(28px, 8.4vw, 34px) !important; }
           .pf-features-grid { grid-template-columns: 1fr; grid-template-rows: none; }
           .pf-feature-card--tall { grid-row: auto; min-height: 220px; }
           .pf-steps-row { flex-direction: column; gap: 28px; }
@@ -212,9 +212,9 @@ export function PlayFinderLanding() {
                   color: "var(--pf-c-ink-ffffff)",
                 }}
               >
-                Find your game.
+                <span style={{ whiteSpace: "nowrap" }}>Find your game.</span>{" "}
                 <br />
-                Find your people.
+                <span style={{ whiteSpace: "nowrap" }}>Find your people.</span>
               </h1>
 
               <p
