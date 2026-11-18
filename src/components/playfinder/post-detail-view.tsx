@@ -7,6 +7,7 @@ import { FeedCardSaveButton } from "@/components/playfinder/feed-card-save-butto
 import { FeedCardMessageClubButton } from "@/components/playfinder/feed-card-message-club-button";
 import { FeedCardShareButton } from "@/components/playfinder/feed-card-share-button";
 import { PostInterestedPanel } from "@/components/playfinder/post-interested-panel";
+import { SendPostDialog } from "@/components/playfinder/send-post-dialog";
 import { PostOptionsMenu } from "@/components/playfinder/post-options-menu";
 import {
   getPostTypeBadge,
@@ -18,10 +19,17 @@ import { computeSpotsLeft } from "@/lib/post-interest";
 import { PostData } from "@/lib/types";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, BadgeCheck, Clock, MapPin } from "lucide-react";
+import {
+  ArrowLeft,
+  BadgeCheck,
+  Clock,
+  MapPin,
+  MessageCircle,
+  Send,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 interface PostDetailViewProps {
   post: PostData;
@@ -35,6 +43,7 @@ const accentColors = {
 } as const;
 
 export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
+  const [sendDialogOpen, setSendDialogOpen] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
@@ -44,12 +53,9 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
   const profileHref = `/users/${card.username}`;
   const isLooking =
     isLookingToPlayIntent(post.intent) || card.type === "looking";
-  const isArenaPost =
-    post.type === "ARENA" || post.type === "BROADCAST";
+  const isArenaPost = post.type === "ARENA" || post.type === "BROADCAST";
   const showSpots =
-    isArenaPost &&
-    card.acceptedCount != null &&
-    card.slotsRemaining != null;
+    isArenaPost && card.acceptedCount != null && card.slotsRemaining != null;
   const pendingInterestCount =
     post.interests?.filter((i) => i.status === "PENDING").length ?? 0;
 
@@ -114,7 +120,7 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
         </div>
       </header>
 
-      <article className="mx-4 mt-4 overflow-hidden rounded-xl bg-[var(--pf-c-fill-161616)] pf-card">
+      <article className="pf-card mx-4 mt-4 overflow-hidden rounded-xl bg-[var(--pf-c-fill-161616)]">
         <div
           className="h-[3px]"
           style={{ backgroundColor: accentColors[card.type] }}
@@ -139,7 +145,9 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
               )}
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-semibold text-[var(--pf-c-ink-ffffff)]">{card.name}</span>
+                  <span className="font-semibold text-[var(--pf-c-ink-ffffff)]">
+                    {card.name}
+                  </span>
                   {card.isVerified && (
                     <BadgeCheck className="h-4 w-4 fill-[#3B82F6] text-[#3B82F6]" />
                   )}
@@ -190,7 +198,11 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
                       background: "transparent",
                     }}
                   >
-                    <IconCheck size={14} className="text-[var(--pf-volt-text)]" stroke={2.5} />
+                    <IconCheck
+                      size={14}
+                      className="text-[var(--pf-volt-text)]"
+                      stroke={2.5}
+                    />
                   </div>
                   {isOwnPost && (
                     <button
@@ -232,7 +244,11 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
                 />
               ))}
               <span
-                style={{ fontSize: 13, color: "var(--pf-volt-text)", fontWeight: 600 }}
+                style={{
+                  fontSize: 13,
+                  color: "var(--pf-volt-text)",
+                  fontWeight: 600,
+                }}
               >
                 {slotsRemaining > 0
                   ? `${slotsRemaining} spot${slotsRemaining > 1 ? "s" : ""} left`
@@ -251,21 +267,21 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
           )}
 
           {isLooking && (card.timeChip || card.locationChip) && (
-              <div className="mb-4 flex flex-wrap gap-2">
-                {card.timeChip && (
-                  <span className="flex items-center gap-1 rounded-full border border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1a1a1a)] px-2.5 py-1 text-xs text-[var(--pf-c-ink-9ca3af)]">
-                    <Clock className="h-3 w-3" />
-                    {card.timeChip}
-                  </span>
-                )}
-                {card.locationChip && (
-                  <span className="flex items-center gap-1 rounded-full border border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1a1a1a)] px-2.5 py-1 text-xs text-[var(--pf-c-ink-9ca3af)]">
-                    <MapPin className="h-3 w-3" />
-                    {card.locationChip}
-                  </span>
-                )}
-              </div>
-            )}
+            <div className="mb-4 flex flex-wrap gap-2">
+              {card.timeChip && (
+                <span className="flex items-center gap-1 rounded-full border border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1a1a1a)] px-2.5 py-1 text-xs text-[var(--pf-c-ink-9ca3af)]">
+                  <Clock className="h-3 w-3" />
+                  {card.timeChip}
+                </span>
+              )}
+              {card.locationChip && (
+                <span className="flex items-center gap-1 rounded-full border border-[var(--pf-c-line-333333)] bg-[var(--pf-c-fill-1a1a1a)] px-2.5 py-1 text-xs text-[var(--pf-c-ink-9ca3af)]">
+                  <MapPin className="h-3 w-3" />
+                  {card.locationChip}
+                </span>
+              )}
+            </div>
+          )}
 
           {isLooking && !isOwnPost && (
             <div className="mb-4">
@@ -289,15 +305,32 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
             </div>
           )}
 
-          <div className="flex items-center gap-6 border-t border-[var(--pf-c-line-262626)] pt-4">
+          <div className="-mx-1.5 flex items-center justify-between border-t border-[var(--pf-c-line-262626)] pt-4">
             <FeedCardLikeButton
               postId={card.postId}
               initialState={{
                 likes: card.likes ?? 0,
                 isLikedByUser: card.isLikedByUser ?? false,
               }}
+              className="pf-hit min-h-9"
             />
+            <a
+              href="#comments"
+              className="pf-hit flex min-h-9 items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-[var(--pf-c-ink-ffffff)]"
+              aria-label="Go to comments"
+            >
+              <MessageCircle className="h-4 w-4" />
+              {(card.replies ?? 0) > 0 && <span>{card.replies}</span>}
+            </a>
             <FeedCardShareButton postId={card.postId} />
+            <button
+              type="button"
+              onClick={() => setSendDialogOpen(true)}
+              className="pf-hit flex min-h-9 items-center text-muted-foreground transition-colors hover:text-[var(--pf-c-ink-ffffff)]"
+              aria-label="Send as message"
+            >
+              <Send className="h-4 w-4" />
+            </button>
             <FeedCardSaveButton
               postId={card.postId}
               initialState={{
@@ -305,11 +338,22 @@ export function PostDetailView({ post, loggedInUserId }: PostDetailViewProps) {
               }}
             />
           </div>
+          {sendDialogOpen && (
+            <SendPostDialog
+              postId={card.postId}
+              onOpenChange={setSendDialogOpen}
+            />
+          )}
         </div>
       </article>
 
-      <section className="mx-4 mt-4 rounded-xl bg-[var(--pf-c-fill-161616)] p-4 pf-card">
-        <h2 className="mb-3 text-sm font-semibold text-[var(--pf-c-ink-ffffff)]">Comments</h2>
+      <section
+        id="comments"
+        className="pf-card mx-4 mt-4 scroll-mt-20 rounded-xl bg-[var(--pf-c-fill-161616)] p-4"
+      >
+        <h2 className="mb-3 text-sm font-semibold text-[var(--pf-c-ink-ffffff)]">
+          Comments
+        </h2>
         <FeedCardComments
           postId={card.postId}
           initialReplyCount={card.replies}

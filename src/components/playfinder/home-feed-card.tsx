@@ -148,49 +148,42 @@ export function HomeFeedCard({
     </div>
   );
 
+  // Five actions spread across the card (X / Instagram style): bigger,
+  // easier targets, and the row lines up from card to card.
   const actionRow = (
-    <div className="flex items-center justify-between gap-4">
-      <div className="flex flex-shrink-0 items-center gap-4">
-        <FeedCardLikeButton
-          postId={postId}
-          initialState={{ likes, isLikedByUser }}
-          className="pf-hit min-h-9 gap-[7px] text-[13px] font-medium"
-        />
-        <Link
-          href={postHref}
-          className="pf-hit flex min-h-9 items-center gap-1.5 text-[13px] font-medium text-[var(--pf-c-ink-7e8a7e)] transition-transform hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
-          aria-label="View comments"
-        >
-          <MessageCircle className="h-5 w-5" />
-          {replies}
-        </Link>
-        <FeedCardShareButton
-          postId={postId}
-          iconOnly
-          className="pf-hit min-h-9 text-[var(--pf-c-ink-7e8a7e)] hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
-        />
-        <button
-          type="button"
-          onClick={() => setSendDialogOpen(true)}
-          className="pf-hit flex min-h-9 items-center text-[var(--pf-c-ink-7e8a7e)] transition-transform hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
-          aria-label="Send as message"
-        >
-          <Send className="h-[18px] w-[18px]" />
-        </button>
-        <FeedCardSaveButton
-          postId={postId}
-          initialState={{ isBookmarkedByUser }}
-          iconSize={19}
-          className="pf-hit active:scale-90"
-        />
-      </div>
-
-      {!isArenaLayout && location && (
-        <span className="flex min-w-0 items-center gap-1.5 text-[13px] text-[var(--pf-c-ink-7e8a7e)]">
-          <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
-          <span className="truncate">{location}</span>
-        </span>
-      )}
+    <div className="-mx-1.5 flex items-center justify-between">
+      <FeedCardLikeButton
+        postId={postId}
+        initialState={{ likes, isLikedByUser }}
+        className="pf-hit min-h-9 gap-[7px] text-[13px] font-medium"
+      />
+      <Link
+        href={postHref}
+        className="pf-hit flex min-h-9 items-center gap-1.5 text-[13px] font-medium text-[var(--pf-c-ink-7e8a7e)] transition-transform hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
+        aria-label="View comments"
+      >
+        <MessageCircle className="h-5 w-5" />
+        {replies}
+      </Link>
+      <FeedCardShareButton
+        postId={postId}
+        iconOnly
+        className="pf-hit min-h-9 text-[var(--pf-c-ink-7e8a7e)] hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
+      />
+      <button
+        type="button"
+        onClick={() => setSendDialogOpen(true)}
+        className="pf-hit flex min-h-9 items-center text-[var(--pf-c-ink-7e8a7e)] transition-transform hover:text-[var(--pf-c-ink-f2f5ef)] active:scale-90"
+        aria-label="Send as message"
+      >
+        <Send className="h-[18px] w-[18px]" />
+      </button>
+      <FeedCardSaveButton
+        postId={postId}
+        initialState={{ isBookmarkedByUser }}
+        iconSize={19}
+        className="pf-hit active:scale-90"
+      />
     </div>
   );
 
