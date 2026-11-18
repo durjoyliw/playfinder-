@@ -17,7 +17,10 @@ const PROMPTS = [
 export function FeedbackForm() {
   const searchParams = useSearchParams();
   const from = searchParams.get("from") ?? undefined;
-  const [message, setMessage] = useState("");
+  // Links can start the message, e.g. Discover's "Missing venue for Padel: ".
+  const [message, setMessage] = useState(
+    () => searchParams.get("message")?.slice(0, 200) ?? "",
+  );
   const [error, setError] = useState<string>();
   const [sent, setSent] = useState(false);
   const [isPending, startTransition] = useTransition();

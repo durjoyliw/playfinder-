@@ -12,6 +12,8 @@ import {
 import {
   buildClubsOverpassQuery,
   buildVenuesOverpassQuery,
+  DISCOVER_FAR_MILES,
+  DISCOVER_NEAR_MILES,
   matchesOsmSportTags,
   resolveOsmSportTags,
 } from "@/lib/discover-sport-map";
@@ -130,9 +132,7 @@ function elementsToPlaces(
     });
   }
 
-  return places
-    .sort((a, b) => a.distanceMiles - b.distanceMiles)
-    .slice(0, MAX_RESULTS);
+  return places;
 }
 
 export async function GET(req: Request) {
@@ -157,32 +157,29 @@ export async function GET(req: Request) {
       return Response.json({ error: "Invalid coordinates" }, { status: 400 });
     }
 
-    const staticPlaces = getMockDiscoverPlaces(type, sport);
-    if (staticPlaces.length === 0) {
-      return Response.json([]);
-    }
-
+    // OpenStreetMap first: real places for any sport we can map. Our own
+    // list is only a fallback if it's down or has nothing.
     const osmSportTags = resolveOsmSportTags(sport);
     const query =
       type === "clubs"
         ? buildClubsOverpassQuery(lat, lng, sport)
         : buildVenuesOverpassQuery(lat, lng, sport);
 
-    try {
-      const elements = await fetchOverpass(query);
-      const overpassPlaces = elementsToPlaces(
-        elements,
-        lat,
-        lng,
-        osmSportTags,
-      );
-      if (overpassPlaces.length > 0) {
-        return Response.json(overpassPlaces);
+    if (query) {
+      try {
+        const elements = await fetchOverpass(query);
+        const overpassPlaces = nearestFirst(
+          elementsToPlaces(elements, lat, lng, osmSportTags),
+        );
+        if (overpassPlaces.length > 0) {
+          return Response.json(overpassPlaces);
+        }
+      } catch (overpassError) {
+        console.warn("Overpass unavailable, using static venues:", overpassError);
       }
-    } catch (overpassError) {
-      console.warn("Overpass unavailable, using static venues:", overpassError);
     }
 
+    const staticPlaces = nearestFirst(getMockDiscoverPlaces(type, sport));
     return Response.json(staticPlaces);
   } catch (error) {
     console.error("GET /api/discover failed:", error);
@@ -190,6 +187,19 @@ export async function GET(req: Request) {
     const type = (searchParams.get("type") ?? "venues") as DiscoverTabType;
     const sport =
       searchParams.get("sport") ?? searchParams.get("sportKey") ?? "running";
-    return Response.json(getMockDiscoverPlaces(type, sport));
+    return Response.json(nearestFirst(getMockDiscoverPlaces(type, sport)));
   }
+}
+
+/**
+ * Within 5 miles if there's anything there; otherwise widen to 10 miles.
+ * The list says which radius it used from the distances.
+ */
+function nearestFirst(places: DiscoverPlace[]): DiscoverPlace[] {
+  const sorted = [...places].sort((a, b) => a.distanceMiles - b.distanceMiles);
+  const near = sorted.filter((p) => p.distanceMiles <= DISCOVER_NEAR_MILES);
+  const pool = near.length
+    ? near
+    : sorted.filter((p) => p.distanceMiles <= DISCOVER_FAR_MILES);
+  return pool.slice(0, MAX_RESULTS);
 }
