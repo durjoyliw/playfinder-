@@ -4,7 +4,6 @@ import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { limitMessage, rateLimit } from "@/lib/rate-limit";
 import { Prisma } from "@prisma/client";
-import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const joinSchema = z.object({
@@ -60,7 +59,6 @@ export async function joinWaitlist(input: {
       create: { email, userId: user.id, source },
       update: { email },
     });
-    revalidatePath("/waitlist");
     return { ok: true, email };
   } catch (error) {
     if (
@@ -80,7 +78,6 @@ export async function leaveWaitlist(): Promise<{ ok: boolean }> {
     const { user } = await validateRequest();
     if (!user) return { ok: false };
     await prisma.waitlistEntry.deleteMany({ where: { userId: user.id } });
-    revalidatePath("/waitlist");
     return { ok: true };
   } catch (error) {
     console.error(error);
