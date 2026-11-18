@@ -143,24 +143,20 @@ export function ArenaPostDetail({
         </div>
       </header>
 
-      <article className="mx-4 mt-3 rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-surface)] p-4">
-        <div className="flex gap-3">
+      {/* Same card, sizes and spacing as the Social post page. */}
+      <article className="pf-card mx-4 mt-4 rounded-xl bg-[var(--pf-c-fill-161616)] p-4">
+        <div className="mb-4 flex items-center gap-3">
           <ArenaDateTile
             when={when}
             label={post.timeLabel ?? undefined}
             sportEmoji={sportEmoji}
             sportColour={sportColour}
-            size="lg"
           />
           <div className="min-w-0 flex-1">
-            <h2 className="text-[18px] font-bold leading-[1.25] tracking-[-0.01em] text-[var(--pf-c-ink-f2f5ef)] [word-break:break-word]">
-              {post.content}
-            </h2>
-            <p className="mt-1 flex flex-wrap items-center gap-x-1 text-[13px] text-[var(--pf-c-ink-7e8a7e)]">
-              by
+            <div className="flex flex-wrap items-center gap-1.5">
               <Link
                 href={profileHref}
-                className="font-semibold text-[var(--pf-c-ink-b4bcaf)] hover:underline"
+                className="font-semibold text-[var(--pf-c-ink-ffffff)] hover:underline"
               >
                 {isOwnPost ? "You" : card.name}
               </Link>
@@ -175,18 +171,24 @@ export function ArenaPostDetail({
                   </span>
                 )
               )}
-              <span aria-hidden>·</span>
-              <span>{card.timestamp}</span>
+            </div>
+            <p className="text-xs text-[var(--pf-c-ink-6b7280)]">
+              {card.timestamp}
+              {post.location ? ` · ${post.location}` : ""}
             </p>
           </div>
         </div>
 
+        <p className="mb-4 text-base leading-relaxed text-[var(--pf-c-ink-ffffff)] [word-break:break-word]">
+          {post.content}
+        </p>
+
         {rows.length > 0 && (
-          <dl className="mt-4 border-t border-[var(--pf-c-line-2a2f2a)]">
+          <dl className="border-t border-[var(--pf-c-line-262626)]">
             {rows.map((row) => (
               <div
                 key={row.label}
-                className="flex gap-3 border-b border-[var(--pf-c-line-2a2f2a)] py-2.5 text-[14px]"
+                className="flex gap-3 border-b border-[var(--pf-c-line-262626)] py-2.5 text-sm"
               >
                 <dt className="w-14 shrink-0 text-[var(--pf-c-ink-7e8a7e)]">
                   {row.label}
@@ -256,7 +258,7 @@ export function ArenaPostDetail({
           )}
         </div>
 
-        <div className="-mx-1.5 mt-3 flex items-center justify-between border-t border-[var(--pf-c-line-2a2f2a)] pt-2">
+        <div className="-mx-1.5 mt-4 flex items-center justify-between border-t border-[var(--pf-c-line-262626)] pt-4">
           <FeedCardLikeButton
             postId={post.id}
             initialState={{
@@ -291,9 +293,9 @@ export function ArenaPostDetail({
 
       <section
         id="comments"
-        className="mx-4 mt-3 scroll-mt-20 rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-surface)] p-4"
+        className="pf-card mx-4 mt-4 scroll-mt-20 rounded-xl bg-[var(--pf-c-fill-161616)] p-4"
       >
-        <h2 className="mb-3 text-sm font-semibold text-[var(--pf-c-ink-f2f5ef)]">
+        <h2 className="mb-3 text-sm font-semibold text-[var(--pf-c-ink-ffffff)]">
           Comments
         </h2>
         <FeedCardComments

@@ -14,7 +14,7 @@ import { parseArenaWhen } from "@/lib/arena-when";
 import { cn } from "@/lib/utils";
 import { PageType } from "@prisma/client";
 import { IconFlame } from "@tabler/icons-react";
-import { MessageCircle, Send } from "lucide-react";
+import { Clock, MessageCircle, Send } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState, type ReactNode } from "react";
@@ -52,6 +52,11 @@ interface ArenaCardProps {
   userInterestStatus: string | null;
   isBookmarkedByUser: boolean;
 }
+
+const tagVolt =
+  "rounded bg-[rgb(var(--pf-volt-rgb)/0.14)] px-1.5 py-px text-[11px] font-semibold text-[var(--pf-volt-text)]";
+const tagGrey =
+  "rounded bg-[rgb(var(--pf-contrast-rgb)/0.07)] px-1.5 py-px text-[11px] font-semibold text-[var(--pf-c-ink-b4bcaf)]";
 
 const dot = (
   <span className="text-[var(--pf-c-ink-5a635a)]" aria-hidden>
@@ -127,8 +132,9 @@ export function ArenaCard({
       className="animate-[pf-card-in_500ms_ease-in-out_backwards] cursor-pointer border-b border-[rgb(var(--pf-contrast-rgb)/0.04)] px-4 py-4"
       style={{ animationDelay: `${(cardIndex % 8) * 40}ms` }}
     >
-      {/* Same header shape as a Social post: tile where the avatar sits. */}
-      <div className="mb-3 flex items-start gap-2.5">
+      {/* Social's header, size for size: tile where the avatar sits,
+          name, then the sport / place / time line. */}
+      <div className="mb-3.5 flex items-center gap-2">
         <ArenaDateTile
           when={when}
           label={timeLabel}
@@ -136,81 +142,42 @@ export function ArenaCard({
           sportColour={sportColour}
         />
         <div className="min-w-0 flex-1">
-          <Link
-            href={postHref}
-            className="line-clamp-2 text-[15px] font-semibold leading-[1.3] text-[var(--pf-c-ink-f2f5ef)] [word-break:break-word]"
-          >
-            {content}
-          </Link>
-          <p className="mt-1 flex min-w-0 items-center gap-x-1.5 text-xs text-[var(--pf-c-ink-7e8a7e)]">
+          <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+            <Link
+              href={profileHref}
+              className="text-[15px] font-semibold text-[var(--pf-c-ink-f2f5ef)] hover:underline"
+            >
+              {isOwnPost ? "You" : name}
+            </Link>
+            {isOwnPost ? (
+              <span className={tagVolt}>Your game</span>
+            ) : (
+              <>
+                {authorPageType && (
+                  <span className={tagGrey}>
+                    {authorPageType === PageType.VENUE ? "Venue" : "Club"}
+                  </span>
+                )}
+                {!isRecruiting && joinTag && (
+                  <span className={tagVolt}>{joinTag}</span>
+                )}
+              </>
+            )}
+          </div>
+          <p className="mt-1 flex flex-wrap items-center gap-x-1.5 text-xs text-[var(--pf-c-ink-7e8a7e)]">
             {sport && (
-              <span
-                className="shrink-0 font-medium"
-                style={{ color: sportColour }}
-              >
+              <span className="font-medium" style={{ color: sportColour }}>
                 {sportEmoji} {sport}
               </span>
             )}
-            {timeText && (
-              <>
-                {sport && dot}
-                <span className="shrink-0">{timeText}</span>
-              </>
-            )}
             {location && (
               <>
-                {(sport || timeText) && dot}
-                <span className="truncate">{location}</span>
+                {sport && dot}
+                <span>{location}</span>
               </>
             )}
-          </p>
-          <p className="mt-0.5 flex min-w-0 flex-wrap items-center gap-x-1.5 text-xs text-[var(--pf-c-ink-7e8a7e)]">
-            <span>
-              by{" "}
-              <Link
-                href={profileHref}
-                className="font-semibold text-[var(--pf-c-ink-b4bcaf)] hover:underline"
-              >
-                {isOwnPost ? "You" : name}
-              </Link>
-            </span>
-            {isOwnPost ? (
-              <span className="rounded bg-[rgb(var(--pf-volt-rgb)/0.14)] px-1.5 py-px text-[11px] font-semibold text-[var(--pf-volt-text)]">
-                Your game
-              </span>
-            ) : (
-              authorPageType && (
-                <span className="rounded bg-[rgb(var(--pf-contrast-rgb)/0.07)] px-1.5 py-px text-[11px] font-semibold text-[var(--pf-c-ink-b4bcaf)]">
-                  {authorPageType === PageType.VENUE ? "Venue" : "Club"}
-                </span>
-              )
-            )}
-            {!isOwnPost && !isRecruiting && joinTag && (
-              <span className="rounded bg-[rgb(var(--pf-volt-rgb)/0.14)] px-1.5 py-px text-[11px] font-semibold text-[var(--pf-volt-text)]">
-                {joinTag}
-              </span>
-            )}
-            {dot}
+            {(sport || location) && dot}
             <span>{timestamp}</span>
-            {isOwnPost && !isRecruiting && pendingCount > 0 && (
-              <>
-                {dot}
-                <span className="font-medium text-[var(--pf-volt-text)]">
-                  {pendingCount} interested
-                </span>
-              </>
-            )}
-            {!isRecruiting && showSpots && (
-              <>
-                {dot}
-                <span className="inline-flex items-center gap-1">
-                  <ArenaSpotPips accepted={acceptedCount} total={spotsTotal} />
-                  <span className="font-medium text-[var(--pf-c-ink-b4bcaf)]">
-                    {spotsText(spotsLeft, isFull)}
-                  </span>
-                </span>
-              </>
-            )}
             {isHotTake && (
               <>
                 {dot}
@@ -223,16 +190,51 @@ export function ArenaCard({
             {metaExtras}
           </p>
         </div>
-        {/* Keeps the title clear of the corner on every row, even your own. */}
-        <div className="flex h-8 w-8 shrink-0 items-start justify-end">
-          <PostViewerMenu
-            postId={postId}
-            authorId={authorId}
-            authorUsername={username}
-            authorName={name}
-          />
-        </div>
+        <PostViewerMenu
+          postId={postId}
+          authorId={authorId}
+          authorUsername={username}
+          authorName={name}
+        />
       </div>
+
+      <Link
+        href={postHref}
+        className="mb-3 block text-[15px] leading-normal text-[var(--pf-c-ink-f2f5ef)] [word-break:break-word]"
+      >
+        {content}
+      </Link>
+
+      {/* The game details, in the same small text as the meta line. */}
+      {(timeText || (!isRecruiting && (showSpots || pendingCount > 0))) && (
+        <p className="mb-3 flex flex-wrap items-center gap-x-1.5 text-xs text-[var(--pf-c-ink-7e8a7e)]">
+          {timeText && (
+            <span className="inline-flex items-center gap-1">
+              <Clock className="h-3.5 w-3.5" aria-hidden />
+              {timeText}
+            </span>
+          )}
+          {!isRecruiting && showSpots && (
+            <>
+              {timeText && dot}
+              <span className="inline-flex items-center gap-1">
+                <ArenaSpotPips accepted={acceptedCount} total={spotsTotal} />
+                <span className="font-medium text-[var(--pf-c-ink-b4bcaf)]">
+                  {spotsText(spotsLeft, isFull)}
+                </span>
+              </span>
+            </>
+          )}
+          {isOwnPost && !isRecruiting && pendingCount > 0 && (
+            <>
+              {dot}
+              <span className="font-medium text-[var(--pf-volt-text)]">
+                {pendingCount} interested
+              </span>
+            </>
+          )}
+        </p>
+      )}
 
       {imageUrl && (
         <Link
