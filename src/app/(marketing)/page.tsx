@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "PlayFinder | Your local sports social network",
+  title: { absolute: "PlayFinder | Your local sports social network" },
   description:
     "Find your game. Find your people. Talk sport with people near you, and find a game when you want to play.",
 };
