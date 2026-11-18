@@ -115,7 +115,7 @@ export function ArenaSpotPips({
 export function spotsText(spotsLeft: number, isFull: boolean, total?: number) {
   if (isFull || spotsLeft === 0) return "Full";
   const n = `${spotsLeft} ${spotsLeft === 1 ? "spot" : "spots"} left`;
-  return total ? `${spotsLeft} of ${total} spots left` : n;
+  return total && total > spotsLeft ? `${spotsLeft} of ${total} spots left` : n;
 }
 
 /** Opens a chat with the poster, with a starter message. */
