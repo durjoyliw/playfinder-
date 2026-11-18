@@ -1,3 +1,4 @@
+import { OFFICIAL_ACCOUNT_ID } from "@/lib/official-account";
 import { Sport } from "@prisma/client";
 
 /**
@@ -6,7 +7,7 @@ import { Sport } from "@prisma/client";
  */
 
 export const OFFICIAL_ACCOUNT = {
-  id: "playfinder-official",
+  id: OFFICIAL_ACCOUNT_ID,
   username: "playfinder",
   displayName: "PlayFinder",
   bio: "The official PlayFinder account. Questions or ideas? Use Send feedback in the menu.",
