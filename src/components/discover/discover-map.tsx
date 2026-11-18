@@ -219,7 +219,7 @@ export function DiscoverMap({
       )}
 
       {loading && (
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/30">
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[var(--pf-veil)]">
           <span className="rounded-lg border border-[var(--pf-c-line-2a2f2a)] bg-[rgb(var(--pf-c-fill-0d0f0d-rgb)/0.85)] px-2.5 py-1 text-xs text-[var(--pf-c-ink-7e8a7e)] backdrop-blur-md">
             Loading {countLabel}...
           </span>

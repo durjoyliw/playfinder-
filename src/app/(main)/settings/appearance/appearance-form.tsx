@@ -188,10 +188,6 @@ export function AppearanceForm({
             </span>
           </div>
         </div>
-        <p className="mt-3 text-xs leading-relaxed text-[var(--pf-text-3)]">
-          Evaluation preview: light backgrounds aren’t fully supported yet, so
-          some screens will still look dark.
-        </p>
       </section>
     </div>
   );

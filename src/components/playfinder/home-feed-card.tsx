@@ -188,7 +188,7 @@ export function HomeFeedCard({
   );
 
   const spotsRow = showSpots && (
-    <div className="mb-4 flex items-center gap-3 rounded-[14px] bg-black/20 p-3.5">
+    <div className="mb-4 flex items-center gap-3 rounded-[14px] bg-[var(--pf-inset)] p-3.5">
       <div className="min-w-0 flex-1">
         <div className="mb-1.5 text-xs text-[var(--pf-c-ink-7e8a7e)]">
           <b className="text-[15px] font-bold text-[var(--pf-volt-text)]">
@@ -315,7 +315,7 @@ export function HomeFeedCard({
           {(timeLabel || location) && (
             <div className="mb-4 grid grid-cols-2 gap-2.5">
               {timeLabel && (
-                <div className="rounded-[14px] border border-[rgb(var(--pf-contrast-rgb)/0.03)] bg-black/25 p-3.5">
+                <div className="rounded-[14px] border border-[rgb(var(--pf-contrast-rgb)/0.03)] bg-[var(--pf-inset)] p-3.5">
                   <div className="mb-2 flex items-center gap-1 text-[12px] font-medium text-[var(--pf-c-ink-5a635a)]">
                     <Clock className="h-3 w-3" />
                     When
@@ -326,7 +326,7 @@ export function HomeFeedCard({
                 </div>
               )}
               {location && (
-                <div className="rounded-[14px] border border-[rgb(var(--pf-contrast-rgb)/0.03)] bg-black/25 p-3.5">
+                <div className="rounded-[14px] border border-[rgb(var(--pf-contrast-rgb)/0.03)] bg-[var(--pf-inset)] p-3.5">
                   <div className="mb-2 flex items-center gap-1 text-[12px] font-medium text-[var(--pf-c-ink-5a635a)]">
                     <MapPin className="h-3 w-3" />
                     Where

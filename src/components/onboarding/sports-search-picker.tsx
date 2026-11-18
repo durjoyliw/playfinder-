@@ -139,7 +139,7 @@ export function SportsSearchPicker({
                   <button
                     type="button"
                     onClick={() => remove(id)}
-                    className="pf-hit-lg rounded-full p-0.5 hover:bg-black/10"
+                    className="pf-hit-lg rounded-full p-0.5 hover:bg-[rgb(var(--pf-contrast-rgb)/0.1)]"
                     aria-label={`Remove ${sport.name}`}
                   >
                     <X className="h-3.5 w-3.5" />
