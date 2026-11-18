@@ -271,7 +271,7 @@ export function DesktopSidebar({
               key={item.id}
               href={item.href}
               className={cn(
-                "flex items-center gap-4 rounded-full px-3 py-2.5 text-[17px] font-semibold transition-colors hover:bg-[var(--pf-c-fill-131614)]",
+                "flex items-center gap-4 rounded-full px-3 py-2.5 text-[17px] font-semibold transition-colors hover:bg-[var(--pf-c-fill-131614)] [@media(max-height:820px)]:py-[7px]",
                 active ? "text-[var(--pf-c-ink-f2f5ef)]" : "text-[var(--pf-c-ink-b4bcaf)]",
               )}
             >
@@ -292,12 +292,12 @@ export function DesktopSidebar({
       <button
         type="button"
         onClick={() => openComposer()}
-        className="mt-4 w-full rounded-full bg-[var(--pf-volt)] py-3.5 text-[15px] font-bold text-[var(--pf-on-accent)] transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.97]"
+        className="mt-4 w-full rounded-full bg-[var(--pf-volt)] py-3.5 text-[15px] font-bold [@media(max-height:820px)]:mt-3 [@media(max-height:820px)]:py-3 text-[var(--pf-on-accent)] transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.97]"
       >
         Broadcast
       </button>
 
-      <nav className="mt-4 flex flex-col gap-0.5 border-t border-[var(--pf-c-line-2a2f2a)] pt-3" aria-label="More">
+      <nav className="mt-4 flex flex-col gap-0.5 border-t border-[var(--pf-c-line-2a2f2a)] pt-3 [@media(max-height:820px)]:mt-3 [@media(max-height:820px)]:pt-2" aria-label="More">
         {extraItems.map((item) => {
           const active = item.isActive(pathname);
           return (
@@ -305,7 +305,7 @@ export function DesktopSidebar({
               key={item.id}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-full px-3 py-2 text-[14px] font-semibold transition-colors hover:bg-[var(--pf-c-fill-131614)]",
+                "flex items-center gap-3 rounded-full px-3 py-2 text-[14px] font-semibold [@media(max-height:820px)]:py-1.5 transition-colors hover:bg-[var(--pf-c-fill-131614)]",
                 active ? "text-[var(--pf-c-ink-f2f5ef)]" : "text-[var(--pf-c-ink-b4bcaf)]",
               )}
             >
