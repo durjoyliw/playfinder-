@@ -91,7 +91,7 @@ export function FeedCardImInButton({
   }
 
   const baseClass = compact
-    ? "flex h-8 shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-[13px] font-semibold transition-colors"
+    ? "flex h-[30px] shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-[12.5px] font-semibold transition-colors"
     : fullWidth
     ? "flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-colors"
     : "flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold transition-colors";

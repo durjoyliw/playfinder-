@@ -160,7 +160,7 @@ export function ArenaCard({
   );
 
   const pillClass =
-    "flex h-8 shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3.5 text-[13px] font-semibold transition-colors";
+    "flex h-[30px] shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3.5 text-[12.5px] font-semibold transition-colors";
 
   let action: ReactNode = null;
   if (isOwnPost) {
@@ -246,7 +246,7 @@ export function ArenaCard({
 
   return (
     <article
-      className="relative animate-[pf-card-in_500ms_ease-in-out_backwards] rounded-[14px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-surface)] px-3 py-2.5"
+      className="relative animate-[pf-card-in_500ms_ease-in-out_backwards] rounded-[14px] border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-surface)] px-3 py-2"
       style={{ animationDelay: `${(cardIndex % 8) * 40}ms` }}
     >
       <PostViewerMenu
@@ -263,12 +263,12 @@ export function ArenaCard({
         <div className="min-w-0 flex-1">
           <Link
             href={postHref}
-            className="line-clamp-2 pr-6 text-[14.5px] font-semibold leading-[1.3] tracking-[-0.01em] text-[var(--pf-c-ink-f2f5ef)] [word-break:break-word] hover:underline"
+            className="line-clamp-2 pr-6 text-[14px] font-semibold leading-[1.28] tracking-[-0.01em] text-[var(--pf-c-ink-f2f5ef)] [word-break:break-word] hover:underline"
           >
             {content}
           </Link>
 
-          <p className="mt-0.5 flex min-w-0 items-center gap-1 text-[12px] leading-[1.35] text-[var(--pf-c-ink-7e8a7e)]">
+          <p className="mt-0.5 flex min-w-0 items-center gap-1 text-[11.5px] leading-[1.35] text-[var(--pf-c-ink-7e8a7e)]">
             {sport && (
               <>
                 <span
@@ -295,7 +295,7 @@ export function ArenaCard({
             )}
           </p>
 
-          <p className="flex min-w-0 flex-wrap items-center gap-x-1 text-[12px] leading-[1.35] text-[var(--pf-c-ink-7e8a7e)]">
+          <p className="flex min-w-0 flex-wrap items-center gap-x-1 text-[11.5px] leading-[1.35] text-[var(--pf-c-ink-7e8a7e)]">
             by
             <Link
               href={profileHref}
@@ -347,7 +347,7 @@ export function ArenaCard({
       )}
 
       {(status || action) && (
-        <div className="mt-2 flex min-h-8 items-center justify-between gap-3">
+        <div className="mt-1.5 flex min-h-[30px] items-center justify-between gap-3">
           <div className="min-w-0">{status}</div>
           {action}
         </div>
