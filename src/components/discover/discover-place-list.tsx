@@ -106,29 +106,24 @@ export function DiscoverPlaceList({
   }
 
   if (places.length === 0) {
+    // Compact, so it fits above the bottom bar when the sheet is lowered.
     return (
-      <div className="px-4">
-        <div className="mb-3.5">
-          <div className="text-[12px] font-medium text-[var(--pf-c-ink-7e8a7e)]">
-            Glasgow · within 10 mi
+      <div className="px-4 pb-2">
+        <div className="flex items-center gap-3 rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] px-3.5 py-3 pf-card">
+          <div className="min-w-0 flex-1">
+            <p className="text-[14px] font-semibold leading-snug text-[var(--pf-c-ink-f2f5ef)]">
+              No {sportName.toLowerCase()} {isVenues ? "venues" : "clubs"} on
+              the map yet
+            </p>
+            <p className="mt-0.5 text-[13px] text-[var(--pf-c-ink-7e8a7e)]">
+              Know one? Tell us and we&apos;ll add it.
+            </p>
           </div>
-          <div className="mt-1 text-[22px] font-bold leading-tight tracking-[-0.03em] text-[var(--pf-c-ink-f2f5ef)]">
-            {isVenues ? "Play near you" : "Local clubs"}
-          </div>
-        </div>
-        <div className="pf-card rounded-2xl border border-[var(--pf-c-line-2a2f2a)] bg-[var(--pf-c-fill-131614)] p-4 text-center">
-          <p className="text-[15px] font-semibold text-[var(--pf-c-ink-f2f5ef)]">
-            No {sportName.toLowerCase()} {isVenues ? "venues" : "clubs"} on the
-            map yet
-          </p>
-          <p className="mt-1 text-sm text-[var(--pf-c-ink-7e8a7e)]">
-            Know one? Tell us and we&apos;ll add it.
-          </p>
           <Link
             href={`/settings/feedback?from=${encodeURIComponent("/discover")}&message=${encodeURIComponent(
               `Missing ${isVenues ? "venue" : "club"} for ${sportName}: `,
             )}`}
-            className="mt-3 inline-flex h-10 items-center rounded-xl bg-[var(--pf-volt)] px-4 text-sm font-bold text-[var(--pf-on-accent)]"
+            className="pf-hit inline-flex h-10 shrink-0 items-center rounded-xl bg-[var(--pf-volt)] px-4 text-sm font-bold text-[var(--pf-on-accent)]"
           >
             Tell us
           </Link>
